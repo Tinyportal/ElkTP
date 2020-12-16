@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.elkarte.net/site/package-info">
+<package-info xmlns="http://www.elkarte.net/site/package-info" xmlns:smf="http://www.elkarte.net/">
+	<name>TinyPortal</name>
+	<id>bloc:tinyportal</id>
+	<type>modification</type>
+	<version>1.0.0</version>
+		<install for="1.1.* - 1.1.99">
+		<redirect url="">Installed!</redirect>
+		<require-dir name="themes" destination="BOARDDIR" />
+		<require-dir name="sources" destination="BOARDDIR" />
+		<require-dir name="TinyPortal" destination="BOARDDIR" />
+		<require-dir name="tp-files" destination="BOARDDIR" />
+		<require-dir name="tp-downloads" destination="BOARDDIR" />
+		<require-dir name="tp-images" destination="BOARDDIR" />
+		<database>install.php</database>
+		<code>do_hooks.php</code>
+	</install>
+	<uninstall for="1.1.* - 1.1.99">
+		<remove-dir name="THEMEDIR/images/tinyportal" />
+		<remove-dir name="BOARDDIR/TinyPortal" />
+		<remove-dir name="THEMEDIR/scripts/tinyportal" />
+		<remove-file name="SOURCEDIR/TPSSI.php" />
+		<remove-file name="SOURCEDIR/TPBlock.php" />
+		<remove-file name="SOURCEDIR/TPCompat.php" />
+		<remove-file name="SOURCEDIR/TPcommon.php" />
+		<remove-file name="SOURCEDIR/TPdlmanager.php" />
+		<remove-file name="SOURCEDIR/TPhelp.php" />
+		<remove-file name="SOURCEDIR/TPortal.php" />
+		<remove-file name="SOURCEDIR/TPortalAdmin.php" />
+		<remove-file name="SOURCEDIR/TPArticle.php" />
+		<remove-file name="SOURCEDIR/TPSearch.php" />
+		<remove-file name="SOURCEDIR/TPShout.php" />
+		<remove-file name="SOURCEDIR/TPSubs.php" />
+		<remove-file name="THEMEDIR/TParticle.template.php" />
+		<remove-file name="THEMEDIR/TPBlockLayout.template.php" />
+		<remove-file name="THEMEDIR/TPdladmin.template.php" />
+		<remove-file name="THEMEDIR/TPdlmanager.template.php" />
+		<remove-file name="THEMEDIR/TPhelp.template.php" />
+		<remove-file name="THEMEDIR/TPortal.template.php" />
+		<remove-file name="THEMEDIR/TPortalAdmin.template.php" />
+		<remove-file name="THEMEDIR/TPprint.template.php" />
+		<remove-file name="THEMEDIR/TPprofile.template.php" />
+		<remove-file name="THEMEDIR/TPSearch.template.php" />
+		<remove-file name="THEMEDIR/TPShout.template.php" />
+		<remove-file name="THEMEDIR/TPsubs.template.php" />
+		<remove-file name="THEMEDIR/TPwireless.template.php" />
+		<remove-file name="THEMEDIR/css/tp-shout.css" />
+		<remove-file name="THEMEDIR/css/tp-style.css" />
+		<remove-file name="THEMEDIR/css/tp-responsive.css" />
+		<remove-file name="LANGUAGEDIR/TPdlmanager.english.php" />
+		<remove-file name="LANGUAGEDIR/TParticle.english.php" />
+		<remove-file name="LANGUAGEDIR/TParticle.english-utf8.php" />
+		<remove-file name="LANGUAGEDIR/TPdlmanager.english-utf8.php" />
+		<remove-file name="LANGUAGEDIR/TPhelp.english.php" />
+		<remove-file name="LANGUAGEDIR/TPhelp.english-utf8.php" />
+		<remove-file name="LANGUAGEDIR/TPmodules.english.php" />
+		<remove-file name="LANGUAGEDIR/TPmodules.english-utf8.php" />
+		<remove-file name="LANGUAGEDIR/TPortal.english.php" />
+		<remove-file name="LANGUAGEDIR/TPortal.english-utf8.php" />
+		<remove-file name="LANGUAGEDIR/TPortalAdmin.english.php" />
+		<remove-file name="LANGUAGEDIR/TPortalAdmin.english-utf8.php" />
+		<code>do_hooks.php</code>
+	</uninstall>
+</package-info>

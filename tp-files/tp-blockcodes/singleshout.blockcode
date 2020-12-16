@@ -1,0 +1,88 @@
+<info>
+TinyPortal BlockCode file for 2.1.0
+format: Boardmod
+</info>
+
+<name>
+Single Shout
+</name>
+
+<author>
+Bloc
+</author>
+
+<version>
+0.2
+</version>
+
+<date>
+10.july.2020
+</date>
+
+<code>
+global $settings, $db_prefix, $scripturl, $txt, $modSettings, $smcFunc;
+
+// set the limit
+$limit = 1;
+
+$request =  $smcFunc['db_query']('', 'SELECT s.* FROM {db_prefix}tp_shoutbox as s 	WHERE s.sticky = {int:val7}	ORDER BY s.time DESC LIMIT {int:limit}', array('val7' => 0, 'limit' => $limit));
+$fetched = array(); $members = array();
+if($smcFunc['db_num_rows']($request)>0)
+{
+	while($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		$fetched[] = $row;
+		if(!empty($row['member_id']) && !in_array($row['member_id'], $members))
+			$members[] = $row['member_id'];
+	}
+	$smcFunc['db_free_result']($request);
+	$request2 =  $smcFunc['db_query']('', 'SELECT mem.id_member, mem.real_name as realName, mem.avatar, COALESCE(a.id_attach,0) AS ID_ATTACH, a.filename, COALESCE(a.attachment_type,0) as attachmentType FROM {db_prefix}members AS mem LEFT JOIN {db_prefix}attachments AS a ON (a.id_member = mem.id_member and a.attachment_type!=3) WHERE mem.id_member IN(' . implode(",",$members) . ')');
+}
+$memberdata = array();
+if(isset($request2) && $smcFunc['db_num_rows']($request2)>0)
+{
+	while($row = $smcFunc['db_fetch_assoc']($request2))
+	{
+		$row['avatar'] = $row['avatar'] == '' ? ($row['ID_ATTACH'] > 0 ? '<img src="' . (empty($row['attachmentType']) ? $scripturl . '?action=dlattach;attach=' . $row['ID_ATTACH'] . ';type=avatar' : $modSettings['custom_avatar_url'] . '/' . $row['filename']) . '" alt="*"  />' : '') : (stristr($row['avatar'], 'http://') ? '<img src="' . $row['avatar'] . '" alt="*" />' : '<img src="' . $modSettings['avatar_url'] . '/' . $smcFunc['htmlspecialchars']($row['avatar']) . '" alt="*" >');
+		$memberdata[$row['id_member']] = $row;
+	}
+	$smcFunc['db_free_result']($request2);
+}
+$nshouts = '<div>';
+
+if(count($fetched)>0)
+{
+	$ns = array();
+	foreach($fetched as $b => $row)
+	{
+		$row['avatar'] = !empty($memberdata[$row['member_id']]['avatar']) ? $memberdata[$row['member_id']]['avatar'] : '';
+		$row['realName'] = !empty($memberdata[$row['member_id']]['realName']) ? $memberdata[$row['member_id']]['realName'] : $row['member_link'];
+		$row['content'] = parse_bbc(censorText($row['content']), true);
+		$ns[] = asingleshout($row);
+	}
+	$nshouts .= implode('', $ns);
+	$nshouts .= '</div>';
+	echo $nshouts;
+}
+function asingleshout($row)
+{
+	global $scripturl, $context, $settings, $txt;
+	$return = '
+	<div style="padding-bottom: 5px;">
+		<div class="tp_shoutcontainer">
+			<div class="tp_shoutavatar">
+				<div class="avy2"><a href="' . $scripturl. '?action=profile;u=' . $row['member_id'] . '">' . $row['avatar'] . '</a></div>
+				<h4>' . $row['realName'] . '</h4>
+				<div class="smalltext clear" style="padding-top: .5em;">'. timeformat($row['time']).'</div>
+			</div>
+			<div class="bubble speech">' . $row['content'] . '</div>
+		</div>
+	</div>';
+     return $return;
+}
+</code>
+
+<description>
+Show a single latest shout or n latest shouts.
+TinyPortal 2.1.0 version 
+</description>

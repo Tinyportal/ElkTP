@@ -1,0 +1,39 @@
+<info>
+TinyPortal BlockCode file.
+format: Boardmod
+</info>
+
+<name>
+Search articles
+</name>
+
+<author>
+tinoest
+</author>
+
+<version>
+0.1
+</version>
+
+<date>
+17.sept.2018
+</date>
+
+<code>
+global $context, $scripturl, $txt;
+
+echo '
+<form accept-charset="', $context['character_set'], '" name="TPsearcharticle" action="' . $scripturl . '?action=tportal;sa=searcharticle2" method="post">
+	<div>
+		<input type="text" style="font-size: 1.3em; margin-bottom: 0.5em; padding: 3px; width: 90%;" name="tpsearch_what" /><br />
+		<input type="checkbox" name="tpsearch_title" checked="checked" /> ' , $txt['tp-searchintitle'] , '<br />
+		<input type="checkbox" name="tpsearch_body" checked="checked" /> ' , $txt['tp-searchinbody'] , '<br />
+		<input type="hidden" name="sc" value="' , $context['session_id'] , '" /><br />
+		<input type="submit" value="' , $txt['tp-search'] , '" />
+	</div>
+</form>';
+</code>
+
+<description>
+Search box for TinyPortal articles.
+</description>

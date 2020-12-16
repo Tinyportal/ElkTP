@@ -1,0 +1,66 @@
+<info>
+TinyPortal BlockCode file.
+format: Boardmod
+</info>
+
+<name>
+List Articles in categories
+</name>
+
+<author>
+@rjen
+</author>
+
+<version>
+0.2
+</version>
+
+<date>
+26.oct.2018
+</date>
+
+<code>
+echo ' <div style="float:left;padding-right: 5px;"><img height="35px" src="Themes/default/images/tinyportal/TPov_articles.png"></img></div><strong>Articles</strong></br>' ;
+echo ' <br>' ;
+echo ' <hr>' ;
+
+// Configuration
+// Specify your categories, comma separated if more than one category.
+$categories = array(1,2);
+
+// End Config
+
+global $scripturl, $smcFunc;
+
+$request = $smcFunc['db_query']('', ' 
+     SELECT shortname, id, subject, parse
+     FROM {db_prefix}tp_articles 
+     WHERE category IN ({array_int:cats})
+          AND approved = {int:approved}
+     ORDER BY parse ASC',
+     array('cats' => $categories,
+          'approved' => 1,
+     )
+);
+echo '
+		<ul style="list-style-type:disc; margin: 0pt; padding: 0pt 15px;">
+ ';
+while ($row = $smcFunc['db_fetch_assoc']($request))
+{
+if (!empty($row['shortname']))
+	{
+     echo '<li><a href="', $scripturl, '?page=', $row['shortname'], '">', $row['subject'], '</a></li>';
+	}
+else
+	{
+     echo '<li><a href="', $scripturl, '?page=', $row['id'], '">', $row['subject'], '</a></li>';
+	}
+} 
+echo '</ul>';
+$smcFunc['db_free_result']($request);
+</code>
+
+<description>
+Code block that wil dynamically list the approved articles in a category. Articles are presented with clickable links, sorted by position. 
+This code snippets uses category numbers '1, 2 and 3'. Update the array setting as desired. 
+</description>
