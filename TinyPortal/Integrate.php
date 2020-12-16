@@ -30,22 +30,22 @@ class Integrate
         if(!defined('ELK_BACKWARDS_COMPAT')) {
             define('ELK_BACKWARDS_COMPAT', true);
             self::setup_db_backwards_compat();
-            spl_autoload_register('TinyPortal\Integrate::TPortalAutoLoadClass');
+            spl_autoload_register('\TinyPortal\Integrate::TPortalAutoLoadClass');
         }
 
         $hooks = array (
             'SSI'                               => 'SOURCEDIR/TPSSI.php|ssi_TPIntegrate',
-            'load_permissions'                  => 'TinyPortal\Integrate::hookPermissions',
-            'load_illegal_guest_permissions'    => 'TinyPortal\Integrate::hookIllegalPermissions',
-            'buffer'                            => 'TinyPortal\Integrate::hookBuffer',
-            'menu_buttons'                      => 'TinyPortal\Integrate::hookMenuButtons',
-            'display_buttons'                   => 'TinyPortal\Integrate::hookDisplayButton',
-            'actions'                           => 'TinyPortal\Integrate::hookActions',
-            'whos_online'                       => 'TinyPortal\Integrate::hookWhosOnline',
-            'pre_log_stats'                     => 'TinyPortal\Integrate::hookPreLogStats',
-            'pre_profile_areas'                 => 'TinyPortal\Integrate::hookProfileArea',
-            'pre_load_theme'                    => 'TinyPortal\Integrate::hookLoadTheme',
-            'redirect'                          => 'TinyPortal\Integrate::hookRedirect',
+            'load_permissions'                  => '\TinyPortal\Integrate::hookPermissions',
+            'load_illegal_guest_permissions'    => '\TinyPortal\Integrate::hookIllegalPermissions',
+            'buffer'                            => '\TinyPortal\Integrate::hookBuffer',
+            'menu_buttons'                      => '\TinyPortal\Integrate::hookMenuButtons',
+            'display_buttons'                   => '\TinyPortal\Integrate::hookDisplayButton',
+            'actions'                           => '\TinyPortal\Integrate::hookActions',
+            'whos_online'                       => '\TinyPortal\Integrate::hookWhosOnline',
+            'pre_log_stats'                     => '\TinyPortal\Integrate::hookPreLogStats',
+            'pre_profile_areas'                 => '\TinyPortal\Integrate::hookProfileArea',
+            'pre_load_theme'                    => '\TinyPortal\Integrate::hookLoadTheme',
+            'redirect'                          => '\TinyPortal\Integrate::hookRedirect',
             'tp_pre_subactions'                 => array ( 
                 'SOURCEDIR/TPArticle.php|TPArticleActions',
                 'SOURCEDIR/TPSearch.php|TPSearchActions',
@@ -77,19 +77,31 @@ class Integrate
         );
 
         // We can use a hook of sorts for the default actions now
-        updateSettings(array('integrate_default_action' => 'TinyPortal\Integrate::hookDefaultAction'));
+        updateSettings(array('integrate_default_action' => '\TinyPortal\Integrate::hookDefaultAction'));
 
 		foreach ($hooks as $hook => $callable) {
             if(is_array($callable)) {
                 foreach($callable as $call ) {
-	                add_integration_function('integrage_' . $hook, $call, false);
+                    if((strpos($call, '|') !== false) ) {
+                        $tmp = explode('|', $call);
+	                    add_integration_function('integrate_' . $hook, $tmp[1], $tmp[0], false);
+                    }
+                    else {
+                        add_integration_function('integrate_' . $hook, $call, __FILE__, false);
+                    }
                 }
             }
             else {
-	            add_integration_function('integrage_' . $hook, $callable, false);
+                if((strpos($callable, '|') !== false) ) {
+                    $tmp = explode('|', $callable);
+                    add_integration_function('integrate_' . $hook, $tmp[1], $tmp[0], false);
+                }
+                else {
+                    add_integration_function('integrate_' . $hook, $callable, __FILE__, false);
+                }
             }
 		}
-        
+    
     }
 
     public static function TPortalAutoLoadClass($className)
@@ -155,31 +167,7 @@ class Integrate
     // Adds TP copyright in the buffer so we don't have to edit an ELK file
     public static function hookBuffer($buffer)
     {
-        global $context, $scripturl, $txt;
-        global $image_proxy_enabled, $image_proxy_secret, $boardurl;
-
-        $bodyid = '';
-        $bclass = '';
-
-        // add upshrink buttons
-        if( TP_ELK21 && array_key_exists('TPortal', $context) && !empty($context['TPortal']['upshrinkpanel']) ) {
-            $buffer = preg_replace('~<div class="navigate_section">\s*<ul>~', '<div class="navigate_section"><ul><li class="tp_upshrink21">'.$context['TPortal']['upshrinkpanel'].'</li>', $buffer, 1);
-        }
-        
-        // apply user membergroup colors ony when set in TP settings.
-        if(!empty($context['TPortal']['use_groupcolor'])) {
-            $user_match     = '~href="' . preg_quote($scripturl) . '\?action=profile;u=(\d+)"~';
-            if(preg_match_all($user_match, $buffer, $matches)) {
-                $user_ids       = array_values(array_unique($matches[1]));
-                $user_colour    = TPGetMemberColour($user_ids);
-                foreach($user_ids as $id) {
-                    if(array_key_exists($id, $user_colour)){
-                        $user_replace   = '~href="' . preg_quote($scripturl) . '\?action=profile;u='.$id.'"~';
-                        $buffer         = preg_replace($user_replace, ' style="color:'.$user_colour[$id].';" $0', $buffer);
-                    }
-                }
-            }
-        }
+        global $context, $scripturl, $txt, $boardurl;
         
         // Dynamic body ID
         if (isset($context['TPortal']) && $context['TPortal']['action'] == 'profile') {
@@ -224,8 +212,9 @@ class Integrate
 
         $string = '<a target="_blank" href="https://www.tinyportal.net" title="TinyPortal">TinyPortal 2.1.0</a> &copy; <a href="' . $scripturl . '?action=tportal;sa=credits" title="Credits">2005-2020</a>';
 
-        if (ELK == 'SSI' || empty($context['template_layers']) || (defined('WIRELESS') && WIRELESS ) || strpos($buffer, $string) !== false)
+        if (ELK == 'SSI' || empty($context['template_layers']) || (defined('WIRELESS') && WIRELESS ) || strpos($buffer, $string) !== false) {
             return $buffer;
+        }
 
         $find = array(
             '<body>',
@@ -243,46 +232,18 @@ class Integrate
 
         $buffer = str_replace($find, $replace, $buffer);
 
-        if( TP_ELK21 ) {
-            $tmp    = isset($txt['tp-tphelp']) ? $txt['tp-tphelp'] : 'Help';
-            $find   = '<a href="'.$scripturl.'?action=help">'.$txt['help'].'</a>';
-            $replace= '<a href="https://www.tinyportal.net/docs/" target=_blank>'.$tmp.'</a>';
-            $buffer = str_replace($find, $replace.' | '.$find, $buffer);
-        }
-
-        if ($image_proxy_enabled && ( array_key_exists('TPortal', $context) && $context['TPortal']['imageproxycheck'] > 0 ) ) {
-            if (!empty($buffer) && stripos($buffer, 'http://') !== false) {
-                $buffer = preg_replace_callback("~<img([\w\W]+?)/>~",
-                    function( $matches ) use ( $boardurl, $image_proxy_secret ) {
-                        if (stripos($matches[0], 'http://') !== false) {
-                            $matches[0] = preg_replace_callback("~src\=(?:\"|\')(.+?)(?:\"|\')~",
-                                function( $src ) use ( $boardurl, $image_proxy_secret ) {
-                                    if (stripos($src[1], 'http://') !== false)
-                                        return ' src="'. $boardurl . '/proxy.php?request='.urlencode($src[1]).'&hash=' . md5($src[1] . $image_proxy_secret) .'"';
-                                    else
-                                        return $src[0];
-                                },
-                                $matches[0]);
-                        }
-                        return $matches[0];
-                    },
-                    $buffer);
-            }
-        }
+        $tmp    = isset($txt['tp-tphelp']) ? $txt['tp-tphelp'] : 'Help';
+        $find   = '<a href="'.$scripturl.'?action=help">'.$txt['help'].'</a>';
+        $replace= '<a href="https://www.tinyportal.net/docs/" target=_blank>'.$tmp.'</a>';
+        $buffer = str_replace($find, $replace.' | '.$find, $buffer);
  
         $tmpurl = parse_url($boardurl, PHP_URL_HOST);
         if(!empty($context['TPortal']['copyrightremoval']) && (sha1('TinyPortal'.$tmpurl) == $context['TPortal']['copyrightremoval'])) {
             return $buffer;
         }
         else {
-            if( TP_ELK21 ) {
-                $find       = '//www.simplemachines.org" title="Simple Machines" target="_blank" rel="noopener">Simple Machines</a>';
-                $replace    = '//www.simplemachines.org" title="Simple Machines" target="_blank" rel="noopener">Simple Machines</a>, ' . $string;
-            } 
-            else {
-                $find       = '//www.simplemachines.org" title="Simple Machines" target="_blank" class="new_win">Simple Machines</a>';
-                $replace    = '//www.simplemachines.org" title="Simple Machines" target="_blank" class="new_win">Simple Machines</a><br />' . $string;
-            }
+            $find       = '//www.simplemachines.org" title="Simple Machines" target="_blank" class="new_win">Simple Machines</a>';
+            $replace    = '//www.simplemachines.org" title="Simple Machines" target="_blank" class="new_win">Simple Machines</a><br />' . $string;
             $buffer     = str_replace($find, $replace, $buffer);
         }
 
@@ -747,7 +708,7 @@ class Integrate
         \TPortal_init();
     }
 
-    public static function hookRedirect(&$setLocation, &$refresh, &$permanent)
+    public static function hookRedirect(&$setLocation, &$refresh)
     {
         global $scripturl, $context;
 
