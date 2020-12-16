@@ -25,119 +25,71 @@ class Integrate
 
     public static function hookPreLoad()
     {
-        global $boardurl;
-
-        $paths = array (
-            // Downloads
-			'~^action=tpmod;dl=item([0-9]+)[\/]?$~'			            => '%1$s/index.php?action=tportal&sa=download;dl=item%2$s',
-			'~^action=tpmod;dl=cat([0-9]+)[\/]?$~'			            => '%1$s/index.php?action=tportal&sa=download;dl=cat%2$s',
-			'~^action=tpmod;dl=get([0-9]+)[\/]?$~'			            => '%1$s/index.php?action=tportal&sa=download;dl=get%2$s',
-		);
-
-        if(is_array($_SERVER) && isset($_SERVER['QUERY_STRING'])) {
-            foreach ($paths as $route => $destination) {
-                if (preg_match($route, $_SERVER['QUERY_STRING'], $matches)) {
-                    if (count($matches) > 1) {
-                        $matches[0] = $boardurl;
-                        $newUrl     = vsprintf($destination, $matches);
-                        header("Location: $newUrl", true, 301);
-                        exit;
-                    }
-                }
-            }
-        }
-
 
         // We need to load our autoloader outside of the main function    
         if(!defined('ELK_BACKWARDS_COMPAT')) {
             define('ELK_BACKWARDS_COMPAT', true);
-            self::setup_smf_backwards_compat();
+            self::setup_db_backwards_compat();
             spl_autoload_register('TinyPortal\Integrate::TPortalAutoLoadClass');
         }
 
         $hooks = array (
-            'SSI'                               => '$sourcedir/TPSSI.php|ssi_TPIntegrate',
+            'SSI'                               => 'SOURCEDIR/TPSSI.php|ssi_TPIntegrate',
             'load_permissions'                  => 'TinyPortal\Integrate::hookPermissions',
             'load_illegal_guest_permissions'    => 'TinyPortal\Integrate::hookIllegalPermissions',
             'buffer'                            => 'TinyPortal\Integrate::hookBuffer',
             'menu_buttons'                      => 'TinyPortal\Integrate::hookMenuButtons',
             'display_buttons'                   => 'TinyPortal\Integrate::hookDisplayButton',
             'actions'                           => 'TinyPortal\Integrate::hookActions',
-            'profile_areas'                     => 'TinyPortal\Integrate::hookProfileArea',
             'whos_online'                       => 'TinyPortal\Integrate::hookWhosOnline',
             'pre_log_stats'                     => 'TinyPortal\Integrate::hookPreLogStats',
+            'pre_profile_areas'                 => 'TinyPortal\Integrate::hookProfileArea',
+            'pre_load_theme'                    => 'TinyPortal\Integrate::hookLoadTheme',
+            'redirect'                          => 'TinyPortal\Integrate::hookRedirect',
             'tp_pre_subactions'                 => array ( 
-                '$sourcedir/TPArticle.php|TPArticleActions',
-                '$sourcedir/TPSearch.php|TPSearchActions',
-                '$sourcedir/TPBlock.php|TPBlockActions',
-                '$sourcedir/TPdlmanager.php|TPDownloadActions',
-                '$sourcedir/TPcommon.php|TPCommonActions',
+                'SOURCEDIR/TPArticle.php|TPArticleActions',
+                'SOURCEDIR/TPSearch.php|TPSearchActions',
+                'SOURCEDIR/TPBlock.php|TPBlockActions',
+                'SOURCEDIR/TPdlmanager.php|TPDownloadActions',
+                'SOURCEDIR/TPcommon.php|TPCommonActions',
             ),
             'tp_post_subactions'                => array ( 
             ),           
             'tp_post_init'                      => array (
-                '$sourcedir/TPBlock.php|getBlocks',
-                '$sourcedir/TPShout.php|TPShoutLoad',
+                'SOURCEDIR/TPBlock.php|getBlocks',
+                'SOURCEDIR/TPShout.php|TPShoutLoad',
             ),
             'tp_admin_areas'                    => array (
-                '$sourcedir/TPdlmanager.php|TPDownloadAdminAreas',
-                '$sourcedir/TPShout.php|TPShoutAdminAreas',
-                '$sourcedir/TPListImages.php|TPListImageAdminAreas',
+                'SOURCEDIR/TPdlmanager.php|TPDownloadAdminAreas',
+                'SOURCEDIR/TPShout.php|TPShoutAdminAreas',
+                'SOURCEDIR/TPListImages.php|TPListImageAdminAreas',
             ),
             'tp_shoutbox'                       => array (
-                '$sourcedir/TPShout.php|TPShoutBlock',
+                'SOURCEDIR/TPShout.php|TPShoutBlock',
             ),
             'tp_block'                          => array (
             ),
             'tp_pre_admin_subactions'           => array ( 
-                '$sourcedir/TPBlock.php|TPBlockAdminActions',
-                '$sourcedir/TPShout.php|TPShoutAdminActions',
-                '$sourcedir/TPListImages.php|TPListImageAdminActions',
+                'SOURCEDIR/TPBlock.php|TPBlockAdminActions',
+                'SOURCEDIR/TPShout.php|TPShoutAdminActions',
+                'SOURCEDIR/TPListImages.php|TPListImageAdminActions',
             ),
-
         );
 
-        if(TP_ELK21) {
-            $hooks['redirect']                = 'TinyPortal\Integrate::hookRedirect';
-            $hooks['pre_profile_areas']       = 'TinyPortal\Integrate::hookProfileArea';
-            $hooks['pre_load_theme']          = 'TinyPortal\Integrate::hookLoadTheme';
-            unset($hooks['profile_areas']);
-            // We can use a hook of sorts for the default actions now
-            updateSettings(array('integrate_default_action' => 'TinyPortal\Integrate::hookDefaultAction'));
-        }
+        // We can use a hook of sorts for the default actions now
+        updateSettings(array('integrate_default_action' => 'TinyPortal\Integrate::hookDefaultAction'));
 
 		foreach ($hooks as $hook => $callable) {
             if(is_array($callable)) {
                 foreach($callable as $call ) {
-			        self::TPAddIntegrationFunction('integrate_' . $hook, $call, false);
+	                add_integration_function('integrage_' . $hook, $call, false);
                 }
             }
             else {
-			    self::TPAddIntegrationFunction('integrate_' . $hook, $callable, false);
+	            add_integration_function('integrage_' . $hook, $callable, false);
             }
 		}
         
-    }
-
-    public static function TPAddIntegrationFunction($hook, $call, $perm)
-    {
-
-        // ELK 2.0.x doesn't support the seperate file call so lets include it manually here. 
-        if(TP_ELK21 == false && (strpos($call, '|') !== false) ) {
-            $tmp = explode('|', $call);
-            if( is_array($tmp) && isset($tmp[0]) && isset($tmp[1]) ) {
-                $filePath = str_replace('$sourcedir', SOURCEDIR, $tmp[0]);
-                if( file_exists($filePath) ) {
-                    require_once($filePath);
-                }
-                if( is_callable($tmp[1]) ) {
-                    $call = $tmp[1];
-                }
-            }
-        }
-
-	    add_integration_function($hook, $call, $perm);
-
     }
 
     public static function TPortalAutoLoadClass($className)
@@ -158,24 +110,10 @@ class Integrate
 
     }
 
-    public static function setup_smf_backwards_compat()
+    public static function setup_db_backwards_compat()
     {
-        global $boarddir, $cachedir, $sourcedir, $db_type;
+        global $db_type;
 
-        if(defined('ELK_FULL_VERSION')) {
-            // ELK 2.1 
-            define('TP_ELK21', true);
-        }
-        else {
-            // We must be on ELK 2.0
-            define('TP_ELK21', false);
-        }
-
-        define('BOARDDIR', $boarddir);
-        define('CACHEDIR', $cachedir);
-        define('SOURCEDIR', $sourcedir);
-        define('LANGUAGEDIR', $boarddir . '/Themes/default/languages'); 
-        define('TPVERSION', 'v210');
         if($db_type == 'postgresql') {
             define('TP_PGSQL', true);
         }

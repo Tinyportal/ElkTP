@@ -13,8 +13,8 @@
 		<require-dir name="tp-files" destination="BOARDDIR" />
 		<require-dir name="tp-downloads" destination="BOARDDIR" />
 		<require-dir name="tp-images" destination="BOARDDIR" />
-		<database>install.php</database>
-		<code>do_hooks.php</code>
+		<database>database.php</database>
+        <hook hook="integrate_pre_load" function="TinyPortal\Integrate::hookPreLoad" file="BOARDDIR/TinyPortal/Integrate.php" />
 	</install>
 	<uninstall for="1.1.* - 1.1.99">
 		<remove-dir name="THEMEDIR/images/tinyportal" />
@@ -60,6 +60,6 @@
 		<remove-file name="LANGUAGEDIR/TPortal.english-utf8.php" />
 		<remove-file name="LANGUAGEDIR/TPortalAdmin.english.php" />
 		<remove-file name="LANGUAGEDIR/TPortalAdmin.english-utf8.php" />
-		<code>do_hooks.php</code>
+        <hook reverse="true" hook="integrate_pre_load" function="TinyPortal\Integrate::hookPreLoad" file="BOARDDIR/TinyPortal/Integrate.php" />
 	</uninstall>
 </package-info>
