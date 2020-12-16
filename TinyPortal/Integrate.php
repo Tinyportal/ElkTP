@@ -46,6 +46,7 @@ class Integrate
             'pre_profile_areas'                 => '\TinyPortal\Integrate::hookProfileArea',
             'pre_load_theme'                    => '\TinyPortal\Integrate::hookLoadTheme',
             'redirect'                          => '\TinyPortal\Integrate::hookRedirect',
+            'action_frontpage'                  => '\TinyPortal\Integrate::hookFrontPage',
             'tp_pre_subactions'                 => array ( 
                 'SOURCEDIR/TPArticle.php|TPArticleActions',
                 'SOURCEDIR/TPSearch.php|TPSearchActions',
@@ -76,9 +77,6 @@ class Integrate
             ),
         );
 
-        // We can use a hook of sorts for the default actions now
-        updateSettings(array('integrate_default_action' => '\TinyPortal\Integrate::hookDefaultAction'));
-
 		foreach ($hooks as $hook => $callable) {
             if(is_array($callable)) {
                 foreach($callable as $call ) {
@@ -102,6 +100,21 @@ class Integrate
             }
 		}
     
+    }
+
+    public static function hookFrontPage(&$defaultAction)
+    {
+        global $modSettings;
+
+        $modSettings['front_page'] = 'TPortal_Controller';
+
+        $defaultAction = array (
+            'file' 		=> CONTROLLERDIR . '/TPortal.controller.php',
+            'controller'=> 'TPortal_Controller',
+            'function' 	=> 'action_index'
+        );
+
+        return;
     }
 
     public static function TPortalAutoLoadClass($className)
