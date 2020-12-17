@@ -297,6 +297,8 @@ class Integrate
 
 		\loadLanguage('TPortal');
 
+        $version = Admin::getInstance()->getSetting('version');
+
         $buttons = \elk_array_insert($buttons, 'home', array (
             'base' => array(
                 'title' 	    => $txt['tp-home'],

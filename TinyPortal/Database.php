@@ -38,31 +38,17 @@ class Database
     private function __clone() { }
 
 	public function __call($call, $vars) {{{
-		global $smcFunc;
-		if(array_key_exists($call, $smcFunc)) {
-			// It's faster to call directly, failover to call_user_func_array
-			switch(count($vars)) {
-				case 1:
-					return $smcFunc[$call]($vars[0]);
-					break;
-				case 2:
-					return $smcFunc[$call]($vars[0], $vars[1]);
-					break;
-				case 3:
-					return $smcFunc[$call]($vars[0], $vars[1], $vars[2]);
-					break;
-				case 4:
-					return $smcFunc[$call]($vars[0], $vars[1], $vars[2], $vars[3]);
-					break;
-				case 5:
-					return $smcFunc[$call]($vars[0], $vars[1], $vars[2], $vars[3], $vars[4]);
-					break;
-				default:
-					return call_user_func_array($smcFunc[$call], $vars);
-					break;
-			}
-		}
-		return false;
+
+        $dB = \database();
+
+        // Compatability with smf db_ methods
+        $call = str_replace('db_', '', $call);
+        if(is_callable(array($dB, $call), false)) { 
+            return call_user_func_array(array($dB, $call), $vars);
+        }
+        else {
+		    return false;
+        }
 
 	}}}
 

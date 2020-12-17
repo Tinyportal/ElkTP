@@ -30,7 +30,7 @@ class Base
 	function __construct() {{{
         global $modSettings;
 
-		if(is_null($this->dB)) {
+        if(is_null($this->dB)) {
 			$this->dB = Database::getInstance();
 		}
 

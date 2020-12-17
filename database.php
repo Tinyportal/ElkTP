@@ -37,7 +37,7 @@ $tables = array(
         'columns' => array(
             array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
             array('name' => 'type', 'type' => 'smallint', 'size' => 4, 'default' => 0,),
-            array('name' => 'id_member', 'type' => 'int', 'size' => 11, 'default' => 0, 'old_name' => 'ID_MEMBER'),
+            array('name' => 'id_member', 'type' => 'int', 'size' => 11, 'default' => 0,),
             array('name' => 'value', 'type' => 'smallint', 'size' => 6, 'default' => 0,),
             array('name' => 'item', 'type' => 'int', 'size' => 11, 'default' => 0,),
         ),
@@ -148,63 +148,6 @@ $tables = array(
             array('type' => 'primary', 'columns' => array('id')),
         ),
     ),
-    'tp_dlmanager' => array(
-        'columns' => array(
-            array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
-            array('name' => 'name', 'type' => 'tinytext', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'description', 'type' => 'text', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'icon', 'type' => 'text', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'category', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'type', 'type' => 'tinytext', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'downloads', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'views', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'file', 'type' => 'text', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'created', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'last_access', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'filesize', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'parent', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'access', 'type' => 'text', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'link', 'type' => 'text', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'author_id', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'screenshot', 'type' => 'text', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'rating', 'type' => 'text', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'voters', 'type' => 'text', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'subitem', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'files', 'type' => 'int', 'size' => 11, 'default' => 0,),
-        ),
-        'indexes' => array(
-            array('type' => 'primary', 'columns' => array('id')),
-        ),
-    ),
-    'tp_dldata' => array(
-        'columns' => array(
-            array('name' => 'id', 'type' => 'bigint', 'size' => 20, 'auto' => true,),
-            array('name' => 'views', 'type' => 'bigint', 'size' => 20, 'default' => 0 ),
-            array('name' => 'downloads', 'type' => 'bigint', 'size' => 20, 'default' => 0 ),
-            array('name' => 'item', 'type' => 'int', 'size' => 11, 'default' => 0 ),
-            array('name' => 'week', 'type' => 'smallint', 'size' => 4, 'default' => 0 ),
-            array('name' => 'year', 'type' => 'smallint', 'size' => 6, 'default' => 0 ),
-        ),
-        'indexes' => array(
-            array('type' => 'primary', 'columns' => array('id')),
-        ),
-    ),
-	'tp_shoutbox' => array(
-        'columns' => array(
-            array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
-            array('name' => 'shoutbox_id', 'type' => 'int', 'size' => 11, 'default' => null),
-            array('name' => 'member_id', 'type' => 'int', 'size' => 11, 'default' => -2),
-            array('name' => 'content', 'type' => 'text', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'time', 'type' => 'text', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'type', 'type' => 'tinytext', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'member_ip', 'type' => 'text', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'member_link', 'type' => 'text', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'edit', 'type' => 'smallint', 'size' => 4, 'default' => 0),
-        ),
-        'indexes' => array(
-            array('type' => 'primary', 'columns' => array('id')),
-        ),
-    ),
     'tp_events' => array(
         'columns' => array(
             array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
@@ -216,20 +159,6 @@ $tables = array(
             array('name' => 'allowed', 'type' => 'mediumtext', 'default' => ($type == 'mysql' ? null : '')),
             array('name' => 'eventid', 'type' => 'int', 'size' => 11, 'default' => 0),
             array('name' => 'on', 'type' => 'smallint', 'size' => 4, 'default' => 0),
-        ),
-        'indexes' => array(
-            array('type' => 'primary', 'columns' => array('id')),
-        ),
-    ),
-    'tp_menu' => array(
-        'columns' => array(
-            array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
-            array('name' => 'name', 'type' => 'tinytext', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'type', 'type' => 'tinytext', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'link', 'type' => 'tinytext', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'parent', 'type' => 'tinytext', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'permissions', 'type' => 'mediumtext', 'default' => ($type == 'mysql' ? null : '')),
-            array('name' => 'enabled', 'type' => 'smallint', 'size' => 4, 'default' => 0),
         ),
         'indexes' => array(
             array('type' => 'primary', 'columns' => array('id')),

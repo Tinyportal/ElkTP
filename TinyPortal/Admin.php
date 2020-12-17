@@ -22,8 +22,23 @@ if (!defined('ELK')) {
 
 class Admin extends Base {
 
-    private $dBStructure    = array();
-    private $tpSettings     = array();
+    private $dBStructure        = array();
+    private $tpSettings         = array();
+    private static $_instance   = null;
+
+    public static function getInstance() {{{
+	
+    	if(self::$_instance == null) {
+			self::$_instance = new self();
+		}
+	
+    	return self::$_instance;
+	
+    }}}
+
+    // Empty Clone method
+    private function __clone() { }
+
 
     public function __construct() {{{
         parent::__construct();
