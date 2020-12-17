@@ -173,9 +173,9 @@ foreach ($tables as $tp_table => $data) {
     $db_table->db_create_table('{db_prefix}' . $tp_table, $data['columns'], $data['indexes'], array(), 'ignore');
 }
 
-$settings_array = array(
+$settingsArray = array(
     // KEEP TRACK OF INTERNAL VERSION HERE
-    'version' => '2.1.0',
+    'version' => '1.0.0',
     'frontpage_title' => '',
     'showforumfirst' => '0',
     'hideadminmenu' => '0',
@@ -290,23 +290,6 @@ $settings_array = array(
     'panelstyle_front' => '0',
     'panelstyle_lower' => '0',
     'panelstyle_bottom' => '0',
-    // Shoutbox
-    'show_shoutbox_smile' => '1',
-    'show_shoutbox_icons' => '1',
-    'shout_allow_links' => '0',
-    'shoutbox_usescroll' => '0',
-    'shoutbox_scrollduration' => '5',
-    'shoutbox_refresh' => '0',
-    'shout_submit_returnkey' => '0',
-    'shoutbox_limit' => '5',
-    'shoutbox_maxlength' => '256',
-    'shoutbox_timeformat' => 'Y M d H:i:s',
-    'shoutbox_use_groupcolor' => '1',
-    'shoutbox_textcolor' => '#000',
-    'shoutbox_timecolor' => '#787878',
-    'shoutbox_linecolor1' => '#f0f4f7',
-    'shoutbox_linecolor2' => '#fdfdfd',
-    'profile_shouts_hide' => '0',
     // Other	
     'bottombar' => '1',
     'cat_list' => '1,2',
@@ -317,49 +300,18 @@ $settings_array = array(
     'sitemap_items' => '3',
     'temapaths' => '',
     'userbox_options' => 'avatar,logged,time,unread,stats,online,stats_all',
-    // Downloads
-    'show_download' => '1',
-    'dl_allowed_types' => 'zip,rar,doc,docx,pdf,jpg,gif,png',
-    'dl_max_upload_size' => '2000',
-    'dl_fileprefix' => 'K',
-    'dl_usescreenshot' => '1',
-    'dl_screenshotsizes' => '80,80,200,200',
-    'dl_approve' => '1',
-    'dl_createtopic' => 1,
-    'dl_createtopic_boards' => '',
-    'dl_wysiwyg' => 'html',
-    'dl_introtext' => '<p><strong>Welcome to the TinyPortal download manager!</strong></p>
-<p><br></p>
-<p>TPdownloads is a built-in function for TinyPortal that lets you offer files for your members to browse and download. It works by having the downloadable files placed in categories. These categories have permissions on them, letting you restrict membergroups access level for each category. You may also allow members to upload files, control which membergroups are allowed and what types of files they may upload.<br><br>Admins can access the TPdownloads settings from the menu &quot;Tinyportal &gt; Manage TPdownloads&quot; and select the [Settings] button.<br></p>
-<p>If you do not wish to use TPdownloads you can deactivate the function completely by setting the option "TPdownloads is NOT active" in the settings. The TPdownloads menu option will no longer be displayed in the menu when TPdownloads is deactivated.</p>
-<p><br></p>
-<p>We hope you enjoy using TinyPortal.&nbsp; If you have any problems, please feel free to <a href="https://www.tinyportal.net/index.php">ask us for assistance</a>.<br></p>
-<p><br>Thanks!<br>The TinyPortal team</p>',	
-    'dl_showfeatured' => '1',
-    'dl_featured' => '',	
-    'dl_showlatest' => '1',
-    'dl_showstats' => '1',
-    'dl_showcategorytext' => '1',
-    'dl_visual_options' => 'left,right,center,top',	
-    'dlmanager_theme' => '0',
-    'dl_allow_upload' => '1',
-    'dl_approve_groups' => '',
 );
 
-$updates    = 0;
-$bars       = array('leftpanel' => 'leftbar', 'rightpanel' => 'rightbar', 'toppanel' => 'topbar', 'centerpanel' => 'centerbar', 'bottompanel' => 'bottombar', 'lowerpanel' => 'lowerbar');
-$barskey    = array_keys($bars);
+$updateSettings = array( 'userbox_options', 'download_upload_path', 'blockcode_upload_path', 'version' );
 
-$updateSettings = array( 'userbox_options', 'download_upload_path', 'blockcode_upload_path' );
-
-$db         = database();
-
-foreach($settings_array as $what => $val) {
+$db             = database();
+foreach($settingsArray as $what => $val) {
 	$request = $db->query('', '
         SELECT * FROM {db_prefix}tp_settings
         WHERE name = {string:name}',
         array('name' => $what)
     );
+
 	if($db->num_rows($request) < 1) {
 		$db->insert('ignore',
             '{db_prefix}tp_settings',
@@ -369,16 +321,6 @@ foreach($settings_array as $what => $val) {
         );
 		$updates++;
 	}
-	elseif($db->num_rows($request) > 0 && $what == 'version'){
-		$db->query('', '
-            UPDATE {db_prefix}tp_settings
-            SET value = {string:val}
-            WHERE name = {string:name}',
-            array('val' => $val, 'name' => $what)
-        );
-		$render .= '<li>Updated internal version number to '.$val.'</li>';
-		$db->free_result($request);
-	}
 	elseif($db->num_rows($request) > 0 && in_array($what, $updateSettings)){
 		$db->query('', '
             UPDATE {db_prefix}tp_settings
@@ -386,27 +328,9 @@ foreach($settings_array as $what => $val) {
             WHERE name = {string:name}',
             array('val' => $val, 'name' => $what)
         );
-		$db->free_result($request);
-	}
-    elseif($db->num_rows($request) > 0 && in_array($what, $barskey)) {
-        $row = $db->fetch_row($request);
-        $val = $row[2];
-        $db->query('', '
-            UPDATE {db_prefix}tp_settings
-            SET value = {string:val}
-            WHERE name = {string:name}',
-            array('val' => $val, 'name' => $what)
-        );
-        $db->query('', '
-            UPDATE {db_prefix}tp_settings
-            SET value = {string:val}
-            WHERE name = {string:name}',
-            array('val' => '0', 'name' => $bars[$what])
-        );
     }
-	else {
-		$db->free_result($request);
-    }
+
+	$db->free_result($request);
 }
 
 ?>

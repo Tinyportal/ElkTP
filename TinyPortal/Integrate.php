@@ -34,6 +34,7 @@ class Integrate
 
         $hooks = array (
             'SSI'                               => 'SOURCEDIR/TPSSI.php|ssi_TPIntegrate',
+            'current_action'                    => '\TinyPortal\Integrate::hookCurrentAction',
             'load_permissions'                  => '\TinyPortal\Integrate::hookPermissions',
             'load_illegal_guest_permissions'    => '\TinyPortal\Integrate::hookIllegalPermissions',
             'buffer'                            => '\TinyPortal\Integrate::hookBuffer',
@@ -287,6 +288,15 @@ class Integrate
         $context['non_guest_permissions'] = array_merge($context['non_guest_permissions'], $tp_illegal_perms);
     }}}
 
+    public static function hookCurrentAction(&$currentAction) {{{
+
+        // Rewrite the current action for the home page
+        if( ($currentAction == 'home') && (empty($_REQUEST['action'])) ) {
+            $currentAction = 'base';
+        } 
+
+    }}}
+
     public static function hookMenuButtons(&$buttons) {{{
         global $context, $scripturl, $txt, $boardurl;
 
@@ -323,7 +333,7 @@ class Integrate
 			</style>';			
 			
 			$buttons = \elk_array_insert($buttons, 'calendar', array (
-				'article' => array(
+				'tpadmin' => array(
 					'title' 	    => $txt['tp-tphelp'],
 					'href' 			=> $scripturl.'?action=tpadmin',
 					'data-icon'     => 'i-newspaper',
