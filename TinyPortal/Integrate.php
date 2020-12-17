@@ -24,7 +24,6 @@ class Integrate
 {
 
     public static function hookPreLoad() {{{
-        global $context;
 
         // We need to load our autoloader outside of the main function    
         if(!defined('ELK_BACKWARDS_COMPAT')) {
@@ -100,10 +99,7 @@ class Integrate
             }
 		}
         
-        // Set this up for everything that TinyPortal needs
-        $context['TPortal']         = array();
-    
-    }}}
+        }}}
 
     public static function hookFrontPage(&$defaultAction) {{{
         global $modSettings;
@@ -132,7 +128,7 @@ class Integrate
     }}}
 
     public static function setup_db_backwards_compat() {{{
-        global $db_type;
+        global $db_type, $context;
 
         if($db_type == 'postgresql') {
             define('TP_PGSQL', true);
@@ -140,6 +136,15 @@ class Integrate
         else {
             define('TP_PGSQL', false);
         }
+
+        // Set this up for everything that TinyPortal needs
+        $context['TPortal']                     = array();
+        // Set default values
+        $context['TPortal']['is_front']         = false;
+        $context['TPortal']['is_frontpage']     = false;
+        $context['TPortal']['action']           = '';
+        $context['TPortal']['front_type']       = '';
+        $context['TPortal']['frontblock_type']  = '';
 
     }}}
 
