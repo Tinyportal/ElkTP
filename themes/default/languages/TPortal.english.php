@@ -214,10 +214,11 @@ $txt['tp-menumanager'] = 'Menu manager';
 $txt['custom_modules'] = 'TP Modules';
 
 // Various
-$txt['tp-forum'] = 'Forum';
-$txt['tp-tphelp'] = 'TinyPortal';
-$txt['tp-edit'] = 'Edit';
-$txt['tp-send'] = 'Save';
+$txt['tp-forum']    = 'Forum';
+$txt['tp-tphelp']   = 'TinyPortal';
+$txt['tp-home']     = 'Home';
+$txt['tp-edit']     = 'Edit';
+$txt['tp-send']     = 'Save';
 $txt['tp-tpadmin'] = 'TP Admin';
 $txt['tp-profilesection'] = 'TinyPortal';
 $txt['tp-acronymdays'] = 'd ';
