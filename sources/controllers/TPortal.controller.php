@@ -59,6 +59,11 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
     }}}
 
     public function action_index() {{{
+        global $context;
+
+		loadTemplate('TPortal');
+        // Save the action for the bufferHook
+        $context['TPortal']['action'] = TPUtil::filter('action', 'get', 'string');
 
 
     }}}

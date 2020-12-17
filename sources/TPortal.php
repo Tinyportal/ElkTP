@@ -79,7 +79,7 @@ function TPortalMain() {{{
 }}}
 
 // TinyPortal init
-function TPortal_init() {{{
+function TPortalInit() {{{
 	global $context, $txt, $user_info, $settings, $boarddir, $modSettings;
 
     call_integration_hook('integrate_tp_pre_init');
@@ -239,17 +239,17 @@ function setupTPsettings() {{{
     // Try to load it from the cache
     if (($context['TPortal'] = cache_get_data('tpSettings', 90)) == null) {
         // get the settings
-        $request =  $smcFunc['db_query']('', '
+        $request =  $db->query('', '
                 SELECT name, value FROM {db_prefix}tp_settings', array()
                 );
-        if ($smcFunc['db_num_rows']($request) > 0) {
-            while($row = $smcFunc['db_fetch_row']($request)) {
+        if ($db->num_rows($request) > 0) {
+            while($row = $db->fetch_row($request)) {
                 $context['TPortal'][$row[0]] = $row[1];
                 // ok, any module that like to load?
                 if(substr($row[0], 0, 11) == 'load_module')
                     $context['TPortal']['always_loaded'][] = $row[1];
             }
-            $smcFunc['db_free_result']($request);
+            $db->free_result($request);
         }
 
         if (!empty($modSettings['cache_enable'])) {
@@ -359,13 +359,13 @@ function setupTPsettings() {{{
     }
 
     if(empty($context['TPortal']['standalone'])) {
-        $request = $smcFunc['db_query']('', '
+        $request = $db->query('', '
                 SELECT value
                 FROM {db_prefix}tp_settings
                 WHERE name = \'standalone_mode\''
                 );
-        $context['TPortal']['standalone'] = isset($smcFunc['db_fetch_assoc']($request)['value']) ? $smcFunc['db_fetch_assoc']($request)['value'] : false;
-        $smcFunc['db_free_result']($request);
+        $context['TPortal']['standalone'] = isset($db->fetch_assoc($request)['value']) ? $db->fetch_assoc($request)['value'] : false;
+        $db->free_result($request);
     }
 
 }}}
@@ -401,7 +401,7 @@ function fetchTPhooks() {{{
 	// something should always load? + submissions
 	$types = array('art_not_approved', 'dl_not_approved');
 
-	$request2 = $smcFunc['db_query']('', '
+	$request2 = $db->query('', '
 		SELECT *
 		FROM {db_prefix}tp_variables
 		WHERE type IN ({array_string:type})',
@@ -413,7 +413,7 @@ function fetchTPhooks() {{{
 	$context['TPortal']['submitcheck'] = array('articles' => 0, 'uploads' => 0);
 
 	// do the actual hooks
-	while ($row = $smcFunc['db_fetch_assoc']($request2)) {
+	while ($row = $db->fetch_assoc($request2)) {
 		if ($row['type'] == 'art_not_approved' && allowedTo('tp_articles')) {
 			$context['TPortal']['submitcheck']['articles']++;
         }
@@ -422,7 +422,7 @@ function fetchTPhooks() {{{
 			$context['TPortal']['submitcheck']['uploads']++;
         }
 	}
-	$smcFunc['db_free_result']($request2);
+	$db->free_result($request2);
 
 }}}
 
@@ -620,7 +620,7 @@ function doTPpage() {{{
 
 				// should we supply links to articles in same category?
 				if(in_array('category', $context['TPortal']['article']['visual_options'])) {
-					$request = $smcFunc['db_query']('', '
+					$request = $db->query('', '
 						SELECT id, subject, shortname
 						FROM {db_prefix}tp_articles
 						WHERE category = {int:cat}
@@ -629,16 +629,16 @@ function doTPpage() {{{
 						ORDER BY parse',
 						array('cat' => $context['TPortal']['article']['category'])
 					);
-					if($smcFunc['db_num_rows']($request) > 0) {
+					if($db->num_rows($request) > 0) {
 						$context['TPortal']['article']['others'] = array();
-						while($row = $smcFunc['db_fetch_assoc']($request)) {
+						while($row = $db->fetch_assoc($request)) {
 							if($row['id'] == $context['TPortal']['article']['id']) {
 								$row['selected'] = 1;
                             }
 
 							$context['TPortal']['article']['others'][] = $row;
 						}
-						$smcFunc['db_free_result']($request);
+						$db->free_result($request);
 					}
 				}
 
@@ -685,17 +685,17 @@ function doTPpage() {{{
 				else {
 					// we need the categories for the linktree
 					$allcats = array();
-					$request =  $smcFunc['db_query']('', '
+					$request =  $db->query('', '
 						SELECT * FROM {db_prefix}tp_variables
 						WHERE type = {string:type}',
 						array('type' => 'category')
 					);
-					if($smcFunc['db_num_rows']($request) > 0) {
-						while($row = $smcFunc['db_fetch_assoc']($request)) {
+					if($db->num_rows($request) > 0) {
+						while($row = $db->fetch_assoc($request)) {
 							$allcats[$row['id']] = $row;
                         }
 
-						$smcFunc['db_free_result']($request);
+						$db->free_result($request);
 					}
 
 					// setup the linkree
@@ -775,14 +775,14 @@ function doTPcat() {{{
 		$catid  = is_numeric($cat) ? 'id = {int:cat}' : 'value8 = {string:cat}';
 
 		// get the category first
-		$request =  $smcFunc['db_query']('', '
+		$request =  $db->query('', '
 			SELECT * FROM {db_prefix}tp_variables
 			WHERE '. $catid .' LIMIT 1',
 			array('cat' => is_numeric($cat) ? (int) $cat : $cat)
 		);
-		if($smcFunc['db_num_rows']($request) > 0) {
-			$category = $smcFunc['db_fetch_assoc']($request);
-			$smcFunc['db_free_result']($request);
+		if($db->num_rows($request) > 0) {
+			$category = $db->fetch_assoc($request);
+			$db->free_result($request);
 			// check permission
 			if(get_perm($category['value3'])) {
 				// get the sorting from the category
@@ -835,7 +835,7 @@ function doTPcat() {{{
 					$context['TPortal']['category']['options']['catlayout'] = 1;
                 }
 
-				$request = $smcFunc['db_query']('', '
+				$request = $db->query('', '
 				    SELECT art.id, ( CASE WHEN art.useintro = 1 THEN art.intro ELSE  art.body END ) AS body, mem.email_address AS email_address,
 						art.date, art.category, art.subject, art.author_id as author_id, art.frame, art.comments, art.options,
 						art.comments_var, art.views, art.rating, art.voters, art.shortname, art.useintro, art.intro,
@@ -861,12 +861,12 @@ function doTPcat() {{{
 					)
 				);
 
-				if($smcFunc['db_num_rows']($request) > 0) {
-					$total = $smcFunc['db_num_rows']($request);
+				if($db->num_rows($request) > 0) {
+					$total = $db->num_rows($request);
 					$col1 = ceil($total / 2);
 					$counter = 0;
 					$context['TPortal']['category']['col1'] = array(); $context['TPortal']['category']['col2'] = array();
-					while($row = $smcFunc['db_fetch_assoc']($request)) {
+					while($row = $db->fetch_assoc($request)) {
 						// Add the rating together
 						$row['rating'] = array_sum(explode(',', $row['rating']));
 						// expand the vislaoptions
@@ -892,34 +892,34 @@ function doTPcat() {{{
                         }
 						$counter++;
 					}
-					$smcFunc['db_free_result']($request);
+					$db->free_result($request);
 				}
 
 				// any children then?
 				$allcats = array();
 				$context['TPortal']['category']['children'] = array();
-				$request =  $smcFunc['db_query']('', '
+				$request =  $db->query('', '
 					SELECT cat.id, cat.value1, cat.value2, COUNT(art.id) as articlecount
 					FROM {db_prefix}tp_variables AS cat
 					LEFT JOIN {db_prefix}tp_articles AS art ON (art.category = cat.id)
 					WHERE cat.type = {string:type} GROUP BY art.category, cat.id, cat.value1, cat.value2',
 					array('type' => 'category')
 				);
-				if($smcFunc['db_num_rows']($request) > 0) {
-					while($row = $smcFunc['db_fetch_assoc']($request)) {
+				if($db->num_rows($request) > 0) {
+					while($row = $db->fetch_assoc($request)) {
 						// get any children
 						if($row['value2'] == $cat) {
 							$context['TPortal']['category']['children'][] = $row;
                         }
 						$allcats[$row['id']] = $row;
 					}
-					$smcFunc['db_free_result']($request);
+					$db->free_result($request);
 				}
 
                 $context['TPortal']['category']['no_articles'] = false;
 
 				// get how many articles in all
-				$request =  $smcFunc['db_query']('', '
+				$request =  $db->query('', '
 					SELECT COUNT(*) FROM {db_prefix}tp_articles as art
 					WHERE art.category = {int:cat}
 					AND ((art.pub_start = 0 AND art.pub_end = 0)
@@ -929,8 +929,8 @@ function doTPcat() {{{
 					AND art.off = 0 AND art.approved = 1',
 					array('cat' => $category['id'])
 				);
-				if($smcFunc['db_num_rows']($request)>0) {
-					$row = $smcFunc['db_fetch_row']($request);
+				if($db->num_rows($request)>0) {
+					$row = $db->fetch_row($request);
 					$all_articles = $row[0];
 				}
 				else {
@@ -1083,7 +1083,7 @@ function doTPfrontpage() {{{
             // make the pageindex!
             $context['TPortal']['pageindex'] = TPageIndex($scripturl .'?frontpage', $start, $articles_total, $max);
 
-            $request =  $smcFunc['db_query']('', '
+            $request =  $db->query('', '
                 SELECT art.id, ( CASE WHEN art.useintro = 1 THEN art.intro ELSE  art.body END ) AS body,
                     art.date, art.category, art.subject, art.author_id as author_id, var.value1 as category_name, var.value8 as category_shortname,
                     art.frame, art.comments, art.options, art.intro, art.useintro,
@@ -1108,8 +1108,8 @@ function doTPfrontpage() {{{
                 LIMIT {int:start}, {int:max}',
                 array('start' => $start, 'max' => $max)
             );
-            if($smcFunc['db_num_rows']($request) > 0) {
-                $total = $smcFunc['db_num_rows']($request);
+            if($db->num_rows($request) > 0) {
+                $total = $db->num_rows($request);
                 $col1 = ceil($total / 2);
                 $col2 = $total - $col1;
                 $counter = 0;
@@ -1124,7 +1124,7 @@ function doTPfrontpage() {{{
                     )
                 );
 
-                while($row = $smcFunc['db_fetch_assoc']($request)) {
+                while($row = $db->fetch_assoc($request)) {
                     // expand the vislaoptions
                     $row['visual_options'] = explode(',', $row['options']);
 
@@ -1148,11 +1148,11 @@ function doTPfrontpage() {{{
                     }
                     $counter++;
                 }
-                $smcFunc['db_free_result']($request);
+                $db->free_result($request);
             }
         break;
     case 'single_page':
-		$request =  $smcFunc['db_query']('', '
+		$request =  $db->query('', '
 			SELECT art.id, ( CASE WHEN art.useintro = 1 THEN art.intro ELSE  art.body END ) AS body,
 				art.date, art.category, art.subject, art.author_id as author_id, var.value1 as category_name, var.value8 as category_shortname,
 				art.frame, art.comments, art.options, art.intro, art.useintro,
@@ -1173,7 +1173,7 @@ function doTPfrontpage() {{{
 			AND art.approved = 1
 			LIMIT 1'
 		);
-		if($smcFunc['db_num_rows']($request) > 0) {
+		if($db->num_rows($request) > 0) {
 			$context['TPortal']['category'] = array(
 				'articles' => array(),
 				'col1' => array(),
@@ -1184,7 +1184,7 @@ function doTPfrontpage() {{{
 				)
 			);
 
-			$row = $smcFunc['db_fetch_assoc']($request);
+			$row = $db->fetch_assoc($request);
 			// expand the vislaoptions
 			$row['visual_options'] = explode(',', $row['options']);
             
@@ -1198,7 +1198,7 @@ function doTPfrontpage() {{{
             )['image'];
 
 			$context['TPortal']['category']['featured'] = $row;
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
         break;
 	// Only forum-topics 
@@ -1211,7 +1211,7 @@ function doTPfrontpage() {{{
 
 		// Find the post ids.
 		if($context['TPortal']['front_type'] == 'forum_only') {
-			$request =  $smcFunc['db_query']('', '
+			$request =  $db->query('', '
 				SELECT t.id_first_msg AS id_first_message
 				FROM {db_prefix}topics AS t
                 INNER JOIN {db_prefix}boards AS b
@@ -1228,7 +1228,7 @@ function doTPfrontpage() {{{
             );				
         }
 		else {
-			$request =  $smcFunc['db_query']('', '
+			$request =  $db->query('', '
 				SELECT t.id_first_msg AS id_first_message
 				FROM {db_prefix}topics AS t
                 INNER JOIN {db_prefix}boards AS b
@@ -1246,10 +1246,10 @@ function doTPfrontpage() {{{
         }
 
 		$posts = array();
-		while ($row = $smcFunc['db_fetch_assoc']($request)) {
+		while ($row = $db->fetch_assoc($request)) {
 			$posts[] = $row['id_first_message'];
         }
-		$smcFunc['db_free_result']($request);
+		$db->free_result($request);
 
 		if (empty($posts)) {
 			return array();
@@ -1309,7 +1309,7 @@ function doTPfrontpage() {{{
 		$year = 10000000;
 		$year2 = 100000000;
 
-		$request =  $smcFunc['db_query']('',
+		$request =  $db->query('',
 		'SELECT art.id, art.date, art.sticky, art.featured
 			FROM {db_prefix}tp_articles AS art
 			INNER JOIN {db_prefix}tp_variables AS var
@@ -1327,8 +1327,8 @@ function doTPfrontpage() {{{
 		);
 
 		$posts = array();
-		if($smcFunc['db_num_rows']($request) > 0) {
-			while ($row = $smcFunc['db_fetch_assoc']($request)) {
+		if($db->num_rows($request) > 0) {
+			while ($row = $db->fetch_assoc($request)) {
 				if($row['sticky'] == 1) {
 					$row['date'] += $year;
                 }
@@ -1337,12 +1337,12 @@ function doTPfrontpage() {{{
                 }
 				$posts[$row['date'].'_' . sprintf("%06s", $row['id'])] = 'a_' . $row['id'];
 			}
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
 
 		// Find the post ids.
 		if($context['TPortal']['front_type'] == 'forum_articles') {
-			$request =  $smcFunc['db_query']('', '
+			$request =  $db->query('', '
 				SELECT t.id_first_msg AS id_first_msg , m.poster_time AS date
 				FROM {db_prefix}topics AS t
                 INNER JOIN {db_prefix}boards AS b
@@ -1359,7 +1359,7 @@ function doTPfrontpage() {{{
 			);
         }
 		else {
-			$request =  $smcFunc['db_query']('', '
+			$request =  $db->query('', '
 				SELECT t.id_first_msg AS id_first_msg , m.poster_time AS date
 				FROM {db_prefix}topics AS t
                 INNER JOIN {db_prefix}boards AS b
@@ -1372,11 +1372,11 @@ function doTPfrontpage() {{{
 			);
         }
 
-		if($smcFunc['db_num_rows']($request) > 0) {
-			while ($row = $smcFunc['db_fetch_assoc']($request)) {
+		if($db->num_rows($request) > 0) {
+			while ($row = $db->fetch_assoc($request)) {
 				$posts[$row['date'].'_' . sprintf("%06s", $row['id_first_msg'])] = 'm_' . $row['id_first_msg'];
             }
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
 
 		// Sort the articles/posts before grabing the limit, otherwise they are out of order
@@ -1402,18 +1402,18 @@ function doTPfrontpage() {{{
 		$thumbs = array();
 		if(count($mposts) > 0) {
 			// Find the thumbs.
-			$request =  $smcFunc['db_query']('', '
+			$request =  $db->query('', '
 				SELECT id_thumb FROM {db_prefix}attachments
 				WHERE id_msg IN ({array_int:posts})
 				AND id_thumb > 0',
 				array('posts' => $mposts)
 			);
 
-			if($smcFunc['db_num_rows']($request) > 0) {
-				while ($row = $smcFunc['db_fetch_assoc']($request)) {
+			if($db->num_rows($request) > 0) {
+				while ($row = $db->fetch_assoc($request)) {
 					$thumbs[] = $row['id_thumb'];
                 }
-				$smcFunc['db_free_result']($request);
+				$db->free_result($request);
 			}
 		}
 		// make the pageindex!
@@ -1510,7 +1510,7 @@ function doTPfrontpage() {{{
     }
 
 	// get the blocks
-	$request =  $smcFunc['db_query']('', '
+	$request =  $db->query('', '
 		SELECT * FROM {db_prefix}tp_blocks
 		WHERE off = 0
 		AND bar = 4
@@ -1526,8 +1526,8 @@ function doTPfrontpage() {{{
 
     $tpBlock = new TPBlock();
 
-	if ($smcFunc['db_num_rows']($request) > 0) {
-        while($row = $smcFunc['db_fetch_assoc']($request)) {
+	if ($db->num_rows($request) > 0) {
+        while($row = $db->fetch_assoc($request)) {
 
             // decode the block settings
             $set = json_decode($row['settings'], true);
@@ -1580,7 +1580,7 @@ function doTPfrontpage() {{{
 
 			$count[$panels[$row['bar']]]++;
 		}
-		$smcFunc['db_free_result']($request);
+		$db->free_result($request);
 	}
 
 	if(count($fetch_articles) > 0) {
@@ -1600,7 +1600,7 @@ function doTPfrontpage() {{{
     // if a block displays an article
     if(isset($test_articlebox) && $fetchart != '') {
 		$context['TPortal']['blockarticles'] = array();
-		$request =  $smcFunc['db_query']('', '
+		$request =  $db->query('', '
 			SELECT art.*, var.value1, var.value2, var.value3, var.value4, var.value5, var.value7, var.value8, art.type as rendertype,
 				COALESCE(mem.real_name,art.author) as real_name, mem.avatar, mem.posts, mem.date_registered as date_registered, mem.last_login as last_login,
 				COALESCE(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type as attachment_type, var.value9, mem.email_address AS email_address
@@ -1618,8 +1618,8 @@ function doTPfrontpage() {{{
 			AND art.approved = 1
 			AND art.category > 0 AND art.category < 9999'
 		);
-		if($smcFunc['db_num_rows']($request) > 0) {
-			while($article = $smcFunc['db_fetch_assoc']($request)) {
+		if($db->num_rows($request) > 0) {
+			while($article = $db->fetch_assoc($request)) {
 				// allowed and all is well, go on with it.
 				$context['TPortal']['blockarticles'][$article['id']] = $article;
                 $context['TPortal']['blockarticles'][$article['id']]['avatar'] = set_avatar_data( array(      
@@ -1636,13 +1636,13 @@ function doTPfrontpage() {{{
 				// since these are inside blocks, some stuff has to be left out
 				$context['TPortal']['blockarticles'][$article['id']]['frame'] = 'none';
 			}
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
 	}
 
    // any cat listings from blocks?
     if(isset($test_catbox) && $fetchtitles != '') {
-		$request =  $smcFunc['db_query']('', '
+		$request =  $db->query('', '
 			SELECT art.id, art.subject, art.date, art.category, art.author_id as author_id, art.shortname,
 			COALESCE(mem.real_name,art.author) as real_name FROM {db_prefix}tp_articles AS art
 			LEFT JOIN {db_prefix}members AS mem ON (art.author_id = mem.id_member)
@@ -1660,8 +1660,8 @@ function doTPfrontpage() {{{
 			$context['TPortal']['blockarticle_titles'] = array();
         }
 
-		if ($smcFunc['db_num_rows']($request) > 0) {
-			while($row = $smcFunc['db_fetch_assoc']($request)) {
+		if ($db->num_rows($request) > 0) {
+			while($row = $db->fetch_assoc($request)) {
 				$context['TPortal']['blockarticle_titles'][$row['category']][$row['date'].'_'.$row['id']] = array(
 					'id' => $row['id'],
 					'subject' => $row['subject'],
@@ -1670,14 +1670,14 @@ function doTPfrontpage() {{{
 					'poster' => '<a href="'.$scripturl.'?action=profile;u='.$row['author_id'].'">'.$row['real_name'].'</a>',
 				);
 			}
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
     }
 
 	// get menubox items
 	if(isset($test_menubox)) {
 		$context['TPortal']['menu'] = array();
-		$request =  $smcFunc['db_query']('', '
+		$request =  $db->query('', '
 			SELECT var.*, art.shortname, cat.value8 as catshort
 			FROM {db_prefix}tp_variables as var
 			LEFT JOIN {db_prefix}tp_articles AS art ON substring(var.value3,5) = art.id 
@@ -1687,8 +1687,8 @@ function doTPfrontpage() {{{
 			array('type' => 'menubox')
 		);
 
-		if($smcFunc['db_num_rows']($request) > 0) {
-			while ($row = $smcFunc['db_fetch_assoc']($request)) {
+		if($db->num_rows($request) > 0) {
+			while ($row = $db->fetch_assoc($request)) {
 				$icon = '';
 				if($row['value5'] != -1 && $row['value2'] != '-1') {
 					$mtype = substr($row['value3'], 0, 4);
@@ -1730,7 +1730,7 @@ function doTPfrontpage() {{{
 					);
 				}
 			}
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
 	}
 
@@ -2177,7 +2177,7 @@ function tpSetupUpshrinks() {{{
 	// get user values
 	if($context['user']['is_logged']) {
 		// set some values based on user-prefs
-		$result = $smcFunc['db_query']('', '
+		$result = $db->query('', '
 			SELECT type, value, item
 			FROM {db_prefix}tp_data
 			WHERE type = {int:type}
@@ -2185,11 +2185,11 @@ function tpSetupUpshrinks() {{{
 			array('type' => 2, 'id_mem' => $context['user']['id'])
 		);
 
-		if($smcFunc['db_num_rows']($result) > 0) {
-			while($row = $smcFunc['db_fetch_assoc']($result)) {
+		if($db->num_rows($result) > 0) {
+			while($row = $db->fetch_assoc($result)) {
 				$context['TPortal']['usersettings']['wysiwyg'] = $row['value'];
 			}
-			$smcFunc['db_free_result']($result);
+			$db->free_result($result);
 		}
 		$context['TPortal']['use_wysiwyg'] = (int) $context['TPortal']['use_wysiwyg'];
 		$context['TPortal']['show_wysiwyg'] = $context['TPortal']['use_wysiwyg'];
@@ -2289,7 +2289,7 @@ function TPortal_menubox() {{{
     global $context, $smcFunc;
 
     $context['TPortal']['menu'] = array();
-    $request =  $smcFunc['db_query']('', '
+    $request =  $db->query('', '
         SELECT var.*, art.shortname, cat.value8 as catshort
         FROM {db_prefix}tp_variables as var
 		LEFT JOIN {db_prefix}tp_articles AS art ON substring(var.value3,5) = art.id 
@@ -2298,8 +2298,8 @@ function TPortal_menubox() {{{
         ORDER BY var.subtype + 0 ASC',
         array('type' => 'menubox')
     );
-    if($smcFunc['db_num_rows']($request) > 0) {
-        while ($row = $smcFunc['db_fetch_assoc']($request)) {
+    if($db->num_rows($request) > 0) {
+        while ($row = $db->fetch_assoc($request)) {
             $icon = '';
             if($row['value5'] < 1) {
                 $mtype = substr($row['value3'], 0, 4);
@@ -2342,7 +2342,7 @@ function TPortal_menubox() {{{
                 );
             }
         }
-        $smcFunc['db_free_result']($request);
+        $db->free_result($request);
     }
 }}}
 

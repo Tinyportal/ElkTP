@@ -23,8 +23,7 @@ if (!defined('ELK')) {
 class Integrate 
 {
 
-    public static function hookPreLoad()
-    {
+    public static function hookPreLoad() {{{
 
         // We need to load our autoloader outside of the main function    
         if(!defined('ELK_BACKWARDS_COMPAT')) {
@@ -100,25 +99,18 @@ class Integrate
             }
 		}
     
-    }
+    }}}
 
-    public static function hookFrontPage(&$defaultAction)
-    {
+    public static function hookFrontPage(&$defaultAction) {{{
         global $modSettings;
 
+        // Should check TinyPortal is enabled..
         $modSettings['front_page'] = 'TPortal_Controller';
 
-        $defaultAction = array (
-            'file' 		=> CONTROLLERDIR . '/TPortal.controller.php',
-            'controller'=> 'TPortal_Controller',
-            'function' 	=> 'action_index'
-        );
-
         return;
-    }
+    }}}
 
-    public static function TPortalAutoLoadClass($className)
-    {
+    public static function TPortalAutoLoadClass($className) {{{
 
         $classPrefix    = mb_substr($className, 0, 10);
 
@@ -133,10 +125,9 @@ class Integrate
             require_once($classFile);
         }
 
-    }
+    }}}
 
-    public static function setup_db_backwards_compat()
-    {
+    public static function setup_db_backwards_compat() {{{
         global $db_type;
 
         if($db_type == 'postgresql') {
@@ -146,10 +137,9 @@ class Integrate
             define('TP_PGSQL', false);
         }
 
-    }
+    }}}
 
-    public static function hookPermissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions) 
-	{
+    public static function hookPermissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions) {{{
     
         $permissionList['membergroup'] = array_merge(
             array(
@@ -171,15 +161,10 @@ class Integrate
             $permissionList['membergroup']
         );
 
-      // This is to get around there being no hook to call to remove guest permissions in ELK 2.0
-      if(!TP_ELK21) {
-        self::hookIllegalPermissions();
-      }
-    }
+    }}}
 
     // Adds TP copyright in the buffer so we don't have to edit an ELK file
-    public static function hookBuffer($buffer)
-    {
+    public static function hookBuffer($buffer) {{{
         global $context, $scripturl, $txt, $boardurl;
         
         // Dynamic body ID
@@ -266,10 +251,9 @@ class Integrate
         }
 
         return $buffer;
-    }
+    }}}
 
-    public static function hookIllegalPermissions()
-    {
+    public static function hookIllegalPermissions() {{{
         global $context;
 
         if (empty($context['non_guest_permissions']))
@@ -292,10 +276,9 @@ class Integrate
             'tp_can_list_images',
         );
         $context['non_guest_permissions'] = array_merge($context['non_guest_permissions'], $tp_illegal_perms);
-    }
+    }}}
 
-    public static function hookMenuButtons(&$buttons)
-    {
+    public static function hookMenuButtons(&$buttons) {{{
         global $context, $scripturl, $txt;
 
         // If ELK throws a fatal_error TP is not loaded. So don't even worry about menu items.
@@ -309,7 +292,7 @@ class Integrate
         }
 
         // This removes a edit in Load.php
-        if( TP_ELK21 && (!empty($context['linktree'])) ) {
+        if( !empty($context['linktree']) ) {
             if (!empty($_GET) && array_key_exists('TPortal', $context) && empty($context['TPortal']['not_forum'])) {
                 array_splice($context['linktree'], 1, 0, array(
                         array(
@@ -341,7 +324,7 @@ class Integrate
 
         // Add the admin button
 		if(!$context['TPortal']['hideadminmenu']=='1') {
-			if(allowedTo('tp_settings') || allowedTo('tp_articles') || allowedTo('tp_blocks') || allowedTo('tp_dlmanager') || allowedTo('tp_shoutbox') || allowedTo('tp_can_admin_shout') || allowedTo('tp_can_list_images')) {
+			if(allowedTo('tp_settings') || allowedTo('tp_articles') || allowedTo('tp_blocks') || allowedTo('tp_can_list_images')) {
 				$buttons = array_merge(
 						array_slice($buttons, 0, array_search('calendar', array_keys($buttons), true) + 1),
 						array (
@@ -349,8 +332,8 @@ class Integrate
 								'icon' => 'tinyportal/menu_tp.png',
 								'title' => $txt['tp-tphelp'],
 								'href' => $scripturl.'?action=tpadmin',
-								'show' =>  TPcheckAdminAreas(),
-								'sub_buttons' => tp_getbuttons(),
+								'show' =>  self::checkAdminAreas(),
+								'sub_buttons' => self::getButtons(),
 							),
 						),
 						$buttons
@@ -364,14 +347,15 @@ class Integrate
 							'icon' => 'tinyportal/menu_tp.png',
 							'title' => $txt['tp-tphelp'],
 							'href' => '#',
-							'show' =>  TPcheckAdminAreas(),
-							'sub_buttons' => tp_getbuttons(),
+							'show' =>  self::checkAdminAreas(),
+							'sub_buttons' => self::getbuttons(),
 							),
 						),
 					$buttons
 				);
 			}
 		}
+
 		if(allowedTo('tp_settings')) {
 			$buttons = array_merge(
 					array_slice($buttons, 0, array_search('calendar', array_keys($buttons), true) + 1),
@@ -380,52 +364,16 @@ class Integrate
 							'icon' => 'tinyportal/menu_tp.png',
 							'title' => $txt['tp-tphelp'],
 							'href' => $scripturl.'?action=tpadmin',
-							'show' =>  TPcheckAdminAreas(),
-							'sub_buttons' => tp_getbuttons(),
+							'show' =>  self::checkAdminAreas(),
+							'sub_buttons' => self::getbuttons(),
 						),
 					),
 					$buttons
 			);
 		}
+    }}}
 
-        $dB = Database::getInstance();
-
-        $request = $dB->db_query('', '
-            SELECT value1 AS name , value3 AS href , value7 AS position , value8 AS menuicon
-            FROM {db_prefix}tp_variables
-            WHERE type = {string:type}
-            AND value3 LIKE {string:mainmenu}
-            AND value5 = 0',
-            array (
-                'type' => 'menubox',
-                'mainmenu' => 'menu%'
-            )
-        );
-
-        if($dB->db_num_rows($request) > 0) {
-            $i = 0;
-            while($row = $dB->db_fetch_assoc($request)) {
-                // Add the admin button
-                $i++;
-                $buttons = array_merge(
-                        array_slice($buttons, 0, array_search($row['position'], array_keys($buttons), true) + 1),
-                        array (
-                            'tpbutton'.$i => array (
-                                'icon' => $row['menuicon'],
-                                'title' => $row['name'],
-                                'href' => substr($row['href'], 4),
-                                'show' =>  true,
-                            ),
-                        ),
-                        $buttons
-                    );
-            }
-            $dB->db_free_result($request);
-        }
-    }
-
-    public static function hookProfileArea(&$profile_areas)
-    {
+    public static function hookProfileArea(&$profile_areas) {{{
         global $txt, $context;
         
         $profile_areas['tp'] = array(
@@ -565,23 +513,20 @@ class Integrate
 
         }
 
-    }
+    }}}
 
-    public static function hookActions(&$actionArray)
-    {
+    public static function hookActions(&$actionArray) {{{
         $actionArray = array_merge(
             array (
                 'tpadmin'   => array('TPortalAdmin.php',    'TPortalAdmin'),
                 'forum'     => array('BoardIndex.php',      'BoardIndex'),
                 'tportal'   => array('TPortal.php',         'TPortal'),
-                'tpshout'   => array('TPShout.php',         'TPShout'),
             ),
             $actionArray
         );
-    }
+    }}}
 
-    public static function hookDefaultAction()
-    {
+    public static function hookDefaultAction() {{{
         global $topic, $board, $context;
 
         $theAction = false;
@@ -617,10 +562,9 @@ class Integrate
             call_user_func($theAction);
         }
 
-    }
+    }}}
 
-    public static function hookWhosOnline($actions)
-    {
+    public static function hookWhosOnline($actions) {{{
         global $txt, $scripturl;
 
         loadLanguage('TPortal');
@@ -710,29 +654,26 @@ class Integrate
             return $txt['tp-who-forum-index'];
         }
 
-    }
+    }}}
 
-    public static function hookPreLogStats(&$no_stat_actions)
-    {
+    public static function hookPreLogStats(&$no_stat_actions) {{{
         $no_stat_actions = array_merge($no_stat_actions, array('shout'));
 
         // We can also call init from here although it's not meant for this
         require_once(SOURCEDIR . '/TPortal.php');
         \TPortal_init();
-    }
+    }}}
 
-    public static function hookRedirect(&$setLocation, &$refresh)
-    {
+    public static function hookRedirect(&$setLocation, &$refresh) {{{
         global $scripturl, $context;
 
         if ($setLocation == $scripturl && !empty($context['TPortal']['redirectforum'])) {
             $setLocation .= '?action=forum';
         }
 
-    }
+    }}}
 
-    public static function hookSearchLayers()
-    {
+    public static function hookSearchLayers() {{{
         global $context;
 
         // are we on search page? then add TP search options as well!
@@ -740,10 +681,9 @@ class Integrate
             $context['template_layers'][] = 'TPsearch';
         }
 
-    }
+    }}}
 
-    public static function hookDisplayButton(&$normal_buttons)
-    {
+    public static function hookDisplayButton(&$normal_buttons) {{{
         global $context, $scripturl;
 
         if(allowedTo(array('tp_settings')) && (($context['TPortal']['front_type']=='forum_selected' || $context['TPortal']['front_type']=='forum_selected_articles'))) {
@@ -754,10 +694,9 @@ class Integrate
                 $normal_buttons['unpublish'] = array('active' => true, 'text' => 'tp-unpublish', 'lang' => true, 'url' => $scripturl . '?action=tportal;sa=publish;t=' . $context['current_topic']);
             }
         }
-    }
+    }}}
 
-    public static function hookLoadTheme(&$id_theme)
-    {
+    public static function hookLoadTheme(&$id_theme) {{{
         global $modSettings;
 
         require_once(SOURCEDIR . '/TPSubs.php');
@@ -845,7 +784,155 @@ class Integrate
         }
 
         return $id_theme;
-    }
+    }}}
+
+    private static function checkAdminAreas() {{{
+        global $context;
+
+        self::collectPermissions();
+        foreach($context['TPortal']['adminlist'] as $adm => $val) {
+            if(\allowedTo($adm) || !empty($context['TPortal']['show_download'])) {
+                return true;
+            }
+        }
+        return false;
+
+    }}}
+
+    private static function collectPermissions() {{{
+        global $context;
+
+        $context['TPortal']['permissonlist'] = array();
+        // first, the built-in permissions
+        $context['TPortal']['permissonlist'][] = array(
+            'title' => 'tinyportal',
+            'perms' => array(
+                'tp_settings' => 0,
+                'tp_blocks' => 0,
+                'tp_articles' => 0
+            )
+        );
+        $context['TPortal']['permissonlist'][] = array(
+            'title' => 'tinyportal_dl',
+            'perms' => array(
+                'tp_dlmanager' => 0,
+                'tp_dlupload' => 0
+            )
+        );
+        $context['TPortal']['permissonlist'][] = array(
+            'title' => 'tinyportal_submit',
+            'perms' => array(
+                'tp_submithtml' => 0,
+                'tp_submitbbc' => 0,
+                'tp_editownarticle' => 0,
+                'tp_alwaysapproved' => 0
+            )
+        );
+
+        $context['TPortal']['tppermissonlist'] = array(
+            'tp_settings' => array(false, 'tinyportal', 'tinyportal'),
+            'tp_blocks' => array(false, 'tinyportal', 'tinyportal'),
+            'tp_articles' => array(false, 'tinyportal', 'tinyportal'),
+            'tp_submithtml' => array(false, 'tinyportal', 'tinyportal'),
+            'tp_submitbbc' => array(false, 'tinyportal', 'tinyportal'),
+            'tp_editownarticle' => array(false, 'tinyportal', 'tinyportal'),
+            'tp_alwaysapproved' => array(false, 'tinyportal', 'tinyportal'),
+            'tp_dlmanager' => array(false, 'tinyportal', 'tinyportal'),
+            'tp_dlupload' => array(false, 'tinyportal', 'tinyportal')
+        );
+
+        $context['TPortal']['adminlist'] = array(
+            'tp_settings' => 1,
+            'tp_blocks' => 1,
+            'tp_articles' => 1,
+            'tp_dlmanager' => 1,
+            'tp_submithtml' => 1,
+            'tp_submitbbc' => 1,
+        );
+    }}}
+
+    private static function getButtons() {{{
+        global $scripturl, $txt, $context;
+
+        if(loadLanguage('TPortal') == false) {
+            loadLanguage('TPortal', 'english');
+        }
+
+        $buts = array();
+
+        if($context['user']['is_logged'] && (allowedTo('tp_submithtml') || allowedTo('tp_submitbbc') || allowedTo('tp_articles'))) {
+            $buts['tpeditwonarticle'] = array(
+                'title' => $txt['tp-myarticles'],
+                'href' => $scripturl . '?action=tportal;sa=myarticles',
+                'show' => true,
+                'active_button' => false,
+                'sub_buttons' => array(),
+            );
+        }
+
+        if(allowedTo('tp_submithtml') || allowedTo('tp_articles')) {
+            $buts['tpeditwonarticle']['sub_buttons']['submithtml'] = array(
+                'title' => $txt['tp-submitarticle'],
+                'href' => $scripturl . '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tportal') . ';sa=addarticle_html',
+                'show' => true,
+                'active_button' => false,
+                'sub_buttons' => array(),
+            );
+        }
+
+        if(allowedTo('tp_submitbbc') || allowedTo('tp_articles')) {
+            $buts['tpeditwonarticle']['sub_buttons']['submitbbc'] = array(
+                'title' => $txt['tp-submitarticlebbc'],
+                'href' => $scripturl . '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tportal') . ';sa=addarticle_bbc',
+                'show' => true,
+                'active_button' => false,
+                'sub_buttons' => array(),
+            );
+        }
+
+        // the admin functions - divider
+        if(allowedTo('tp_settings') || allowedTo('tp_articles') || allowedTo('tp_blocks') || allowedTo('tp_dlmanager') || allowedTo('tp_shoutbox')) {
+            $buts['divde1'] = array(
+                'title' => '<hr />',
+                'href' => '#',
+                'show' => true,
+                'active_button' => false,
+                'sub_buttons' => array(),
+            );
+        }
+
+        if(allowedTo('tp_settings')) {
+            $buts['tpsettings'] = array(
+                'title' => $txt['tp-adminheader1'],
+                'href' => $scripturl . '?action=tpadmin;sa=settings',
+                'show' => true,
+                'active_button' => false,
+                'sub_buttons' => array(),
+            );
+        }
+
+        if(allowedTo('tp_articles')) {
+            $buts['tparticles'] = array(
+                'title' => $txt['tp_menuarticles'],
+                'href' => $scripturl . '?action=tpadmin;sa=articles',
+                'show' => true,
+                'active_button' => false,
+                'sub_buttons' => array(),
+            );
+        }
+
+        if(allowedTo('tp_blocks')) {
+            $buts['tpblocks'] = array(
+                'title' => $txt['tp-adminpanels'],
+                'href' => $scripturl . '?action=tpadmin;sa=blocks',
+                'show' => true,
+                'active_button' => false,
+                'sub_buttons' => array(),
+            );
+        }
+
+        return $buts;
+    }}}
 
 }
 
