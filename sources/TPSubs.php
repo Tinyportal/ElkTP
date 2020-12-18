@@ -38,8 +38,6 @@ function TPcheckAdminAreas() {{{
 function TPsetupAdminAreas() {{{
 	global $context;
 
-	$context['admin_tabs']['custom_modules'] = array();
-
     call_integration_hook('integrate_tp_admin_areas');
 
 }}}
@@ -126,21 +124,13 @@ function TPcollectPermissions() {{{
 function tp_getbuttons() {{{
 	global $scripturl, $txt, $context;
 
-	if(loadLanguage('TPortal') == false)
+	if(loadLanguage('TPortal') == false) {
 		loadLanguage('TPortal', 'english');
+    }
 
 	$buts = array();
 
-	if(!empty($context['TPortal']['show_download']))
-		$buts['downloads'] = array(
-			'title' => $txt['tp-downloads'],
-			'href' => $scripturl . '?action=tportal;sa=download;dl',
-			'show' => true,
-			'active_button' => false,
-			'sub_buttons' => array(),
-		);
-
-	if($context['user']['is_logged'] && (allowedTo('tp_submithtml') || allowedTo('tp_submitbbc') || allowedTo('tp_articles')))
+	if($context['user']['is_logged'] && (allowedTo('tp_submithtml') || allowedTo('tp_submitbbc') || allowedTo('tp_articles'))) {
 		$buts['tpeditwonarticle'] = array(
 			'title' => $txt['tp-myarticles'],
 			'href' => $scripturl . '?action=tportal;sa=myarticles',
@@ -148,8 +138,9 @@ function tp_getbuttons() {{{
 			'active_button' => false,
 			'sub_buttons' => array(),
 		);
+    }
 
-	if(allowedTo('tp_submithtml') || allowedTo('tp_articles'))
+	if(allowedTo('tp_submithtml') || allowedTo('tp_articles')) {
 		$buts['tpeditwonarticle']['sub_buttons']['submithtml'] = array(
 			'title' => $txt['tp-submitarticle'],
 			'href' => $scripturl . '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tportal') . ';sa=addarticle_html',
@@ -157,8 +148,9 @@ function tp_getbuttons() {{{
 			'active_button' => false,
 			'sub_buttons' => array(),
 		);
+    }
 
-	if(allowedTo('tp_submitbbc') || allowedTo('tp_articles'))
+	if(allowedTo('tp_submitbbc') || allowedTo('tp_articles')) {
 		$buts['tpeditwonarticle']['sub_buttons']['submitbbc'] = array(
 			'title' => $txt['tp-submitarticlebbc'],
 			'href' => $scripturl . '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tportal') . ';sa=addarticle_bbc',
@@ -166,9 +158,10 @@ function tp_getbuttons() {{{
 			'active_button' => false,
 			'sub_buttons' => array(),
 		);
+    }
 
 	// the admin functions - divider
-	if(allowedTo('tp_settings') || allowedTo('tp_articles') || allowedTo('tp_blocks') || allowedTo('tp_dlmanager') || allowedTo('tp_shoutbox'))
+	if(allowedTo('tp_settings') || allowedTo('tp_articles') || allowedTo('tp_blocks')) {
 		$buts['divde1'] = array(
 			'title' => '<hr />',
 			'href' => '#',
@@ -176,9 +169,9 @@ function tp_getbuttons() {{{
 			'active_button' => false,
 			'sub_buttons' => array(),
 		);
+    }
 
-	if(allowedTo('tp_settings'))
-	{
+	if(allowedTo('tp_settings')) {
 		$buts['tpsettings'] = array(
 			'title' => $txt['tp-adminheader1'],
 			'href' => $scripturl . '?action=tpadmin;sa=settings',
@@ -187,8 +180,7 @@ function tp_getbuttons() {{{
 			'sub_buttons' => array(),
 		);
 	}
-	if(allowedTo('tp_articles'))
-	{
+	if(allowedTo('tp_articles')) {
 		$buts['tparticles'] = array(
 			'title' => $txt['tp_menuarticles'],
 			'href' => $scripturl . '?action=tpadmin;sa=articles',
@@ -197,8 +189,7 @@ function tp_getbuttons() {{{
 			'sub_buttons' => array(),
 		);
 	}
-	if(allowedTo('tp_blocks'))
-	{
+	if(allowedTo('tp_blocks')) {
 		$buts['tpblocks'] = array(
 			'title' => $txt['tp-adminpanels'],
 			'href' => $scripturl . '?action=tpadmin;sa=blocks',
@@ -207,37 +198,7 @@ function tp_getbuttons() {{{
 			'sub_buttons' => array(),
 		);
 	}
-	if(allowedTo('tp_blocks'))
-	{
-		$buts['tpmenuman'] = array(
-			'title' => $txt['tp-menumanager'],
-			'href' => $scripturl . '?action=tpadmin;sa=menubox',
-			'show' => true,
-			'active_button' => false,
-			'sub_buttons' => array(),
-		);
-	}
-	if(allowedTo('tp_dlmanager'))
-	{
-		$buts['tpdlmanager'] = array(
-			'title' => $txt['permissionname_tp_dlmanager'],
-			'href' => $scripturl . '?action=tportal;sa=download;dl=admin',
-			'show' => true,
-			'active_button' => false,
-			'sub_buttons' => array(
-			),
-		);
-	}
-	if(allowedTo('tp_shoutbox'))
-	{
-		$buts['tpshoutbox'] = array(
-			'title' => $txt['permissionname_tp_can_admin_shout'],
-			'href' => $scripturl . '?action=tpshout;shout=admin',
-			'show' => true,
-			'active_button' => false,
-			'sub_buttons' => array(),
-		);
-	}
+
 	return $buts;
 }}}
 
@@ -1705,11 +1666,7 @@ function TPadminIndex($tpsub = '', $module_admin = false) {{{
 	$context['admin_tabs'] = array();
 	$context['admin_header']['tp_settings'] = $txt['tp-adminheader1'];
 	$context['admin_header']['tp_articles'] = $txt['tp-articles'];
-	$context['admin_header']['tp_blocks'] = $txt['tp-adminpanels'];
-	$context['admin_header']['tp_menubox'] = $txt['tp-menumanager'];
-	if (allowedTo('tp_can_admin_shout') || allowedTo('tp_dlmanager') || allowedTo('tp_can_list_images')) {
-		$context['admin_header']['custom_modules'] = $txt['custom_modules'];
-	}
+	$context['admin_header']['tp_blocks']   = $txt['tp-adminpanels'];
 
 	if (allowedTo('tp_settings')) {
 		$context['admin_tabs']['tp_settings'] = array(
@@ -1786,23 +1743,6 @@ function TPadminIndex($tpsub = '', $module_admin = false) {{{
 				'description' => '',
 				'href' => $scripturl . '?action=tpadmin;sa=blocks;overview',
 				'is_selected' => ($tpsub == 'blocks' && isset($_GET['overview'])) || substr($tpsub,0,9) == 'editblock',
-			),
-		);
-	}
-
-	if (allowedTo('tp_blocks')) {
-		$context['admin_tabs']['tp_menubox'] = array(
-			'menubox' => array(
-				'title' => $txt['tp-menumanager'],
-				'description' => '',
-				'href' => $scripturl . '?action=tpadmin;sa=menubox',
-				'is_selected' => in_array($tpsub, array('menubox','linkmanager')),
-			),
-			'addmenu' => array(
-				'title' => isset($_GET['mid']) ? $txt['tp-addmenuitem'] : $txt['tp-addmenu'],
-				'description' => '',
-				'href' => (isset($_GET['mid']) && is_numeric($_GET['mid'])) ? $scripturl . '?action=tpadmin;sa=addmenu;mid='.$_GET['mid'] : $scripturl . '?action=tpadmin;sa=addmenu;fullmenu',
-				'is_selected' => in_array($tpsub, array('addmenu')),
 			),
 		);
 	}

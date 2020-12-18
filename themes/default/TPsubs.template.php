@@ -2559,7 +2559,7 @@ function tp_template_button_strip($button_strip, $direction = 'top', $strip_opti
 	$buttons = array();
 	foreach ($button_strip as $key => $value) {
 		if (!isset($value['test']) || !empty($context[$value['test']])) {
-				$buttons[] = '<a' . (isset($value['id']) ? ' id="button_strip_' . $value['id'] . '"' : '') . ' class="button button_strip_' . $key . '' . ($value['active'] ? ' active' : '') . '" href="' . $value['url'] . '"' . (isset($value['custom']) ? ' ' . $value['custom'] : '') . '><span>' . $txt[$value['text']] . '</span></a>';
+				$buttons[] = '<a' . (isset($value['id']) ? ' id="button_strip_' . $value['id'] . '"' : '') . ' class="listlevel1 linklevel1 button_strip_' . $key . '' . ($value['active'] ? ' active' : '') . '" href="' . $value['url'] . '"' . (isset($value['custom']) ? ' ' . $value['custom'] : '') . ' ><span>' . $txt[$value['text']] . '</span></a>';
 		}
 	}
 
