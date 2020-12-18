@@ -450,9 +450,10 @@ function adminBlocks() {{{
 
 function editBlock( $block_id = 0 ) {{{
 
-	global $settings, $context, $scripturl, $txt, $boarddir, $smcFunc;
+	global $settings, $context, $scripturl, $txt, $boarddir;
 
-    $tpBlock = TPBlock::getInstance();
+    $tpBlock    = TPBlock::getInstance();
+    $db         = database();
 
     if(empty($block_id)) {
 	    $block_id  = TPUtil::filter('id', 'get', 'int');
@@ -543,9 +544,8 @@ function editBlock( $block_id = 0 ) {{{
 		get_langfiles();
 		get_boards();
 		get_articles();
-		tp_getDLcats();
 		$context['TPortal']['edit_categories'] = array();
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT id, value1 as name
 			FROM {db_prefix}tp_variables
 			WHERE type = {string:type}
@@ -555,14 +555,14 @@ function editBlock( $block_id = 0 ) {{{
 			)
 		);
 
-		if($smcFunc['db_num_rows']($request) > 0) {
-			while($row = $smcFunc['db_fetch_assoc']($request))
+		if($db->num_rows($request) > 0) {
+			while($row = $db->fetch_assoc($request))
 				$context['TPortal']['article_categories'][] = $row;
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
 		// get all themes for selection
 		$context['TPthemes'] = array();
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT th.value AS name, th.id_theme as id_theme, tb.value AS path
 			FROM {db_prefix}themes AS th
 			LEFT JOIN {db_prefix}themes AS tb ON th.id_theme = tb.id_theme
@@ -575,17 +575,17 @@ function editBlock( $block_id = 0 ) {{{
 			)
 		);
 
-		if($smcFunc['db_num_rows']($request) > 0) {
-			while ($row = $smcFunc['db_fetch_assoc']($request)) {
+		if($db->num_rows($request) > 0) {
+			while ($row = $db->fetch_assoc($request)) {
 				$context['TPthemes'][] = array(
 					'id' => $row['id_theme'],
 					'path' => $row['path'],
 					'name' => $row['name']
 				);
 			}
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT * FROM {db_prefix}tp_variables
 			WHERE type = {string:type}
 			ORDER BY value1 ASC',
@@ -600,8 +600,8 @@ function editBlock( $block_id = 0 ) {{{
 			'var1' => '',
 			'var2' => ''
 		);
-		if($smcFunc['db_num_rows']($request) > 0) {
-			while ($row = $smcFunc['db_fetch_assoc']($request)) {
+		if($db->num_rows($request) > 0) {
+			while ($row = $db->fetch_assoc($request)) {
 				$context['TPortal']['menus'][$row['id']] = array(
 					'id' => $row['id'],
 					'name' => $row['value1'],
@@ -634,14 +634,14 @@ function saveBlock( $block_id = 0 ) {{{
     if(!is_numeric($block_id)) {
         fatal_error($txt['tp-notablock'], false);
     }
-    $request =  $smcFunc['db_query']('', '
+    $request =  $db->query('', '
         SELECT editgroups FROM {db_prefix}tp_blocks
         WHERE id = {int:blockid} LIMIT 1',
         array('blockid' => $block_id)
     );
 
-    if($smcFunc['db_num_rows']($request) > 0) {
-        $row = $smcFunc['db_fetch_assoc']($request);
+    if($db->num_rows($request) > 0) {
+        $row = $db->fetch_assoc($request);
         // check permission
         if(allowedTo('tp_blocks') || get_perm($row['editgroups'])) {
             $ok = true;
@@ -649,7 +649,7 @@ function saveBlock( $block_id = 0 ) {{{
         else {
             fatal_error($txt['tp-blocknotallowed'], false);
         }
-        $smcFunc['db_free_result']($request);
+        $db->free_result($request);
 
         // loop through the values and save them
         foreach ($_POST as $what => $value) {
@@ -658,7 +658,7 @@ function saveBlock( $block_id = 0 ) {{{
                 $value = strip_tags($value);
                 $value = preg_replace('~&#\d+$~', '', $value);
                 $val = substr($what,10);
-                $smcFunc['db_query']('', '
+                $db->query('', '
                         UPDATE {db_prefix}tp_blocks
                         SET title = {string:title}
                         WHERE id = {int:blockid}',
@@ -678,7 +678,7 @@ function saveBlock( $block_id = 0 ) {{{
 
                 $val = (int) substr($what, 9);
 
-                $smcFunc['db_query']('', '
+                $db->query('', '
                         UPDATE {db_prefix}tp_blocks
                         SET body = {string:body}
                         WHERE id = {int:blockid}',
@@ -687,7 +687,7 @@ function saveBlock( $block_id = 0 ) {{{
             }
             elseif(substr($what, 0, 10) == 'blockframe') {
                 $val = substr($what, 10);
-                $smcFunc['db_query']('', '
+                $db->query('', '
                         UPDATE {db_prefix}tp_blocks
                         SET frame = {string:frame}
                         WHERE id = {int:blockid}',
@@ -696,7 +696,7 @@ function saveBlock( $block_id = 0 ) {{{
             }
             elseif(substr($what, 0, 12) == 'blockvisible') {
                 $val = substr($what, 12);
-                $smcFunc['db_query']('', '
+                $db->query('', '
                         UPDATE {db_prefix}tp_blocks
                         SET visible = {string:vis}
                         WHERE id = {int:blockid}',

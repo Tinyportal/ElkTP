@@ -539,7 +539,9 @@ function do_menus()
 // articles
 function do_articles()
 {
-	global $context, $txt, $settings, $boardurl, $scripturl, $smcFunc;
+	global $context, $txt, $settings, $boardurl, $scripturl;
+
+    $db = database();
 
     if(allowedTo('tp_articles') == false) {
         if(isset($_GET['sa']) && substr($_GET['sa'], 0, 11) == 'editarticle') {
@@ -635,7 +637,7 @@ function do_articles()
 					$row = $db->fetch_assoc($request);
 					$row['value1'] .= '__copy';
 					$db->free_result($request);
-					$smcFunc['db_insert']('insert',
+					$db->insert('insert',
 						'{db_prefix}tp_variables',
 						array(
 							'value1' => 'string',
@@ -676,7 +678,7 @@ function do_articles()
 					$row = $db->fetch_assoc($request);
 					$row['value1'] .= '__copy';
 					$db->free_result($request);
-					$smcFunc['db_insert']('INSERT',
+					$db->insert('INSERT',
 						'{db_prefix}tp_variables',
 						array(
 							'value1' => 'string',
@@ -1011,7 +1013,7 @@ function do_articles()
 		if($db->num_rows($request) > 0) {
 			$context['TPortal']['editarticle'] = $db->fetch_assoc($request);
 			$context['TPortal']['editing_article'] = true;
-			$context['TPortal']['editarticle']['body'] = $smcFunc['htmlspecialchars']($context['TPortal']['editarticle']['body'], ENT_QUOTES);
+			$context['TPortal']['editarticle']['body'] = TPUtil::htmlspecialchars($context['TPortal']['editarticle']['body'], ENT_QUOTES);
 			$db->free_result($request);
 		}
 
@@ -1406,7 +1408,7 @@ function do_admin($tpsub = 'overview')
 
 function do_postchecks()
 {
-	global $context, $txt, $settings, $boarddir, $smcFunc, $sourcedir;
+	global $context, $txt, $settings, $boarddir, $sourcedir;
 
     $db = database();
 
@@ -1916,7 +1918,7 @@ function do_postchecks()
 			$parent = !empty($_POST['tp_cat_parent']) ? $_POST['tp_cat_parent'] : '0';
 			$shortname = !empty($_POST['tp_cat_shortname']) ? $_POST['tp_cat_shortname'] : '';
 
-			$smcFunc['db_insert']('INSERT',
+			$db->insert('INSERT',
 				'{db_prefix}tp_variables',
 				array(
 					'value1' => 'string',
@@ -1934,7 +1936,7 @@ function do_postchecks()
 				array('id')
 			);
 
-			$go = $smcFunc['db_insert_id']('{db_prefix}tp_variables', 'id');
+			$go = $db->insert_id('{db_prefix}tp_variables', 'id');
 			redirectexit('action=tpadmin;sa=categories;cu='.$go);
 		}
 		// the categort list
@@ -2068,14 +2070,14 @@ function do_postchecks()
 				$category = $straycat;
 				if($category == 0 && !empty($straynewcat))
 				{
-					$request = $smcFunc['db_insert']('INSERT',
+					$request = $db->insert('INSERT',
 						'{db_prefix}tp_variables',
 						array('value1' => 'string', 'value2' => 'string', 'type' => 'string'),
 						array(strip_tags($straynewcat), '0', 'category'),
 						array('id')
 					);
 
-					$newcategory = $smcFunc['db_insert_id']('{db_prefix}tp_variables', 'id');
+					$newcategory = $db->insert_id('{db_prefix}tp_variables', 'id');
 					$db->free_result($request);
 				}
 				$db->query('', '
@@ -2119,7 +2121,7 @@ function do_postchecks()
 			if(!empty($_POST['tp_menu_title']))
 			{
 				$mtitle = strip_tags($_POST['tp_menu_title']);
-				$smcFunc['db_insert']('INSERT',
+				$db->insert('INSERT',
 					'{db_prefix}tp_variables',
 					array('value1' => 'string', 'type' => 'string'),
 					array($mtitle, 'menus'),
@@ -2162,7 +2164,7 @@ function do_postchecks()
 
 			$msub = $_POST['tp_menu_sub'];
 			$mpos = $_POST['tp_menu_position'];
-			$smcFunc['db_insert']('INSERT',
+			$db->insert('INSERT',
 				'{db_prefix}tp_variables',
 				array(
 					'value1' => 'string',
@@ -2204,7 +2206,7 @@ function do_postchecks()
 				$category = $straycat;
 				if($category == 0 && !empty($straynewcat))
 				{
-					$request = $smcFunc['db_insert']('INSERT',
+					$request = $db->insert('INSERT',
 						'{db_prefix}tp_variables',
 						array(
 							'value1' => 'string',
@@ -2215,7 +2217,7 @@ function do_postchecks()
 						array('id')
 					);
 
-					$newcategory = $smcFunc['db_insert_id']('{db_prefix}tp_variables', 'id');
+					$newcategory = $db->insert_id('{db_prefix}tp_variables', 'id');
 					$db->free_result($request);
 				}
 				$db->query('', '
@@ -2389,7 +2391,7 @@ function do_postchecks()
             }
 
 			if(isset($cp))
-				$smcFunc['db_insert']('INSERT',
+				$db->insert('INSERT',
 					'{db_prefix}tp_blocks',
 					array(
 						'type' => 'int',
@@ -2431,7 +2433,7 @@ function do_postchecks()
 					array('id')
 				);
 			else
-				$smcFunc['db_insert']('INSERT',
+				$db->insert('INSERT',
 					'{db_prefix}tp_blocks',
 					array(
 						'type' => 'int',
@@ -2455,7 +2457,7 @@ function do_postchecks()
 					array('id')
 				);
 
-			$where = $smcFunc['db_insert_id']('{db_prefix}tp_blocks', 'id');
+			$where = $db->insert_id('{db_prefix}tp_blocks', 'id');
 			if(!empty($where))
 				redirectexit('action=tpadmin&sa=editblock&id='.$where.';sesc='. $context['session_id']);
 			else

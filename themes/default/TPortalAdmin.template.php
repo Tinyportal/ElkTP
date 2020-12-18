@@ -251,8 +251,8 @@ function template_settings()
 					<dd>
 						<input type="checkbox" id="tp_imageproxycheck" name="tp_imageproxycheck" value="1" ' , $context['TPortal']['imageproxycheck'] == '1' ? 'checked' : '' , '>
 					</dd>';
-                    db_extend('extra');
-                    if(version_compare($smcFunc['db_get_version'](), '5.6', '>=')) {
+                    $db = database();
+                    if(version_compare($db->db_server_version(), '5.6', '>=')) {
                         echo '
                         <dt>
                             <a href="', $scripturl, '?action=helpadmin;help=', $txt['tp-fulltextsearchdesc'], '" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_fulltextsearch">', $txt['tp-fulltextsearch'], '</label>
