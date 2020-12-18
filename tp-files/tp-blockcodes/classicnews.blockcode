@@ -39,11 +39,7 @@ foreach($what as $w)
 	<div class="smalltext"><a href="'.$w['href'].'">' . $w['short_subject'] . '</a></div>
 	<div class="smalltext">', $txt['by'], ' <b>', $w['poster']['link'], '</b></div>
 	<div class="smalltext">';
-	if(!$w['new'])
-	{
-	if (!TP_ELK21)
-		echo '<a href="'.$w['href'].'"><img src="'.$settings['images_url'].'/'.$context['user']['language'].'/new.gif" alt="new" /></a> ';
-	else
+	if(!$w['new']) {
 		echo '<a href="'.$w['href'].'" id="newicon" class="new_posts" >' . $txt['new'] . '</a> ';
 	}
 	echo '['.$w['time'].']

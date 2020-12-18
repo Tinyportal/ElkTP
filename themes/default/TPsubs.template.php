@@ -71,13 +71,7 @@ function TPblock($block, $theme, $side, $double=false)
 		echo '<div class="block_' . $side . 'container" id="block_' . $block['type'] . '">';
 	}
 
-	if(function_exists('ctheme_tp_getblockstyles'))
-		$types = ctheme_tp_getblockstyles();
-
-	if(TP_ELK21)
-		$types = tp_getblockstyles21();
-	else
-		$types = tp_getblockstyles();
+	$types = tp_getblockstyles21();
 
 	// check
 	if ( ($block['var5'] == '') || ($block['var5'] == 99) )
@@ -92,27 +86,15 @@ function TPblock($block, $theme, $side, $double=false)
 		if ($theme || $block['frame'] == 'title') {
 			echo $types[$block['var5']]['code_title_left'];
 
-	        if(TP_ELK21) {
-                if($block['visible'] == '' || $block['visible'] == '1') {
-                    echo '<a href="javascript:void(0);return%20false" onclick="toggle(\''.$block['id'].'\'); return false"><img id="blockcollapse'.$block['id'].'" style="margin: 2px 0 0 0;float:right" src="' .$settings['tp_images_url']. '/' , !in_array($block['id'],$context['TPortal']['upshrinkblocks'])  ? 'TPcollapse' : 'TPexpand' , '.png" alt="" title="'.$txt['block-upshrink_description'].'" /></a>';
-                }
+            if($block['visible'] == '' || $block['visible'] == '1') {
+                echo '<a href="javascript:void(0);return%20false" onclick="toggle(\''.$block['id'].'\'); return false"><img id="blockcollapse'.$block['id'].'" style="margin: 2px 0 0 0;float:right" src="' .$settings['tp_images_url']. '/' , !in_array($block['id'],$context['TPortal']['upshrinkblocks'])  ? 'TPcollapse' : 'TPexpand' , '.png" alt="" title="'.$txt['block-upshrink_description'].'" /></a>';
+            }
 
-                // can you edit the block?
-                if($block['can_manage'] && !$context['TPortal']['blocks_edithide']) {
-                    echo '<a href="',$scripturl,'?action=tpadmin&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
-                }
-			}
-			else {
-                if($block['visible'] == '' || $block['visible'] == '1') {
-                    echo '<a href="javascript:void(0);return%20false" onclick="toggle(\''.$block['id'].'\'); return false"><img id="blockcollapse'.$block['id'].'" style="margin: 8px 0 0 0;float:right" src="' .$settings['tp_images_url']. '/' , !in_array($block['id'],$context['TPortal']['upshrinkblocks'])  ? 'TPcollapse' : 'TPexpand' , '.png" alt="" title="'.$txt['block-upshrink_description'].'" /></a>';
-                }
-
-                // can you edit the block?
-                if($block['can_manage'] && !$context['TPortal']['blocks_edithide']) {
-                    echo '<a href="',$scripturl,'?action=tpadmin&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin: 8px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
-                }
-			}
-
+            // can you edit the block?
+            if($block['can_manage'] && !$context['TPortal']['blocks_edithide']) {
+                echo '<a href="',$scripturl,'?action=tpadmin&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
+            }
+			
 			echo $block['title'];
 			echo $types[$block['var5']]['code_title_right'];
 		}
@@ -232,14 +214,7 @@ function TPortal_userbox()
 			echo '
 				<li><a href="', $scripturl, '?action=admin;area=viewmembers;sa=browse;type=approve;' . $context['session_var'] . '=' . $context['session_id'].'">'. $bullet. $txt['tp_unapproved_members'].' '. $context['unapproved_members']  . '</a></li>';
 		// Are there any moderation reports?
-	if(!TP_ELK21)
-		{
-		if (!empty($context['open_mod_reports']) && $context['show_open_reports'])
-			echo '
-				<li><a href="', $scripturl, '?action=moderate;area=reports">'.$bullet.$txt['tp_modreports'].' ' . $context['open_mod_reports']. '</a></li>';
-		}
-	else {
-		if (!empty($user_info['mod_cache']) && $user_info['mod_cache']['bq'] != '0=1' && !empty($context['open_mod_reports']))
+		if (!empty($context['open_mod_reports']) && $context['show_open_reports']) {
 			echo '
 				<li><a href="', $scripturl, '?action=moderate;area=reports">'.$bullet.$txt['tp_modreports'].' ' . $context['open_mod_reports']. '</a></li>';
 		}
@@ -318,12 +293,7 @@ function TPortal_userbox()
 	}
 	// Otherwise they're a guest - so politely ask them to register or login.
 	else  {
-		if(TP_ELK21) {
-			echo '<div style="line-height: 1.4em;">', sprintf($txt[$context['can_register'] ? 'welcome_guest_register' : 'welcome_guest'], $txt['guest_title'], $context['forum_name_html_safe'], $scripturl . '?action=login', 'return reqOverlayDiv(this.href, ' . JavaScriptEscape($txt['login']) . ');', $scripturl . '?action=signup'), '<br><br>', $context['current_time'], '</div>';
-		}
-		else {
-			echo '<div style="line-height: 1.4em;">', sprintf($txt['welcome_guest'], $txt['guest_title']), '<br><br>', $context['current_time'], '</div>';
-		}
+		echo '<div style="line-height: 1.4em;">', sprintf($txt[$context['can_register'] ? 'welcome_guest_register' : 'welcome_guest'], $txt['guest_title'], $context['forum_name_html_safe'], $scripturl . '?action=login', 'return reqOverlayDiv(this.href, ' . JavaScriptEscape($txt['login']) . ');', $scripturl . '?action=signup'), '<br><br>', $context['current_time'], '</div>';
     echo '
         <form style="margin-top: 5px;" action="', $scripturl, '?action=login2" method="post" >
             <input type="text" class="input_text" name="user" size="10" style="max-width: 45%!important;"/> <input type="password" class="input_password" name="passwrd" size="10" style="max-width: 45%!important;"/><br>
@@ -335,12 +305,8 @@ function TPortal_userbox()
                 <option value="-1" selected="selected">', $txt['forever'], '</option>
             </select>
             <input type="submit" class="button_submit" value="', $txt['login'], '" />
-            <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />';
-		if (TP_ELK21) {
-			echo '
-			<input type="hidden" name="', $context['login_token_var'], '" value="', $context['login_token'], '">';
-		}
-		echo '			
+            <input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+			<input type="hidden" name="', $context['login_token_var'], '" value="', $context['login_token'], '">
         </form>
         <div style="line-height: 1.4em;" class="middletext">', $txt['quick_login_dec'], '</div>';
 	}
@@ -486,9 +452,6 @@ function TPortal_themebox()
 			<input type="hidden" value="'.$smcFunc['htmlspecialchars']($scripturl . '?'.$tp_where.'theme='.$settings['theme_id']).'" name="jumpurl3" />
 			<div style="text-align: center; width: 95%; overflow: hidden;">';
 			
-		if (!TP_ELK21)
-			echo ' <img src="'.$settings['images_url'].'/thumbnail.gif" alt="" id="chosen" name="chosen" style="max-width: 100%;" /> ';
-		else
 			echo ' <img src="'.$settings['images_url'].'/thumbnail.png" alt="" id="chosen" name="chosen" style="max-width: 100%;" />';
 			
 		echo '
@@ -498,13 +461,8 @@ function TPortal_themebox()
 			var extra = \'\';
 			var themepath = new Array();';
 		 for($a=0 ; $a<(count($temaid)); $a++){
-		    if (!TP_ELK21)
 				echo '
 					themepath['.$temaid[$a].'] = "'.$temapaths[$a].'/thumbnail.gif";
-					';
-			else
-				echo '
-					themepath['.$temaid[$a].'] = "'.$temapaths[$a].'/thumbnail.png";
 					';
 			}
 
@@ -678,13 +636,10 @@ function TPortal_recentbox()
 		{
 			echo '
 			<li' , $coun<count($what) ? '' : ' style="border: none; margin-bottom: 0;padding-bottom: 0;"'  , '>';
-			if ((TP_ELK21) && ($w['is_new']))
 				echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen#new" rel="nofollow" class="new_posts" style="margin:0px;">' . $txt['new'] . '</a> '; 
 			echo '
 				<a href="' . $w['href'] . '" title="' . $w['subject'] . '">' . $w['short_subject'] . '</a>
 				 ', $txt['by'], ' <b>', $w['poster']['link'],'</b> ';
-			if (!(TP_ELK21) && ($w['is_new']))
-				echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen#new" rel="nofollow"><img src="' . $settings['lang_images_url'] . '/new.gif" alt="' . $txt['new'] . '" /></a>';
 			echo '<br><span class="smalltext">['.$w['time'].']</span>
 			</li>';
 			$coun++;
@@ -713,13 +668,10 @@ function TPortal_recentbox()
 		{
 			echo '
 			<li' , $coun<count($what) ? '' : ' style="border: none; margin-bottom: 0;padding-bottom: 0;"'  , '>';
-			if ((TP_ELK21) && ($w['is_new']))
 				echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen#new" rel="nofollow" class="new_posts" style="margin:0px;">' . $txt['new'] . '</a> '; 
 			echo '
 					<span class="tpavatar"><a href="' . $scripturl. '?action=profile;u=' . $w['poster']['id'] . '">' , empty($avatars[$w['poster']['id']]) ? '<img src="' . $settings['tp_images_url'] . '/TPguest.png" alt="" />' : $avatars[$w['poster']['id']] , '</a></span><a href="'.$w['href'].'">' . $w['short_subject'].'</a>
 				 ', $txt['by'], ' <b>', $w['poster']['link'],'</b> ';
-			if (!(TP_ELK21) && ($w['is_new']))
-				echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen#new" rel="nofollow"><img src="' . $settings['lang_images_url'] . '/new.gif" alt="' . $txt['new'] . '" /></a>';
 			echo '<br><span class="smalltext">['.$w['time'].']</span>
 			</li>';
 			$coun++;
@@ -2092,8 +2044,7 @@ function article_comments($render = true)
                 }
 				$data .= '
 					<strong>' . $counter++ .') ' . $comment['subject'] . '</strong>
-					' . (($comment['is_new'] && $context['user']['is_logged'] && !TP_ELK21) ? '<img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/new.gif" alt="" />' : '') . '
-					' . (($comment['is_new'] && $context['user']['is_logged'] && TP_ELK21) ? '<a href="" id="newicon" class="new_posts" >' . $txt['new'] . '</a>' : '') . '';
+					' . (($comment['is_new'] && $context['user']['is_logged']) ? '<a href="" id="newicon" class="new_posts" >' . $txt['new'] . '</a>' : '') . '';
 				if ($comment['poster_id'] > 0) {
 					$data .= '					
 						<div class="middletext" style="padding-top: 0.5em;"> '.$txt['tp-bycom'].' <a href="'.$scripturl.'?action=profile;u='.$comment['poster_id'].'">'.$comment['poster'].'</a>&nbsp;' . $txt['on'] . ' ' . $comment['date'] . '</div>';
@@ -2467,26 +2418,27 @@ function template_tpadm_above()
 		<div class="roundframe noup">';
 
 
-	if(is_array($context['admin_tabs']) && count($context['admin_tabs']) > 0)
-	{
+	if(is_array($context['admin_tabs']) && count($context['admin_tabs']) > 0) {
 		echo '
 			<ul style="padding-bottom: 10px;">';
-		foreach($context['admin_tabs'] as $ad => $tab)
-		{
+		foreach($context['admin_tabs'] as $ad => $tab) {
 			echo '
 				<li><div class="largetext">' , isset($context['admin_header'][$ad]) ? $context['admin_header'][$ad] : '' , '</div>
 					';
 			$tbas = array();
-			foreach($tab as $tb)
+			foreach($tab as $tb) {
 				$tbas[]='<a href="' . $tb['href'] . '">' .($tb['is_selected'] ? '<b>'.$tb['title'].'</b>' : $tb['title']) . '</a>';
+            }
 
 			// if new style...
-			if($context['TPortal']['oldsidebar'] == 0)
+			if($context['TPortal']['oldsidebar'] == 0) {
 				echo '<div class="normaltext">' , implode(', ', $tbas) , '</div>
 				</li>';
-			else
+			} 
+            else {
 				echo '<div class="middletext" style="margin: 0; line-height: 1.3em;">' , implode('<br>', $tbas) , '</div>
 				</li>';
+            }
 
 		}
 		echo '
@@ -2605,15 +2557,9 @@ function tp_template_button_strip($button_strip, $direction = 'top', $strip_opti
 
 	// Create the buttons...
 	$buttons = array();
-	foreach ($button_strip as $key => $value)
-	{
+	foreach ($button_strip as $key => $value) {
 		if (!isset($value['test']) || !empty($context[$value['test']])) {
-			if(TP_ELK21) {
 				$buttons[] = '<a' . (isset($value['id']) ? ' id="button_strip_' . $value['id'] . '"' : '') . ' class="button button_strip_' . $key . '' . ($value['active'] ? ' active' : '') . '" href="' . $value['url'] . '"' . (isset($value['custom']) ? ' ' . $value['custom'] : '') . '><span>' . $txt[$value['text']] . '</span></a>';
-			}
-			else {
-				$buttons[] = '<li><a' . (isset($value['id']) ? ' id="button_strip_' . $value['id'] . '"' : '') . ' class="button_strip_' . $key . '' . ($value['active'] ? ' active' : '') . '" href="' . $value['url'] . '"' . (isset($value['custom']) ? ' ' . $value['custom'] : '') . '><span>' . $txt[$value['text']] . '</span></a></li>';
-			}
 		}
 	}
 

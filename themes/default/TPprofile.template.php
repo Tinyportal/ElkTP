@@ -29,7 +29,7 @@ function template_tp_summary()
 	echo '
 	<div></div>
 	<div class="cat_bar"><h3 class="catbg">'.$txt['tpsummary'].'</h3></div>
-	<div id="tp_summary" class="'. (!TP_ELK21 ? 'content padding-div' : 'roundframe') . '">
+	<div id="tp_summary" class="roundframe">
 		<div>
 			<div class="float-items" style="width:38%;">'.$txt['tp-prof_allarticles'].'</div>
 			<div class="float-items" style="width:58%;font-weight: bold;">'.$context['TPortal']['tpsummary']['articles'].'</div>
@@ -53,7 +53,7 @@ function template_tp_articles()
 		echo '
 	<div>
 		<div></div>
-		<div id="tp_profile_articles" class="'. (!TP_ELK21 ? 'content padding-div' : 'roundframe') . '" >
+		<div id="tp_profile_articles" class="roundframe" >
 			<div class="content addborder tp_pad">';
 
 		echo $txt['tp-prof_allarticles']. ' <b>'.$context['TPortal']['all_articles'].'</b><br>';
@@ -165,7 +165,7 @@ $clickme.click( function(e) {
 // Articles Settings Page
 	elseif($context['TPortal']['profile_action'] == 'settings') {
 		echo '
-	<div id="tp_profile_articles_settings" class="bordercolor '. (!TP_ELK21 ? 'content padding-div' : 'roundframe') . '">
+	<div id="tp_profile_articles_settings" class="bordercolor roundframe">
 		<div class="padding-div">
 			<form name="TPadmin3" action="' . $scripturl . '?action=tportal;sa=savesettings" method="post">
 				<input type="hidden" name="sc" value="', $context['session_id'], '" />
@@ -207,7 +207,7 @@ function template_tp_download()
 		<div></div>
 		<div class="cat_bar"><h3 class="catbg">'.$txt['downloadsprofile'].'</h3></div>
 		<p class="information">'.$txt['downloadsprofile2'].'</p>
-		<div id="tp_profile_uploaded" class="'. (!TP_ELK21 ? 'content padding-div' : 'roundframe') . '">
+		<div id="tp_profile_uploaded" class="roundframe">
 			<div class="content addborder tp_pad">';
 
 	echo $txt['tp-prof_alldownloads'].' <b>'.$context['TPortal']['all_downloads'].'</b><br>';

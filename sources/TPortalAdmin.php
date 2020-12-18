@@ -38,6 +38,9 @@ function TPortalAdmin()
 	require_once(SOURCEDIR . '/TPcommon.php');
 	require_once(SUBSDIR . '/Post.subs.php');
 
+	require_once(SOURCEDIR . '/TPortal.php');
+    setupTPsettings();    
+
 	$context['TPortal']['frontpage_visualopts_admin'] = array(
 		'left' => 0,
 		'right' => 0,
@@ -145,15 +148,6 @@ function TPortalAdmin()
         else {
             fatal_error($txt['tp-noadmin'], false);
         }
-	}
-    elseif(isset($_GET['linkon']) || isset($_GET['linkoff']) || isset($_GET['linkedit']) || isset($_GET['linkdelete']) || isset($_GET['linkdelete'])) {
-        if(allowedTo('tp_blocks')) {
-            $context['TPortal']['subaction'] = $tpsub = 'linkmanager';
-            do_menus($tpsub);
-        }
-        else {
-            fatal_error($txt['tp-noadmin'], false);
-        }		
 	}
 	elseif(isset($_GET['catdelete']) || isset($_GET['artfeat']) || isset($_GET['artfront']) || isset($_GET['artdelete']) || isset($_GET['arton']) || isset($_GET['artoff']) || isset($_GET['artsticky']) || isset($_GET['artlock']) || isset($_GET['catcollapse'])) {
         if(allowedTo('tp_articles')) {
@@ -280,15 +274,13 @@ function TPortalAdmin()
                 );
     }
 
-    $context['template_layers'] = Template_Layers::getInstance()->getLayers();
-    if(array_search('tpadm', $context['template_layers']) === FALSE) {
-        // TP Admin menu layer
-        $context['template_layers'][] = 'tpadm';
-	    // Shows subtab layer above for admin submenu links
-        $context['template_layers'][] = 'subtab';
+    if (!Template_Layers::getInstance()->hasLayers(true) && !in_array('tpadm', Template_Layers::getInstance()->getLayers())) {
+        Template_Layers::getInstance()->add('tpadm');
+        Template_Layers::getInstance()->add('subtab');
     }
 
-	loadTemplate('TPortalAdmin');
+	\loadTemplate('TPortalAdmin');
+	\loadTemplate('TPsubs');
 	TPadminIndex($tpsub);
 
     call_integration_hook('integrate_tp_post_admin_subactions');

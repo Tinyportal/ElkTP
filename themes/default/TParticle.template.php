@@ -78,7 +78,7 @@ function template_submitarticle()
 					<input type="text" id="tp_article_subject" name="tp_article_subject" value="'. html_entity_decode($mg['subject'], ENT_QUOTES, $context['character_set']) .'" style="width: 92%;" required>
 				</dd>
 				<dt>
-					<div class="font-strong"><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-shortname_articledesc'],'" onclick=' . ((!TP_ELK21) ? '"return reqWin(this.href);"' : '"return reqOverlayDiv(this.href);"') . '><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_article_shortname">'.$txt['tp-shortname_article'].'</label></div>
+					<div class="font-strong"><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-shortname_articledesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_article_shortname">'.$txt['tp-shortname_article'].'</label></div>
 				</dt>
 				<dd>
 					<input type="text" id="tp_article_shortname" name="tp_article_shortname" value="'.$mg['shortname'].'" size=20 >
@@ -111,7 +111,7 @@ function template_submitarticle()
 			</div><br>
 			<dl class="settings tptitle">
 					<dt>
-						<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-useintrodesc'],'" onclick=' . ((!TP_ELK21) ? '"return reqWin(this.href);"' : '"return reqOverlayDiv(this.href);"') . '><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_article_useintro">', $txt['tp-useintro'], '</label>
+						<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-useintrodesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_article_useintro">', $txt['tp-useintro'], '</label>
 					</dt>
 					<dd>
 							<input type="radio" name="tp_article_useintro" value="1" ', $mg['useintro']=='1' ? 'checked' : '' ,'> '.$txt['tp-yes'].'
@@ -251,7 +251,7 @@ function template_submitarticle()
 						</div><br>
 					</dd>
 					<dt>
-						<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-statusdesc'],'" onclick=' . ((!TP_ELK21) ? '"return reqWin(this.href);"' : '"return reqOverlayDiv(this.href);"') . '><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="field_name">', $txt['tp-status'], '</label>
+						<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-statusdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="field_name">', $txt['tp-status'], '</label>
 					</dt>
 					<dd>';
 				if (!empty($context['TPortal']['editing_article'])) {
@@ -412,7 +412,7 @@ function template_submitarticle()
 						<img id="tp-illu" class="tp-illu" src="' , $boardurl , '/tp-files/tp-articles/illustrations/' , !empty($mg['illustration']) ? $mg['illustration'] : 'TPno_illustration.png' , '" alt="" /><br><br>
 					</dd>
 					<dt>
-					<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-adminiconsinfo'],'" onclick=' . ((!TP_ELK21) ? '"return reqWin(this.href);"' : '"return reqOverlayDiv(this.href);"') . '><span class="tptooltip" title="', $txt['help'], '"></span></a>' . $txt['tp-uploadicon'] . '
+					<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-adminiconsinfo'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a>' . $txt['tp-uploadicon'] . '
 					</dt>
 					<dd>
 						<input type="file" name="tp_article_illupload">
@@ -655,7 +655,7 @@ function template_showcomments()
                             <td class="tp_comments">
                             <div>
                                 <div class="float-items" style="width:30%;">
-                                    <a href="'.$scripturl.'?page='.$mes['page'].'#tp-comment">' . $mes['subject'] . ' ' , ($mes['is_read']==0 && !TP_ELK21) ? ' <img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/new.gif" alt="" />' : '' , '</a>
+                                    <a href="'.$scripturl.'?page='.$mes['page'].'#tp-comment">' . $mes['subject'] . ' </a>
                                 </div>
                                 <div class="float-items" style="width:15%;"><a href="'.$scripturl.'?action=profile;u='.$mes['authorID'].'">' . $mes['author'] . '</a></div>
                                 <div class="float-items" style="width:30%;"><div class="smalltext">' , $mes['title'] , '<br> ' , substr($mes['comment'],0,150) , '...</div></div>
@@ -709,7 +709,6 @@ function template_showcomments()
 			<td class="tp_comments">
 			<div>
 				<div class="float-items" style="width:30%;"><a href="'.$scripturl.'?page='.$mes['page'].'#tp-comment">' . $mes['subject'] . '
-				' , ($mes['is_read']==0 && !TP_ELK21) ? ' <img src="' . $settings['images_url'] . '/' . $context['user']['language'] . '/new.gif" alt="" />' : '' , '
 				</a><div class="smalltext"> ' , $mes['title'] , '</div>
 				</div>
 				<div class="float-items" style="width:15%;"><a href="'.$scripturl.'?action=profile;u='.$mes['authorID'].'">' . $mes['author'] . '</a></div>
