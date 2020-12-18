@@ -117,7 +117,9 @@ function articleInsertComment() {{{
 }}}
 
 function articleShowComments() {{{
-    global $smcFunc, $scripturl, $user_info, $txt, $context;
+    global $scripturl, $user_info, $txt, $context;
+
+    $db = database();
 
     if(!empty($_GET['tpstart']) && is_numeric($_GET['tpstart'])) {
         $tpstart = $_GET['tpstart'];
@@ -133,7 +135,7 @@ function articleShowComments() {{{
         $showall = true;
     }
 
-    $request = $smcFunc['db_query']('', '
+    $request = $db->query('', '
         SELECT COUNT(var.value1)
         FROM ({db_prefix}tp_variables AS var, {db_prefix}tp_articles AS art)
         WHERE var.type = {string:type}
@@ -141,10 +143,10 @@ function articleShowComments() {{{
         AND art.id = var.value5',
         array('type' => 'article_comment')
     );
-    $check = $smcFunc['db_fetch_row']($request);
-    $smcFunc['db_free_result']($request);
+    $check = $db->fetch_row($request);
+    $db->free_result($request);
 
-    $request = $smcFunc['db_query']('', '
+    $request = $db->query('', '
         SELECT art.subject, memb.real_name AS author, art.author_id AS authorID, var.value1, var.value2, var.value3,
         var.value5, var.value4, mem.real_name AS realName,
         ' . ($user_info['is_guest'] ? '1' : '(COALESCE(log.item, 0) >= var.value4)') . ' AS isRead
@@ -161,8 +163,8 @@ function articleShowComments() {{{
 
     $context['TPortal']['artcomments']['new'] = array();
 
-    if($smcFunc['db_num_rows']($request) > 0) {
-        while($row=$smcFunc['db_fetch_assoc']($request)) {
+    if($db->num_rows($request) > 0) {
+        while($row=$db->fetch_assoc($request)) {
             $context['TPortal']['artcomments']['new'][] = array(
                 'page' => $row['value5'],
                 'subject' => $row['subject'],
@@ -177,7 +179,7 @@ function articleShowComments() {{{
                 'replies' => $check[0],
             );
         }
-        $smcFunc['db_free_result']($request);
+        $db->free_result($request);
     }
 
     // construct the pages
@@ -255,8 +257,9 @@ function articleEditComment() {{{
 }}}
 
 function articleRate() {{{
-    global $context, $smcFunc;
+    global $context;
 
+    $db = database();
 	// rating is underway
 	if(isset($_POST['tp_article_rating_submit']) && $_POST['tp_article_type'] == 'article_rating') {
 		// check the session
@@ -265,14 +268,14 @@ function articleRate() {{{
 		$commenter = $context['user']['id'];
 		$article = $_POST['tp_article_id'];
 		// check if the article indeed exists
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT rating, voters FROM {db_prefix}tp_articles
 			WHERE id = {int:artid}',
 			array('artid' => $article)
 		);
-		if($smcFunc['db_num_rows']($request) > 0) {
-			$row = $smcFunc['db_fetch_row']($request);
-			$smcFunc['db_free_result']($request);
+		if($db->num_rows($request) > 0) {
+			$row = $db->fetch_row($request);
+			$db->free_result($request);
 
 			$voters = array();
 			$ratings = array();
@@ -289,12 +292,12 @@ function articleRate() {{{
 					$new_ratings    = $_POST['tp_article_rating'];
 				}
 				// update ratings and raters
-				$smcFunc['db_query']('', '
+				$db->query('', '
 					UPDATE {db_prefix}tp_articles
 					SET rating = {string:rate} WHERE id = {int:artid}',
 					array('rate' => $new_ratings, 'artid' => $article)
 				);
-				$smcFunc['db_query']('', '
+				$db->query('', '
 					UPDATE {db_prefix}tp_articles
 					SET voters = {string:vote}
 					WHERE id = {int:artid}',
@@ -313,8 +316,9 @@ function articleAttachment() {{{
 }}}
 
 function articleEdit() {{{
-	global $context, $smcFunc;
+	global $context;
 
+    $db = database();
 	checkSession('post');
 	isAllowedTo(array('tp_articles', 'tp_editownarticle', 'tp_submitbbc', 'tp_submithtml'));
 
@@ -357,15 +361,15 @@ function articleEdit() {{{
 						break;
 					case 'category':
 						// for the event, get the allowed
-						$request = $smcFunc['db_query']('', '
+						$request = $db->query('', '
 							SELECT value3 FROM {db_prefix}tp_variables
 							WHERE id = {int:varid} LIMIT 1',
 							array('varid' => is_numeric($value) ? $value : 0 )
 						);
-						if($smcFunc['db_num_rows']($request) > 0) {
-							$row = $smcFunc['db_fetch_assoc']($request);
+						if($db->num_rows($request) > 0) {
+							$row = $db->fetch_assoc($request);
 							$allowed = $row['value3'];
-							$smcFunc['db_free_result']($request);
+							$db->free_result($request);
 						    $article_data['category'] = $value;
 						}
 						break;
@@ -399,16 +403,16 @@ function articleEdit() {{{
 								}
 							}
 							// save the choice too
-							$request = $smcFunc['db_query']('', '
+							$request = $db->query('', '
 								SELECT id FROM {db_prefix}tp_variables
 								WHERE subtype2 = {int:sub2}
 								AND type = {string:type} LIMIT 1',
 								array('sub2' => $where, 'type' => 'editorchoice')
 							);
-							if($smcFunc['db_num_rows']($request) > 0) {
-								$row = $smcFunc['db_fetch_assoc']($request);
-								$smcFunc['db_free_result']($request);
-								$smcFunc['db_query']('', '
+							if($db->num_rows($request) > 0) {
+								$row = $db->fetch_assoc($request);
+								$db->free_result($request);
+								$db->query('', '
 									UPDATE {db_prefix}tp_variables
 									SET value1 = {string:val1}
 									WHERE subtype2 = {int:sub2}
@@ -417,7 +421,7 @@ function articleEdit() {{{
 								);
 							}
 							else {
-								$smcFunc['db_insert']('INSERT',
+								$db->insert('INSERT',
 									'{db_prefix}tp_variables',
 									array('value1' => 'string', 'type' => 'string', 'subtype2' => 'int'),
 									array($_POST['tp_article_body_choice'], 'editorchoice', $where),
@@ -497,7 +501,7 @@ function articleEdit() {{{
 	}
 	// Update the approved status
 	if($article_data['approved'] == 1) {
-		$smcFunc['db_query']('', '
+		$db->query('', '
 			DELETE FROM {db_prefix}tp_variables
 			WHERE type = {string:type}
 			AND value5 = {int:val5}',
@@ -505,7 +509,7 @@ function articleEdit() {{{
 		);
 	}
 	elseif(empty($where)) {
-		$smcFunc['db_insert']('insert',
+		$db->insert('insert',
 			'{db_prefix}tp_variables',
 			array (
 				'type' => 'string', 
@@ -541,8 +545,9 @@ function articleEdit() {{{
 }}}
 
 function articleShow() {{{
-    global $context, $smcFunc, $scripturl, $txt;
+    global $context, $scripturl, $txt;
 
+    $db = database();
 	// show own articles?
     // not for guests
     if($context['user']['is_guest']) {
@@ -550,12 +555,12 @@ function articleShow() {{{
     }
 
     // get all articles
-    $request = $smcFunc['db_query']('', '
+    $request = $db->query('', '
         SELECT COUNT(*) FROM {db_prefix}tp_articles
         WHERE author_id = {int:author}',
         array('author' => $context['user']['id'])
     );
-    $row = $smcFunc['db_fetch_row']($request);
+    $row = $db->fetch_row($request);
     $allmy = $row[0];
 
     $mystart = (!empty($_GET['p']) && is_numeric($_GET['p'])) ? $_GET['p'] : 0;
@@ -565,7 +570,7 @@ function articleShow() {{{
 
     $context['TPortal']['subaction'] = 'myarticles';
     $context['TPortal']['myarticles'] = array();
-    $request2 =  $smcFunc['db_query']('', '
+    $request2 =  $db->query('', '
         SELECT id, subject, date, locked, approved, off FROM {db_prefix}tp_articles
         WHERE author_id = {int:author}
         ORDER BY {raw:sort} {raw:sorter} LIMIT {int:start}, 15',
@@ -576,12 +581,12 @@ function articleShow() {{{
         )
     );
 
-    if($smcFunc['db_num_rows']($request2) > 0) {
+    if($db->num_rows($request2) > 0) {
         $context['TPortal']['myarticles']=array();
-        while($row = $smcFunc['db_fetch_assoc']($request2)) {
+        while($row = $db->fetch_assoc($request2)) {
             $context['TPortal']['myarticles'][] = $row;
         }
-        $smcFunc['db_free_result']($request2);
+        $db->free_result($request2);
     }
 
     if(loadLanguage('TPortalAdmin') == false) {
@@ -594,7 +599,9 @@ function articleShow() {{{
 }}}
 
 function articleNew() {{{
-    global $context, $smcFunc, $settings;
+    global $context, $settings;
+
+    $db = database();
 
     require_once(SOURCEDIR. '/TPcommon.php');
 
@@ -687,9 +694,10 @@ function articleUploadImage() {{{
 }}}
 
 function articleAjax() {{{
-    global $context, $boarddir, $boardurl, $smcFunc;
+    global $context, $boarddir, $boardurl;
 
-    $tpArticle = TPArticle::getInstance();
+    $db         = database();
+    $tpArticle  = TPArticle::getInstance();
 
 	// first check any ajax stuff
 	if(isset($_GET['arton'])) {
@@ -727,17 +735,17 @@ function articleAjax() {{{
 		$what = is_numeric($_GET['catdelete']) ? $_GET['catdelete'] : '0';
 		if($what > 0) {
 			// first get info
-			$request = $smcFunc['db_query']('', '
+			$request = $db->query('', '
 				SELECT id, value2 FROM {db_prefix}tp_variables
 				WHERE id = {int:varid} LIMIT 1',
 				array('varid' => $what)
 			);
-			$row = $smcFunc['db_fetch_assoc']($request);
-			$smcFunc['db_free_result']($request);
+			$row = $db->fetch_assoc($request);
+			$db->free_result($request);
 
 			$newcat = !empty($row['value2']) ? $row['value2'] : 0;
 
-			$smcFunc['db_query']('', '
+			$db->query('', '
 				UPDATE {db_prefix}tp_variables
 				SET value2 = {string:val2}
 				WHERE value2 = {string:varid}',
@@ -746,12 +754,12 @@ function articleAjax() {{{
 				)
 			);
 
-			$smcFunc['db_query']('', '
+			$db->query('', '
 				DELETE FROM {db_prefix}tp_variables
 				WHERE id = {int:varid}',
 				array('varid' => $what)
 			);
-			$smcFunc['db_query']('', '
+			$db->query('', '
 				UPDATE {db_prefix}tp_articles
 				SET category = {int:cat}
 				WHERE category = {int:catid}',
@@ -772,12 +780,12 @@ function articleAjax() {{{
 			$cu = '';
 		}
 		if($what > 0) {
-			$smcFunc['db_query']('', '
+			$db->query('', '
 				DELETE FROM {db_prefix}tp_articles
 				WHERE id = {int:artid}',
 				array('artid' => $what)
 			);
-			$smcFunc['db_query']('', '
+			$db->query('', '
 				DELETE FROM {db_prefix}tp_variables
 				WHERE value5 = {int:artid}',
 				array('artid' => $what)

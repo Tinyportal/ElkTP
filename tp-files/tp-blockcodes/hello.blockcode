@@ -20,7 +20,7 @@ Bloc
 </date>
 
 <code>
-echo 'This snippet only outputs the date...quite simple. :) <b>' , timeformat(time()) , '</b>';
+echo 'This snippet only outputs the date...quite simple. :) <b>' , standardTime(time()) , '</b>';
 </code>
 
 <description>
