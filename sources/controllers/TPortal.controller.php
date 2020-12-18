@@ -19,12 +19,12 @@ use \TinyPortal\Block as TPBlock;
 use \TinyPortal\Integrate as TPIntegrate;
 use \TinyPortal\Mentions as TPMentions;
 use \TinyPortal\Util as TPUtil;
+use ElkArte\Errors\Errors;
+use ElkArte\sources\Frontpage_Interface;
 
 if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
-
-use ElkArte\sources\Frontpage_Interface;
 
 class TPortal_Controller extends Action_Controller implements Frontpage_Interface
 {
@@ -59,12 +59,27 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
     }}}
 
     public function action_index() {{{
-        global $context;
+        global $context, $txt;
 
-		loadTemplate('TPortal');
+        \loadTemplate('TPortal');
+		\loadLanguage('TPortal');
+
+		if (!Template_Layers::getInstance()->hasLayers(true) && !in_array('TPortal', Template_Layers::getInstance()->getLayers())) {
+			Template_Layers::getInstance()->add('TPortal');
+		}
+
         // Save the action for the bufferHook
         $context['TPortal']['action'] = TPUtil::filter('action', 'get', 'string');
 
+    }}}
+
+
+    public function action_portal() {{{
+
+        $subAction  = TPUtil::filter('sa', 'get', 'string');
+        if($subAction == false) {
+            Errors::instance()->fatal_error($txt['tp-no-sa-url'], false);
+        }
 
     }}}
 
