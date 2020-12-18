@@ -61,6 +61,12 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
     public function action_index() {{{
         global $context, $txt;
 
+         // Save the action for the bufferHook
+        $context['TPortal']['action'] = TPUtil::filter('action', 'get', 'string');
+        if($context['TPortal']['action'] == 'tpadmin') {
+            return $this->action_admin();
+        }
+
         \loadTemplate('TPortal');
 		\loadLanguage('TPortal');
 
@@ -68,14 +74,25 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
 			Template_Layers::getInstance()->add('TPortal');
 		}
 
-        // Save the action for the bufferHook
-        $context['TPortal']['action'] = TPUtil::filter('action', 'get', 'string');
-
         require_once(SOURCEDIR . '/TPortal.php');
         TPortalInit();
 
     }}}
 
+    public function action_admin() {{{
+        global $context, $txt;
+
+        \loadTemplate('TPortalAdmin');
+		\loadLanguage('TPortalAdmin');
+
+		if (!Template_Layers::getInstance()->hasLayers(true) && !in_array('TPortalAdmin', Template_Layers::getInstance()->getLayers())) {
+			Template_Layers::getInstance()->add('TPortalAdmin');
+		}
+
+        require_once(SOURCEDIR . '/TPortalAdmin.php');
+        TPortalAdmin();
+
+    }}}
 
     public function action_portal() {{{
 

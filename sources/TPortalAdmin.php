@@ -27,15 +27,16 @@ if (!defined('ELK')) {
 // TinyPortal admin
 function TPortalAdmin()
 {
-	global $scripturl, $sourcedir, $context, $txt;
+	global $scripturl, $context, $txt;
 
 	if(loadLanguage('TPortalAdmin') == false)
 		loadLanguage('TPortalAdmin', 'english');
 	if(loadLanguage('TPortal') == false)
 		loadLanguage('TPortal', 'english');
 
-	require_once($sourcedir . '/TPcommon.php');
-	require_once($sourcedir . '/Subs-Post.php');
+	require_once(SOURCEDIR . '/TPSubs.php');
+	require_once(SOURCEDIR . '/TPcommon.php');
+	require_once(SUBSDIR . '/Post.subs.php');
 
 	$context['TPortal']['frontpage_visualopts_admin'] = array(
 		'left' => 0,
@@ -279,6 +280,7 @@ function TPortalAdmin()
                 );
     }
 
+    $context['template_layers'] = Template_Layers::getInstance()->getLayers();
     if(array_search('tpadm', $context['template_layers']) === FALSE) {
         // TP Admin menu layer
         $context['template_layers'][] = 'tpadm';
@@ -329,9 +331,11 @@ function do_blocks()
 
 function do_menus()
 {
-	global $txt, $context, $scripturl, $smcFunc;
+	global $txt, $context, $scripturl;
 		TPadd_linktree($scripturl.'?action=tpadmin;sa=menubox', $txt['tp-menumanager']);
 		
+    $db = database();
+
 	$mid = isset($_GET['mid']) && is_numeric($_GET['mid']) ? $_GET['mid'] : 0;
 	// first check any link stuff
 	if(isset($_GET['linkon']))
@@ -340,7 +344,7 @@ function do_menus()
 		$what = is_numeric($_GET['linkon']) ? $_GET['linkon'] : 0;
 
 		if($what > 0)
-			$smcFunc['db_query']('', '
+			$db->query('', '
 				UPDATE {db_prefix}tp_variables
 				SET value5 = {int:val5}
 				WHERE id = {int:varid}',
@@ -354,7 +358,7 @@ function do_menus()
 		$what = is_numeric($_GET['linkoff']) ? $_GET['linkoff'] : '0';
 
 		if($what > 0)
-			$smcFunc['db_query']('','
+			$db->query('', '
 				UPDATE {db_prefix}tp_variables
 				SET value5 = {int:val5}
 				WHERE id = {int:varid}',
@@ -369,7 +373,7 @@ function do_menus()
 		$what = is_numeric($_GET['linkdelete']) ? $_GET['linkdelete'] : '0';
 
 		if($what > 0)
-			$smcFunc['db_query']('', '
+			$db->query('', '
 				DELETE FROM {db_prefix}tp_variables
 				WHERE id = {int:varid}',
 				array('varid' => $what)
@@ -380,15 +384,15 @@ function do_menus()
 
 	$context['TPortal']['menubox'] = array();
 	$context['TPortal']['editmenuitem'] = array();
-	$request = $smcFunc['db_query']('', '
+	$request = $db->query('', '
 		SELECT * FROM {db_prefix}tp_variables
 		WHERE type = {string:type}
 		ORDER BY subtype ASC',
 		array('type' => 'menubox')
 	);
-	if($smcFunc['db_num_rows']($request) > 0)
+	if($db->num_rows($request) > 0)
 	{
-		while ($row = $smcFunc['db_fetch_assoc']($request))
+		while ($row = $db->fetch_assoc($request))
 		{
 			if($row['value5'] == '-1')
 			{
@@ -460,10 +464,10 @@ function do_menus()
 					);
 			}
 		}
-		$smcFunc['db_free_result']($request);
+		$db->free_result($request);
 	}
 
-	$request = $smcFunc['db_query']('', '
+	$request = $db->query('', '
 		SELECT * FROM {db_prefix}tp_variables
 		WHERE type = {string:type}
 		ORDER BY value1 ASC',
@@ -477,9 +481,9 @@ function do_menus()
 		'var2' => ''
 	);
 
-	if($smcFunc['db_num_rows']($request) > 0)
+	if($db->num_rows($request) > 0)
 	{
-		while ($row = $smcFunc['db_fetch_assoc']($request))
+		while ($row = $db->fetch_assoc($request))
 		{
 			$context['TPortal']['menus'][$row['id']] = array(
 				'id' => $row['id'],
@@ -492,7 +496,7 @@ function do_menus()
 
 	get_articles();
 	// collect categories
-	$request = $smcFunc['db_query']('', '
+	$request = $db->query('', '
 		SELECT	id, value1 as name, value2 as parent
 		FROM {db_prefix}tp_variables
 		WHERE type = {string:type}',
@@ -501,14 +505,14 @@ function do_menus()
 
 	$context['TPortal']['editcats']=array();
     $allsorted = array();
-	if($smcFunc['db_num_rows']($request) > 0)
+	if($db->num_rows($request) > 0)
 	{
-		while ($row = $smcFunc['db_fetch_assoc']($request))
+		while ($row = $db->fetch_assoc($request))
 		{
 			$row['indent'] = 0;
 			$allsorted[$row['id']] = $row;
 		}
-		$smcFunc['db_free_result']($request);
+		$db->free_result($request);
 		if(count($allsorted) > 1)
 			$context['TPortal']['editcats'] = chain('id', 'parent', 'name', $allsorted);
 		else
@@ -540,7 +544,7 @@ function do_articles()
     if(allowedTo('tp_articles') == false) {
         if(isset($_GET['sa']) && substr($_GET['sa'], 0, 11) == 'editarticle') {
 		    $article = TPUtil::filter('article', 'get', 'string');
-        	$request = $smcFunc['db_query']('', '
+        	$request = $db->query('', '
 		        SELECT id FROM {db_prefix}tp_articles
 		        WHERE id = {int:article_id}
                 AND author_id = {int:member_id}',
@@ -549,10 +553,10 @@ function do_articles()
                     'member_id'     => $context['user']['id']
                 )
 	        );
-	        if($smcFunc['db_num_rows']($request) == 0) {           
+	        if($db->num_rows($request) == 0) {           
                 fatal_error($txt['tp-noadmin'], false);
             }
-            $smcFunc['db_free_result']($request);
+            $db->free_result($request);
         }
         else {
             fatal_error($txt['tp-noadmin'], false);
@@ -561,27 +565,27 @@ function do_articles()
 
 	// do an update of stray articles and categories
 	$acats = array();
-	$request = $smcFunc['db_query']('', '
+	$request = $db->query('', '
 		SELECT id FROM {db_prefix}tp_variables
 		WHERE type = {string:type}',
 		array('type' => 'category')
 	);
-	if($smcFunc['db_num_rows']($request) > 0)
+	if($db->num_rows($request) > 0)
 	{
-		while($row = $smcFunc['db_fetch_assoc']($request))
+		while($row = $db->fetch_assoc($request))
 			$acats[] = $row['id'];
-		$smcFunc['db_free_result']($request);
+		$db->free_result($request);
 	}
 	if(count($acats) > 0)
 	{
-		$smcFunc['db_query']('', '
+		$db->query('', '
 			UPDATE {db_prefix}tp_variables
 			SET value2 = {int:val2}
 			WHERE type = {string:type}
 			AND value2 NOT IN ({array_string:value2})',
 			array('val2' => 0, 'type' => 'category', 'value2' => $acats)
 		);
-		$smcFunc['db_query']('', '
+		$db->query('', '
 			UPDATE {db_prefix}tp_articles
 			SET category = {int:cat}
 			WHERE category NOT IN({array_int:category})
@@ -594,26 +598,26 @@ function do_articles()
     articleAjax();
 
 	// for the non-category articles, do a count.
-	$request = $smcFunc['db_query']('', '
+	$request = $db->query('', '
 		SELECT COUNT(*) as total
 		FROM {db_prefix}tp_articles
 		WHERE category = 0 OR category = 9999'
 	);
 
-	$row = $smcFunc['db_fetch_assoc']($request);
+	$row = $db->fetch_assoc($request);
 	$context['TPortal']['total_nocategory'] = $row['total'];
-	$smcFunc['db_free_result']($request);
+	$db->free_result($request);
 
 	// for the submissions too
-	$request = $smcFunc['db_query']('', '
+	$request = $db->query('', '
 		SELECT COUNT(*) as total
 		FROM {db_prefix}tp_articles
 		WHERE approved = 0'
 	);
 
-	$row = $smcFunc['db_fetch_assoc']($request);
+	$row = $db->fetch_assoc($request);
 	$context['TPortal']['total_submissions'] = $row['total'];
-	$smcFunc['db_free_result']($request);
+	$db->free_result($request);
 
 	// we are on categories screen
 	if(in_array($context['TPortal']['subaction'], array('categories', 'addcategory', 'clist'))) {
@@ -622,15 +626,15 @@ function do_articles()
 		if(isset($_GET['cu']) && is_numeric($_GET['cu'])) {
 			$ccat = $_GET['cu'];
 			if(isset($_GET['copy'])) {
-				$request = $smcFunc['db_query']('', '
+				$request = $db->query('', '
 					SELECT * FROM {db_prefix}tp_variables
 					WHERE id = {int:varid}',
 					array('varid' => $ccat)
 				);
-				if($smcFunc['db_num_rows']($request) > 0) {
-					$row = $smcFunc['db_fetch_assoc']($request);
+				if($db->num_rows($request) > 0) {
+					$row = $db->fetch_assoc($request);
 					$row['value1'] .= '__copy';
-					$smcFunc['db_free_result']($request);
+					$db->free_result($request);
 					$smcFunc['db_insert']('insert',
 						'{db_prefix}tp_variables',
 						array(
@@ -663,15 +667,15 @@ function do_articles()
 				redirectexit('action=tpadmin;sa=categories');
 			}
 			elseif(isset($_GET['child'])) {
-				$request = $smcFunc['db_query']('', '
+				$request = $db->query('', '
 					SELECT * FROM {db_prefix}tp_variables
 					WHERE id = {int:varid}',
 					array('varid' => $ccat)
 				);
-				if($smcFunc['db_num_rows']($request) > 0) {
-					$row = $smcFunc['db_fetch_assoc']($request);
+				if($db->num_rows($request) > 0) {
+					$row = $db->fetch_assoc($request);
 					$row['value1'] .= '__copy';
-					$smcFunc['db_free_result']($request);
+					$db->free_result($request);
 					$smcFunc['db_insert']('INSERT',
 						'{db_prefix}tp_variables',
 						array(
@@ -715,13 +719,13 @@ function do_articles()
 				}
 			// ]]></script>';
 
-				$request = $smcFunc['db_query']('', '
+				$request = $db->query('', '
 					SELECT * FROM {db_prefix}tp_variables
 					WHERE id = {int:varid} LIMIT 1',
 					array('varid' => $ccat)
 				);
-				if($smcFunc['db_num_rows']($request) > 0) {
-					$row = $smcFunc['db_fetch_assoc']($request);
+				if($db->num_rows($request) > 0) {
+					$row = $db->fetch_assoc($request);
 					$o = explode('|', $row['value7']);
 					foreach($o as $t => $opt) {
 						$b = explode('=', $opt);
@@ -729,7 +733,7 @@ function do_articles()
 							$row[$b[0]] = $b[1];
                         }
 					}
-					$smcFunc['db_free_result']($request);
+					$db->free_result($request);
 					$check = array('layout', 'catlayout', 'toppanel', 'bottompanel', 'leftpanel', 'rightpanel', 'upperpanel', 'lowerpanel', 'showchild');
 					foreach($check as $c => $ch) {
 						if(!isset($row[$ch])) {
@@ -739,7 +743,7 @@ function do_articles()
 					$context['TPortal']['editcategory'] = $row;
 				}
 				// fetch all categories and subcategories
-				$request = $smcFunc['db_query']('', '
+				$request = $db->query('', '
 					SELECT	id, value1 as name, value2 as parent, value3, value4,
 						value5, subtype, value7, value8, subtype2
 					FROM {db_prefix}tp_variables
@@ -750,13 +754,13 @@ function do_articles()
 				$context['TPortal']['editcats'] = array();
 				$allsorted = array();
 				$alcats = array();
-				if($smcFunc['db_num_rows']($request) > 0) {
-					while ($row = $smcFunc['db_fetch_assoc']($request)) {
+				if($db->num_rows($request) > 0) {
+					while ($row = $db->fetch_assoc($request)) {
 						$row['indent'] = 0;
 						$allsorted[$row['id']] = $row;
 						$alcats[] = $row['id'];
 					}
-					$smcFunc['db_free_result']($request);
+					$db->free_result($request);
 					if(count($allsorted) > 1) {
 						$context['TPortal']['editcats'] = chain('id', 'parent', 'name', $allsorted);
 					}
@@ -770,7 +774,7 @@ function do_articles()
 		}
 
 		// fetch all categories and subcategories
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT id, value1 as name, value2 as parent, value3, value4,
 				value5, subtype, value7, value8, subtype2
 			FROM {db_prefix}tp_variables
@@ -781,13 +785,13 @@ function do_articles()
 		$context['TPortal']['editcats'] = array();
 		$allsorted = array();
 		$alcats = array();
-		if($smcFunc['db_num_rows']($request) > 0) {
-			while ($row = $smcFunc['db_fetch_assoc']($request)) {
+		if($db->num_rows($request) > 0) {
+			while ($row = $db->fetch_assoc($request)) {
 				$row['indent'] = 0;
 				$allsorted[$row['id']] = $row;
 				$alcats[] = $row['id'];
 			}
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 			if(count($allsorted) > 1) {
 				$context['TPortal']['editcats'] = chain('id', 'parent', 'name', $allsorted);
             }
@@ -797,7 +801,7 @@ function do_articles()
 		}
 		// get the filecount as well
 		if(count($alcats) > 0) {
-			$request = $smcFunc['db_query']('', '
+			$request = $db->query('', '
 				SELECT	art.category as id, COUNT(art.id) as files
 				FROM {db_prefix}tp_articles as art
 				WHERE art.category IN ({array_int:cats})
@@ -805,12 +809,12 @@ function do_articles()
 				array('cats' => $alcats)
 			);
 
-			if($smcFunc['db_num_rows']($request) > 0) {
+			if($db->num_rows($request) > 0) {
 				$context['TPortal']['cats_count'] = array();
-				while ($row = $smcFunc['db_fetch_assoc']($request)) {
+				while ($row = $db->fetch_assoc($request)) {
 					$context['TPortal']['cats_count'][$row['id']] = $row['files'];
                 }
-				$smcFunc['db_free_result']($request);
+				$db->free_result($request);
 			}
 		}
 		if($context['TPortal']['subaction'] == 'addcategory') {
@@ -901,7 +905,7 @@ function do_articles()
 
 	// fetch categories and subcategories
 	if(!isset($show_nocategory)) {
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT DISTINCT var.id AS id, var.value1 AS name, var.value2 AS parent
 			FROM {db_prefix}tp_variables AS var
 			WHERE var.type = {string:type} 
@@ -910,16 +914,16 @@ function do_articles()
 			array('type' => 'category', 'whereval' => isset($where) ? $where : 0)
 		);
 
-		if($smcFunc['db_num_rows']($request) > 0) {
+		if($db->num_rows($request) > 0) {
 			$context['TPortal']['basecats'] = isset($where) ? array($where) : array('0', '9999');
 			$cats = array();
 			$context['TPortal']['cats'] = array();
 			$sorted = array();
-			while ($row = $smcFunc['db_fetch_assoc']($request)) {
+			while ($row = $db->fetch_assoc($request)) {
 				$sorted[$row['id']] = $row;
 				$cats[] = $row['id'];
 			}
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 			if(count($sorted) > 1) {
 				$context['TPortal']['cats'] = chain('id', 'parent', 'name', $sorted);
             }
@@ -935,7 +939,7 @@ function do_articles()
 		// sorting?
 		$sort = $context['TPortal']['sort'] = (!empty($_GET['sort']) && in_array($_GET['sort'], array('date', 'id','author_id', 'type', 'subject', 'parse'))) ? $_GET['sort'] : 'date';
 		$context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=tpadmin;sa=submission;sort=' . $sort , $start, $context['TPortal']['total_submissions'], 15);
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT	art.id, art.date, art.frontpage, art.category, art.author_id as author_id,
 				COALESCE(mem.real_name, art.author) as author, art.subject, art.approved,
 				art.sticky, art.type, art.featured, art.locked, art.off, art.parse as pos
@@ -952,12 +956,12 @@ function do_articles()
 			)
 		);
 
-		if($smcFunc['db_num_rows']($request) > 0) {
+		if($db->num_rows($request) > 0) {
 			$context['TPortal']['arts_submissions']=array();
-			while ($row = $smcFunc['db_fetch_assoc']($request)) {
+			while ($row = $db->fetch_assoc($request)) {
 				$context['TPortal']['arts_submissions'][] = $row;
 			}
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
 	}
 
@@ -967,7 +971,7 @@ function do_articles()
 		// sorting?
 		$sort = $context['TPortal']['sort'] = (!empty($_GET['sort']) && in_array($_GET['sort'], array('off', 'date', 'id', 'author_id', 'locked', 'frontpage', 'sticky', 'featured', 'type', 'subject', 'parse'))) ? $_GET['sort'] : 'date';
 		$context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=tpadmin;sa=articles;sort=' . $sort , $start, $context['TPortal']['total_nocategory'], 15);
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT	art.id, art.date, art.frontpage, art.category, art.author_id as author_id,
 				COALESCE(mem.real_name, art.author) as author, art.subject, art.approved, art.sticky,
 				art.type, art.featured,art.locked, art.off, art.parse as pos
@@ -983,17 +987,17 @@ function do_articles()
 			)
 		);
 
-		if($smcFunc['db_num_rows']($request) > 0) {
+		if($db->num_rows($request) > 0) {
 			$context['TPortal']['arts_nocat'] = array();
-			while ($row = $smcFunc['db_fetch_assoc']($request)) {
+			while ($row = $db->fetch_assoc($request)) {
 				$context['TPortal']['arts_nocat'][] = $row;
 			}
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
 	}
 	// ok, fetch single article
 	if(isset($whatarticle)) {
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT	art.*,  COALESCE(mem.real_name, art.author) AS real_name, art.author_id AS author_id,
 				art.type as articletype, art.id_theme as id_theme
 			FROM {db_prefix}tp_articles as art
@@ -1004,11 +1008,11 @@ function do_articles()
 			)
 		);
 
-		if($smcFunc['db_num_rows']($request) > 0) {
-			$context['TPortal']['editarticle'] = $smcFunc['db_fetch_assoc']($request);
+		if($db->num_rows($request) > 0) {
+			$context['TPortal']['editarticle'] = $db->fetch_assoc($request);
 			$context['TPortal']['editing_article'] = true;
 			$context['TPortal']['editarticle']['body'] = $smcFunc['htmlspecialchars']($context['TPortal']['editarticle']['body'], ENT_QUOTES);
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
 
         if($context['TPortal']['editarticle']['articletype'] == 'html') {
@@ -1022,7 +1026,7 @@ function do_articles()
 		}
 
 		// fetch the WYSIWYG value
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT value1 FROM {db_prefix}tp_variables
 			WHERE subtype2 = {int:subtype}
 			AND type = {string:type} LIMIT 1',
@@ -1030,9 +1034,9 @@ function do_articles()
 				'subtype' => is_numeric($whatarticle) ? $whatarticle : 0, 'type' => 'editorchoice',
 			)
 		);
-		if($smcFunc['db_num_rows']($request) > 0) {
-			$row = $smcFunc['db_fetch_assoc']($request);
-			$smcFunc['db_free_result']($request);
+		if($db->num_rows($request) > 0) {
+			$row = $db->fetch_assoc($request);
+			$db->free_result($request);
 			$context['TPortal']['editorchoice'] = $row['value1'];
 		}
 		else {
@@ -1050,7 +1054,7 @@ function do_articles()
 	}
 	// fetch article count for these
 	if(isset($cats)) {
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT	art.category as id, COUNT(art.id) as files
 			FROM {db_prefix}tp_articles as art
 			WHERE art.category IN ({array_int:cat})
@@ -1059,17 +1063,17 @@ function do_articles()
 		);
 
 		$context['TPortal']['cats_count'] = array();
-		if($smcFunc['db_num_rows']($request) > 0) {
-			while ($row = $smcFunc['db_fetch_assoc']($request))
+		if($db->num_rows($request) > 0) {
+			while ($row = $db->fetch_assoc($request))
 				$context['TPortal']['cats_count'][$row['id']] = $row['files'];
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
 	}
 	// get the icons needed
 	tp_collectArticleIcons();
 
 	// fetch all categories and subcategories
-	$request = $smcFunc['db_query']('', '
+	$request = $db->query('', '
 		SELECT	id, value1 as name, value2 as parent
 		FROM {db_prefix}tp_variables
 		WHERE type = {string:type}',
@@ -1079,12 +1083,12 @@ function do_articles()
 	$context['TPortal']['allcats'] = array();
 	$allsorted = array();
 
-	if($smcFunc['db_num_rows']($request) > 0) {
-		while ($row = $smcFunc['db_fetch_assoc']($request)) {
+	if($db->num_rows($request) > 0) {
+		while ($row = $db->fetch_assoc($request)) {
 			$allsorted[$row['id']] = $row;
         }
 
-		$smcFunc['db_free_result']($request);
+		$db->free_result($request);
 		if(count($allsorted) > 1) {
 			$context['TPortal']['allcats'] = chain('id', 'parent', 'name', $allsorted);
         }
@@ -1100,7 +1104,7 @@ function do_articles()
 		$sort = $context['TPortal']['sort'] = (!empty($_GET['sort']) && in_array($_GET['sort'], array('off', 'date', 'id', 'author_id' , 'locked', 'frontpage', 'sticky', 'featured', 'type', 'subject', 'parse'))) ? $_GET['sort'] : 'date';
 		$context['TPortal']['categoryID'] = $where;
 		// get the name
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT value1
 			FROM {db_prefix}tp_variables
 			WHERE id = {int:varid} LIMIT 1',
@@ -1108,11 +1112,11 @@ function do_articles()
 				'varid' => $where
 			)
 		);
-		$f = $smcFunc['db_fetch_assoc']($request);
-		$smcFunc['db_free_result']($request);
+		$f = $db->fetch_assoc($request);
+		$db->free_result($request);
 		$context['TPortal']['categoryNAME'] = $f['value1'];
 		// get the total first
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT	COUNT(*) as total
 			FROM {db_prefix}tp_articles
 			WHERE category = {int:cat}',
@@ -1121,11 +1125,11 @@ function do_articles()
 			)
 		);
 
-		$row = $smcFunc['db_fetch_assoc']($request);
+		$row = $db->fetch_assoc($request);
 		$context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=tpadmin;sa=articles;sort=' . $sort . ';cu=' . $where, $start, $row['total'], 15);
-		$smcFunc['db_free_result']($request);
+		$db->free_result($request);
 
-		$request = $smcFunc['db_query']('', '
+		$request = $db->query('', '
 			SELECT art.id, art.date, art.frontpage, art.category, art.author_id AS author_id,
 				COALESCE(mem.real_name, art.author) AS author, art.subject, art.approved, art.sticky,
 				art.type, art.featured, art.locked, art.off, art.parse AS pos
@@ -1142,18 +1146,18 @@ function do_articles()
 		);
 		TPadd_linktree($scripturl.'?action=tpadmin;sa=articles;cu='.$where, $txt['tp-blocktype19']);
 
-		if($smcFunc['db_num_rows']($request) > 0) {
+		if($db->num_rows($request) > 0) {
 			$context['TPortal']['arts']=array();
-			while ($row = $smcFunc['db_fetch_assoc']($request)) {
+			while ($row = $db->fetch_assoc($request)) {
 				$context['TPortal']['arts'][] = $row;
 			}
-			$smcFunc['db_free_result']($request);
+			$db->free_result($request);
 		}
 	}
 
     // get all themes for selection
     $context['TPthemes'] = array();
-    $request = $smcFunc['db_query']('', '
+    $request = $db->query('', '
             SELECT th.value AS name, th.id_theme as id_theme, tb.value AS path
             FROM {db_prefix}themes AS th
             LEFT JOIN {db_prefix}themes AS tb ON th.id_theme = tb.id_theme
@@ -1165,15 +1169,15 @@ function do_articles()
                 'thvar' => 'name', 'tbvar' => 'images_url', 'id_member' => 0,
                 )
             );
-    if($smcFunc['db_num_rows']($request) > 0) {
-        while ($row = $smcFunc['db_fetch_assoc']($request)) {
+    if($db->num_rows($request) > 0) {
+        while ($row = $db->fetch_assoc($request)) {
             $context['TPthemes'][] = array(
                     'id' => $row['id_theme'],
                     'path' => $row['path'],
                     'name' => $row['name']
                     );
         }
-        $smcFunc['db_free_result']($request);
+        $db->free_result($request);
     }
 
 	$context['html_headers'] .= '
@@ -1404,12 +1408,14 @@ function do_postchecks()
 {
 	global $context, $txt, $settings, $boarddir, $smcFunc, $sourcedir;
 
+    $db = database();
+
 	// If we have any setting changes add them to this array
 	$updateArray = array();
 	if($context['TPortal']['action'] && (isset($_GET['sa']) && $_GET['sa'] == 'settings')) {
 		    // get all the themes
             $context['TPallthem'] = array();
-			$request = $smcFunc['db_query']('', '
+			$request = $db->query('', '
 				SELECT th.value AS name, th.id_theme as id_theme, tb.value AS path
 				FROM {db_prefix}themes AS th
 				LEFT JOIN {db_prefix}themes AS tb ON th.id_theme = tb.id_theme
@@ -1421,9 +1427,9 @@ function do_postchecks()
 					'thvar' => 'name', 'tbvar' => 'images_url', 'id_member' => 0,
 				)
 			);
-			if($smcFunc['db_num_rows']($request) > 0)
+			if($db->num_rows($request) > 0)
 			{
-				while ($row = $smcFunc['db_fetch_assoc']($request))
+				while ($row = $db->fetch_assoc($request))
 				{
 					$context['TPallthem'][] = array(
 						'id' => $row['id_theme'],
@@ -1431,7 +1437,7 @@ function do_postchecks()
 						'name' => $row['name']
 					);
 				}
-				$smcFunc['db_free_result']($request);
+				$db->free_result($request);
 			}
 	}
 	// which screen do we come from?
@@ -1461,16 +1467,16 @@ function do_postchecks()
 			}
 			foreach($block as $bl => $blo)
 			{
-				$request = $smcFunc['db_query']('', '
+				$request = $db->query('', '
 					SELECT access FROM {db_prefix}tp_blocks
 					WHERE id = {int:blockid}',
 					array('blockid' => $bl)
 				);
-				if($smcFunc['db_num_rows']($request) > 0)
+				if($db->num_rows($request) > 0)
 				{
-					$row = $smcFunc['db_fetch_assoc']($request);
-					$smcFunc['db_free_result']($request);
-					$request = $smcFunc['db_query']('', '
+					$row = $db->fetch_assoc($request);
+					$db->free_result($request);
+					$request = $db->query('', '
 						UPDATE {db_prefix}tp_blocks
 						SET access = {string:access} WHERE id = {int:blockid}',
 						array(
@@ -1603,7 +1609,7 @@ function do_postchecks()
 							}
 							$themeschecked[] = $postname;
 							if(isset($themeschecked)) {
-								$smcFunc['db_query']('', '
+								$db->query('', '
 									UPDATE {db_prefix}tp_settings
 									SET value = {string:value}
 									WHERE name = {string:name}',
@@ -1657,17 +1663,17 @@ function do_postchecks()
 						{
 							$where = substr($what, 19);
 							//make sure parent are not its own parent
-							$request = $smcFunc['db_query']('', '
+							$request = $db->query('', '
 								SELECT value2 FROM {db_prefix}tp_variables
 								WHERE id = {string:varid} LIMIT 1',
 								array(
 									'varid' => $value
 								)
 							);
-							$row = $smcFunc['db_fetch_assoc']($request);
-							$smcFunc['db_free_result']($request);
+							$row = $db->fetch_assoc($request);
+							$db->free_result($request);
 							if($row['value2'] == $where)
-								$smcFunc['db_query']('', '
+								$db->query('', '
 									UPDATE {db_prefix}tp_variables
 									SET value2 = {string:val2}
 									WHERE id = {string:varid}',
@@ -1677,7 +1683,7 @@ function do_postchecks()
 									)
 								);
 
-							$smcFunc['db_query']('', '
+							$db->query('', '
 								UPDATE {db_prefix}tp_variables
 								SET value2 = {string:val2}
 								WHERE id = {string:varid}',
@@ -1703,7 +1709,7 @@ function do_postchecks()
 				if(substr($what, 0, 14) == 'tp_article_pos')
 				{
 					$where = substr($what, 14);
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_articles
 							SET parse = {int:parse}
 							WHERE id = {int:artid}',
@@ -1729,7 +1735,7 @@ function do_postchecks()
 			foreach($_POST as $what => $value)
 			{
 				if(substr($what, 0, 8) == 'menu_pos')
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_variables
 						SET subtype = {string:subtype}
 						WHERE id = {int:varid}',
@@ -1739,7 +1745,7 @@ function do_postchecks()
 						)
 					);
 				elseif(substr($what, 0, 8) == 'menu_sub')
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_variables
 						SET value4 = {string:val4}
 						WHERE id = {int:varid}',
@@ -1778,7 +1784,7 @@ function do_postchecks()
 			foreach($_POST as $what => $value)
 			{
 				if(substr($what, 0, 12) == 'tp_menu_name')
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_variables
 						SET value1 = {string:val1}
 						WHERE id = {int:varid}',
@@ -1803,7 +1809,7 @@ function do_postchecks()
 				{
 					// make sure special charachters can't be done
 					$value = preg_replace('~&#\d+$~', '', $value);
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_variables
 						SET value1 = {string:val1}
 						WHERE id = {int:varid}',
@@ -1814,7 +1820,7 @@ function do_postchecks()
 					);
 				}
 				elseif($what == 'tp_menu_newlink')
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_variables
 						SET value2 = {string:var2}
 						WHERE id = {int:varid}',
@@ -1824,7 +1830,7 @@ function do_postchecks()
 						)
 					);
 				elseif($what == 'tp_menu_menuid')
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_variables
 						SET subtype2 = {int:subtype2}
 						WHERE id = {int:varid}',
@@ -1848,7 +1854,7 @@ function do_postchecks()
 					elseif($value == 'menu')
 						$idtype = 'menu'.$_POST['tp_menu_link'];
 
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_variables
 						SET value3 = {string:val3}
 						WHERE id = {int:varid}',
@@ -1859,7 +1865,7 @@ function do_postchecks()
 					);
 				}
 				elseif($what == 'tp_menu_sub')
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_variables
 						SET value4 = {string:val4}
 						WHERE id = {int:varid}',
@@ -1869,7 +1875,7 @@ function do_postchecks()
 						)
                     );
 				elseif($what == 'tp_menu_position')
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_variables
 						SET value7 = {string:val7}
 						WHERE id = {int:varid}',
@@ -1879,7 +1885,7 @@ function do_postchecks()
 						)
 					);
 				elseif($what == 'tp_menu_icon')
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_variables
 						SET value8 = {string:val8}
 						WHERE id = {int:varid}',
@@ -1889,7 +1895,7 @@ function do_postchecks()
 						)
 					);
 				elseif(substr($what, 0, 15) == 'tp_menu_newlink')
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_variables
 						SET value2 =
 						WHERE id = {int:varid}',
@@ -1971,7 +1977,7 @@ function do_postchecks()
 					$clean = $value;
 					$param = substr($what, 12);
 					if(in_array($param, array('value5', 'value6', 'value8')))
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_variables
 							SET '. $param .' = {string:val}
 							WHERE id = {int:varid}',
@@ -1981,22 +1987,22 @@ function do_postchecks()
 					elseif($param == 'value2')
 					{
 						//make sure parent are not its own parent
-						$request = $smcFunc['db_query']('', '
+						$request = $db->query('', '
 							SELECT value2 FROM {db_prefix}tp_variables
 							WHERE id = {int:varid} LIMIT 1',
 							array('varid' => $value)
 						);
-						$row = $smcFunc['db_fetch_assoc']($request);
-						$smcFunc['db_free_result']($request);
+						$row = $db->fetch_assoc($request);
+						$db->free_result($request);
 						if(isset($row['value2']) && ( $row['value2'] == $where ))
-							$smcFunc['db_query']('', '
+							$db->query('', '
 								UPDATE {db_prefix}tp_variables
 								SET value2 = {string:val2}
 								WHERE id = {int:varid}',
 								array('val2' => '0', 'varid' => $value)
 							);
 
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_variables
 							SET value2 = {string:val2}
 							WHERE id = {int:varid}',
@@ -2004,21 +2010,21 @@ function do_postchecks()
 						);
 					}
 					elseif($param == 'value1')
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_variables
 							SET value1 = {string:val1}
 							WHERE id = {int:varid}',
 							array('val1' => strip_tags($value), 'varid' => $where)
 						);
 					elseif($param == 'value4')
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_variables
 							SET value4 = {string:val4}
 							WHERE id = {int:varid}',
 							array('val4' => $value, 'varid' => $where)
 						);
 					elseif($param == 'value9')
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_variables
 							SET value9 = {string:val9}
 							WHERE id = {int:varid}',
@@ -2030,7 +2036,7 @@ function do_postchecks()
 						$options[] = $param. '=' . $value;
 				}
 			}
-			$smcFunc['db_query']('', '
+			$db->query('', '
 				UPDATE {db_prefix}tp_variables
 				SET value3 = {string:val3}, value7 = {string:val7}
 				WHERE id = {int:varid}',
@@ -2070,9 +2076,9 @@ function do_postchecks()
 					);
 
 					$newcategory = $smcFunc['db_insert_id']('{db_prefix}tp_variables', 'id');
-					$smcFunc['db_free_result']($request);
+					$db->free_result($request);
 				}
-				$smcFunc['db_query']('', '
+				$db->query('', '
 					UPDATE {db_prefix}tp_articles
 					SET category = {int:cat}
 					WHERE id IN ({array_int:artid})',
@@ -2210,9 +2216,9 @@ function do_postchecks()
 					);
 
 					$newcategory = $smcFunc['db_insert_id']('{db_prefix}tp_variables', 'id');
-					$smcFunc['db_free_result']($request);
+					$db->free_result($request);
 				}
-				$smcFunc['db_query']('', '
+				$db->query('', '
 					UPDATE {db_prefix}tp_articles
 					SET approved = {int:approved}, category = {int:cat}
 					WHERE id IN ({array_int:artid})',
@@ -2222,7 +2228,7 @@ function do_postchecks()
 						'artid' => $ccats,
 					)
 				);
-				$smcFunc['db_query']('', '
+				$db->query('', '
 					DELETE FROM {db_prefix}tp_variables
 					WHERE type = {string:type}
 					AND value5 IN ({array_int:val5})',
@@ -2246,7 +2252,7 @@ function do_postchecks()
 				{
 					$where = substr($what, 3);
 					if(is_numeric($where))
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_blocks
 							SET pos = {int:pos}
 							WHERE id = {int:blockid}',
@@ -2260,7 +2266,7 @@ function do_postchecks()
 				{
 					$where = substr($what, 6);
 					if(is_numeric($where))
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_blocks
 							SET pos = (pos + 11)
 							WHERE id = {int:blockid}',
@@ -2273,7 +2279,7 @@ function do_postchecks()
 				{
 					$where = substr($what, 6);
 					if(is_numeric($where))
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_blocks SET pos = (pos - 11)
 							WHERE id = {int:blockid}',
 							array(
@@ -2284,7 +2290,7 @@ function do_postchecks()
 				elseif(substr($what, 0, 4) == 'type')
 				{
 					$where = substr($what, 4);
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_blocks
 						SET type = {int:type}
 						WHERE id = {int:blockid}',
@@ -2297,7 +2303,7 @@ function do_postchecks()
 				elseif(substr($what, 0, 5) == 'title')
 				{
 					$where = strip_tags(substr($what, 5));
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_blocks
 						SET title = {string:title}
 						WHERE id = {int:blockid}',
@@ -2310,7 +2316,7 @@ function do_postchecks()
 				elseif(substr($what, 0, 9) == 'blockbody')
 				{
 					$where = substr($what, 9);
-					$smcFunc['db_query']('', '
+					$db->query('', '
 						UPDATE {db_prefix}tp_blocks
 						SET body = {string:body}
 						WHERE id = {int:blockid}',
@@ -2336,17 +2342,17 @@ function do_postchecks()
 			{
 				if(substr($type, 0, 3) == 'mb_')
 				{
-					$request = $smcFunc['db_query']('', '
+					$request = $db->query('', '
 						SELECT * FROM {db_prefix}tp_blocks
 						WHERE id = {int:blockid}',
 						array(
 							'blockid' => substr($type, 3)
 						)
 					);
-					if($smcFunc['db_num_rows']($request) > 0)
+					if($db->num_rows($request) > 0)
 					{
-						$cp = $smcFunc['db_fetch_assoc']($request);
-						$smcFunc['db_free_result']($request);
+						$cp = $db->fetch_assoc($request);
+						$db->free_result($request);
 					}
 				}
 				else
@@ -2365,7 +2371,7 @@ function do_postchecks()
 			else
 				$body = '';
 
-            $request = $smcFunc['db_query']('', '
+            $request = $db->query('', '
                 SELECT pos FROM {db_prefix}tp_blocks
                 WHERE bar = {int:bar}
                 ORDER BY pos DESC LIMIT 1',
@@ -2373,10 +2379,10 @@ function do_postchecks()
                     'bar' => $panel
                 )
             );
-            if($smcFunc['db_num_rows']($request) > 0) {
-                $pos = $smcFunc['db_fetch_assoc']($request);
+            if($db->num_rows($request) > 0) {
+                $pos = $db->fetch_assoc($request);
                 $pos = $pos['pos'] + 1;
-                $smcFunc['db_free_result']($request);
+                $db->free_result($request);
             }
             else {
                 $pos = 0;
@@ -2482,7 +2488,7 @@ function do_postchecks()
 						// If we came from WYSIWYG then turn it back into BBC regardless.
 						if (!empty($_REQUEST['tp_block_body_mode']) && isset($_REQUEST['tp_block_body']))
 						{
-							require_once($sourcedir . '/Subs-Editor.php');
+							require_once(SOURCEDIR . '/Editor.subs.php');
 							$_REQUEST['tp_block_body'] = html_to_bbc($_REQUEST['tp_block_body']);
 							// We need to unhtml it now as it gets done shortly.
 							$_REQUEST['tp_block_body'] = un_htmlspecialchars($_REQUEST['tp_block_body']);
@@ -2494,7 +2500,7 @@ function do_postchecks()
 						if($_POST['tp_block_type'] == 10)
 							$value = tp_convertphp($value);
 
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_blocks
 							SET '. $setting .' = {string:value}
 							WHERE id = {int:blockid}',
@@ -2503,7 +2509,7 @@ function do_postchecks()
 					}
 					elseif($setting == 'title')
 					{
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_blocks
 							SET title = {string:title}
 							WHERE id = {int:blockid}',
@@ -2513,7 +2519,7 @@ function do_postchecks()
 					elseif($setting == 'body_mode' || $setting == 'body_choice' || $setting == 'body_pure')
 						$go = '';
 					elseif($setting == 'frame')
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_blocks
 							SET frame = {string:val}
 							WHERE id = {int:blockid}',
@@ -2521,20 +2527,20 @@ function do_postchecks()
 						);
                     elseif(in_array($setting, array( 'var1', 'var2', 'var3', 'var4', 'var5')) ) {
                         // Check for blocks in table, if none insert default blocks.
-						$request = $smcFunc['db_query']('', '
+						$request = $db->query('', '
                             SELECT settings FROM {db_prefix}tp_blocks
                             WHERE id = {int:varid} LIMIT 1',
                             array('varid' => $where)
                         );
                             
                         $data = array();
-                        if($smcFunc['db_num_rows']($request) > 0) {
-                            $row    = $smcFunc['db_fetch_assoc']($request);
+                        if($db->num_rows($request) > 0) {
+                            $row    = $db->fetch_assoc($request);
                             $data   = json_decode($row['settings'], true);
-                            $smcFunc['db_free_result']($request);
+                            $db->free_result($request);
                         }
                         $data[$setting] = $value;
-						$smcFunc['db_query']('', '
+						$db->query('', '
                             UPDATE {db_prefix}tp_blocks 
                             SET settings = {string:data}
                             WHERE id = {int:blockid}',
@@ -2542,7 +2548,7 @@ function do_postchecks()
                         );
                     }
 					else {
-						$smcFunc['db_query']('', '
+						$db->query('', '
 							UPDATE {db_prefix}tp_blocks
 							SET '. $setting .' = {raw:val}
 							WHERE id = {int:blockid}',
@@ -2600,7 +2606,7 @@ function do_postchecks()
 				}
 			}
 			// construct the access++
-			$smcFunc['db_query']('', '
+			$db->query('', '
 				UPDATE {db_prefix}tp_blocks
 				SET	display = {string:acc2},
 					access = {string:acc},
@@ -2620,7 +2626,7 @@ function do_postchecks()
 				$updateArray['userbox_options'] = implode(',', $userbox);
 
 			if(isset($themebox))
-				$smcFunc['db_query']('', '
+				$db->query('', '
 					UPDATE {db_prefix}tp_blocks
 					SET body = {string:body}
 					WHERE id = {int:blockid}',
@@ -2632,7 +2638,7 @@ function do_postchecks()
 			{
 				// get the blockcode
 				$newval = TPparseModfile(file_get_contents($context['TPortal']['blockcode_upload_path'] . $_POST['tp_blockcode'].'.blockcode') , array('code'));
-				$smcFunc['db_query']('', '
+				$db->query('', '
 					UPDATE {db_prefix}tp_blocks
 					SET body = {string:body}
 					WHERE id = {int:blockid}',
@@ -2695,71 +2701,75 @@ function get_catlayouts()
 
 function get_boards()
 {
-	global $context, $smcFunc;
+	global $context;
+
+    $db = database();
 
 	$context['TPortal']['boards'] = array();
-	$request = $smcFunc['db_query']('', '
+	$request = $db->query('', '
 		SELECT b.id_board as id, b.name, b.board_order
 		FROM {db_prefix}boards as b
 		WHERE 1=1
 		ORDER BY b.board_order ASC',
 		array()
 	);
-	if($smcFunc['db_num_rows']($request) > 0)
-	{
-		while($row = $smcFunc['db_fetch_assoc']($request))
+	if($db->num_rows($request) > 0) {
+		while($row = $db->fetch_assoc($request)) {
 			$context['TPortal']['boards'][] = $row;
-
-		$smcFunc['db_free_result']($request);
+        }
+		$db->free_result($request);
 	}
 }
 
 function get_articles()
 {
 
-	global $context, $smcFunc;
+	global $context;
+    
+    $db = database();
 
 	$context['TPortal']['edit_articles'] = array();
 
-	$request = $smcFunc['db_query']('', '
+	$request = $db->query('', '
 		SELECT id, subject, shortname FROM {db_prefix}tp_articles
 		WHERE approved = 1 AND off = 0
 		ORDER BY subject ASC');
 
-	if($smcFunc['db_num_rows']($request) > 0)
-	{
-		while($row=$smcFunc['db_fetch_assoc']($request))
+	if($db->num_rows($request) > 0) {
+		while($row=$db->fetch_assoc($request)) {
 			$context['TPortal']['edit_articles'][] = $row;
+        }
 
-		$smcFunc['db_free_result']($request);
+		$db->free_result($request);
 	}
 }
 
 function get_catnames()
 {
 
-	global $context, $smcFunc;
+	global $context;
+
+    $db = database();
 
 	$context['TPortal']['catnames'] = array();
 
-	$request = $smcFunc['db_query']('', '
+	$request = $db->query('', '
 		SELECT id, value1 FROM {db_prefix}tp_variables
 		WHERE type = {string:type}',
 		array('type' => 'category')
 	);
-	if($smcFunc['db_num_rows']($request) > 0)
-	{
-		while($row = $smcFunc['db_fetch_assoc']($request))
+	if($db->num_rows($request) > 0) {
+		while($row = $db->fetch_assoc($request))
 			$context['TPortal']['catnames'][$row['id']] = $row['value1'];
 
-		$smcFunc['db_free_result']($request);
+		$db->free_result($request);
 	}
 }
 
 function tp_create_dir($path) {{{
     global $sourcedir;
 
-    require_once($sourcedir . '/Subs-Package.php');
+    require_once(SOURCEDIR . '/Package.subs.php');
 
     // Load up the package FTP information?
     create_chmod_control();
@@ -2775,7 +2785,7 @@ function tp_create_dir($path) {{{
 function tp_delete_dir($path) {{{
     global $sourcedir;
 
-    require_once($sourcedir . '/Subs-Package.php');
+    require_once(SOURCEDIR . '/Package.subs.php');
 
     // Load up the package FTP information?
     create_chmod_control();
