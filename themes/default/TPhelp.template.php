@@ -31,7 +31,7 @@ function template_tpcredits()
 	echo '
 	<div class="tborder">
 		<div class="cat_bar">
-			<h3 class="catbg">' . $txt['tp-credits'] . '</h3>
+			<h3 class="category_header">' . $txt['tp-credits'] . '</h3>
 		</div><div></div>
 		<p class="information">' , $txt['tp-creditack2']  , '</p>
 		<div class="content">

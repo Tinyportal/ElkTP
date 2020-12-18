@@ -28,7 +28,7 @@ function template_article_search_form()
     <form accept-charset="', $context['character_set'], '" name="TPsearcharticle" action="' . $scripturl . '?action=tportal;sa=searcharticle" method="post">
         <div class="tborder">
             <div class="cat_bar">
-                <h3 class="catbg">' , $txt['tp-searcharticles2'] , '</h3>
+                <h3 class="category_header">' , $txt['tp-searcharticles2'] , '</h3>
             </div>
         <span class="upperframe"><span></span></span>
             <div class="roundframe noup">
@@ -63,7 +63,7 @@ function template_article_search_results()
     echo '
     <div class="tborder">
         <div class="cat_bar">
-            <h3 class="catbg">' , $txt['tp-searchresults'] , '
+            <h3 class="category_header">' , $txt['tp-searchresults'] , '
             ' . $txt['tp-searchfor'] . '  &quot;'.$context['TPortal']['searchterm'].'&quot;</h3>
         </div>
         <span class="upperframe"><span></span></span>

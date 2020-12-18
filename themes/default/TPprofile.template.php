@@ -28,7 +28,7 @@ function template_tp_summary()
 
 	echo '
 	<div></div>
-	<div class="cat_bar"><h3 class="catbg">'.$txt['tpsummary'].'</h3></div>
+	<div class="cat_bar"><h3 class="category_header">'.$txt['tpsummary'].'</h3></div>
 	<div id="tp_summary" class="roundframe">
 		<div>
 			<div class="float-items" style="width:38%;">'.$txt['tp-prof_allarticles'].'</div>
@@ -205,7 +205,7 @@ function template_tp_download()
 
 	echo '
 		<div></div>
-		<div class="cat_bar"><h3 class="catbg">'.$txt['downloadsprofile'].'</h3></div>
+		<div class="cat_bar"><h3 class="category_header">'.$txt['downloadsprofile'].'</h3></div>
 		<p class="information">'.$txt['downloadsprofile2'].'</p>
 		<div id="tp_profile_uploaded" class="roundframe">
 			<div class="content addborder tp_pad">';

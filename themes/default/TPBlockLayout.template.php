@@ -163,7 +163,7 @@ function template_editblock()
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="blockedit">
 		<input type="hidden" name="tpadmin_form_id" value="' . $context['TPortal']['blockedit']['id'] . '">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-editblock'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-editblock'] . '</h3></div>
 		<div id="editblock" class="admintable admin-area">
 			<div class="content noup padding-div">
 				<div class="formtable">

@@ -456,7 +456,7 @@ ul.category_children li {
 	padding: 1em;
 }
 /* Panels */
-#leftbarHeader .catbg3 a.subject:hover, #rightbarHeader .catbg3 a.subject:hover {
+#leftbarHeader .category_header3 a.subject:hover, #rightbarHeader .catbg3 a.subject:hover {
 	text-decoration: none;
 }
 #tptopbarHeader, #tpbottombarHeader, #tpleftbarHeader, #tprightbarHeader, #tplowerbarHeader, #tpcenterbarHeader, #tpcontentHeader, #tpfrontpanel_top {
@@ -608,7 +608,7 @@ ul.tpsitemap li a.tpsitemapheader {
 	text-align: center;
 	width: 150px;
 }
-.tpadmin h3.titlebg , .tpadmin h3.catbg , .tpadmin_content h3.titlebg , .tpadmin_content h3.catbg {
+.tpadmin h3.category_header , .tpadmin h3.category_header , .tpadmin_content h3.titlebg , .tpadmin_content h3.catbg {
 	clear: right;
 }
 .tp_largelist {
@@ -771,14 +771,14 @@ fieldset#blockopts td {
 	border: solid 1px #aaa;
 }
 /* rounded headers for TP */
-h2.catbg, h2.catbg2, h2.titlebg {
+h2.category_header, h2.catbg2, h2.category_header {
 	font-size: 1.2em;
 	font-weight: bold;
 	height: 31px;
 	line-height: 31px;
 	overflow: hidden;
 }
-h2.catbg img.icon {
+h2.category_header img.icon {
 	float: left;
 	margin: 5px 8px 0 0;
 }
@@ -788,7 +788,7 @@ div.tp_half
 	margin-bottom: 1px;
 	overflow: hidden;
 }
-.tp_half h3.titlebg {
+.tp_half h3.category_header {
 	background: url(../images/theme/main_block.png) no-repeat -10px -200px;
 	border-radius: 6px 6px 0 0;
 	font-weight: bold;
@@ -796,35 +796,35 @@ div.tp_half
 	margin: 0;
 	padding-right: 0;
 }
-.tp_half h3.titlebg span.l {
+.tp_half h3.category_header span.l {
 	background: url(../images/theme/main_block.png) no-repeat 0 -200px;
 	display: block;
 	float: left;
 	height: 31px;
 	width: 10px;
 }
-.tp_half h3.titlebg span.r {
+.tp_half h3.category_header span.r {
 	background: url(../images/theme/main_block.png) no-repeat 100% -200px;
 	display: block;
 	float: right;
 	height: 31px;
 	width: 10px;
 }
-.tp_half h3.catbg {
+.tp_half h3.category_header {
 	background: url(../images/theme/main_block.png) no-repeat -10px -160px;
 	border-radius: 6px 6px 0 0;
 	font-weight: bold;
 	height: 31px;
 	padding-right: 0px;
 }
-.tp_half h3.catbg span.l {
+.tp_half h3.category_header span.l {
 	background: url(../images/theme/main_block.png) no-repeat 0 -160px;
 	display: block;
 	float: left;
 	height: 31px;
 	width: 10px;
 }
-.tp_half h3.catbg span.r {
+.tp_half h3.category_header span.r {
 	background: url(../images/theme/main_block.png) no-repeat 100% -160px;
 	display: block;
 	float: right;
@@ -852,41 +852,41 @@ div.tp_half
 .tparticle .cat_bar {
 	border-radius: 6px 6px 0 0;
 }
-.tparticle .title_bar h3.titlebg2 {
+.tparticle .title_bar h3.category_header2 {
 	background: none;
     padding: 8px 0px 6px 0px;
 }
-.tparticle .title_bar h3.catbg {
+.tparticle .title_bar h3.category_header {
 	background: none;
 	padding: 6px 12px 5px 12px;
 }
-.tparticle .title_bar h3.catbg2 {
+.tparticle .title_bar h3.category_header2 {
 	background: none;
 	border-radius: 6px 6px 0 0;
 	font-weight: bold;
 	height: 31px;
 	padding-right: 1em;
 }
-.tparticle .cat_bar h3.titlebg {
+.tparticle .cat_bar h3.category_header {
 	background: none;
 }
-.tparticle .cat_bar h3.titlebg2 {
+.tparticle .cat_bar h3.category_header2 {
 	background: none;
     padding: 8px 0 6px 0;
 }
-.tparticle .tp_half h3.titlebg {
+.tparticle .tp_half h3.category_header {
     height: 31px;
 	line-height: 31px;
     padding-left: 1em;
 	padding-right: 1em;
 }
-.tparticle .tp_half h3.catbg, .tparticle .tp_half h3.catbg2 {
+.tparticle .tp_half h3.category_header, .tparticle .tp_half h3.catbg2 {
     border-radius: 6px;
     height: 31px;
     line-height: 31px;
 	padding: 0 1em 0 1em;
 }
-.tparticle .tp_half h3.titlebg2 {
+.tparticle .tp_half h3.category_header2 {
 	border-radius: 6px 6px 0 0;
 	font-weight: bold;
     height: 31px;
@@ -1088,12 +1088,12 @@ div.tp_half21 {
 	padding: 0;
 	text-shadow: -1px -1px 1px rgba(0,0,0,0.2);
 }
-.tp_half21 h3.titlebg {
+.tp_half21 h3.category_header {
 	font-size: 1.1em;
 	overflow: hidden;
 	padding: 8px 12px 6px 12px;
 }
-.tp_half21 h3.catbg {
+.tp_half21 h3.category_header {
 	font-size: 1.1em;
 	overflow: hidden;
 	padding: 8px 12px 6px 12px;

@@ -864,7 +864,7 @@ function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $sho
 			$imgs = $imgfiles;
 		}
 		echo '
-		<br><div class="title_bar"><h3 class="titlebg">' , $txt['tp-quicklist'] , '</h3></div>
+		<br><div class="title_bar"><h3 class="category_header">' , $txt['tp-quicklist'] , '</h3></div>
 		<div class="content smalltext tp_pad">' , $txt['tp-quicklist2'] , '</div>
 		<div class="content tpquicklist">
 		<div class="tpthumb">';
@@ -2303,70 +2303,70 @@ function tp_getblockstyles()
 	return array(
 		'0' => array(
 			'class' => 'titlebg+content',
-			'code_title_left' => '<div class="title_bar"><h3 class="titlebg">',
+			'code_title_left' => '<div class="title_bar"><h3 class="category_header">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="content"><span class="topslice"><span></span></span><div style="padding: 0 8px;">',
 			'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
 		),
 		'1' => array(
 			'class' => 'catbg+content',
-			'code_title_left' => '<div class="cat_bar"><h3 class="catbg">',
+			'code_title_left' => '<div class="cat_bar"><h3 class="category_header">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="content"><span class="topslice"><span></span></span><div style="padding: 0 8px;">',
 			'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
 		),
 		'2' => array(
 			'class' => 'titlebg+content(old)',
-			'code_title_left' => '<div class="title_bar"><h3 class="titlebg">',
+			'code_title_left' => '<div class="title_bar"><h3 class="category_header">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="content"><div style="padding: 8px;">',
 			'code_bottom' => '</div></div>',
 		),
 		'3' => array(
 			'class' => 'catbg+content(old)',
-			'code_title_left' => '<div class="cat_bar"><h3 class="catbg">',
+			'code_title_left' => '<div class="cat_bar"><h3 class="category_header">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="content"><div style="padding: 8px;">',
 			'code_bottom' => '</div></div>',
 		),
 		'4' => array(
 			'class' => 'titlebg+content',
-			'code_title_left' => '<div class="tp_half"><h3 class="titlebg"><span class="l"></span><span class="r"></span>',
+			'code_title_left' => '<div class="tp_half"><h3 class="category_header"><span class="l"></span><span class="r"></span>',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="content"><div style="padding: 8px 8px 0 8px;">',
 			'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
 		),
 		'5' => array(
 			'class' => 'catbg+content',
-			'code_title_left' => '<div class="tp_half"><h3 class="catbg"><span class="l"></span><span class="r"></span>',
+			'code_title_left' => '<div class="tp_half"><h3 class="category_header"><span class="l"></span><span class="r"></span>',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="content"><div style="padding: 8px 8px 0 8px;">',
 			'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
 		),
 		'6' => array(
 			'class' => 'titlebg+content',
-			'code_title_left' => '<div class="tp_half"><h3 class="titlebg"><span class="l"></span><span class="r"></span>',
+			'code_title_left' => '<div class="tp_half"><h3 class="category_header"><span class="l"></span><span class="r"></span>',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="content"><div style="padding: 8px 8px 0 8px;">',
 			'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
 		),
 		'7' => array(
 			'class' => 'catbg+content',
-			'code_title_left' => '<div class="tp_half"><h3 class="catbg"><span class="l"></span><span class="r"></span>',
+			'code_title_left' => '<div class="tp_half"><h3 class="category_header"><span class="l"></span><span class="r"></span>',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="content"><div style="padding: 8px 8px 0 8px;">',
 			'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
 		),
 		'8' => array(
 			'class' => 'titlebg+roundframe',
-			'code_title_left' => '<div class="tp_half"><h3 class="titlebg"><span class="l"></span><span class="r"></span>',
+			'code_title_left' => '<div class="tp_half"><h3 class="category_header"><span class="l"></span><span class="r"></span>',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="roundframe"><div style="padding: 8px 0 0 0px;">',
 			'code_bottom' => '</div></div><span class="lowerframe"><span></span></span>',
 		),
 		'9' => array(
 			'class' => 'catbg+roundframe',
-			'code_title_left' => '<div class="tp_half"><h3 class="catbg"><span class="l"></span><span class="r"></span>',
+			'code_title_left' => '<div class="tp_half"><h3 class="category_header"><span class="l"></span><span class="r"></span>',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="roundframe"><div style="padding: 8px 0px 0 0;">',
 			'code_bottom' => '</div></div><span class="lowerframe"><span></span></span>',
@@ -2379,49 +2379,49 @@ function tp_getblockstyles21()
 	return array(
 		'0' => array(
 			'class' => 'titlebg+content',
-			'code_title_left' => '<div class="title_bar"><h3 class="titlebg">',
+			'code_title_left' => '<div class="title_bar"><h3 class="category_header">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="content tp_block21"><div>',
 			'code_bottom' => '</div></div>',
 		),
 		'1' => array(
 			'class' => 'catbg+content',
-			'code_title_left' => '<div class="cat_bar"><h3 class="catbg">',
+			'code_title_left' => '<div class="cat_bar"><h3 class="category_header">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div><div class="content tp_block21">',
 			'code_bottom' => '</div></div>',
 		),
 		'2' => array(
 			'class' => 'catbg+roundframe',
-			'code_title_left' => '<div class="cat_bar"><h3 class="catbg">',
+			'code_title_left' => '<div class="cat_bar"><h3 class="category_header">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div><div class="roundframe tp_block21">',
 			'code_bottom' => '</div></div>',
 		),
 		'3' => array(
 			'class' => 'titletp+content',
-			'code_title_left' => '<div class="tp_half21"><h3 class="titlebg" style="font-size: 1.1em; height:auto;">',
+			'code_title_left' => '<div class="tp_half21"><h3 class="category_header" style="font-size: 1.1em; height:auto;">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="content tp_block21"><div>',
 			'code_bottom' => '</div></div>',
 		),
 		'4' => array(
 			'class' => 'cattp+content',
-			'code_title_left' => '<div class="tp_half21"><h3 class="catbg">',
+			'code_title_left' => '<div class="tp_half21"><h3 class="category_header">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="content tp_block21"><div>',
 			'code_bottom' => '</div></div>',
 		),
 		'5' => array(
 			'class' => 'titlebg+content',
-			'code_title_left' => '<div class="title_bar"><h3 class="titlebg">',
+			'code_title_left' => '<div class="title_bar"><h3 class="category_header">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="content noup tp_block21"><div>',
 			'code_bottom' => '</div></div>',
 		),
 		'6' => array(
 			'class' => 'catbg+content',
-			'code_title_left' => '<div class="cat_bar"><h3 class="catbg">',
+			'code_title_left' => '<div class="cat_bar"><h3 class="category_header">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div><div class="content noup tp_block21">',
 			'code_bottom' => '</div></div>',
@@ -2429,21 +2429,21 @@ function tp_getblockstyles21()
 
 		'7' => array(
 			'class' => 'catbg+roundframe2',
-			'code_title_left' => '<div class="cat_bar"><h3 class="catbg">',
+			'code_title_left' => '<div class="cat_bar"><h3 class="category_header">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="roundframe noup tp_block21"><div>',
 			'code_bottom' => '</div></div>',
 		),
 		'8' => array(
 			'class' => 'titletp+content',
-			'code_title_left' => '<div class="tp_half21"><h3 class="titlebg" style="font-size: 1.1em; height:auto;">',
+			'code_title_left' => '<div class="tp_half21"><h3 class="category_header" style="font-size: 1.1em; height:auto;">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div><div class="content noup tp_block21">',
 			'code_bottom' => '</div></div>',
 		),
 		'9' => array(
 			'class' => 'cattp+roundframe2',
-			'code_title_left' => '<div class="tp_half21"><h3 class="catbg">',
+			'code_title_left' => '<div class="tp_half21"><h3 class="category_header">',
 			'code_title_right' => '</h3></div>',
 			'code_top' => '<div class="roundframe noup tp_block21"><div>',
 			'code_bottom' => '</div></div>',
