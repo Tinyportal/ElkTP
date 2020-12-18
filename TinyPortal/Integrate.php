@@ -51,29 +51,20 @@ class Integrate
                 'SOURCEDIR/TPArticle.php|TPArticleActions',
                 'SOURCEDIR/TPSearch.php|TPSearchActions',
                 'SOURCEDIR/TPBlock.php|TPBlockActions',
-                'SOURCEDIR/TPdlmanager.php|TPDownloadActions',
                 'SOURCEDIR/TPcommon.php|TPCommonActions',
             ),
             'tp_post_subactions'                => array ( 
             ),           
             'tp_post_init'                      => array (
                 'SOURCEDIR/TPBlock.php|getBlocks',
-                'SOURCEDIR/TPShout.php|TPShoutLoad',
             ),
             'tp_admin_areas'                    => array (
-                'SOURCEDIR/TPdlmanager.php|TPDownloadAdminAreas',
-                'SOURCEDIR/TPShout.php|TPShoutAdminAreas',
-                'SOURCEDIR/TPListImages.php|TPListImageAdminAreas',
             ),
             'tp_shoutbox'                       => array (
-                'SOURCEDIR/TPShout.php|TPShoutBlock',
             ),
             'tp_block'                          => array (
             ),
             'tp_pre_admin_subactions'           => array ( 
-                'SOURCEDIR/TPBlock.php|TPBlockAdminActions',
-                'SOURCEDIR/TPShout.php|TPShoutAdminActions',
-                'SOURCEDIR/TPListImages.php|TPListImageAdminActions',
             ),
         );
 
