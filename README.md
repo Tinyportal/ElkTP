@@ -1,4 +1,4 @@
-[TinyPortal](https://www.tinyportal.net/) - Portal Mod for ELK
+[TinyPortal](https://www.tinyportal.net/) - Portal Mod for Elkarte
 ==================================================
 
 
