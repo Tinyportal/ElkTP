@@ -91,8 +91,8 @@ function TPortalInit() {{{
 		return;
     }
 
-	if(loadLanguage('TPortal') == false) {
-		loadLanguage('TPortal', 'english');
+	if(\loadLanguage('TPortal') == false) {
+		\loadLanguage('TPortal', 'english');
     }
 
     $tpMention = TPMentions::getInstance();
@@ -128,8 +128,8 @@ function TPortalInit() {{{
         Template_Layers::getInstance()->add($context['TPortal']['hooks']['tp_layer']);
     }
 
-	loadtemplate('TPsubs');
-	loadtemplate('TPBlockLayout');
+	\loadtemplate('TPsubs');
+	\loadtemplate('TPBlockLayout');
 
 	// is the permanent theme option set?
 	if(isset($_GET['permanent']) && !empty($_GET['theme']) && $context['user']['is_logged']) {

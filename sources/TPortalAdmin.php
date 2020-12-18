@@ -38,9 +38,6 @@ function TPortalAdmin()
 	require_once(SOURCEDIR . '/TPcommon.php');
 	require_once(SUBSDIR . '/Post.subs.php');
 
-	require_once(SOURCEDIR . '/TPortal.php');
-    setupTPsettings();    
-
 	$context['TPortal']['frontpage_visualopts_admin'] = array(
 		'left' => 0,
 		'right' => 0,
@@ -240,38 +237,26 @@ function TPortalAdmin()
                     'text' => 'tp-panels',
                     'url' => $scripturl . '?action=tpadmin;sa=panels',
                     'active' => $tpsub == 'panels',
-                    ),
+                ),
 				'blocks' => array(
                     'lang' => true,
                     'text' => 'tp-blocks',
                     'url' => $scripturl . '?action=tpadmin;sa=blocks',
                     'active' => $tpsub == 'blocks' && !isset($_GET['overview']),
-                    ),
+                ),
 				'addblock' => array(
                     'lang' => true,
                     'text' => 'tp-addblock',
                     'url' => $scripturl . '?action=tpadmin;addblock=;' . $context['session_var'] . '=' . $context['session_id'].'',
                     'active' => $tpsub == 'addblock',
-                    ),
+                ),
                 'blockoverview' => array(
                     'lang' => true,
                     'text' => 'tp-blockoverview',
                     'url' => $scripturl . '?action=tpadmin;sa=blocks;overview',
                     'active' => $tpsub == 'blocks' && isset($_GET['overview']),
-                    ),
-                'menumanager' => array(
-                    'lang' => true,
-                    'text' => 'tp-menumanager',
-                    'url' => $scripturl . '?action=tpadmin;sa=menubox',
-                    'active' => $tpsub == 'menubox',
-                    ),
-				'addmenu' => array(
-                    'lang' => true,
-                    'text' => 'tp-addmenu',
-                    'url' => $scripturl . '?action=tpadmin;sa=addmenu;fullmenu',
-                    'active' => $tpsub == 'addmenu' && !isset($_GET['overview']),
-                    ),
-                );
+                ),
+            );
     }
 
     if (!Template_Layers::getInstance()->hasLayers(true) && !in_array('tpadm', Template_Layers::getInstance()->getLayers())) {
@@ -287,8 +272,7 @@ function TPortalAdmin()
 }
 
 /* ******************************************************************************************************************** */
-function do_subaction($tpsub)
-{
+function do_subaction($tpsub) {
     global $context, $txt;
 
 	if(in_array($tpsub, array('articles', 'strays', 'categories', 'addcategory', 'submission', 'artsettings', 'articons', 'clist')) && (allowedTo(array('tp_articles', 'tp_editownarticle'))) )  {
@@ -296,9 +280,6 @@ function do_subaction($tpsub)
     }
 	elseif(in_array($tpsub, array('blocks', 'panels')) && (allowedTo('tp_blocks')) ) {
 		do_blocks();
-	}
-    elseif(in_array($tpsub, array('menubox', 'addmenu')) && (allowedTo('tp_blocks')) ) {
-		do_menus();
 	}
     elseif(in_array($tpsub, array('frontpage', 'overview', 'credits', 'permissions')) && (allowedTo('tp_settings')) ) {
 		do_admin($tpsub);
@@ -315,217 +296,9 @@ function do_subaction($tpsub)
 
 }
 
-function do_blocks()
-{
+function do_blocks() {
     require_once( SOURCEDIR . '/TPBlock.php' );
     adminBlocks();
-}
-
-function do_menus()
-{
-	global $txt, $context, $scripturl;
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=menubox', $txt['tp-menumanager']);
-		
-    $db = database();
-
-	$mid = isset($_GET['mid']) && is_numeric($_GET['mid']) ? $_GET['mid'] : 0;
-	// first check any link stuff
-	if(isset($_GET['linkon']))
-	{
-		checksession('get');
-		$what = is_numeric($_GET['linkon']) ? $_GET['linkon'] : 0;
-
-		if($what > 0)
-			$db->query('', '
-				UPDATE {db_prefix}tp_variables
-				SET value5 = {int:val5}
-				WHERE id = {int:varid}',
-				array('val5' => 0, 'varid' => $what)
-			);
-		redirectexit('action=tpadmin;sa=menubox;mid=' . $mid);
-	}
-	elseif(isset($_GET['linkoff']))
-	{
-		checksession('get');
-		$what = is_numeric($_GET['linkoff']) ? $_GET['linkoff'] : '0';
-
-		if($what > 0)
-			$db->query('', '
-				UPDATE {db_prefix}tp_variables
-				SET value5 = {int:val5}
-				WHERE id = {int:varid}',
-				array('val5' => 1, 'varid' => $what)
-			);
-
-		redirectexit('action=tpadmin;sa=menubox;mid=' . $mid);
-	}
-	elseif(isset($_GET['linkdelete']))
-	{
-		checksession('get');
-		$what = is_numeric($_GET['linkdelete']) ? $_GET['linkdelete'] : '0';
-
-		if($what > 0)
-			$db->query('', '
-				DELETE FROM {db_prefix}tp_variables
-				WHERE id = {int:varid}',
-				array('varid' => $what)
-			);
-
-		redirectexit('action=tpadmin;sa=menubox;mid=' . $mid);
-	}
-
-	$context['TPortal']['menubox'] = array();
-	$context['TPortal']['editmenuitem'] = array();
-	$request = $db->query('', '
-		SELECT * FROM {db_prefix}tp_variables
-		WHERE type = {string:type}
-		ORDER BY subtype ASC',
-		array('type' => 'menubox')
-	);
-	if($db->num_rows($request) > 0)
-	{
-		while ($row = $db->fetch_assoc($request))
-		{
-			if($row['value5'] == '-1')
-			{
-				$p = 'off';
-				$status = '1';
-			}
-			else
-			{
-				$status = '0';
-				$p = $row['value5'];
-			}
-			$mtype = substr($row['value3'], 0, 4);
-			$idtype = substr($row['value3'], 4);
-
-
-			if($mtype != 'cats' && $mtype != 'arti' && $mtype != 'head' && $mtype != 'spac' && $mtype != 'menu')
-			{
-				$mtype = 'link';
-				$idtype = $row['value3'];
-			}
-            else if( $mtype == 'menu' )
-            {
-				$idtype = substr($row['value3'], 4);
-				$menuicon = $row['value8'];
-            }
-
-			if($row['value2'] == '')
-				$newlink = '0';
-			else
-				$newlink = $row['value2'];
-			
-			if($mtype == 'head')
-			{
-				$mtype = 'head';
-				$idtype = $row['value1'];
-			}
-
-			$context['TPortal']['menubox'][$row['subtype2']][] = array(
-				'id' => $row['id'],
-				'menuID' => $row['subtype2'],
-				'name' => $row['value1'],
-				'pos' => $p,
-				'type' => $mtype,
-				'IDtype' => $idtype,
-				'off' => $row['value5'],
-				'sub' => $row['value4'],
-				'position' => $row['value7'],
-				'menuicon' => $row['value8'],
-				'subtype' => $row['subtype'],
-				'newlink' => $newlink,
-			);
-			if ($context['TPortal']['subaction'] == 'linkmanager')
-			{
-				$menuid = $_GET['linkedit'];
-				if($menuid == $row['id'])
-					$context['TPortal']['editmenuitem'] = array(
-						'id' => $row['id'],
-						'menuID' => $row['subtype2'],
-						'name' => $row['value1'],
-						'pos' => $p,
-						'type' => $mtype,
-						'IDtype' => $idtype,
-						'off' => $status,
-						'sub' => $row['value4'],
-						'position' => $row['value7'],
-						'menuicon' => $row['value8'],
-						'subtype' => $row['subtype'],
-						'newlink' => $newlink ,
-					);
-			}
-		}
-		$db->free_result($request);
-	}
-
-	$request = $db->query('', '
-		SELECT * FROM {db_prefix}tp_variables
-		WHERE type = {string:type}
-		ORDER BY value1 ASC',
-		array('type' => 'menus')
-	);
-	$context['TPortal']['menus'] = array();
-	$context['TPortal']['menus'][0] = array(
-		'id' => 0,
-		'name' => 'Internal',
-		'var1' => '',
-		'var2' => ''
-	);
-
-	if($db->num_rows($request) > 0)
-	{
-		while ($row = $db->fetch_assoc($request))
-		{
-			$context['TPortal']['menus'][$row['id']] = array(
-				'id' => $row['id'],
-				'name' => $row['value1'],
-				'var1' => $row['value2'],
-				'var2' => $row['value3']
-			);
-		}
-	}
-
-	get_articles();
-	// collect categories
-	$request = $db->query('', '
-		SELECT	id, value1 as name, value2 as parent
-		FROM {db_prefix}tp_variables
-		WHERE type = {string:type}',
-		array('type' => 'category')
-	);
-
-	$context['TPortal']['editcats']=array();
-    $allsorted = array();
-	if($db->num_rows($request) > 0)
-	{
-		while ($row = $db->fetch_assoc($request))
-		{
-			$row['indent'] = 0;
-			$allsorted[$row['id']] = $row;
-		}
-		$db->free_result($request);
-		if(count($allsorted) > 1)
-			$context['TPortal']['editcats'] = chain('id', 'parent', 'name', $allsorted);
-		else
-			$context['TPortal']['editcats'] = $allsorted;
-	}
-	// add to linktree
-	if(isset($_GET['mid'])) {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=menubox;mid='. $_GET['mid'] , $context['TPortal']['menus'][$_GET['mid']]['name']);
-	}
-
-	elseif(isset($_GET['linkedit']) && is_numeric($_GET['linkedit']))
-	{
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=menubox;mid='. $context['TPortal']['editmenuitem']['menuID'] , $context['TPortal']['menus'][$context['TPortal']['editmenuitem']['menuID']]['name']);
-		TPadd_linktree($scripturl.'?action=tpadmin;linkedit='. $_GET['linkedit'] , $context['TPortal']['editmenuitem']['name']);
-	}
-	if(isset($_GET['fullmenu'])) {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=addmenu', $txt['tp-addmenu']);
-	}
-	if(($context['TPortal']['subaction']=='addmenu') && (isset($_GET['mid']))){
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=addmenu', $txt['tp-addmenuitem']);
-	}
 }
 
 // articles

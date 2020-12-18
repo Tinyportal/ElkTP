@@ -65,7 +65,7 @@ function template_submitarticle()
     }
 
     echo'
-		<div class="cat_bar"><h3 class="catbg"><img style="margin-right: 4px;" src="' .$settings['tp_images_url']. '/TP' , $mg['off']=='1' ? 'red' : 'green' , '.png" alt=""  />' , $mg['id']=='' ? $txt['tp-addarticle']. '' .$txt['tp-incategory'] . (html_entity_decode($context['TPortal']['category_name'])) : $txt['tp-editarticle']. ' ' .html_entity_decode($mg['subject']) , '' , $mg['id']==0 ? '' : '&nbsp;-&nbsp;<a href="'.$scripturl.'?page='.$mg['id'].'">['.$txt['tp-preview'].']</a>';
+		<div class="cat_bar"><h3 class="category_header"><img style="margin-right: 4px;" src="' .$settings['tp_images_url']. '/TP' , $mg['off']=='1' ? 'red' : 'green' , '.png" alt=""  />' , $mg['id']=='' ? $txt['tp-addarticle']. '' .$txt['tp-incategory'] . (html_entity_decode($context['TPortal']['category_name'])) : $txt['tp-editarticle']. ' ' .html_entity_decode($mg['subject']) , '' , $mg['id']==0 ? '' : '&nbsp;-&nbsp;<a href="'.$scripturl.'?page='.$mg['id'].'">['.$txt['tp-preview'].']</a>';
 	echo '</h3></div>
 		<div id="edit-add-single-article" class="admintable admin-area">
 		<div class="content noup">
@@ -596,7 +596,7 @@ function template_submitsuccess()
 	echo '
 		<div class="tborder">
                 <div class="cat_bar">
-				    <h3 class="catbg">'.$txt['tp-submitsuccess2'].'</h3>
+				    <h3 class="category_header">'.$txt['tp-submitsuccess2'].'</h3>
                 </div>
 					<div class="content padding-div" style="text-align: center;">'.$txt['tp-submitsuccess'].'
 					<div class="padding-div">&nbsp;</div></div>
@@ -629,7 +629,7 @@ function template_showcomments()
 
     if(!empty($context['TPortal']['showall'])) {
 			echo '
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-commentall'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-commentall'] . '</h3></div>
 		<div></div>
 			<div id="show-art-comm" class="content padding-div">
 			<table class="table_grid tp_grid" style="width:100%">
@@ -683,7 +683,7 @@ function template_showcomments()
 		}
 		else {
 			echo '
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-commentnew'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-commentnew'] . '</h3></div>
 		<div></div>
 			<div id="latest-art-comm" class="content padding-div">
 			<table class="table_grid tp_grid" style="width:100%">
@@ -754,7 +754,7 @@ function template_showarticle()
 
 	echo '
         <div class="cat_bar">
-            <h3 class="catbg">' .$txt['tp-myarticles'] . '</h3>
+            <h3 class="category_header">' .$txt['tp-myarticles'] . '</h3>
         </div>
 		<div class="content padding-div">
 	<table class="table_grid tp_grid" style="width:100%";>

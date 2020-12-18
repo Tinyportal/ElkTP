@@ -1024,7 +1024,7 @@ function template_TPsearch_above()
 		echo '
 	<div style="padding: 0 5px;">
 		<div class="cat_bar">
-			<h3 class="catbg">' , $txt['tp-searcharticles'] , '</h3>
+			<h3 class="category_header">' , $txt['tp-searcharticles'] , '</h3>
 		</div>
 		<div class="content noup">
 			<span class="topslice"><span></span></span>
@@ -1035,7 +1035,7 @@ function template_TPsearch_above()
         echo '
 	<div style="padding: 0 5px;">
 		<div class="cat_bar">
-			<h3 class="catbg">' , $txt['tp-searcharticles'] , '</h3>
+			<h3 class="category_header">' , $txt['tp-searcharticles'] , '</h3>
 		</div>
 		<div class="content noup">
 			<span class="topslice"><span></span></span>
@@ -1069,7 +1069,7 @@ function template_tperror_above()
 
 	echo '
 	<div class="title_bar">
-		<h3 class="titlebg">'.$context['TPortal']['tperror'].'</h3>
+		<h3 class="category_header">'.$context['TPortal']['tperror'].'</h3>
 	</div>';
 
 }
@@ -2388,7 +2388,7 @@ function template_subtab_above()
 		echo '
 		<div class="tborder" style="margin-bottom: 0.5em;">
 			<div class="cat_bar">
-				<h3 class="catbg">' . $txt['tp-menus'] .'</h3>
+				<h3 class="category_header">' . $txt['tp-menus'] .'</h3>
 			</div>
 			<div style="padding: 2px; overflow: hidden;">';
 
@@ -2412,7 +2412,7 @@ function template_tpadm_above()
 	echo '
 	<div  class="tpadmin_menu">
 		<div class="cat_bar">
-			<h3 class="catbg">' . $txt['tp-adminmenu'] .'</h3>
+			<h3 class="category_header">' . $txt['tp-adminmenu'] .'</h3>
 		</div>
 		<span class="upperframe"><span></span></span>
 		<div class="roundframe noup">';
@@ -2468,7 +2468,7 @@ function template_tp_fatal_error()
 	echo '
 	<div id="fatal_error">
 		<div class="cat_bar">
-			<h3 class="catbg">' , $txt['tp-error'], '</h3>
+			<h3 class="category_header">' , $txt['tp-error'], '</h3>
 		</div>
 		<div class="content">
 			<span class="topslice"><span></span></span>
@@ -2559,7 +2559,7 @@ function tp_template_button_strip($button_strip, $direction = 'top', $strip_opti
 	$buttons = array();
 	foreach ($button_strip as $key => $value) {
 		if (!isset($value['test']) || !empty($context[$value['test']])) {
-				$buttons[] = '<a' . (isset($value['id']) ? ' id="button_strip_' . $value['id'] . '"' : '') . ' class="button button_strip_' . $key . '' . ($value['active'] ? ' active' : '') . '" href="' . $value['url'] . '"' . (isset($value['custom']) ? ' ' . $value['custom'] : '') . '><span>' . $txt[$value['text']] . '</span></a>';
+				$buttons[] = '<a' . (isset($value['id']) ? ' id="button_strip_' . $value['id'] . '"' : '') . ' class="listlevel1 linklevel1 button_strip_' . $key . '' . ($value['active'] ? ' active' : '') . '" href="' . $value['url'] . '"' . (isset($value['custom']) ? ' ' . $value['custom'] : '') . ' ><span>' . $txt[$value['text']] . '</span></a>';
 		}
 	}
 

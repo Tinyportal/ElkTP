@@ -60,15 +60,17 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
 
     public function action_index() {{{
         global $context, $txt;
+      
+        require_once(SOURCEDIR . '/TPortal.php');
 
-         // Save the action for the bufferHook
         $context['TPortal']['action'] = TPUtil::filter('action', 'get', 'string');
         if($context['TPortal']['action'] == 'tpadmin') {
+            setupTPSettings();
+            tpLoadCSS();
             return $this->action_admin();
         }
 
 		\loadLanguage('TPortal');
-        require_once(SOURCEDIR . '/TPortal.php');
         TPortalInit();
         \loadTemplate('TPortal');
 

@@ -109,7 +109,7 @@ function template_overview()
 
 	echo '
 	<div class="title_bar">
-		<h3 class="titlebg">'.$txt['tp-tpadmin'].'</h3>
+		<h3 class="category_header">'.$txt['tp-tpadmin'].'</h3>
 	</div>
 	<div>
 		<div id="tp_overview" class="tp_overview content">';
@@ -136,7 +136,7 @@ function template_settings()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="settings">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-generalsettings'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-generalsettings'] . '</h3></div>
 		<div id="settings" class="admintable admin-area">
 			<div class="information smalltext">' , $txt['tp-helpsettings'] , '</div><div></div>
 				<div class="content noup">
@@ -311,7 +311,7 @@ function template_frontpage()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="frontpage">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-frontpage_settings'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-frontpage_settings'] . '</h3></div>
 		<div id="frontpage-settings" class="admintable admin-area">
 			<div class="information smalltext">' , $txt['tp-helpfrontpage'] , '</div><div></div>
 			<div class="content noup">
@@ -390,7 +390,7 @@ function template_frontpage()
 <span class="upperframe"><span></span></span>
 <div class="roundframe">
 	<div class="title_bar">
-		<h3 class="titlebg"><span class="left"></span>{article_title} </h3>
+		<h3 class="category_header"><span class="left"></span>{article_title} </h3>
 	</div>
 	<div style="padding: 0; overflow: hidden;">
 		<div class="article_info">
@@ -505,8 +505,8 @@ function template_frontpage()
 						</dt>
 						<dd>
 						  <select id="tp_boardnews_headerstyle" name="tp_boardnews_headerstyle" value="' ,$context['TPortal']['boardnews_headerstyle'], '">
-								<option value="titlebg"' , $context['TPortal']['boardnews_headerstyle']=='titlebg' ? ' selected="selected"' : '' , '>titlebg</option>
-								<option value="catbg"' , $context['TPortal']['boardnews_headerstyle']=='catbg' ? ' selected="selected"' : '' , '>catbg</option>
+								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='titlebg' ? ' selected="selected"' : '' , '>titlebg</option>
+								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='category_header' ? ' selected="selected"' : '' , '>catbg</option>
 							</select>
 						</dd>
 						<dt>
@@ -536,7 +536,7 @@ function template_categories()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="categories">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-artcat'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-artcat'] . '</h3></div>
 		<div id="edit-category" class="admintable admin-area">
 			<div class="information smalltext">' , $txt['tp-helpcats'] , '</div><div></div>
 			<div class="content noup padding-div">
@@ -608,7 +608,7 @@ function template_editcategory()
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="editcategory">
 		<input type="hidden" name="tpadmin_form_id" value="' . $mg['id'] . '">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-editcategory'] . ' ' ,html_entity_decode($mg['value1']), '&nbsp;-&nbsp;<a href="'.$scripturl.'?cat='.$mg['id'].'">['.$txt['tp-viewcategory'].']</a></h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-editcategory'] . ' ' ,html_entity_decode($mg['value1']), '&nbsp;-&nbsp;<a href="'.$scripturl.'?cat='.$mg['id'].'">['.$txt['tp-viewcategory'].']</a></h3></div>
 		<div id="edit-art-category" class="admintable admin-area">
 			<div class="content noup">
 				<div class="formtable padding-div">
@@ -709,7 +709,7 @@ function template_editcategory()
 					$mg['value9'] = '
 <div class="tparticle">
 	<div class="cat_bar">
-		<h3 class="catbg"><span class="left"></span>{article_title}</h3>
+		<h3 class="category_header"><span class="left"></span>{article_title}</h3>
 	</div>
 	<div class="content">
 		<span class="topslice"><span></span></span>
@@ -826,7 +826,7 @@ function template_addcategory()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="addcategory">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-addcategory'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-addcategory'] . '</h3></div>
 		<div id="new-category" class="admintable admin-area">
 			<div class="information smalltext">' , $txt['tp-helpaddcategory'] , '</div><div></div>
 			<div class="content noup ">
@@ -876,7 +876,7 @@ function template_clist()
 	<form  accept-charset="', $context['character_set'], '" name="TPadmin" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="clist">
-		<div class="cat_bar"><h3 class="catbg">'.$txt['tp-tabs11'].'</h3></div>
+		<div class="cat_bar"><h3 class="category_header">'.$txt['tp-tabs11'].'</h3></div>
 		<div id="clist" class="admintable admin-area">
 			<div class="content noup">
 				<div class="padding-div"><strong>'.$txt['tp-clist'].'</strong></div>
@@ -910,7 +910,7 @@ function template_articles()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="articles">
-		<div class="cat_bar"><h3 class="catbg">' , $txt['tp-articles'] , !empty($context['TPortal']['categoryNAME']) ? $txt['tp-incategory']. ' ' . $context['TPortal']['categoryNAME'].' ' : '' ,  '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' , $txt['tp-articles'] , !empty($context['TPortal']['categoryNAME']) ? $txt['tp-incategory']. ' ' . $context['TPortal']['categoryNAME'].' ' : '' ,  '</h3></div>
 		<div id="edit-articles" class="admintable admin-area">
 			<div class="information smalltext">' , empty($context['TPortal']['categoryNAME']) ? $txt['tp-helparticles'] : $txt['tp-helparticles2'] , '</div><div></div>
 			<div class="content noup padding-div">';
@@ -968,7 +968,7 @@ function template_articles()
 		<thead>
 			<tr class="title_bar titlebg">
 			<th scope="col" class="articles">
-				<div class="catbg3">
+				<div class="category_header3">
 					<div style="width:7%;" class="pos float-items">' , $context['TPortal']['sort']=='parse' ? '<img src="' . $settings['tp_images_url'] . '/TPsort_down.png" alt="'.$txt['tp-sort-on-position'].'" /> ' : '' , '<a title="'.$txt['tp-sort-on-position'].'" href="' . $scripturl . '?action=tpadmin;sa=articles;cu='.$context['TPortal']['categoryID'].';sort=parse"><strong>' , $txt['tp-pos'] , '</strong></a></div>
 					<div style="width:25%;" class="name float-items">' , $context['TPortal']['sort']=='subject' ? '<img src="' . $settings['tp_images_url'] . '/TPsort_down.png" alt="'.$txt['tp-sort-on-subject'].'" /> ' : '' , '<a title="'.$txt['tp-sort-on-subject'].'" href="' . $scripturl . '?action=tpadmin;sa=articles;cu='.$context['TPortal']['categoryID'].';sort=subject"><strong>' , $txt['tp-arttitle'] , '</strong></a></div>
 					<div style="width:10%;" class="title-admin-area float-items"> ' , $context['TPortal']['sort']=='author_id' ? '<img src="' . $settings['tp_images_url'] . '/TPsort_down.png" alt="'.$txt['tp-sort-on-author'].'" /> ' : '' , '<a title="'.$txt['tp-sort-on-author'].'" href="' . $scripturl . '?action=tpadmin;sa=articles;cu='.$context['TPortal']['categoryID'].';sort=author_id"><strong>' , $txt['tp-author'] , '</strong></a></div>
@@ -1076,7 +1076,7 @@ function template_strays()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="strays">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-uncategorised2'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-uncategorised2'] . '</h3></div>
 		<div id="uncategorized" class="admintable admin-area">
 			<div class="information smalltext">' , $txt['tp-helpstrays'] , '</div><div></div>';
 	if(isset($context['TPortal']['arts_nocat'])) {
@@ -1213,7 +1213,7 @@ function template_submission()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="submission">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-submissionsettings']  . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-submissionsettings']  . '</h3></div>
 		<div id="submissions" class="admintable admin-area">
 		<div class="information smalltext">' , $txt['tp-helpsubmissions'] , '</div><div></div>
 			<div class="content noup padding-div">';
@@ -1224,7 +1224,7 @@ function template_submission()
 					<thead>
 						<tr class="title_bar titlebg">
 						<th scope="col" class="articles">
-							<div class="catbg3">
+							<div class="category_header3">
 								<div style="width:7%;" class="pos float-items"><strong>'.$txt['tp-select'].'</strong></div>
 								<div style="width:25%;" class="name float-items"><strong>' , $context['TPortal']['sort']=='subject' ? '<img src="' . $settings['tp_images_url'] . '/TPsort_up.png" alt="'.$txt['tp-sort-on-subject'].'" /> ' : '' , '<a title="'.$txt['tp-sort-on-subject'].'" href="' . $scripturl . '?action=tpadmin;sa=submission;sort=subject">' , $txt['tp-arttitle'] , '</a></strong></div>
 								<div style="width:10%;" class="title-admin-area float-items"><strong> ' , $context['TPortal']['sort']=='author_id' ? '<img src="' . $settings['tp_images_url'] . '/TPsort_up.png" alt="'.$txt['tp-sort-on-author'].'" /> ' : '' , '<a title="'.$txt['tp-sort-on-author'].'" href="' . $scripturl . '?action=tpadmin;sa=submission;sort=author_id">' , $txt['tp-author'] , '</a></strong></div>
@@ -1341,7 +1341,7 @@ function template_artsettings()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input  type="hidden"name="tpadmin_form" value="artsettings">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-articlesettings'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-articlesettings'] . '</h3></div>
 		<div id="article-settings" class="admintable admin-area">
 			<div class="information smalltext">' , $txt['tp-helpartsettings'] , '</div><div></div>
 			<div class="content noup">
@@ -1459,7 +1459,7 @@ function template_articons()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="articons">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-adminicons7'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-adminicons7'] . '</h3></div>
 		<div id="article-icons-pictures" class="admintable admin-area">
 			<div class="information smalltext">' , $txt['tp-adminiconsinfo'] , '</div><div></div>
 				<div class="content noup padding-div">
@@ -1513,7 +1513,7 @@ function template_panels()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'] ,'" />
 		<input type="hidden" name="tpadmin_form" value="panels">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-panelsettings'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-panelsettings'] . '</h3></div>
 			<div id="panels-admin" class="admintable admin-area">
 			<div class="information smalltext">', $txt['tp-helppanels'] ,'</div><div></div>
 			<div class="content noup">
@@ -1730,7 +1730,7 @@ function template_blocks()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="blocks">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-blocksettings'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-blocksettings'] . '</h3></div>
 		<div id="all-the-blocks" class="admintable admin-area">
 			<div class="content noup padding-div">';
 
@@ -2088,7 +2088,7 @@ function template_addblock()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="addblock">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-addblock'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-addblock'] . '</h3></div>
 		<div id="add-block" class="admintable admin-area">
 			<div class="content">
 				<div class="formtable padding-div">
@@ -2184,7 +2184,7 @@ function template_blockoverview()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="blockoverview">
-		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-blockoverview'] . '</h3></div><div></div>
+		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-blockoverview'] . '</h3></div><div></div>
 		<div id="blocks-overview" class="admintable admin-area content noup">
 			<div class="content">';
 
@@ -2236,7 +2236,7 @@ function template_menubox()
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="menuitems">
 		<input type="hidden" name="tp_menuid" value="'.$mid.'">
-		<div class="cat_bar"><h3 class="catbg">'.$txt['tp-menumanager'].' - '.$context['TPortal']['menus'][$mid]['name'] . '</h3></div>
+		<div class="cat_bar"><h3 class="category_header">'.$txt['tp-menumanager'].' - '.$context['TPortal']['menus'][$mid]['name'] . '</h3></div>
 		<div id="menu-manager" class="admintable admin-area bigger-width">
 		<div class="information smalltext">' , $txt['tp-helpmenuitems'] , '</div><div></div>
 			<div class="content noup padding-div">
@@ -2391,7 +2391,7 @@ function template_menubox()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="menus">
-		<div class="cat_bar"><h3 class="catbg">'.$txt['tp-menumanager'].'</h3></div>
+		<div class="cat_bar"><h3 class="category_header">'.$txt['tp-menumanager'].'</h3></div>
 		<div id="single-menus" class="admintable admin-area">
 			<div class="information smalltext">' , $txt['tp-helpmenus'] , '</div><div></div>
 			<div class="content noup padding-div"><br>';
@@ -2469,7 +2469,7 @@ function template_addmenu()
 	<form accept-charset="', $context['character_set'], '" name="tpadminmenu" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="menuaddsingle">
-		<div class="cat_bar"><h3 class="catbg">'.$txt['tp-addmenu'].'</h3></div>
+		<div class="cat_bar"><h3 class="category_header">'.$txt['tp-addmenu'].'</h3></div>
 		<input type="hidden" name="newmenu" value="1">
 		<input type="hidden" name="tp_menu_menuid" value="' , (isset($_GET['mid']) && is_numeric($_GET['mid'])) ? $_GET['mid'] : 0 , '">';
 
@@ -2488,7 +2488,7 @@ function template_addmenu()
 	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="menuadd">
-		<div class="cat_bar"><h3 class="catbg">'.$txt['tp-addmenu'].'</h3></div>
+		<div class="cat_bar"><h3 class="category_header">'.$txt['tp-addmenu'].'</h3></div>
 		<div id="add-menu" class="admintable admin-area">
 			<div class="content noup padding-div"><br>
 				<dl class="settings tptitle">
@@ -2514,7 +2514,7 @@ function template_linkmanager()
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="singlemenuedit">
 		<input type="hidden" name="tpadmin_form_id" value="'.$context['TPortal']['editmenuitem']['id'].'">
-		<div class="cat_bar"><h3 class="catbg">'.$txt['tp-editmenu'].'</h3></div>';
+		<div class="cat_bar"><h3 class="category_header">'.$txt['tp-editmenu'].'</h3></div>';
 
     template_menucore();
 }
