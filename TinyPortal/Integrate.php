@@ -397,15 +397,17 @@ class Integrate
 
     }}}
 
-    public static function hookActions(&$actionArray) {{{
+    public static function hookActions(&$actionArray, &$adminAction) {{{
+
         $actionArray = array_merge(
             array (
-                'forum'     => array('BoardIndex.php',      'BoardIndex'),
-                'tpadmin'   => array('TPortalAdmin.php',    'action_tpadmin'),
-                'tportal'   => array('TPortal.php',         'action_tportal'),
+                'forum'     => array('BoardIndex.php',                  'BoardIndex'),
+                'tpadmin'   => array('TPortal.controller.php',          'action_admin'),
+                'tportal'   => array('TPortal.controller.php',          'action_index'),
             ),
             $actionArray
         );
+
     }}}
 
     public static function hookDefaultAction() {{{

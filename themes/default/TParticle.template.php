@@ -68,7 +68,7 @@ function template_submitarticle()
 		<div class="cat_bar"><h3 class="catbg"><img style="margin-right: 4px;" src="' .$settings['tp_images_url']. '/TP' , $mg['off']=='1' ? 'red' : 'green' , '.png" alt=""  />' , $mg['id']=='' ? $txt['tp-addarticle']. '' .$txt['tp-incategory'] . (html_entity_decode($context['TPortal']['category_name'])) : $txt['tp-editarticle']. ' ' .html_entity_decode($mg['subject']) , '' , $mg['id']==0 ? '' : '&nbsp;-&nbsp;<a href="'.$scripturl.'?page='.$mg['id'].'">['.$txt['tp-preview'].']</a>';
 	echo '</h3></div>
 		<div id="edit-add-single-article" class="admintable admin-area">
-		<div class="windowbg noup">
+		<div class="content noup">
 			<div class="formtable padding-div">
 			<dl class="settings tptitle">
 				<dt>
@@ -598,7 +598,7 @@ function template_submitsuccess()
                 <div class="cat_bar">
 				    <h3 class="catbg">'.$txt['tp-submitsuccess2'].'</h3>
                 </div>
-					<div class="windowbg padding-div" style="text-align: center;">'.$txt['tp-submitsuccess'].'
+					<div class="content padding-div" style="text-align: center;">'.$txt['tp-submitsuccess'].'
 					<div class="padding-div">&nbsp;</div></div>
 		</div>';
 }
@@ -631,7 +631,7 @@ function template_showcomments()
 			echo '
 		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-commentall'] . '</h3></div>
 		<div></div>
-			<div id="show-art-comm" class="windowbg padding-div">
+			<div id="show-art-comm" class="content padding-div">
 			<table class="table_grid tp_grid" style="width:100%">
 				<thead>
 					<tr class="title_bar titlebg2">
@@ -651,7 +651,7 @@ function template_showcomments()
 			if(!empty($context['TPortal']['artcomments']['new'])) {
 				foreach($context['TPortal']['artcomments']['new'] as $mes) {
 					echo '
-                        <tr class="windowbg">
+                        <tr class="content">
                             <td class="tp_comments">
                             <div>
                                 <div class="float-items" style="width:30%;">
@@ -668,7 +668,7 @@ function template_showcomments()
                 }
 			}
 			echo '
-			<tr class="windowbg">
+			<tr class="content">
 			    <td class="shouts">
 				    <div class="padding-div tpright"><a href="' . $scripturl . '?action=tportal;sa=showcomments">' . $txt['tp-showcomments'] . '</a></div>
 			    </td>
@@ -685,7 +685,7 @@ function template_showcomments()
 			echo '
 		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-commentnew'] . '</h3></div>
 		<div></div>
-			<div id="latest-art-comm" class="windowbg padding-div">
+			<div id="latest-art-comm" class="content padding-div">
 			<table class="table_grid tp_grid" style="width:100%">
 				<thead>
 					<tr class="title_bar titlebg2">
@@ -705,7 +705,7 @@ function template_showcomments()
 			if(!empty($context['TPortal']['artcomments']['new'])) {
 				foreach($context['TPortal']['artcomments']['new'] as $mes) {
 					echo '
-			<tr class="windowbg">
+			<tr class="content">
 			<td class="tp_comments">
 			<div>
 				<div class="float-items" style="width:30%;"><a href="'.$scripturl.'?page='.$mes['page'].'#tp-comment">' . $mes['subject'] . '
@@ -723,7 +723,7 @@ function template_showcomments()
 			}
 			else {
 				echo '
-			<tr class="windowbg">
+			<tr class="content">
 			<td class="tp_comments">
 				<div class="padding-div">' . $txt['tp-nocomments2'] . '</div>
 			</td>
@@ -743,7 +743,7 @@ function template_addsuccess()
 
     echo '
         <div class="tborder">
-            <div style="padding: 30px 10px 30px 10px;text-align:center;" class="windowbg">'.$txt['tp-addsuccess'].'</div>
+            <div style="padding: 30px 10px 30px 10px;text-align:center;" class="content">'.$txt['tp-addsuccess'].'</div>
         </div>
     ';
 
@@ -757,7 +757,7 @@ function template_showarticle()
         <div class="cat_bar">
             <h3 class="catbg">' .$txt['tp-myarticles'] . '</h3>
         </div>
-		<div class="windowbg padding-div">
+		<div class="content padding-div">
 	<table class="table_grid tp_grid" style="width:100%";>
 		<thead>
 			<tr class="title_bar titlebg2">
@@ -772,7 +772,7 @@ function template_showarticle()
 			if(count($context['TPortal']['myarticles']) > 0) {
 				foreach($context['TPortal']['myarticles'] as $art) {
 					echo '
-					<tr class="windowbg">
+					<tr class="content">
 					<td class="articles">
 						<div style="overflow: hidden; padding: 3px;">
 							<div style="float: right;">';
@@ -813,7 +813,7 @@ function template_showarticle()
 			}
 			else {
 				echo '
-					<tr class="windowbg">
+					<tr class="content">
 					<td class="articles"> 
 					'. $txt['tp-noarticlesfound'] .'
 					</td>

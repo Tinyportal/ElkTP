@@ -1074,7 +1074,7 @@ function template_TPsearch_above()
 		<div class="cat_bar">
 			<h3 class="catbg">' , $txt['tp-searcharticles'] , '</h3>
 		</div>
-		<div class="windowbg2 noup">
+		<div class="content noup">
 			<span class="topslice"><span></span></span>
 			<p style="margin: 0; padding: 0 1em;">
 				<a href="' . $scripturl. '?action=tportal;sa=searcharticle">' . $txt['tp-searcharticles2'] . '</a>';
@@ -1085,7 +1085,7 @@ function template_TPsearch_above()
 		<div class="cat_bar">
 			<h3 class="catbg">' , $txt['tp-searcharticles'] , '</h3>
 		</div>
-		<div class="windowbg2 noup">
+		<div class="content noup">
 			<span class="topslice"><span></span></span>
 			<p style="margin: 0; padding: 0 1em;">
 				<a href="' . $scripturl. '?action=tportal;sa=searcharticle">' . $txt['tp-searcharticles2'] . '</a> |
@@ -1191,7 +1191,7 @@ function article_renders($type = 1, $single = false, $first = false)
     $useframestyle = in_array($context['TPortal']['article']['frame'], array('theme', 'frame'));
 	$divheader = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divheader'] : 'title_bar';
 	$headerstyle = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_headerstyle'] : 'titlebg';
-	$divbody = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divbody'] : ($usetitlestyle ? 'windowbg noup' : 'windowbg');
+	$divbody = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divbody'] : ($usetitlestyle ? 'content noup' : 'content');
 	$showtitle = in_array('title', $context['TPortal']['article']['visual_options']);
 
 	if($type == 1)
@@ -1405,7 +1405,7 @@ function article_renders($type = 1, $single = false, $first = false)
 		if($single)
 			$code = '
 	<div class="tparticle render6">
-		<div class="' . ($useframestyle ? 'windowbg' : '') . '">
+		<div class="' . ($useframestyle ? 'content' : '') . '">
 		' . ($useframestyle ? '<span class="topslice"><span></span></span>' : '') . '
 			<div class="article_header" style="padding-bottom: 0.5em;">
 				{article_options}
@@ -1434,7 +1434,7 @@ function article_renders($type = 1, $single = false, $first = false)
 		else
 			$code = '
 	<div class="tparticle render6">
-		<div class="' . ($useframestyle ? 'windowbg' : '') .'">
+		<div class="' . ($useframestyle ? 'content' : '') .'">
 		' . ($useframestyle ? '<span class="topslice"><span></span></span>' : '') . '
 			<div class="article_header" style="padding-bottom: 0.5em;">
 				{article_options}
@@ -1596,7 +1596,7 @@ function article_renders($type = 1, $single = false, $first = false)
 		else
 			$code = '
 	<div class="render9">	
-		<div class="windowbg" style="padding: 0;">
+		<div class="content" style="padding: 0;">
 			<span class="topslice"><span></span></span>
 			<div class="article_padding align_right">
 				<strong>{article_title}</strong>
@@ -2518,7 +2518,7 @@ function template_tp_fatal_error()
 		<div class="cat_bar">
 			<h3 class="catbg">' , $txt['tp-error'], '</h3>
 		</div>
-		<div class="windowbg">
+		<div class="content">
 			<span class="topslice"><span></span></span>
 			<div class="padding">', $context['TPortal']['errormessage'] , '</div>
 			<span class="botslice"><span></span></span>

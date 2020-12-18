@@ -649,7 +649,7 @@ function tp_renderbbc($message)
 
 	echo '
 			<tr>
-				<td class="windowbg2" colspan="2">';
+				<td class="content" colspan="2">';
 
 		echo '
 				</td>
@@ -904,8 +904,8 @@ function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $sho
 		}
 		echo '
 		<br><div class="title_bar"><h3 class="titlebg">' , $txt['tp-quicklist'] , '</h3></div>
-		<div class="windowbg2 smalltext tp_pad">' , $txt['tp-quicklist2'] , '</div>
-		<div class="windowbg tpquicklist">
+		<div class="content smalltext tp_pad">' , $txt['tp-quicklist2'] , '</div>
+		<div class="content tpquicklist">
 		<div class="tpthumb">';
 		if(isset($imgs)) {
 			foreach($imgs as $im) {
@@ -2362,59 +2362,59 @@ function tp_getblockstyles()
 {
 	return array(
 		'0' => array(
-			'class' => 'titlebg+windowbg',
+			'class' => 'titlebg+content',
 			'code_title_left' => '<div class="title_bar"><h3 class="titlebg">',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div class="windowbg"><span class="topslice"><span></span></span><div style="padding: 0 8px;">',
+			'code_top' => '<div class="content"><span class="topslice"><span></span></span><div style="padding: 0 8px;">',
 			'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
 		),
 		'1' => array(
-			'class' => 'catbg+windowbg',
+			'class' => 'catbg+content',
 			'code_title_left' => '<div class="cat_bar"><h3 class="catbg">',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div class="windowbg"><span class="topslice"><span></span></span><div style="padding: 0 8px;">',
+			'code_top' => '<div class="content"><span class="topslice"><span></span></span><div style="padding: 0 8px;">',
 			'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
 		),
 		'2' => array(
-			'class' => 'titlebg+windowbg(old)',
+			'class' => 'titlebg+content(old)',
 			'code_title_left' => '<div class="title_bar"><h3 class="titlebg">',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div class="windowbg"><div style="padding: 8px;">',
+			'code_top' => '<div class="content"><div style="padding: 8px;">',
 			'code_bottom' => '</div></div>',
 		),
 		'3' => array(
-			'class' => 'catbg+windowbg(old)',
+			'class' => 'catbg+content(old)',
 			'code_title_left' => '<div class="cat_bar"><h3 class="catbg">',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div class="windowbg"><div style="padding: 8px;">',
+			'code_top' => '<div class="content"><div style="padding: 8px;">',
 			'code_bottom' => '</div></div>',
 		),
 		'4' => array(
-			'class' => 'titlebg+windowbg',
+			'class' => 'titlebg+content',
 			'code_title_left' => '<div class="tp_half"><h3 class="titlebg"><span class="l"></span><span class="r"></span>',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div class="windowbg"><div style="padding: 8px 8px 0 8px;">',
+			'code_top' => '<div class="content"><div style="padding: 8px 8px 0 8px;">',
 			'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
 		),
 		'5' => array(
-			'class' => 'catbg+windowbg',
+			'class' => 'catbg+content',
 			'code_title_left' => '<div class="tp_half"><h3 class="catbg"><span class="l"></span><span class="r"></span>',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div class="windowbg"><div style="padding: 8px 8px 0 8px;">',
+			'code_top' => '<div class="content"><div style="padding: 8px 8px 0 8px;">',
 			'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
 		),
 		'6' => array(
-			'class' => 'titlebg+windowbg2',
+			'class' => 'titlebg+content',
 			'code_title_left' => '<div class="tp_half"><h3 class="titlebg"><span class="l"></span><span class="r"></span>',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div class="windowbg2"><div style="padding: 8px 8px 0 8px;">',
+			'code_top' => '<div class="content"><div style="padding: 8px 8px 0 8px;">',
 			'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
 		),
 		'7' => array(
-			'class' => 'catbg+windowbg2',
+			'class' => 'catbg+content',
 			'code_title_left' => '<div class="tp_half"><h3 class="catbg"><span class="l"></span><span class="r"></span>',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div class="windowbg2"><div style="padding: 8px 8px 0 8px;">',
+			'code_top' => '<div class="content"><div style="padding: 8px 8px 0 8px;">',
 			'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
 		),
 		'8' => array(
@@ -2438,17 +2438,17 @@ function tp_getblockstyles21()
 {
 	return array(
 		'0' => array(
-			'class' => 'titlebg+windowbg',
+			'class' => 'titlebg+content',
 			'code_title_left' => '<div class="title_bar"><h3 class="titlebg">',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div class="windowbg tp_block21"><div>',
+			'code_top' => '<div class="content tp_block21"><div>',
 			'code_bottom' => '</div></div>',
 		),
 		'1' => array(
-			'class' => 'catbg+windowbg',
+			'class' => 'catbg+content',
 			'code_title_left' => '<div class="cat_bar"><h3 class="catbg">',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div><div class="windowbg tp_block21">',
+			'code_top' => '<div><div class="content tp_block21">',
 			'code_bottom' => '</div></div>',
 		),
 		'2' => array(
@@ -2459,31 +2459,31 @@ function tp_getblockstyles21()
 			'code_bottom' => '</div></div>',
 		),
 		'3' => array(
-			'class' => 'titletp+windowbg',
+			'class' => 'titletp+content',
 			'code_title_left' => '<div class="tp_half21"><h3 class="titlebg" style="font-size: 1.1em; height:auto;">',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div class="windowbg tp_block21"><div>',
+			'code_top' => '<div class="content tp_block21"><div>',
 			'code_bottom' => '</div></div>',
 		),
 		'4' => array(
-			'class' => 'cattp+windowbg',
+			'class' => 'cattp+content',
 			'code_title_left' => '<div class="tp_half21"><h3 class="catbg">',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div class="windowbg tp_block21"><div>',
+			'code_top' => '<div class="content tp_block21"><div>',
 			'code_bottom' => '</div></div>',
 		),
 		'5' => array(
-			'class' => 'titlebg+windowbg2',
+			'class' => 'titlebg+content',
 			'code_title_left' => '<div class="title_bar"><h3 class="titlebg">',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div class="windowbg noup tp_block21"><div>',
+			'code_top' => '<div class="content noup tp_block21"><div>',
 			'code_bottom' => '</div></div>',
 		),
 		'6' => array(
-			'class' => 'catbg+windowbg2',
+			'class' => 'catbg+content',
 			'code_title_left' => '<div class="cat_bar"><h3 class="catbg">',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div><div class="windowbg noup tp_block21">',
+			'code_top' => '<div><div class="content noup tp_block21">',
 			'code_bottom' => '</div></div>',
 		),
 
@@ -2495,10 +2495,10 @@ function tp_getblockstyles21()
 			'code_bottom' => '</div></div>',
 		),
 		'8' => array(
-			'class' => 'titletp+windowbg2',
+			'class' => 'titletp+content',
 			'code_title_left' => '<div class="tp_half21"><h3 class="titlebg" style="font-size: 1.1em; height:auto;">',
 			'code_title_right' => '</h3></div>',
-			'code_top' => '<div><div class="windowbg noup tp_block21">',
+			'code_top' => '<div><div class="content noup tp_block21">',
 			'code_bottom' => '</div></div>',
 		),
 		'9' => array(

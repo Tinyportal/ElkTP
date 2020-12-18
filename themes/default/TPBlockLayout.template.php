@@ -168,7 +168,7 @@ function template_editblock()
 		<input type="hidden" name="tpadmin_form_id" value="' . $context['TPortal']['blockedit']['id'] . '">
 		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-editblock'] . '</h3></div>
 		<div id="editblock" class="admintable admin-area">
-			<div class="windowbg noup padding-div">
+			<div class="content noup padding-div">
 				<div class="formtable">
 					<dl class="tptitle settings">
 						<dt>
@@ -217,7 +217,7 @@ function template_editblock()
 							</div>
 						</dd>
 					</dl>
-					<div class="windowbg2 padding-div">
+					<div class="content padding-div">
 					 <div>';
 // Block types: 5 (BBC code), 10 (PHP Code) and 11 (HTML & Javascript code)
 			if($context['TPortal']['blockedit']['type']=='5' || $context['TPortal']['blockedit']['type']=='10' || $context['TPortal']['blockedit']['type']=='11')
