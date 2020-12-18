@@ -2,9 +2,9 @@
 ==================================================
 
 
-[![Latest Version](https://img.shields.io/github/release/tinoest/ElkTinyPortal.svg)](https://github.com/tinoest/ElkTinyPortal/releases)
-[![Total Downloads](https://img.shields.io/github/downloads/tinoest/ElkTinyPortal/total.svg)](https://github.com/tinoest/ElkTinyPortal/releases)
-[![GitHub issues](https://img.shields.io/github/issues/tinoest/ElkTinyPortal.svg)](https://github.com/tinoest/ElkTinyPortal/issues)
+[![Latest Version](https://img.shields.io/github/release/TinyPortal/ElkTP.svg)](https://github.com/TinyPortal/ElkTP/releases)
+[![Total Downloads](https://img.shields.io/github/downloads/TinyPortal/ElkTP/total.svg)](https://github.com/TinyPortal/ElkTP/releases)
+[![GitHub issues](https://img.shields.io/github/issues/TinyPortal/ElkTP.svg)](https://github.com/TinyPortal/ElkTP/issues)
 
 
 What is TinyPortal?
