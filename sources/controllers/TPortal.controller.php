@@ -59,7 +59,6 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
     }}}
 
     public function action_index() {{{
-/*
         global $context, $txt;
 
          // Save the action for the bufferHook
@@ -69,12 +68,6 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
         }
 
 		\loadLanguage('TPortal');
-
-		if (!Template_Layers::getInstance()->hasLayers(true) && !in_array('TPortal', Template_Layers::getInstance()->getLayers())) {
-			Template_Layers::getInstance()->add('TPortal');
-		}
-*/
-
         require_once(SOURCEDIR . '/TPortal.php');
         TPortalInit();
         \loadTemplate('TPortal');
