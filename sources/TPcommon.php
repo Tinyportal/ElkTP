@@ -137,7 +137,9 @@ function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png
 }}}
 
 function tp_groups() {{{
-	global $txt, $smcFunc;
+	global $txt;
+
+    $db = database();
 
 	// get all membergroups for permissions
 	$grp    = array();
@@ -152,11 +154,11 @@ function tp_groups() {{{
 		'posts' => '-1'
 	);
 
-	$request =  $smcFunc['db_query']('', '
+	$request =  $db->query('', '
 		SELECT * FROM {db_prefix}membergroups
 		WHERE 1=1 ORDER BY id_group'
 	);
-	while ($row = $smcFunc['db_fetch_assoc']($request)) {
+	while ($row = $db->fetch_assoc($request)) {
 		$grp[] = array(
 			'id' => $row['id_group'],
 			'name' => $row['group_name'],
@@ -194,12 +196,7 @@ function upshrink() {{{
         }
         // Don't output anything...
         $tid = time();
-        if (TP_ELK21) {
-            redirectexit($settings['images_url'] . '/blank.png?ti='.$tid);
-        }
-        else {
-            redirectexit($settings['images_url'] . '/blank.gif?ti='.$tid);
-        }
+        redirectexit($settings['images_url'] . '/blank.png?ti='.$tid);
     }
     else {
         redirectexit();

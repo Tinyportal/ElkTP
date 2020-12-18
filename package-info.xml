@@ -11,7 +11,6 @@
 		<require-dir name="sources" destination="BOARDDIR" />
 		<require-dir name="TinyPortal" destination="BOARDDIR" />
 		<require-dir name="tp-files" destination="BOARDDIR" />
-		<require-dir name="tp-downloads" destination="BOARDDIR" />
 		<require-dir name="tp-images" destination="BOARDDIR" />
 		<database>database.php</database>
         <hook hook="integrate_pre_load" function="\TinyPortal\Integrate::hookPreLoad" file="BOARDDIR/TinyPortal/Integrate.php" />
@@ -39,7 +38,6 @@
 		<remove-file name="THEMEDIR/TPprofile.template.php" />
 		<remove-file name="THEMEDIR/TPSearch.template.php" />
 		<remove-file name="THEMEDIR/TPsubs.template.php" />
-		<remove-file name="THEMEDIR/css/tp-shout.css" />
 		<remove-file name="THEMEDIR/css/tp-style.css" />
 		<remove-file name="THEMEDIR/css/tp-responsive.css" />
 		<remove-file name="LANGUAGEDIR/TParticle.english.php" />

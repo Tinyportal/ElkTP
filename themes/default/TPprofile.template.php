@@ -29,7 +29,7 @@ function template_tp_summary()
 	echo '
 	<div></div>
 	<div class="cat_bar"><h3 class="catbg">'.$txt['tpsummary'].'</h3></div>
-	<div id="tp_summary" class="'. (!TP_ELK21 ? 'windowbg padding-div' : 'roundframe') . '">
+	<div id="tp_summary" class="roundframe">
 		<div>
 			<div class="float-items" style="width:38%;">'.$txt['tp-prof_allarticles'].'</div>
 			<div class="float-items" style="width:58%;font-weight: bold;">'.$context['TPortal']['tpsummary']['articles'].'</div>
@@ -53,8 +53,8 @@ function template_tp_articles()
 		echo '
 	<div>
 		<div></div>
-		<div id="tp_profile_articles" class="'. (!TP_ELK21 ? 'windowbg padding-div' : 'roundframe') . '" >
-			<div class="windowbg addborder tp_pad">';
+		<div id="tp_profile_articles" class="roundframe" >
+			<div class="content addborder tp_pad">';
 
 		echo $txt['tp-prof_allarticles']. ' <b>'.$context['TPortal']['all_articles'].'</b><br>';
 
@@ -91,7 +91,7 @@ function template_tp_articles()
 		if(isset($context['TPortal']['profile_articles']) && sizeof($context['TPortal']['profile_articles'])>0){
 			foreach($context['TPortal']['profile_articles'] as $art){
 				echo '
-			<tr class="windowbg">
+			<tr class="content">
 			<td class="articles">
 				<div class="float-items fullwidth-on-res-layout" style="width:25%;">', $art['off']==1 ? '<img src="' . $settings['tp_images_url'] . '/TPactive1.png" title="'. $txt['tp-noton'] .'" alt="*" />&nbsp; ' : '' , '', $art['approved']==0 ? '<img src="' . $settings['tp_images_url'] . '/TPthumbdown.png" title="'. $txt['tp-notapproved'] .'" alt="*" />&nbsp; ' : '' , '';
 		if(($art['approved']==0) || ($art['off']==1)) { 
@@ -131,7 +131,7 @@ function template_tp_articles()
 		}
 		else
 			echo '
-					<tr class="windowbg">
+					<tr class="content">
 					<td class="tpshout_date" colspan="6">
 						<div class="smalltext">',$txt['tp-noarticlesfound'],'</div>	
 					</td>
@@ -165,7 +165,7 @@ $clickme.click( function(e) {
 // Articles Settings Page
 	elseif($context['TPortal']['profile_action'] == 'settings') {
 		echo '
-	<div id="tp_profile_articles_settings" class="bordercolor '. (!TP_ELK21 ? 'windowbg padding-div' : 'roundframe') . '">
+	<div id="tp_profile_articles_settings" class="bordercolor roundframe">
 		<div class="padding-div">
 			<form name="TPadmin3" action="' . $scripturl . '?action=tportal;sa=savesettings" method="post">
 				<input type="hidden" name="sc" value="', $context['session_id'], '" />
@@ -207,8 +207,8 @@ function template_tp_download()
 		<div></div>
 		<div class="cat_bar"><h3 class="catbg">'.$txt['downloadsprofile'].'</h3></div>
 		<p class="information">'.$txt['downloadsprofile2'].'</p>
-		<div id="tp_profile_uploaded" class="'. (!TP_ELK21 ? 'windowbg padding-div' : 'roundframe') . '">
-			<div class="windowbg addborder tp_pad">';
+		<div id="tp_profile_uploaded" class="roundframe">
+			<div class="content addborder tp_pad">';
 
 	echo $txt['tp-prof_alldownloads'].' <b>'.$context['TPortal']['all_downloads'].'</b><br>';
 	if($context['TPortal']['approved_downloads']>0)
@@ -235,7 +235,7 @@ function template_tp_download()
         foreach($context['TPortal']['profile_uploads'] as $art)
         {
             echo '
-                <tr class="windowbg">
+                <tr class="content">
                 <td class="uploads">
                     <div style="width:30%;" class="fullwidth-on-res-layout float-items">
                       <a href="'.$art['href'].'" target="_blank">', $art['approved']==0 ? '(' : '' , $art['name'], $art['approved'] == 0 ? ')' : '' ,  '</a>

@@ -398,10 +398,10 @@ img.tp_social {
 	width: 100%;
 }
 /* render4 */
-.render4 .windowbg, .render4 .windowbg2, .render4 .roundframe {
+.render4 .content, .render4 .content, .render4 .roundframe {
 	margin-top: 0px !important;
 }
-/*.render6 .windowbg, .render6 .windowbg2, .render6 .roundframe, .render8 .windowbg, .render8 .windowbg2, .render8 .roundframe {
+/*.render6 .content, .render6 .content, .render6 .roundframe, .render8 .content, .render8 .content, .render8 .roundframe {
 	margin-top: 2px !important;
 }*/
 .article_header {
@@ -426,7 +426,7 @@ img.tp_social {
 	width: 98px;
 }
 /* render9 */
-.render9 .windowbg {
+.render9 .content {
 	margin: 6px 0 0 0; !important;
 }
 
@@ -924,7 +924,7 @@ input,select {
 .tpadmin {
 	padding: 0 0 4px 0;
 }
-.windowbg.noup {
+.content.noup {
 	margin-top: 0 !important;
 }
 .admin-area {
@@ -1026,31 +1026,31 @@ img.tp-illu {
 }
 /* ELK2.1 styles */
 /* Added these styles for 2.1 Curve to override new styles in admin sections */
-.tparticle .windowbg, .tparticle .windowbg2, .tparticle .roundframe {
+.tparticle .content, .tparticle .content, .tparticle .roundframe {
 	padding: 0;
 }
-.admintable > .windowbg {
+.admintable > .content {
 	border: none;
 	border-radius: 0;
 	box-shadow: none;
 	margin: 0 0 0 0 !important;
 }
-.admintable > .windowbg2 {
+.admintable > .content {
 	border: none;
 	border-radius: 0;
 	box-shadow: none;
 	margin: 0 0 0 0 !important;
 }
-.admintable > .windowbg3 {
+.admintable > .content3 {
 	border: none;
 	border-radius: 0;
 	box-shadow: none;
 	margin: 0 0 0 0 !important;
 }
-.tparticle .windowbg, .tparticle .windowbg2, .tparticle .windowbg3, .tparticle .roundframe, .dl_container .windowbg {
+.tparticle .content, .tparticle .content, .tparticle .content3, .tparticle .roundframe, .dl_container .content {
 	margin-bottom: 6px !important;
 }
-#tpfrontpanel_top .windowbg, #tpfrontpanel_bottom .windowbg {
+#tpfrontpanel_top .content, #tpfrontpanel_bottom .content {
 	margin-bottom: 0 !important;
 }
 /* Added so that grid lists show acceptable in 2.0 > not needed in 2.1 */
@@ -1058,10 +1058,10 @@ table.tp_grid td, table.tp_grid th {
 	border: #DDDDDD;
 	border: 1px solid rgba(221, 221, 221, 0.5);
 }
-table.tp_grid tr.windowbg:nth-of-type(odd) {
+table.tp_grid tr.content:nth-of-type(odd) {
     background: #fdfdfd;
 }
-table.tp_grid tr.windowbg:nth-of-type(even) {
+table.tp_grid tr.content:nth-of-type(even) {
     background: #f0f4f7;
 }
 /* Main icons for ELK 2.1 */

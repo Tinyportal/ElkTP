@@ -61,9 +61,6 @@ function template_tp_above()
 
 	echo '
 	<div class="'. $sideclass .' '. $respClass .'">';
-	if(!empty($context['TPortal']['upshrinkpanel']) && (!TP_ELK21))
-		echo '
-		<div class="tp_upshrink20">', $context['TPortal']['upshrinkpanel'] , '</div>';
 
 	if($context['TPortal']['toppanel']==1)
 		echo '
@@ -168,7 +165,7 @@ function template_editblock()
 		<input type="hidden" name="tpadmin_form_id" value="' . $context['TPortal']['blockedit']['id'] . '">
 		<div class="cat_bar"><h3 class="catbg">' . $txt['tp-editblock'] . '</h3></div>
 		<div id="editblock" class="admintable admin-area">
-			<div class="windowbg noup padding-div">
+			<div class="content noup padding-div">
 				<div class="formtable">
 					<dl class="tptitle settings">
 						<dt>
@@ -217,7 +214,7 @@ function template_editblock()
 							</div>
 						</dd>
 					</dl>
-					<div class="windowbg2 padding-div">
+					<div class="content padding-div">
 					 <div>';
 // Block types: 5 (BBC code), 10 (PHP Code) and 11 (HTML & Javascript code)
 			if($context['TPortal']['blockedit']['type']=='5' || $context['TPortal']['blockedit']['type']=='10' || $context['TPortal']['blockedit']['type']=='11')
@@ -505,14 +502,8 @@ function template_editblock()
 							<input type="hidden" name="tp_tpath-1" value="1">';
 				foreach($context['TPthemes'] as $tema)
 				{
-					if(TP_ELK21) {
 						echo '
 							<img class="theme_icon" alt="*" src="'.$tema['path'].'/thumbnail.png" /> <input type="checkbox" name="tp_theme'.$tema['id'].'" value="'.$tema['name'].'"';
-						}
-					else {
-						echo '
-							<img class="theme_icon" alt="*" src="'.$tema['path'].'/thumbnail.gif" /> <input type="checkbox" name="tp_theme'.$tema['id'].'" value="'.$tema['name'].'"';
-						}
 					if(in_array($tema['id'],$myt))
 						echo ' checked';
 					echo '>'.$tema['name'].'<input type="hidden" value="'.$tema['path'].'" name="tp_path'.$tema['id'].'"><br>';
@@ -594,17 +585,13 @@ function template_editblock()
 					</div>
 				</div>
 				<div><hr>
-					<div><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-blockstylehelpdesc'],'" onclick=' . ((!TP_ELK21) ? '"return reqWin(this.href);"' : '"return reqOverlayDiv(this.href);"') . '><span class="tptooltip" title="', $txt['help'], '"></span></a>'.$txt['tp-blockstylehelp'].'<br>
+					<div><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-blockstylehelpdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a>'.$txt['tp-blockstylehelp'].'<br>
 					</div>				
 					<br><input type="radio" id="tp_block_var5" name="tp_block_var5" value="99" ' , $context['TPortal']['blockedit']['var5']=='99' ? 'checked' : '' , '><span' , $context['TPortal']['blockedit']['var5']=='99' ? ' style="color: red;">' : '><label for="tp_block_var5">' , $txt['tp-blocksusepaneltyle'] , '</label></span>
 				<div>
 				<div class="panels-optionsbg">';
-			if(TP_ELK21) {
-				$types = tp_getblockstyles21();
-            }
-			else {
-				$types = tp_getblockstyles();
-            }
+
+			$types = tp_getblockstyles21();
 
 			foreach($types as $blo => $bl) {
 				echo '
@@ -641,7 +628,7 @@ function template_editblock()
 					</dl>
 					<br>
 					<dl class="settings">
-						<dt><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-membergrouphelpdesc'],'" onclick=' . ((!TP_ELK21) ? '"return reqWin(this.href);"' : '"return reqOverlayDiv(this.href);"') . '><span class="tptooltip" title="', $txt['help'], '"></span></a> '.$txt['tp-membergrouphelp'].'</dt>
+						<dt><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-membergrouphelpdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a> '.$txt['tp-membergrouphelp'].'</dt>
 						<dd><div>
 							  <div class="tp_largelist">';
 			// loop through and set membergroups
@@ -667,7 +654,7 @@ function template_editblock()
 			//edit membergroups
 			echo '
 					<dl class="settings">
-						<dt><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-editgrouphelpdesc'],'" onclick=' . ((!TP_ELK21) ? '"return reqWin(this.href);"' : '"return reqOverlayDiv(this.href);"') . '><span class="tptooltip" title="', $txt['help'], '"></span></a>'.$txt['tp-editgrouphelp'].'</dt>
+						<dt><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-editgrouphelpdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a>'.$txt['tp-editgrouphelp'].'</dt>
 						<dd>
 							<div>
 								<div class="tp_largelist">';
@@ -687,7 +674,7 @@ function template_editblock()
 						</dd>
 					</dl>
 					<dl class="settings">
-						<dt><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-langhelpdesc'],'" onclick=' . ((!TP_ELK21) ? '"return reqWin(this.href);"' : '"return reqOverlayDiv(this.href);"') . '><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="field_name">'.$txt['tp-langhelp'].'</label></dt>
+						<dt><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-langhelpdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="field_name">'.$txt['tp-langhelp'].'</label></dt>
 						<dd>
 							<div>';
 			foreach($context['TPortal']['langfiles'] as $langlist => $lang){
@@ -696,7 +683,7 @@ function template_editblock()
 			}
 			echo '			</div>
 						<br></dd>
-						<dt><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-langdesc'],'" onclick=' . ((!TP_ELK21) ? '"return reqWin(this.href);"' : '"return reqOverlayDiv(this.href);"') . '><span class="tptooltip" title="', $txt['help'], '"></span></a>' . $txt['tp-lang'] . '';
+						<dt><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-langdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a>' . $txt['tp-lang'] . '';
 				// alert if the settings is off, supply link if allowed
 				if(empty($context['TPortal']['uselangoption'])) {
 					echo '

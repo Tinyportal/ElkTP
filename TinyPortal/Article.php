@@ -313,10 +313,6 @@ class Article extends Base
 
         // We can only toggle certain fields so check that the column is in the list 
         if(in_array($column, array('off', 'locked', 'sticky', 'frontpage', 'featured'))) {
-			if(TP_ELK21 == FALSE) {
-				global $modSettings;
-				$modSettings['disableQueryCheck'] = true;
-			}
 			if($article_id > 0) {
 				$this->dB->db_query('', '
 						UPDATE {db_prefix}tp_articles
@@ -334,9 +330,6 @@ class Article extends Base
 					)
 						
 				);
-			}
-			if(TP_ELK21 == FALSE) {
-				$modSettings['disableQueryCheck'] = true;
 			}
         }
 
