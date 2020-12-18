@@ -71,6 +71,9 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
         // Save the action for the bufferHook
         $context['TPortal']['action'] = TPUtil::filter('action', 'get', 'string');
 
+        require_once(SOURCEDIR . '/TPortal.php');
+        TPortalInit();
+
     }}}
 
 

@@ -385,7 +385,7 @@ function TPortal_statsbox()
 			<li>'.  $bullet. $txt['total_topics'].': '.$modSettings['totalTopics']. '</li>
 			<li>' . $bullet. $txt['tp-mostonline-today'].': '.$modSettings['mostOnlineToday'].'</li>
 			<li>' . $bullet. $txt['tp-mostonline'].': '.$modSettings['mostOnline'].'</li>
-			<li>('.timeformat($modSettings['mostDate']).')</li>
+			<li>('.standardTime($modSettings['mostDate']).')</li>
 		</ul>';
 
 	if(isset($context['TPortal']['userbox']['online']))
@@ -984,7 +984,7 @@ function tpo_whos($buddy_only = false)
 			$timestamp = (int) strtr($w, array($wh['username'] => ''));
 			$ids[] = $wh['id'];
 			$names[$wh['id']] = $wh['name'];
-			$times[$wh['id']] = timeformat($timestamp);
+			$times[$wh['id']] = standardTime($timestamp);
 		}
 		$avy = progetAvatars($ids);
 		foreach($avy as $a => $av)
@@ -1623,7 +1623,7 @@ function article_date($render = true)
 
 	$data = '';
 	if(in_array('date',$context['TPortal']['article']['visual_options'])) {
-	    $data =  '<div class="article_date">' . (timeformat($context['TPortal']['article']['date'])) . '</div>';
+	    $data =  '<div class="article_date">' . (standardTime($context['TPortal']['article']['date'])) . '</div>';
     }
 
     if($render) {
@@ -1691,7 +1691,7 @@ function article_shortdate($render = true)
     $data = '';
 
 	if(in_array('date',$context['TPortal']['article']['visual_options'])) {
-		$data = '<div class="article_shortdate">' . tptimeformat($context['TPortal']['article']['date'], true, '%d %b %Y').' - </div>';
+		$data = '<div class="article_shortdate">' . tpstandardTime($context['TPortal']['article']['date'], true, '%d %b %Y').' - </div>';
     }
 
     if($render) {
@@ -1974,8 +1974,8 @@ function article_moreauthor($render = true)
                     <h2 class="author_h2">'.$txt['tp-authorinfo'].'</h2>
                     ' . ( !empty($context['TPortal']['article']['avatar']) ? '<a class="tp_avatar_author" href="' . $scripturl . '?action=profile;u=' . $context['TPortal']['article']['author_id'] . '" title="' . $context['TPortal']['article']['real_name'] . '">' . $context['TPortal']['article']['avatar'] . '</a>' : '') . '
                     <div class="authortext">
-                        <a href="' . $scripturl . '?action=profile;u=' . $context['TPortal']['article']['author_id'] . '">' . $context['TPortal']['article']['real_name'] . '</a>' . $txt['tp-poster1'] . $context['forum_name'] . $txt['tp-poster2'] . timeformat($context['TPortal']['article']['date_registered']) . $txt['tp-poster3'] .
-                        $context['TPortal']['article']['posts'] . $txt['tp-poster4'] . timeformat($context['TPortal']['article']['last_login']) . '.
+                        <a href="' . $scripturl . '?action=profile;u=' . $context['TPortal']['article']['author_id'] . '">' . $context['TPortal']['article']['real_name'] . '</a>' . $txt['tp-poster1'] . $context['forum_name'] . $txt['tp-poster2'] . standardTime($context['TPortal']['article']['date_registered']) . $txt['tp-poster3'] .
+                        $context['TPortal']['article']['posts'] . $txt['tp-poster4'] . standardTime($context['TPortal']['article']['last_login']) . '.
                     </div>
                 </div>';
         }
@@ -2339,7 +2339,7 @@ function blockarticle_date($render = true)
 
 	if(in_array('date',$context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['visual_options']))
 		echo '
-		<span class="article_date"> ' . (timeformat($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['date'])) . '</span>';
+		<span class="article_date"> ' . (standardTime($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['date'])) . '</span>';
 	else
 		echo '';
 
@@ -2394,8 +2394,8 @@ function blockarticle_moreauthor($render = true)
 			<h3>'.$txt['tp-authorinfo'].'</h3>
 			' . ( !empty($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['avatar']) ? '<a class="tp_avatar_author" href="' . $scripturl . '?action=profile;u=' . $context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['author_id'] . '" title="' . $context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['real_name'] . '">' . $context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['avatar'] . '</a>' : '') . '
 			<div class="authortext">
-				<a href="' . $scripturl . '?action=profile;u=' . $context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['author_id'] . '">' . $context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['real_name'] . '</a>' . $txt['tp-poster1'] . $context['forum_name'] . $txt['tp-poster2'] . timeformat($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['date_registered']) . $txt['tp-poster3'] .
-				$context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['posts'] . $txt['tp-poster4'] . timeformat($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['last_login']) . '.
+				<a href="' . $scripturl . '?action=profile;u=' . $context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['author_id'] . '">' . $context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['real_name'] . '</a>' . $txt['tp-poster1'] . $context['forum_name'] . $txt['tp-poster2'] . standardTime($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['date_registered']) . $txt['tp-poster3'] .
+				$context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['posts'] . $txt['tp-poster4'] . standardTime($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['last_login']) . '.
 			</div>
 		</div>';
 		else
@@ -2531,7 +2531,7 @@ function template_tp_fatal_error()
 }
 
 // Format a time to make it look purdy.
-function tptimeformat($log_time, $show_today = true, $format)
+function tpstandardTime($log_time, $show_today = true, $format)
 {
 	global $context, $user_info, $txt, $modSettings, $smcFunc;
 
@@ -2562,11 +2562,11 @@ function tptimeformat($log_time, $show_today = true, $format)
 
 		// Same day of the year, same year.... Today!
 		if ($then['yday'] == $now['yday'] && $then['year'] == $now['year'])
-			return $txt['today'] . tptimeformat($log_time, $today_fmt, $format);
+			return $txt['today'] . tpstandardTime($log_time, $today_fmt, $format);
 
 		// Day-of-year is one less and same year, or it's the first of the year and that's the last of the year...
 		if ($modSettings['todayMod'] == '2' && (($then['yday'] == $now['yday'] - 1 && $then['year'] == $now['year']) || ($now['yday'] == 0 && $then['year'] == $now['year'] - 1) && $then['mon'] == 12 && $then['mday'] == 31))
-			return $txt['yesterday'] . tptimeformat($log_time, $today_fmt, $format);
+			return $txt['yesterday'] . tpstandardTime($log_time, $today_fmt, $format);
 	}
 
 	$str = !is_bool($show_today) ? $show_today : $format;

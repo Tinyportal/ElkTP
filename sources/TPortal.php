@@ -20,6 +20,8 @@ use \TinyPortal\Integrate as TPIntegrate;
 use \TinyPortal\Mentions as TPMentions;
 use \TinyPortal\Util as TPUtil;
 
+define('TPVERSION', 100);
+
 if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
@@ -80,7 +82,7 @@ function TPortalMain() {{{
 
 // TinyPortal init
 function TPortalInit() {{{
-	global $context, $txt, $user_info, $settings, $boarddir, $modSettings;
+	global $context, $txt, $user_info, $settings, $modSettings;
 
     call_integration_hook('integrate_tp_pre_init');
 
@@ -109,7 +111,7 @@ function TPortalInit() {{{
 	$context['TPortal']['querystring'] = $_SERVER['QUERY_STRING'];
     
 	// Include a ton of functions.
-	require_once(SOURCEDIR.'/TPSubs.php');
+	require_once(SOURCEDIR . '/TPSubs.php');
 	
 	// go back on showing attachments..
 	if(isset($_GET['action']) && $_GET['action'] == 'dlattach') {
@@ -117,12 +119,7 @@ function TPortalInit() {{{
     }
 
 	// Grab the SSI for its functionality
-	require_once($boarddir. '/SSI.php');
-
-	// Load JQuery if it's not set (anticipated for ELK2.1)
-    if(TP_ELK21 == false && !isset($modSettings['jquery_source'])) {
-		loadJavaScriptFile('https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js', array('external' => true), 'tp_jquery');
-    }
+	require_once(BOARDDIR. '/SSI.php');
 
 	fetchTPhooks();
 
@@ -232,7 +229,9 @@ function tpLoadCSS() {{{
 }}}
 
 function setupTPsettings() {{{
-    global $maintenance, $context, $txt, $settings, $smcFunc, $modSettings;
+    global $maintenance, $context, $txt, $settings, $modSettings;
+
+    $db = database();
 
     $context['TPortal']['always_loaded'] = array();
 
@@ -321,6 +320,8 @@ function setupTPsettings() {{{
         $context['TPortal']['tpsort'] = '';
     }
 
+    require_once(SOURCEDIR . '/TPSubs.php'); 
+
     // if not in forum start off empty
     $context['TPortal']['is_front'] = false;
     $context['TPortal']['is_frontpage'] = false;
@@ -371,7 +372,9 @@ function setupTPsettings() {{{
 }}}
 
 function fetchTPhooks() {{{
-	global $context, $smcFunc, $boarddir;
+	global $context;
+
+    $db = database();
 
 	// are we inside a board?
 	if (isset($context['current_topic'])) {
@@ -539,7 +542,7 @@ function doTPpage() {{{
 							'subject'   => '<a href="'.$scripturl.'?page='.$context['TPortal']['article']['id'].'#comment'. $row['id'].'">'.$row['subject'].'</a>',
 							'text'      => parse_bbc($row['comment']),
 							'timestamp' => $row['datetime'],
-							'date'      => timeformat($row['datetime']),
+							'date'      => standardTime($row['datetime']),
 							'poster_id' => $row['member_id'],
 							'poster'    => $row['real_name'],
 							'is_new'    => ( $row['datetime'] > $last ) ? true : false,
@@ -742,7 +745,7 @@ function doTPpage() {{{
 				$now = time();
 				if((!empty($article['pub_start']) && $article['pub_start'] > $now) || (!empty($article['pub_end']) && $article['pub_end'] < $now)) {
 					$context['tportal']['article_expired'] = $article['id'];
-					$context['TPortal']['tperror'] = '<span class="error largetext">'. $txt['tp-expired-start']. '</span><p>' .timeformat($article['pub_start']). '' .$txt['tp-expired-start2']. '' . timeformat($article['pub_end']).'</p>';
+					$context['TPortal']['tperror'] = '<span class="error largetext">'. $txt['tp-expired-start']. '</span><p>' .standardTime($article['pub_start']). '' .$txt['tp-expired-start2']. '' . standardTime($article['pub_end']).'</p>';
 				}
 			}
 			return $article['id'];
@@ -1023,7 +1026,9 @@ function doTPcat() {{{
 
 // do the frontpage
 function doTPfrontpage() {{{
-	global $context, $scripturl, $user_info, $modSettings, $smcFunc, $txt;
+	global $context, $scripturl, $user_info, $modSettings, $txt;
+
+    $db = database();
 
 	// check we aren't in any other section because 'cat' is used in ELK and TP
 	if(isset($_GET['action']) || isset($_GET['board']) || isset($_GET['topic'])) {
@@ -1542,9 +1547,6 @@ function doTPfrontpage() {{{
 					$fetch_articles[]=$row['body'];
                 }
 			}
-			elseif($row['type'] == 9) {
-				$test_menubox = true;
-            }
 			elseif($row['type'] == 19) {
 				$test_catbox = true;
 				if(is_numeric($row['body'])) {
@@ -1673,66 +1675,6 @@ function doTPfrontpage() {{{
 			$db->free_result($request);
 		}
     }
-
-	// get menubox items
-	if(isset($test_menubox)) {
-		$context['TPortal']['menu'] = array();
-		$request =  $db->query('', '
-			SELECT var.*, art.shortname, cat.value8 as catshort
-			FROM {db_prefix}tp_variables as var
-			LEFT JOIN {db_prefix}tp_articles AS art ON substring(var.value3,5) = art.id 
-			LEFT JOIN {db_prefix}tp_variables AS cat ON substring(var.value3,5) = cat.id
-			WHERE var.type = {string:type} 
-			ORDER BY value5 ASC',
-			array('type' => 'menubox')
-		);
-
-		if($db->num_rows($request) > 0) {
-			while ($row = $db->fetch_assoc($request)) {
-				$icon = '';
-				if($row['value5'] != -1 && $row['value2'] != '-1') {
-					$mtype = substr($row['value3'], 0, 4);
-					$idtype = substr($row['value3'], 4);
-                    if($mtype != 'cats' && $mtype != 'arti' && $mtype != 'head' && $mtype != 'spac') {
-						$mtype = 'link';
-						$idtype = $row['value3'];
-					}
-					if($mtype == 'arti' && !empty($row['shortname'])) {
-						$idtype = $row['shortname'];
-					}
-					if($mtype == 'cats' && !empty($row['catshort'])) {
-						$idtype = $row['catshort'];					
-					}
-					if($mtype == 'cats' && isset($context['TPortal']['article_categories']['icon'][$idtype])) {
-						$icon=$context['TPortal']['article_categories']['icon'][$idtype];
-					}
-
-					if($mtype == 'head') {
-						$mtype = 'head';
-						$idtype = $row['value1'];
-					}
-
-					$menupos = $row['value5'];
-
-					$context['TPortal']['menu'][$row['subtype2']][] = array(
-						'id' => $row['id'],
-						'menuID' => $row['subtype2'],
-						'name' => $row['value1'],
-						'pos' => $menupos,
-						'type' => $mtype,
-						'IDtype' => $idtype,
-						'off' => '0',
-						'sub' => $row['value4'],
-						'icon' => $icon,
-						'newlink' => $row['value2'],
-						'menuicon' => $row['value8'],
-						'sitemap' => (in_array($row['id'],$context['TPortal']['sitemap'])) ? true : false,
-					);
-				}
-			}
-			$db->free_result($request);
-		}
-	}
 
 	// check the panels
 	foreach($panels as $p => $panel) {
@@ -2089,7 +2031,9 @@ function TPortal_panel($side) {{{
 }}}
 
 function tpSetupUpshrinks() {{{
-	global $context, $settings, $smcFunc;
+	global $context, $settings;
+
+    $db = database();
 
 	$context['tp_panels'] = array();
 	if(isset($_COOKIE['tp_panels'])){
@@ -2282,68 +2226,6 @@ function TPortal_centerbar() {{{
 // TPortal rightbar
 function TPortal_rightbar() {{{
 	TPortal_sidebar('right');
-}}}
-
-function TPortal_menubox() {{{
-
-    global $context, $smcFunc;
-
-    $context['TPortal']['menu'] = array();
-    $request =  $db->query('', '
-        SELECT var.*, art.shortname, cat.value8 as catshort
-        FROM {db_prefix}tp_variables as var
-		LEFT JOIN {db_prefix}tp_articles AS art ON substring(var.value3,5) = art.id 
-		LEFT JOIN {db_prefix}tp_variables AS cat ON substring(var.value3,5) = cat.id
-        WHERE var.type = {string:type}
-        ORDER BY var.subtype + 0 ASC',
-        array('type' => 'menubox')
-    );
-    if($db->num_rows($request) > 0) {
-        while ($row = $db->fetch_assoc($request)) {
-            $icon = '';
-            if($row['value5'] < 1) {
-                $mtype = substr($row['value3'], 0, 4);
-                $idtype = substr($row['value3'], 4);
-                if($mtype == 'menu') {
-                    continue;
-                }
-                elseif($mtype != 'cats' && $mtype != 'arti' && $mtype != 'head' && $mtype != 'spac') {
-                    $mtype = 'link';
-                    $idtype = $row['value3'];
-                }
-				if($mtype == 'arti' && !empty($row['shortname'])) {
-					$idtype = $row['shortname'];
-				}
-				if($mtype == 'cats' && !empty($row['catshort'])) {
-					$idtype = $row['catshort'];					
-				}
-                if($mtype == 'cats' && isset($context['TPortal']['article_categories']['icon'][$idtype])) {
-                    $icon = $context['TPortal']['article_categories']['icon'][$idtype];
-                }
-                if($mtype == 'head') {
-                    $mtype = 'head';
-                    $idtype = $row['value1'];
-                }
-                $menupos = $row['value5'];
-
-                $context['TPortal']['menu'][$row['subtype2']][] = array(
-                    'id' => $row['id'],
-                    'menuID' => $row['subtype2'],
-                    'name' => $row['value1'],
-                    'pos' => $menupos,
-                    'type' => $mtype,
-                    'IDtype' => $idtype,
-                    'off' => '0',
-                    'sub' => $row['value4'],
-                    'icon' => $icon,
-                    'newlink' => $row['value2'],
-                    'menuicon' => $row['value8'],
-                    'sitemap' => (in_array($row['id'],$context['TPortal']['sitemap'])) ? true : false,
-                );
-            }
-        }
-        $db->free_result($request);
-    }
 }}}
 
 // Backwards compat function for ELK2.0

@@ -169,7 +169,7 @@ function articleShowComments() {{{
                 'title' => $row['value1'],
                 'comment' => $row['value2'],
                 'membername' => $row['realName'],
-                'time' => timeformat($row['value4']),
+                'time' => standardTime($row['value4']),
                 'author' => $row['author'],
                 'authorID' => $row['authorID'],
                 'member_id' => $row['value3'],
@@ -376,7 +376,7 @@ function articleEdit() {{{
 					case 'body':
 						// If we came from WYSIWYG then turn it back into BBC regardless.
 						if (!empty($_REQUEST['tp_article_body_mode']) && isset($_REQUEST['tp_article_body'])) {
-							require_once(SOURCEDIR . '/Subs-Editor.php');
+	                        require_once(SUBSDIR . '/Editor.subs.php');
 							$_REQUEST['tp_article_body'] = html_to_bbc($_REQUEST['tp_article_body']);
 							// We need to unhtml it now as it gets done shortly.
 							$_REQUEST['tp_article_body'] = un_htmlspecialchars($_REQUEST['tp_article_body']);

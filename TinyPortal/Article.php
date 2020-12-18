@@ -460,7 +460,7 @@ class Article extends Base
 		// insert the forumposts into $posts
 		if(is_array($forumPosts) && count($forumPosts) > 0) {
 			// Needed for html_to_bbc
-			require_once(SOURCEDIR . '/Subs-Editor.php');
+			require_once(SUBSDIR . '/Editor.subs.php');
 
 			$length = $context['TPortal']['frontpage_limit_len'];
 			foreach($forumPosts as $k => $row) {

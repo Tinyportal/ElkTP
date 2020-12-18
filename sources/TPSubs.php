@@ -2440,9 +2440,7 @@ function TP_bbcbox($input)
 
 function TP_prebbcbox($id, $body = '')
 {
-	global $sourcedir;
-
-	require_once($sourcedir . '/Subs-Editor.php');
+	require_once(SUBSDIR . '/Editor.subs.php');
 
 	$editorOptions = array(
 		'id' => $id,
