@@ -99,7 +99,7 @@ function template_article_search_results()
                 <hr>
                 <div class="tpresults" style="padding-top: 4px;">
                     <div class="middletext">' , $res['body'] . '</div>
-                    <div class="smalltext" style="padding-top: 0.4em;">' , $txt['tp-by'] . ' ' . $res['author'] . ' - ', timeformat($res['date']) , '</div>
+                    <div class="smalltext" style="padding-top: 0.4em;">' , $txt['tp-by'] . ' ' . $res['author'] . ' - ', standardTime($res['date']) , '</div>
                 </div>
             </div>';
         $bb++;

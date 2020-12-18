@@ -1013,7 +1013,7 @@ function template_articles()
 						<div style="width:29.8%;" class="smalltext fullwidth-on-res-layout float-items">
 							<div class="show-on-responsive"> ' , $context['TPortal']['sort']=='date' ? '<img src="' . $settings['tp_images_url'] . '/TPsort_down.png" alt="'.$txt['tp-sort-on-date'].'" /> ' : '' , '<a title="'.$txt['tp-sort-on-date'].'" href="' . $scripturl . '?action=tpadmin;sa=articles;cu='.$context['TPortal']['categoryID'].';sort=date"><strong>' , $txt['tp-date'] , '</strong></a>
 							</div>
-							<div class="size-on-responsive">' , timeformat($alink['date']) , '</div>
+							<div class="size-on-responsive">' , standardTime($alink['date']) , '</div>
 						</div>
 						<div style="width:37.5%;" class="smalltext fullwidth-on-res-layout float-items">
 							<div class="show-on-responsive" style="margin-top:0.5%;"><strong>'.$txt['tp-editarticleoptions2'].'</strong></div>
@@ -1131,7 +1131,7 @@ function template_strays()
 										<div class="show-on-responsive">
 											' , $context['TPortal']['sort']=='date' ? '<img src="' . $settings['tp_images_url'] . '/TPsort_down.png" alt="'.$txt['tp-sort-on-date'].'" /> ' : '' , '<a title="'.$txt['tp-sort-on-date'].'" href="' . $scripturl . '?action=tpadmin;sa=strays;sort=date"><strong>' , $txt['tp-date'] , '</strong></a>
 										</div>
-										<div class="size-on-responsive">' , timeformat($alink['date']) , '</div>
+										<div class="size-on-responsive">' , standardTime($alink['date']) , '</div>
 									</div>
 									<div style="width:36%;" class="smalltext fullwidth-on-res-layout float-items">
 										<div class="show-on-responsive" style="margin-top:0.5%;"><strong>'.$txt['tp-editarticleoptions2'].'</strong></div>
@@ -1261,7 +1261,7 @@ function template_submission()
 									</div>
 									<div style="width:29.8%;" class="smalltext fullwidth-on-res-layout float-items">
 										<div class="show-on-responsive"> ' , $context['TPortal']['sort']=='date' ? '<img src="' . $settings['tp_images_url'] . '/TPsort_down.png" alt="'.$txt['tp-sort-on-date'].'" /> ' : '' , '<a title="'.$txt['tp-sort-on-date'].'" href="' . $scripturl . '?action=tpadmin;sa=submission;sort=date"><strong>' , $txt['tp-date'] , '</strong></a></div>
-										<div class="size-on-responsive">' , timeformat($alink['date']) , '</div>
+										<div class="size-on-responsive">' , standardTime($alink['date']) , '</div>
 									</div>
 									<div style="text-align:left;width:37.5%;" class="smalltext fullwidth-on-res-layout float-items">
 										<div class="show-on-responsive" style="margin-top:0.5%;"><strong>'.$txt['tp-editarticleoptions2'].'</strong></div>
