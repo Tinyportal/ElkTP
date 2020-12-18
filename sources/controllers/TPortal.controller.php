@@ -59,6 +59,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
     }}}
 
     public function action_index() {{{
+/*
         global $context, $txt;
 
          // Save the action for the bufferHook
@@ -67,28 +68,22 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
             return $this->action_admin();
         }
 
-        \loadTemplate('TPortal');
 		\loadLanguage('TPortal');
 
 		if (!Template_Layers::getInstance()->hasLayers(true) && !in_array('TPortal', Template_Layers::getInstance()->getLayers())) {
 			Template_Layers::getInstance()->add('TPortal');
 		}
+*/
 
         require_once(SOURCEDIR . '/TPortal.php');
         TPortalInit();
+        \loadTemplate('TPortal');
 
     }}}
 
     public function action_admin() {{{
-        global $context, $txt;
 
-        \loadTemplate('TPortalAdmin');
-		\loadLanguage('TPortalAdmin');
-
-		if (!Template_Layers::getInstance()->hasLayers(true) && !in_array('TPortalAdmin', Template_Layers::getInstance()->getLayers())) {
-			Template_Layers::getInstance()->add('TPortalAdmin');
-		}
-
+        // Wrap around the old TinyPortal logic for now
         require_once(SOURCEDIR . '/TPortalAdmin.php');
         TPortalAdmin();
 

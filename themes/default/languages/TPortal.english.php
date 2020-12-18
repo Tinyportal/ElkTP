@@ -210,8 +210,6 @@ $txt['editor_tp_floatright'] = 'Insert float right div';
 $txt['tp-adminheader1'] = 'Settings & Frontpage';
 $txt['tp_menuarticles'] = 'Articles and Categories';
 $txt['tp-adminpanels'] = 'Panels and Blocks';
-$txt['tp-menumanager'] = 'Menu manager';
-$txt['custom_modules'] = 'TP Modules';
 
 // Various
 $txt['tp-forum']    = 'Forum';
