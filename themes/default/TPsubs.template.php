@@ -176,7 +176,7 @@ function TPblock($block, $theme, $side, $double=false)
 // blocktype 1: User
 function TPortal_userbox()
 {
-	global $context, $settings, $scripturl, $txt, $user_info;
+	global $context, $settings, $scripturl, $txt, $user_info, $maintenance;
 
 	$bullet = '<img src="'.$settings['tp_images_url'].'/TPdivider.png" alt="" style="margin:0 4px 0 0;" />';
 	$bullet2 = '<img src="'.$settings['tp_images_url'].'/TPdivider2.png" alt="" style="margin:0 4px 0 0;" />';
@@ -227,23 +227,25 @@ function TPortal_userbox()
 			';
 
 		// Is the forum in maintenance mode?
-		if ($context['in_maintenance'] && $context['user']['is_admin'])
+		if ($maintenance && $context['user']['is_admin']) {
 			echo '
 			<li>' .$bullet2.$txt['tp_maintenace']. '</li>';
+        }
 		// Show the total time logged in?
-		if (!empty($context['user']['total_time_logged_in']) && isset($context['TPortal']['userbox']['logged']))
-		{
+		if (!empty($context['user']['total_time_logged_in']) && isset($context['TPortal']['userbox']['logged'])) {
 			echo '
 			<li>' .$bullet2.$txt['tp-loggedintime'] . '</li>
 			<li>'.$bullet2.$context['user']['total_time_logged_in']['days'] . $txt['tp-acronymdays']. $context['user']['total_time_logged_in']['hours'] . $txt['tp-acronymhours']. $context['user']['total_time_logged_in']['minutes'] .$txt['tp-acronymminutes'].'</li>';
 		}
-		if (isset($context['TPortal']['userbox']['time']))
-		echo '
-			<li>' . $bullet2.$context['current_time'].' <hr></li>';
+		if (isset($context['TPortal']['userbox']['time'])) {
+    		echo '
+	    		<li>' . $bullet2.$context['current_time'].' <hr></li>';
+        }
 
 		// admin parts etc.
-         if(!isset($context['TPortal']['can_submit_article']))
+         if(!isset($context['TPortal']['can_submit_article'])) {
             $context['TPortal']['can_submit_article']=0;
+        }
 
 		// can we submit an article?
        	if(allowedTo('tp_submithtml'))
