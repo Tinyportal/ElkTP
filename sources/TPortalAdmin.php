@@ -17,6 +17,7 @@
 use \TinyPortal\Admin as TPAdmin;
 use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
+use \TinyPortal\Permissions as TPPermissions;
 use \TinyPortal\Util as TPUtil;
 
 
@@ -1149,19 +1150,17 @@ function do_admin($tpsub = 'overview')
 	get_boards();
 	$context['TPortal']['SSI_boards'] = explode(',', $context['TPortal']['SSI_board']);
 
-	if($tpsub == 'overview')
-	{
-		if(!TPcheckAdminAreas())
+	if($tpsub == 'overview') {
+		if(!TPPermissions::checkAdminAreas()) {
 			fatal_error($txt['tp-noadmin'], false);
+        }
 	}
-	elseif($tpsub == 'permissions')
-	{
+	elseif($tpsub == 'permissions') {
 		TPadd_linktree($scripturl.'?action=tpadmin;sa=permissions', $txt['tp-permissions']);
 		$context['TPortal']['perm_all_groups'] = get_grps(true, true);
 		$context['TPortal']['perm_groups'] = tp_fetchpermissions($context['TPortal']['modulepermissions']);
 	}
-	else
-	{
+	else {
 		if($tpsub == 'settings')
 			TPadd_linktree($scripturl.'?action=tpadmin;sa=settings', $txt['tp-settings']);
 		elseif($tpsub == 'frontpage')

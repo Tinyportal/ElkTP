@@ -176,7 +176,7 @@ function TPblock($block, $theme, $side, $double=false)
 // blocktype 1: User
 function TPortal_userbox()
 {
-	global $context, $settings, $scripturl, $txt, $user_info;
+	global $context, $settings, $scripturl, $txt, $user_info, $maintenance;
 
 	$bullet = '<img src="'.$settings['tp_images_url'].'/TPdivider.png" alt="" style="margin:0 4px 0 0;" />';
 	$bullet2 = '<img src="'.$settings['tp_images_url'].'/TPdivider2.png" alt="" style="margin:0 4px 0 0;" />';
@@ -227,23 +227,25 @@ function TPortal_userbox()
 			';
 
 		// Is the forum in maintenance mode?
-		if ($context['in_maintenance'] && $context['user']['is_admin'])
+		if ($maintenance && $context['user']['is_admin']) {
 			echo '
 			<li>' .$bullet2.$txt['tp_maintenace']. '</li>';
+        }
 		// Show the total time logged in?
-		if (!empty($context['user']['total_time_logged_in']) && isset($context['TPortal']['userbox']['logged']))
-		{
+		if (!empty($context['user']['total_time_logged_in']) && isset($context['TPortal']['userbox']['logged'])) {
 			echo '
 			<li>' .$bullet2.$txt['tp-loggedintime'] . '</li>
 			<li>'.$bullet2.$context['user']['total_time_logged_in']['days'] . $txt['tp-acronymdays']. $context['user']['total_time_logged_in']['hours'] . $txt['tp-acronymhours']. $context['user']['total_time_logged_in']['minutes'] .$txt['tp-acronymminutes'].'</li>';
 		}
-		if (isset($context['TPortal']['userbox']['time']))
-		echo '
-			<li>' . $bullet2.$context['current_time'].' <hr></li>';
+		if (isset($context['TPortal']['userbox']['time'])) {
+    		echo '
+	    		<li>' . $bullet2.$context['current_time'].' <hr></li>';
+        }
 
 		// admin parts etc.
-         if(!isset($context['TPortal']['can_submit_article']))
+         if(!isset($context['TPortal']['can_submit_article'])) {
             $context['TPortal']['can_submit_article']=0;
+        }
 
 		// can we submit an article?
        	if(allowedTo('tp_submithtml'))
@@ -1027,7 +1029,7 @@ function template_TPsearch_above()
 		<div class="cat_bar">
 			<h3 class="category_header">' , $txt['tp-searcharticles'] , '</h3>
 		</div>
-		<div class="content noup">
+		<div class="content">
 			<span class="topslice"><span></span></span>
 			<p style="margin: 0; padding: 0 1em;">
 				<a href="' . $scripturl. '?action=tportal;sa=searcharticle">' . $txt['tp-searcharticles2'] . '</a>';
@@ -1038,7 +1040,7 @@ function template_TPsearch_above()
 		<div class="cat_bar">
 			<h3 class="category_header">' , $txt['tp-searcharticles'] , '</h3>
 		</div>
-		<div class="content noup">
+		<div class="content">
 			<span class="topslice"><span></span></span>
 			<p style="margin: 0; padding: 0 1em;">
 				<a href="' . $scripturl. '?action=tportal;sa=searcharticle">' . $txt['tp-searcharticles2'] . '</a> |
@@ -1144,7 +1146,7 @@ function article_renders($type = 1, $single = false, $first = false)
     $useframestyle = in_array($context['TPortal']['article']['frame'], array('theme', 'frame'));
 	$divheader = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divheader'] : 'title_bar';
 	$headerstyle = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_headerstyle'] : 'category_header';
-	$divbody = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divbody'] : ($usetitlestyle ? 'content noup' : 'content');
+	$divbody = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divbody'] : ($usetitlestyle ? 'content' : 'content');
 	$showtitle = in_array('title', $context['TPortal']['article']['visual_options']);
 
 	if($type == 1)
@@ -2416,7 +2418,7 @@ function template_tpadm_above()
 			<h3 class="category_header">' . $txt['tp-adminmenu'] .'</h3>
 		</div>
 		<span class="upperframe"><span></span></span>
-		<div class="roundframe noup">';
+		<div class="roundframe">';
 
 
 	if(is_array($context['admin_tabs']) && count($context['admin_tabs']) > 0) {

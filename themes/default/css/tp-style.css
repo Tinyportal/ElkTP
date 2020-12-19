@@ -924,9 +924,6 @@ input,select {
 .tpadmin {
 	padding: 0 0 4px 0;
 }
-.content.noup {
-	margin-top: 0 !important;
-}
 .admin-area {
 	border: 1px solid #CCCCCC;
 	border: 1px solid rgba(204, 204, 204, 0.5);

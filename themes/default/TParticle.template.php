@@ -68,7 +68,7 @@ function template_submitarticle()
 		<div class="cat_bar"><h3 class="category_header"><img style="margin-right: 4px;" src="' .$settings['tp_images_url']. '/TP' , $mg['off']=='1' ? 'red' : 'green' , '.png" alt=""  />' , $mg['id']=='' ? $txt['tp-addarticle']. '' .$txt['tp-incategory'] . (html_entity_decode($context['TPortal']['category_name'])) : $txt['tp-editarticle']. ' ' .html_entity_decode($mg['subject']) , '' , $mg['id']==0 ? '' : '&nbsp;-&nbsp;<a href="'.$scripturl.'?page='.$mg['id'].'">['.$txt['tp-preview'].']</a>';
 	echo '</h3></div>
 		<div id="edit-add-single-article" class="admintable admin-area">
-		<div class="content noup">
+		<div class="content">
 			<div class="formtable padding-div">
 			<dl class="settings tptitle">
 				<dt>
