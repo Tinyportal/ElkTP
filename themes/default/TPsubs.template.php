@@ -385,7 +385,7 @@ function TPortal_searchbox()
 	global $context, $txt, $scripturl;
 
 	echo '
-	<form accept-charset="', $context['character_set'], '" action="', $scripturl, '?action=search2" method="post" style="padding: 0; text-align: center; margin: 0; ">
+	<form accept-charset="', 'UTF-8', '" action="', $scripturl, '?action=search2" method="post" style="padding: 0; text-align: center; margin: 0; ">
 		<input type="text" class="block_search" name="search" value="" />
 		<input type="submit" name="submit" value="', $txt['search'], '" class="block_search_submit button_submit" /><br>
 		<br><span class="smalltext"><a href="', $scripturl, '?action=search;advanced">', $txt['search_advanced'], '</a></span>
@@ -2067,7 +2067,7 @@ function article_comments($render = true)
 	if(in_array('commentallow', $context['TPortal']['article']['visual_options']) && isset($context['TPortal']['can_artcomment'])==1) {
 		$data .= '
 			<div class="tp_pad">
-				<form accept-charset="' . $context['character_set'] . '"  name="tp_article_comment" action="' . $scripturl . '?action=tportal;sa=comment" method="post" style="margin: 0; padding: 0;">
+				<form accept-charset="' . 'UTF-8' . '"  name="tp_article_comment" action="' . $scripturl . '?action=tportal;sa=comment" method="post" style="margin: 0; padding: 0;">
 						<input type="text" name="tp_article_comment_title" style="width: 99%;" value="Re: ' . strip_tags($context['TPortal']['article']['subject']) . '">
 						<textarea style="width: 99%; height: 8em;" name="tp_article_bodytext"></textarea><br>'; 
 	
