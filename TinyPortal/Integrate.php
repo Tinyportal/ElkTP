@@ -90,7 +90,14 @@ class Integrate
                 }
             }
 		}
-        
+
+        // Call TPortalInit if we are not on the home page or tpadmin
+        $action = Util::filter('action', 'get', 'string');
+        if($action != false && !in_array($action, array('home', 'tpadmin'))) {
+            require_once(SOURCEDIR . '/TPortal.php');        
+            \TPortalInit();
+        }
+
         }}}
 
     public static function hookFrontPage(&$defaultAction) {{{
@@ -528,9 +535,6 @@ class Integrate
     public static function hookPreLogStats(&$no_stat_actions) {{{
         $no_stat_actions = array_merge($no_stat_actions, array('shout'));
 
-        // We can also call init from here although it's not meant for this
-        require_once(SOURCEDIR . '/TPortal.php');
-        \TPortal_init();
     }}}
 
     public static function hookRedirect(&$setLocation, &$refresh) {{{
