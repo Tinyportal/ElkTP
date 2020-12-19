@@ -505,8 +505,8 @@ function template_frontpage()
 						</dt>
 						<dd>
 						  <select id="tp_boardnews_headerstyle" name="tp_boardnews_headerstyle" value="' ,$context['TPortal']['boardnews_headerstyle'], '">
-								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='titlebg' ? ' selected="selected"' : '' , '>titlebg</option>
-								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='category_header' ? ' selected="selected"' : '' , '>catbg</option>
+								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='category_header' ? ' selected="selected"' : '' , '>category_header</option>
+								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='category_header' ? ' selected="selected"' : '' , '>category_header</option>
 							</select>
 						</dd>
 						<dt>
@@ -542,7 +542,7 @@ function template_categories()
 			<div class="content noup padding-div">
 				<table class="table_grid tp_grid" style="width:100%">
 				<thead>
-					<tr class="title_bar titlebg">
+					<tr class="title_bar category_header">
 					<th scope="col">
 						<div>
 							<div class="float-items" style="width:72%;"><strong>' , $txt['tp-artcat'] , '</strong></div>
@@ -920,7 +920,7 @@ function template_articles()
 		echo '
 		<table class="table_grid tp_grid" style="width:100%">
 		<thead>
-			<tr class="title_bar titlebg">
+			<tr class="title_bar category_header">
 			<th scope="col" class="articles">
 				<div>
 					<div class="float-items" style="width:65%;"><strong>' , $txt['tp-artcat'] , '</strong></div>
@@ -966,7 +966,7 @@ function template_articles()
 		echo '
 	<table class="table_grid tp_grid" style="width:100%">
 		<thead>
-			<tr class="title_bar titlebg">
+			<tr class="title_bar category_header">
 			<th scope="col" class="articles">
 				<div class="category_header3">
 					<div style="width:7%;" class="pos float-items">' , $context['TPortal']['sort']=='parse' ? '<img src="' . $settings['tp_images_url'] . '/TPsort_down.png" alt="'.$txt['tp-sort-on-position'].'" /> ' : '' , '<a title="'.$txt['tp-sort-on-position'].'" href="' . $scripturl . '?action=tpadmin;sa=articles;cu='.$context['TPortal']['categoryID'].';sort=parse"><strong>' , $txt['tp-pos'] , '</strong></a></div>
@@ -1085,7 +1085,7 @@ function template_strays()
 				<div>
 					<table class="table_grid tp_grid" style="width:100%">
 					<thead>
-						<tr class="title_bar titlebg">
+						<tr class="title_bar category_header">
 						<th scope="col">
 							<div>
 								<div style="width:7%;" class="pos float-items"><strong>'.$txt['tp-select'].'</strong></div>
@@ -1222,7 +1222,7 @@ function template_submission()
 		echo '
 				<table class="table_grid tp_grid" style="width:100%">
 					<thead>
-						<tr class="title_bar titlebg">
+						<tr class="title_bar category_header">
 						<th scope="col" class="articles">
 							<div class="category_header3">
 								<div style="width:7%;" class="pos float-items"><strong>'.$txt['tp-select'].'</strong></div>
@@ -1761,7 +1761,7 @@ function template_blocks()
 				echo '
 				<table class="table_grid tp_grid" style="width:100%">
 					<thead>
-						<tr class="title_bar titlebg">
+						<tr class="title_bar category_header">
 						<th scope="col" class="blocks">
 							<div>
 								<div style="width:10%;" class="smalltext pos float-items"><strong>'.$txt['tp-pos'].'</strong></div>
@@ -2243,7 +2243,7 @@ function template_menubox()
 			<span style="float: right;"><strong><a href="' . $scripturl . '?action=tpadmin;sa=addmenu;mid=' , (isset($_GET['mid']) && is_numeric($_GET['mid'])) ? $_GET['mid'] : 0 , '">['.$txt['tp-addmenuitem'].']</a></strong></span>
 			<table class="table_grid tp_grid" style="width:100%">
 				<thead>
-					<tr class="title_bar titlebg">
+					<tr class="title_bar category_header">
 					<th scope="col" class="menuitems">			
 							<div style="width:7%;" class="smalltext pos float-items"><strong>'.$txt['tp-pos'].'</strong></div>
 							<div style="width:15%;" class="smalltext name float-items"><strong>'.$txt['tp-title'].'</strong></div>
@@ -2401,7 +2401,7 @@ function template_menubox()
 				echo '
 				<table class="table_grid tp_grid" style="width:100%">
 				<thead>
-					<tr class="title_bar titlebg">
+					<tr class="title_bar category_header">
 					<th scope="col" class="menus">
 						<div>
 							<div class="float-items" style="width:65%;"><strong>' , $txt['tp-title'] , '</strong></div>

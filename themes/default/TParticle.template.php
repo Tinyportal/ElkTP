@@ -634,7 +634,7 @@ function template_showcomments()
 			<div id="show-art-comm" class="content padding-div">
 			<table class="table_grid tp_grid" style="width:100%">
 				<thead>
-					<tr class="title_bar titlebg2">
+					<tr class="title_bar category_header">
 					<th scope="col" class="tp_comments">
 					<div style="word-break:break-all;">
 						<div class="float-items tpleft" style="width:30%;">' . $txt['tp-article'] . '</div>
@@ -688,7 +688,7 @@ function template_showcomments()
 			<div id="latest-art-comm" class="content padding-div">
 			<table class="table_grid tp_grid" style="width:100%">
 				<thead>
-					<tr class="title_bar titlebg2">
+					<tr class="title_bar category_header">
 					<th scope="col" class="tp_comments">
 			<div>
 				<div class="float-items tpleft" style="width:30%;">' . $txt['tp-article'] . '</div>
@@ -759,7 +759,7 @@ function template_showarticle()
 		<div class="content padding-div">
 	<table class="table_grid tp_grid" style="width:100%";>
 		<thead>
-			<tr class="title_bar titlebg2">
+			<tr class="title_bar category_header">
 			<th scope="col" class="myarticles">
 				<div class="font-strong" style="padding:0px;">
 					<div align="center" class="float-items">', $context['TPortal']['tpsort']=='subject' ? '<img src="' .$settings['tp_images_url']. '/TPsort_up.png" alt="" /> ' : '' ,'<a href="'.$scripturl.'?action=tportal;sa=myarticles;tpsort=subject">'.$txt['tp-arttitle'].'</a></div>

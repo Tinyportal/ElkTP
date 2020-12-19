@@ -426,8 +426,9 @@ function fetchTPhooks() {{{
 
 function doTPpage() {{{
 
-	global $context, $scripturl, $txt, $modSettings, $boarddir, $smcFunc, $user_info;
+	global $context, $scripturl, $txt, $modSettings, $boarddir, $user_info;
 
+    $db = database();
 	$now = time();
 	// Set the avatar height/width
 	$avatar_width = '';
@@ -763,8 +764,9 @@ function doTPcat() {{{
 		return;
     }
 
-	global $context, $scripturl, $txt, $modSettings, $smcFunc;
+	global $context, $scripturl, $txt, $modSettings;
 
+    $db = database();
 	$now = time();
 
 	// check validity and fetch it

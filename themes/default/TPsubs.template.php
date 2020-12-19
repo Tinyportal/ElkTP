@@ -1142,7 +1142,7 @@ function article_renders($type = 1, $single = false, $first = false)
     $usetitlestyle = in_array($context['TPortal']['article']['frame'], array('theme', 'title'));
     $useframestyle = in_array($context['TPortal']['article']['frame'], array('theme', 'frame'));
 	$divheader = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divheader'] : 'title_bar';
-	$headerstyle = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_headerstyle'] : 'titlebg';
+	$headerstyle = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_headerstyle'] : 'category_header';
 	$divbody = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divbody'] : ($usetitlestyle ? 'content noup' : 'content');
 	$showtitle = in_array('title', $context['TPortal']['article']['visual_options']);
 
@@ -2020,7 +2020,7 @@ function article_comments($render = true)
 		$data .= '
 	<a name="tp-comment">
 	<div></div>
-	<h2 class="titlebg article_extra">' . $txt['tp-comments'] . ': ' . $context['TPortal']['article_comments_count'] . '' . (tp_hidepanel('articlecomments', false, true, '5px 5px 0 5px')) . '</h2> ';
+	<h2 class="category_header article_extra">' . $txt['tp-comments'] . ': ' . $context['TPortal']['article_comments_count'] . '' . (tp_hidepanel('articlecomments', false, true, '5px 5px 0 5px')) . '</h2> ';
 	}
 
 	if(in_array('comments', $context['TPortal']['article']['visual_options']) && !$context['TPortal']['article_comments_count'] == 0) {
@@ -2106,7 +2106,7 @@ function article_morelinks($render = true)
 	if(in_array('category',$context['TPortal']['article']['visual_options'])) {
 		if(in_array('category',$context['TPortal']['article']['visual_options']) && isset($context['TPortal']['article']['others'])) {
 			$data .= '
-	<h2 class="titlebg article_extra"><a href="' . $scripturl . '?cat='. (!empty($context['TPortal']['article']['category_shortname']) ? $context['TPortal']['article']['category_shortname'] : $context['TPortal']['article']['category']) .'">' . $txt['tp-articles'] . ' ' . $txt['in'] . ' &#171; ' . $context['TPortal']['article']['category_name'] . ' &#187;</span></a></h2>
+	<h2 class="category_header article_extra"><a href="' . $scripturl . '?cat='. (!empty($context['TPortal']['article']['category_shortname']) ? $context['TPortal']['article']['category_shortname'] : $context['TPortal']['article']['category']) .'">' . $txt['tp-articles'] . ' ' . $txt['in'] . ' &#171; ' . $context['TPortal']['article']['category_name'] . ' &#187;</span></a></h2>
 
 	<div style="overflow: hidden;">
 		<ul class="disc">';
