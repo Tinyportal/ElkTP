@@ -42,11 +42,11 @@ class Integrate
             'display_buttons'                   => '\TinyPortal\Integrate::hookDisplayButton',
             'actions'                           => '\TinyPortal\Integrate::hookActions',
             'whos_online'                       => '\TinyPortal\Integrate::hookWhosOnline',
-            'pre_log_stats'                     => '\TinyPortal\Integrate::hookPreLogStats',
             'pre_profile_areas'                 => '\TinyPortal\Integrate::hookProfileArea',
             'pre_load_theme'                    => '\TinyPortal\Integrate::hookLoadTheme',
             'redirect'                          => '\TinyPortal\Integrate::hookRedirect',
             'action_frontpage'                  => '\TinyPortal\Integrate::hookFrontPage',
+            'init_theme'                        => '\TinyPortal\Integrate::hookInitTheme',
             'tp_pre_subactions'                 => array ( 
                 'SOURCEDIR/TPArticle.php|TPArticleActions',
                 'SOURCEDIR/TPSearch.php|TPSearchActions',
@@ -65,6 +65,7 @@ class Integrate
             'tp_block'                          => array (
             ),
             'tp_pre_admin_subactions'           => array ( 
+                'SOURCEDIR/TPBlock.php|TPBlockAdminActions',
             ),
         );
 
@@ -91,14 +92,7 @@ class Integrate
             }
 		}
 
-        // Call TPortalInit if we are not on the home page or tpadmin
-        $action = Util::filter('action', 'get', 'string');
-        if($action != false && !in_array($action, array('home', 'tpadmin'))) {
-            require_once(SOURCEDIR . '/TPortal.php');        
-            \TPortalInit();
-        }
-
-        }}}
+    }}}
 
     public static function hookFrontPage(&$defaultAction) {{{
         global $modSettings;
@@ -532,8 +526,10 @@ class Integrate
 
     }}}
 
-    public static function hookPreLogStats(&$no_stat_actions) {{{
-        $no_stat_actions = array_merge($no_stat_actions, array('shout'));
+    public static function hookInitTheme($id_theme, &$settings) {{{
+
+        require_once(SOURCEDIR . '/TPortal.php');        
+        \TPortalInit();
 
     }}}
 
