@@ -193,7 +193,6 @@ $settingsArray = array(
     'disable_template_eval' => '1',
     'copyrightremoval' => '',
     'image_upload_path'     => BOARDDIR.'/tp-images/',
-    'download_upload_path'  => BOARDDIR.'/tp-downloads/',
     'blockcode_upload_path' => BOARDDIR.'/tp-files/tp-blockcodes/',
     // frontpage
     'front_type' => 'forum_articles',
@@ -302,7 +301,7 @@ $settingsArray = array(
     'userbox_options' => 'avatar,logged,time,unread,stats,online,stats_all',
 );
 
-$updateSettings = array( 'userbox_options', 'download_upload_path', 'blockcode_upload_path', 'version' );
+$updateSettings = array( 'userbox_options', 'blockcode_upload_path', 'version' );
 
 $db             = database();
 foreach($settingsArray as $what => $val) {

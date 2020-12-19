@@ -19,6 +19,7 @@ use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
 use \TinyPortal\Integrate as TPIntegrate;
 use \TinyPortal\Mentions as TPMentions;
+use \TinyPortal\Permissions as TPPermissions;
 use \TinyPortal\Util as TPUtil;
 
 define('TPVERSION', 100);
@@ -153,7 +154,7 @@ function TPortalInit() {{{
 
 	// if we are in permissions admin section, load all permissions
 	if((isset($_GET['action']) && $_GET['action'] == 'permissions') || (isset($_GET['area']) && $_GET['area'] == 'permissions')) {
-		TPcollectPermissions();
+		TPPermissions::collectPermissions();
     }
 
 	// Show search/frontpage topic layers?

@@ -15,192 +15,13 @@
  *
  */
 use \TinyPortal\Article as TPArticle;
+use \TinyPortal\Permissions as TPPermissions;
 use \TinyPortal\Util as TPUtil;
 
 
 if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
-
-function TPcheckAdminAreas() {{{
-	global $context;
-
-	TPcollectPermissions();
-	foreach($context['TPortal']['adminlist'] as $adm => $val) {
-		if(allowedTo($adm) || !empty($context['TPortal']['show_download'])) {
-			return true;
-        }
-	}
-	return false;
-
-}}}
-
-function TPsetupAdminAreas() {{{
-	global $context;
-
-    call_integration_hook('integrate_tp_admin_areas');
-
-}}}
-
-function TP_addPerms() {{{
-
-	$admperms = array(
-        'admin_forum', 
-        'manage_permissions', 
-        'moderate_forum', 
-        'manage_membergroups',
-        'manage_bans', 
-        'send_mail', 
-        'edit_news', 
-        'manage_boards', 
-        'manage_smileys',
-        'manage_attachments', 
-        'tp_articles', 
-        'tp_blocks', 
-        'tp_dlmanager', 
-        'tp_settings'
-    );
-    
-    call_integration_hook('integrate_tp_admin_permissions', array(&$admperms));
-
-	return $admperms;
-
-}}}
-
-function TPcollectPermissions() {{{
-	global $context;
-
-	$context['TPortal']['permissonlist'] = array();
-	// first, the built-in permissions
-	$context['TPortal']['permissonlist'][] = array(
-		'title' => 'tinyportal',
-		'perms' => array(
-			'tp_settings' => 0,
-			'tp_blocks' => 0,
-			'tp_articles' => 0
-		)
-	);
-	$context['TPortal']['permissonlist'][] = array(
-		'title' => 'tinyportal_dl',
-		'perms' => array(
-			'tp_dlmanager' => 0,
-			'tp_dlupload' => 0
-		)
-	);
-	$context['TPortal']['permissonlist'][] = array(
-		'title' => 'tinyportal_submit',
-		'perms' => array(
-			'tp_submithtml' => 0,
-			'tp_submitbbc' => 0,
-			'tp_editownarticle' => 0,
-			'tp_alwaysapproved' => 0
-		)
-	);
-
-	// for ELK2
-	$context['TPortal']['tppermissonlist'] = array(
-		'tp_settings' => array(false, 'tinyportal', 'tinyportal'),
-		'tp_blocks' => array(false, 'tinyportal', 'tinyportal'),
-		'tp_articles' => array(false, 'tinyportal', 'tinyportal'),
-		'tp_submithtml' => array(false, 'tinyportal', 'tinyportal'),
-		'tp_submitbbc' => array(false, 'tinyportal', 'tinyportal'),
-		'tp_editownarticle' => array(false, 'tinyportal', 'tinyportal'),
-		'tp_alwaysapproved' => array(false, 'tinyportal', 'tinyportal'),
-		'tp_dlmanager' => array(false, 'tinyportal', 'tinyportal'),
-		'tp_dlupload' => array(false, 'tinyportal', 'tinyportal')
-	);
-
-	$context['TPortal']['adminlist'] = array(
-		'tp_settings' => 1,
-		'tp_blocks' => 1,
-		'tp_articles' => 1,
-		'tp_dlmanager' => 1,
-		'tp_submithtml' => 1,
-		'tp_submitbbc' => 1,
-	);
-
-}}}
-
-function tp_getbuttons() {{{
-	global $scripturl, $txt, $context;
-
-	if(loadLanguage('TPortal') == false) {
-		loadLanguage('TPortal', 'english');
-    }
-
-	$buts = array();
-
-	if($context['user']['is_logged'] && (allowedTo('tp_submithtml') || allowedTo('tp_submitbbc') || allowedTo('tp_articles'))) {
-		$buts['tpeditwonarticle'] = array(
-			'title' => $txt['tp-myarticles'],
-			'href' => $scripturl . '?action=tportal;sa=myarticles',
-			'show' => true,
-			'active_button' => false,
-			'sub_buttons' => array(),
-		);
-    }
-
-	if(allowedTo('tp_submithtml') || allowedTo('tp_articles')) {
-		$buts['tpeditwonarticle']['sub_buttons']['submithtml'] = array(
-			'title' => $txt['tp-submitarticle'],
-			'href' => $scripturl . '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tportal') . ';sa=addarticle_html',
-			'show' => true,
-			'active_button' => false,
-			'sub_buttons' => array(),
-		);
-    }
-
-	if(allowedTo('tp_submitbbc') || allowedTo('tp_articles')) {
-		$buts['tpeditwonarticle']['sub_buttons']['submitbbc'] = array(
-			'title' => $txt['tp-submitarticlebbc'],
-			'href' => $scripturl . '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tportal') . ';sa=addarticle_bbc',
-			'show' => true,
-			'active_button' => false,
-			'sub_buttons' => array(),
-		);
-    }
-
-	// the admin functions - divider
-	if(allowedTo('tp_settings') || allowedTo('tp_articles') || allowedTo('tp_blocks')) {
-		$buts['divde1'] = array(
-			'title' => '<hr />',
-			'href' => '#',
-			'show' => true,
-			'active_button' => false,
-			'sub_buttons' => array(),
-		);
-    }
-
-	if(allowedTo('tp_settings')) {
-		$buts['tpsettings'] = array(
-			'title' => $txt['tp-adminheader1'],
-			'href' => $scripturl . '?action=tpadmin;sa=settings',
-			'show' => true,
-			'active_button' => false,
-			'sub_buttons' => array(),
-		);
-	}
-	if(allowedTo('tp_articles')) {
-		$buts['tparticles'] = array(
-			'title' => $txt['tp_menuarticles'],
-			'href' => $scripturl . '?action=tpadmin;sa=articles',
-			'show' => true,
-			'active_button' => false,
-			'sub_buttons' => array(),
-		);
-	}
-	if(allowedTo('tp_blocks')) {
-		$buts['tpblocks'] = array(
-			'title' => $txt['tp-adminpanels'],
-			'href' => $scripturl . '?action=tpadmin;sa=blocks',
-			'show' => true,
-			'active_button' => false,
-			'sub_buttons' => array(),
-		);
-	}
-
-	return $buts;
-}}}
 
 function TPcollectSnippets() {{{
 	global $context;
@@ -487,22 +308,12 @@ class chain
    }
 }
 
-function chainCMP($a, $b)
-{
-   if($a[$a['key']] == $b[$b['key']])
-   {
+function chainCMP($a, $b) {{{
+   if($a[$a['key']] == $b[$b['key']]) {
        return 0;
    }
    return($a[$a['key']] < $b[$b['key']]) ? -1 : 1;
-}
-
-function tp_cleantitle($text)
-{
-	$tmp = strtr($text, 'ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïñòóôõöøùúûüýÿ', 'SZszYAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy');
-	$tmp = strtr($tmp, array('Þ' => 'TH', 'þ' => 'th', 'Ð' => 'DH', 'ð' => 'dh', 'ß' => 'ss', '' => 'OE', '' => 'oe', 'Æ' => 'AE', 'æ' => 'ae', 'µ' => 'u'));
-	$cleaned = preg_replace(array('/\s/', '/[^\w_\.\-]/'), array('_', ''), $tmp);
-	return $cleaned;
-}
+}}}
 
 function TP_permaTheme($theme)
 {
@@ -526,55 +337,6 @@ function TP_permaTheme($theme)
 		$tp_where = 'action=forum;';
 
 	redirectexit($tp_where);
-}
-
-function TP_setThemeLayer($layer, $template, $subtemplate, $admin = false)
-{
-	global $context, $settings;
-
-	if($admin)
-	{
-		loadtemplate($template);
-		if(file_exists($settings['theme_dir']. '/'. $template. '.css'))
-			$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="'. $settings['theme_url']. '/'. $template. '.css?fin160" />';
-		else
-			$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="'. $settings['default_theme_url']. '/'. $template. '.css?fin160" />';
-
-		if( loadLanguage('TPortalAdmin') == false)
-			loadlangauge('TPortalAdmin', 'english');
-		if(loadLanguage($template) == false)
-			loadLanguage($template, 'english');
-
-		adminIndex('tportal');
-		$context['template_layers'][] = $layer;
-		$context['sub_template'] = $subtemplate;
-	}
-	else
-	{
-		loadtemplate($template);
-		if(loadLanguage($template) == false)
-			loadLanguage($template, 'english');
-
-		if(file_exists($settings['theme_dir']. '/'. $template. '.css'))
-			$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="'. $settings['theme_url']. '/'. $template. '.css?fin160" />';
-		else
-			$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="'. $settings['default_theme_url']. '/'. $template. '.css?fin160" />';
-
-		$context['template_layers'][] = $layer;
-		$context['sub_template'] = $subtemplate;
-	}
-}
-
-function TP_notify($text)
-{
-	global $context;
-
-	$context['TPortal']['tpnotify'] = $text;
-	if($context['user']['is_admin'])
-	{
-		$context['template_layers'][] = 'tpnotify';
-		$context['subtemplate'] = '';
-	}
 }
 
 function TP_error($text)
@@ -617,24 +379,12 @@ function tp_renderbbc($message)
 			</tr>';
 }
 
-function get_snippets_xml()
-{
+function get_snippets_xml() {{{
 	return;
-}
+}}}
 
-if(!function_exists('htmlspecialchars_decode'))
-{
-    function htmlspecialchars_decode($string,$style = ENT_COMPAT)
-    {
-        $translation = array_flip(get_html_translation_table(HTML_SPECIALCHARS, $style));
-        if($style === ENT_QUOTES)
-			$translation['&#38;#38;#039;'] = '\'';
-		return strtr($string,$translation);
-    }
-}
 
-function TP_createtopic($title, $text, $icon, $board, $sticky = 0, $submitter)
-{
+function TP_createtopic($title, $text, $icon, $board, $sticky = 0, $submitter) {{{
 	global $user_info, $board_info, $sourcedir;
 
 	require_once($sourcedir.'/Subs-Post.php');
@@ -672,10 +422,9 @@ function TP_createtopic($title, $text, $icon, $board, $sticky = 0, $submitter)
 		$topi = 0;
 
 	return $topi;
-}
+}}}
 
-function TPwysiwyg_setup()
-{
+function TPwysiwyg_setup() {{{
 	global $context, $boardurl, $txt;
 
 	$context['html_headers'] .= '
@@ -776,10 +525,9 @@ function TPwysiwyg_setup()
 			}
 			// ]]></script>';
 	}
-}
+}}}
 
-function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $showchoice = true)
-{
+function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $showchoice = true) {{{
     global $context, $scripturl, $txt, $boardurl, $user_info;
 
 	echo '
@@ -881,10 +629,9 @@ function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $sho
 	</div>';
 	}
 
-}
+}}}
 
-function tp_fetchpermissions($perms)
-{
+function tp_fetchpermissions($perms) {{{
 	global $txt;
 
     $db = database();
@@ -958,7 +705,7 @@ function tp_fetchpermissions($perms)
 		}
 		return $names;
 	}
-}
+}}}
 
 function tp_fetchboards()
 {
@@ -1009,62 +756,6 @@ function tp_hidepanel2($id, $id2, $alt)
 	return $what;
 }
 
-function tp_collectArticleAttached($art)
-{
-	global $context;
-
-    $db = database();
-
-	// get attached images
-	$context['TPortal']['illustrations'] = array();
-	$context['TPortal']['illustrations_align'] = array();
-	$context['TPortal']['illustrations_text'] = array();
-
-	if(is_array($art))
-	{
-		$tagquery = 'FIND_IN_SET(subtype2, "' . implode(',', $art) .'")';
-		$request =  $db->query('', '
-			SELECT * FROM {db_prefix}tp_variables
-			WHERE type = {string:type}
-			AND value5 = {int:val5}
-			AND {string:tag}
-			ORDER BY subtype2 ASC',
-			array(
-				'type' => 'articleimage', 'val5' => 0, 'tag' => $tagquery,
-			)
-		);
-	}
-	else
-		$request =  $db->query('', '
-			SELECT * FROM {db_prefix}tp_variables
-			WHERE type = {string:type}
-			AND subtype2 = {int:subtype}
-			ORDER BY value5 ASC',
-			array(
-				'type' => 'articleimage', 'subtype' => $art,
-			)
-		);
-
-	if($db->num_rows($request) > 0) {
-		while ($row = $db->fetch_assoc($request)) {
-			if(is_array($art))
-			{
-				$context['TPortal']['illustrations'][$row['subtype2']][$row['value5']] = $row['value1'];
-				$context['TPortal']['illustrations_align'][$row['subtype2']][$row['value5']] = $row['value2'];
-				$context['TPortal']['illustrations_text'][$row['subtype2']][$row['value5']] = $row['value3'];
-			}
-			else
-			{
-				$context['TPortal']['illustrations'][$art][$row['value5']] = $row['value1'];
-				$context['TPortal']['illustrations_align'][$art][$row['value5']] = $row['value2'];
-				$context['TPortal']['illustrations_text'][$art][$row['value5']] = $row['value3'];
-			}
-		}
-		$db->free_result($request);
-	}
-}
-
-
 function TP_fetchprofile_areas() {{{
 
 	$areas = array(
@@ -1099,28 +790,9 @@ function TP_fetchprofile_areas2($member_id) {{{
 
 }}}
 
-function get_perm($perm, $moderate = '')
-{
-	global $context, $user_info;
-
-	$show = false;
-	$acc = explode(',', $perm);
-	foreach($acc as $grp => $val)
-	{
-		if(in_array($val, $user_info['groups']) && $val > -2)
-			$show = true;
-	}
-
-	// admin sees all
-	if($context['user']['is_admin'])
-		$show = true;
-
-	// permission holds true? allow them as well!
-	if($moderate != '' && allowedTo($moderate))
-		$show = true;
-
-	return $show;
-}
+function get_perm($perm, $moderate = '') {{{   
+    return TPPermissions::getPermission($perm, $moderate);	
+}}}
 
 function tpsort($a, $b)
 {
@@ -1747,7 +1419,8 @@ function TPadminIndex($tpsub = '', $module_admin = false) {{{
 		);
 	}
 
-	TPsetupAdminAreas();
+    call_integration_hook('integrate_tp_admin_areas');
+
 	validateSession();
 
 }}}

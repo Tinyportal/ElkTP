@@ -49,13 +49,7 @@ class Permissions
                 'tp_articles' => 0
             )
         );
-        $context['TPortal']['permissonlist'][] = array(
-            'title' => 'tinyportal_dl',
-            'perms' => array(
-                'tp_dlmanager' => 0,
-                'tp_dlupload' => 0
-            )
-        );
+
         $context['TPortal']['permissonlist'][] = array(
             'title' => 'tinyportal_submit',
             'perms' => array(
@@ -74,18 +68,66 @@ class Permissions
             'tp_submitbbc' => array(false, 'tinyportal', 'tinyportal'),
             'tp_editownarticle' => array(false, 'tinyportal', 'tinyportal'),
             'tp_alwaysapproved' => array(false, 'tinyportal', 'tinyportal'),
-            'tp_dlmanager' => array(false, 'tinyportal', 'tinyportal'),
-            'tp_dlupload' => array(false, 'tinyportal', 'tinyportal')
         );
 
         $context['TPortal']['adminlist'] = array(
             'tp_settings' => 1,
             'tp_blocks' => 1,
             'tp_articles' => 1,
-            'tp_dlmanager' => 1,
             'tp_submithtml' => 1,
             'tp_submitbbc' => 1,
         );
+    }}}
+
+    public static function addPermsissions() {{{
+
+        $admperms = array(
+            'admin_forum', 
+            'manage_permissions', 
+            'moderate_forum', 
+            'manage_membergroups',
+            'manage_bans', 
+            'send_mail', 
+            'edit_news', 
+            'manage_boards', 
+            'manage_smileys',
+            'manage_attachments', 
+            'tp_articles', 
+            'tp_blocks', 
+            'tp_dlmanager', 
+            'tp_settings'
+        );
+        
+        call_integration_hook('integrate_tp_admin_permissions', array(&$admperms));
+
+        return $admperms;
+
+    }}}
+
+    public static function getPermissions($perm, $moderate = '') {{{
+
+        global $context, $user_info;
+
+        $show = false;
+        $acc = explode(',', $perm);
+        foreach($acc as $grp => $val) {
+            if(in_array($val, $user_info['groups']) && $val > -2) {
+                $show = true;
+            }
+        }
+
+        // admin sees all
+        if($context['user']['is_admin']) {
+            $show = true;
+        }
+
+        // permission holds true? allow them as well!
+        if($moderate != '' && allowedTo($moderate)) {
+            $show = true;
+        }
+
+        return $show;
+
     }}}
 
     public static function getButtons() {{{
