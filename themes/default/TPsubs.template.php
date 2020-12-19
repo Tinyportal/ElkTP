@@ -408,7 +408,7 @@ function TPortal_onlinebox()
 // blocktype 7: Themes
 function TPortal_themebox()
 {
-	global $context, $settings, $scripturl, $txt, $smcFunc;
+	global $context, $settings, $scripturl, $txt;
 
 	$what = explode(',', $context['TPortal']['themeboxbody']);
 	$temaid = array();
@@ -426,7 +426,7 @@ function TPortal_themebox()
 	}
 
 	if(isset($context['TPortal']['querystring']))
-		$tp_where = $smcFunc['htmlspecialchars'](strip_tags($context['TPortal']['querystring']));
+		$tp_where = Util::htmlspecialchars(strip_tags($context['TPortal']['querystring']));
 	else
 		$tp_where = 'action=forum';
 
@@ -449,7 +449,7 @@ function TPortal_themebox()
 			</select><br>' , $context['user']['is_logged'] ?
 			'<input type="checkbox" value=";permanent" onclick="realtheme()" /> '. $txt['tp-permanent']. '<br>' : '' , '<br>
 			<input type="button" class="button_submit" value="'.$txt['tp-changetheme'].'" onclick="jumpit()" /><br><br>
-			<input type="hidden" value="'.$smcFunc['htmlspecialchars']($scripturl . '?'.$tp_where.'theme='.$settings['theme_id']).'" name="jumpurl3" />
+			<input type="hidden" value="'.Util::htmlspecialchars($scripturl . '?'.$tp_where.'theme='.$settings['theme_id']).'" name="jumpurl3" />
 			<div style="text-align: center; width: 95%; overflow: hidden;">';
 			
 			echo ' <img src="'.$settings['images_url'].'/thumbnail.png" alt="" id="chosen" name="chosen" style="max-width: 100%;" />';
@@ -947,9 +947,7 @@ function tpo_whos($buddy_only = false)
 
 function tpo_whosOnline()
 {
-	global $sourcedir;
-
-	require_once($sourcedir . '/Subs-MembersOnline.php');
+    require_once(SUBSDIR . '/MembersOnline.subs.php');
 	$membersOnlineOptions = array(
 		'show_hidden' => allowedTo('moderate_forum'),
 		'sort' => 'log_time',
@@ -961,9 +959,12 @@ function tpo_whosOnline()
 
 function progetAvatars($ids)
 {
-	global $user_info, $smcFunc, $modSettings, $scripturl;
+	global $user_info, $modSettings, $scripturl;
 	global $image_proxy_enabled, $image_proxy_secret, $boardurl;
-	$request = $smcFunc['db_query']('', '
+
+    $db = database();
+
+	$request = $db->query('', '
 		SELECT
 			mem.real_name, mem.member_name, mem.id_member, mem.show_online,mem.avatar, mem.email_address AS email_address,
 			COALESCE(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type AS attachment_type
@@ -974,9 +975,9 @@ function progetAvatars($ids)
 	);
 
 	$avy = array();
-	if($smcFunc['db_num_rows']($request) > 0)
+	if($db->num_rows($request) > 0)
 	{
-		while ($row = $smcFunc['db_fetch_assoc']($request)) {
+		while ($row = $db->fetch_assoc($request)) {
             $avy[$row['id_member']] = set_avatar_data( array(      
                     'avatar' => $row['avatar'],
                     'email' => $row['email_address'],
@@ -986,7 +987,7 @@ function progetAvatars($ids)
                 )
             )['image'];
 		}
-		$smcFunc['db_free_result']($request);
+		$db->free_result($request);
 	}
 
 	return $avy;
@@ -2485,7 +2486,7 @@ function template_tp_fatal_error()
 // Format a time to make it look purdy.
 function tpstandardTime($log_time, $show_today = true, $format)
 {
-	global $context, $user_info, $txt, $modSettings, $smcFunc;
+	global $context, $user_info, $txt, $modSettings;
 
 	$time = $log_time + ($user_info['time_offset'] + $modSettings['time_offset']) * 3600;
 
@@ -2527,7 +2528,7 @@ function tpstandardTime($log_time, $show_today = true, $format)
 	{
 		foreach (array('%a', '%A', '%b', '%B') as $token)
 			if (strpos($str, $token) !== false)
-				$str = str_replace($token, !empty($txt['lang_capitalize_dates']) ? $smcFunc['ucwords'](strftime($token, $time)) : strftime($token, $time), $str);
+				$str = str_replace($token, !empty($txt['lang_capitalize_dates']) ? Util::ucwords(strftime($token, $time)) : strftime($token, $time), $str);
 	}
 	else
 	{
