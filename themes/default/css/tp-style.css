@@ -608,7 +608,7 @@ ul.tpsitemap li a.tpsitemapheader {
 	text-align: center;
 	width: 150px;
 }
-.tpadmin h3.category_header , .tpadmin h3.category_header , .tpadmin_content h3.titlebg , .tpadmin_content h3.catbg {
+.tpadmin h3.category_header , .tpadmin h3.category_header , .tpadmin_content h3.category_header , .tpadmin_content h3.catbg {
 	clear: right;
 }
 .tp_largelist {

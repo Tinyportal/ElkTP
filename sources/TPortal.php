@@ -14,6 +14,7 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
+use \TinyPortal\Admin as TPAdmin;
 use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
 use \TinyPortal\Integrate as TPIntegrate;
@@ -237,20 +238,7 @@ function setupTPsettings() {{{
 
     // Try to load it from the cache
     if (($context['TPortal'] = cache_get_data('tpSettings', 90)) == null) {
-        // get the settings
-        $request =  $db->query('', '
-                SELECT name, value FROM {db_prefix}tp_settings', array()
-                );
-        if ($db->num_rows($request) > 0) {
-            while($row = $db->fetch_row($request)) {
-                $context['TPortal'][$row[0]] = $row[1];
-                // ok, any module that like to load?
-                if(substr($row[0], 0, 11) == 'load_module')
-                    $context['TPortal']['always_loaded'][] = $row[1];
-            }
-            $db->free_result($request);
-        }
-
+        $context['TPortal']  = TPAdmin::getInstance()->getSetting();
         if (!empty($modSettings['cache_enable'])) {
             cache_put_data('tpSettings', $context['TPortal'], 90);
         }
@@ -358,16 +346,6 @@ function setupTPsettings() {{{
         $context['page_title'] = $context['forum_name'];
     }
 
-    if(empty($context['TPortal']['standalone'])) {
-        $request = $db->query('', '
-                SELECT value
-                FROM {db_prefix}tp_settings
-                WHERE name = \'standalone_mode\''
-                );
-        $context['TPortal']['standalone'] = isset($db->fetch_assoc($request)['value']) ? $db->fetch_assoc($request)['value'] : false;
-        $db->free_result($request);
-    }
-
 }}}
 
 function fetchTPhooks() {{{
@@ -426,8 +404,9 @@ function fetchTPhooks() {{{
 
 function doTPpage() {{{
 
-	global $context, $scripturl, $txt, $modSettings, $boarddir, $smcFunc, $user_info;
+	global $context, $scripturl, $txt, $modSettings, $boarddir, $user_info;
 
+    $db = database();
 	$now = time();
 	// Set the avatar height/width
 	$avatar_width = '';
@@ -763,8 +742,9 @@ function doTPcat() {{{
 		return;
     }
 
-	global $context, $scripturl, $txt, $modSettings, $smcFunc;
+	global $context, $scripturl, $txt, $modSettings;
 
+    $db = database();
 	$now = time();
 
 	// check validity and fetch it

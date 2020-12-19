@@ -385,7 +385,7 @@ function TPortal_searchbox()
 	global $context, $txt, $scripturl;
 
 	echo '
-	<form accept-charset="', $context['character_set'], '" action="', $scripturl, '?action=search2" method="post" style="padding: 0; text-align: center; margin: 0; ">
+	<form accept-charset="', 'UTF-8', '" action="', $scripturl, '?action=search2" method="post" style="padding: 0; text-align: center; margin: 0; ">
 		<input type="text" class="block_search" name="search" value="" />
 		<input type="submit" name="submit" value="', $txt['search'], '" class="block_search_submit button_submit" /><br>
 		<br><span class="smalltext"><a href="', $scripturl, '?action=search;advanced">', $txt['search_advanced'], '</a></span>
@@ -408,7 +408,7 @@ function TPortal_onlinebox()
 // blocktype 7: Themes
 function TPortal_themebox()
 {
-	global $context, $settings, $scripturl, $txt, $smcFunc;
+	global $context, $settings, $scripturl, $txt;
 
 	$what = explode(',', $context['TPortal']['themeboxbody']);
 	$temaid = array();
@@ -426,7 +426,7 @@ function TPortal_themebox()
 	}
 
 	if(isset($context['TPortal']['querystring']))
-		$tp_where = $smcFunc['htmlspecialchars'](strip_tags($context['TPortal']['querystring']));
+		$tp_where = Util::htmlspecialchars(strip_tags($context['TPortal']['querystring']));
 	else
 		$tp_where = 'action=forum';
 
@@ -449,7 +449,7 @@ function TPortal_themebox()
 			</select><br>' , $context['user']['is_logged'] ?
 			'<input type="checkbox" value=";permanent" onclick="realtheme()" /> '. $txt['tp-permanent']. '<br>' : '' , '<br>
 			<input type="button" class="button_submit" value="'.$txt['tp-changetheme'].'" onclick="jumpit()" /><br><br>
-			<input type="hidden" value="'.$smcFunc['htmlspecialchars']($scripturl . '?'.$tp_where.'theme='.$settings['theme_id']).'" name="jumpurl3" />
+			<input type="hidden" value="'.Util::htmlspecialchars($scripturl . '?'.$tp_where.'theme='.$settings['theme_id']).'" name="jumpurl3" />
 			<div style="text-align: center; width: 95%; overflow: hidden;">';
 			
 			echo ' <img src="'.$settings['images_url'].'/thumbnail.png" alt="" id="chosen" name="chosen" style="max-width: 100%;" />';
@@ -947,9 +947,7 @@ function tpo_whos($buddy_only = false)
 
 function tpo_whosOnline()
 {
-	global $sourcedir;
-
-	require_once($sourcedir . '/Subs-MembersOnline.php');
+    require_once(SUBSDIR . '/MembersOnline.subs.php');
 	$membersOnlineOptions = array(
 		'show_hidden' => allowedTo('moderate_forum'),
 		'sort' => 'log_time',
@@ -961,9 +959,12 @@ function tpo_whosOnline()
 
 function progetAvatars($ids)
 {
-	global $user_info, $smcFunc, $modSettings, $scripturl;
+	global $user_info, $modSettings, $scripturl;
 	global $image_proxy_enabled, $image_proxy_secret, $boardurl;
-	$request = $smcFunc['db_query']('', '
+
+    $db = database();
+
+	$request = $db->query('', '
 		SELECT
 			mem.real_name, mem.member_name, mem.id_member, mem.show_online,mem.avatar, mem.email_address AS email_address,
 			COALESCE(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type AS attachment_type
@@ -974,9 +975,9 @@ function progetAvatars($ids)
 	);
 
 	$avy = array();
-	if($smcFunc['db_num_rows']($request) > 0)
+	if($db->num_rows($request) > 0)
 	{
-		while ($row = $smcFunc['db_fetch_assoc']($request)) {
+		while ($row = $db->fetch_assoc($request)) {
             $avy[$row['id_member']] = set_avatar_data( array(      
                     'avatar' => $row['avatar'],
                     'email' => $row['email_address'],
@@ -986,7 +987,7 @@ function progetAvatars($ids)
                 )
             )['image'];
 		}
-		$smcFunc['db_free_result']($request);
+		$db->free_result($request);
 	}
 
 	return $avy;
@@ -1142,7 +1143,7 @@ function article_renders($type = 1, $single = false, $first = false)
     $usetitlestyle = in_array($context['TPortal']['article']['frame'], array('theme', 'title'));
     $useframestyle = in_array($context['TPortal']['article']['frame'], array('theme', 'frame'));
 	$divheader = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divheader'] : 'title_bar';
-	$headerstyle = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_headerstyle'] : 'titlebg';
+	$headerstyle = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_headerstyle'] : 'category_header';
 	$divbody = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divbody'] : ($usetitlestyle ? 'content noup' : 'content');
 	$showtitle = in_array('title', $context['TPortal']['article']['visual_options']);
 
@@ -2020,7 +2021,7 @@ function article_comments($render = true)
 		$data .= '
 	<a name="tp-comment">
 	<div></div>
-	<h2 class="titlebg article_extra">' . $txt['tp-comments'] . ': ' . $context['TPortal']['article_comments_count'] . '' . (tp_hidepanel('articlecomments', false, true, '5px 5px 0 5px')) . '</h2> ';
+	<h2 class="category_header article_extra">' . $txt['tp-comments'] . ': ' . $context['TPortal']['article_comments_count'] . '' . (tp_hidepanel('articlecomments', false, true, '5px 5px 0 5px')) . '</h2> ';
 	}
 
 	if(in_array('comments', $context['TPortal']['article']['visual_options']) && !$context['TPortal']['article_comments_count'] == 0) {
@@ -2067,7 +2068,7 @@ function article_comments($render = true)
 	if(in_array('commentallow', $context['TPortal']['article']['visual_options']) && isset($context['TPortal']['can_artcomment'])==1) {
 		$data .= '
 			<div class="tp_pad">
-				<form accept-charset="' . $context['character_set'] . '"  name="tp_article_comment" action="' . $scripturl . '?action=tportal;sa=comment" method="post" style="margin: 0; padding: 0;">
+				<form accept-charset="' . 'UTF-8' . '"  name="tp_article_comment" action="' . $scripturl . '?action=tportal;sa=comment" method="post" style="margin: 0; padding: 0;">
 						<input type="text" name="tp_article_comment_title" style="width: 99%;" value="Re: ' . strip_tags($context['TPortal']['article']['subject']) . '">
 						<textarea style="width: 99%; height: 8em;" name="tp_article_bodytext"></textarea><br>'; 
 	
@@ -2106,7 +2107,7 @@ function article_morelinks($render = true)
 	if(in_array('category',$context['TPortal']['article']['visual_options'])) {
 		if(in_array('category',$context['TPortal']['article']['visual_options']) && isset($context['TPortal']['article']['others'])) {
 			$data .= '
-	<h2 class="titlebg article_extra"><a href="' . $scripturl . '?cat='. (!empty($context['TPortal']['article']['category_shortname']) ? $context['TPortal']['article']['category_shortname'] : $context['TPortal']['article']['category']) .'">' . $txt['tp-articles'] . ' ' . $txt['in'] . ' &#171; ' . $context['TPortal']['article']['category_name'] . ' &#187;</span></a></h2>
+	<h2 class="category_header article_extra"><a href="' . $scripturl . '?cat='. (!empty($context['TPortal']['article']['category_shortname']) ? $context['TPortal']['article']['category_shortname'] : $context['TPortal']['article']['category']) .'">' . $txt['tp-articles'] . ' ' . $txt['in'] . ' &#171; ' . $context['TPortal']['article']['category_name'] . ' &#187;</span></a></h2>
 
 	<div style="overflow: hidden;">
 		<ul class="disc">';
@@ -2485,7 +2486,7 @@ function template_tp_fatal_error()
 // Format a time to make it look purdy.
 function tpstandardTime($log_time, $show_today = true, $format)
 {
-	global $context, $user_info, $txt, $modSettings, $smcFunc;
+	global $context, $user_info, $txt, $modSettings;
 
 	$time = $log_time + ($user_info['time_offset'] + $modSettings['time_offset']) * 3600;
 
@@ -2527,7 +2528,7 @@ function tpstandardTime($log_time, $show_today = true, $format)
 	{
 		foreach (array('%a', '%A', '%b', '%B') as $token)
 			if (strpos($str, $token) !== false)
-				$str = str_replace($token, !empty($txt['lang_capitalize_dates']) ? $smcFunc['ucwords'](strftime($token, $time)) : strftime($token, $time), $str);
+				$str = str_replace($token, !empty($txt['lang_capitalize_dates']) ? Util::ucwords(strftime($token, $time)) : strftime($token, $time), $str);
 	}
 	else
 	{

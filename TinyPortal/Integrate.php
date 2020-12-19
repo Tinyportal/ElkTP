@@ -39,7 +39,7 @@ class Integrate
             'load_illegal_guest_permissions'    => '\TinyPortal\Integrate::hookIllegalPermissions',
             'buffer'                            => '\TinyPortal\Integrate::hookBuffer',
             'menu_buttons'                      => '\TinyPortal\Integrate::hookMenuButtons',
-            'display_buttons'                   => '\TinyPortal\Integrate::hookDisplayButton',
+            //'display_buttons'                   => '\TinyPortal\Integrate::hookDisplayButton',
             'actions'                           => '\TinyPortal\Integrate::hookActions',
             'whos_online'                       => '\TinyPortal\Integrate::hookWhosOnline',
             'pre_profile_areas'                 => '\TinyPortal\Integrate::hookProfileArea',

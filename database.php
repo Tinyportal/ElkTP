@@ -333,4 +333,189 @@ foreach($settingsArray as $what => $val) {
 	$db->free_result($request);
 }
 
+addDefaults();
+
+function addDefaults() {{{
+	global $boardurl;
+
+    $db = database();
+
+	// Check for blocks in table, if none insert default blocks.
+	$request = $db->query('', '
+		SELECT * FROM {db_prefix}tp_blocks LIMIT 1'
+	);
+
+	if ($db->num_rows($request) < 1) {
+        $blocks = array(
+            'search' =>array(
+                'type' => 4,
+                'frame' => 'theme',
+                'title' => 'Search',
+                'body' => '',
+                'access' => '-1,0,1,2,3',
+                'bar' => 1,
+                'pos' => 0,
+                'off' => 0,
+                'visible' => '',
+                'lang' => '',
+                'display' => 'allpages',
+                'editgroups' => '',
+                'settings' => json_encode( array ('var1' => 0, 'var2' => '0', 'var3' => 0, 'var4' => 0, 'var5' => 0) ),
+            ),
+            'user' =>array(
+                'type' => 1,
+                'frame' => 'theme',
+                'title' => 'User',
+                'body' => '',
+                'access' => '-1,0,1,2,3',
+                'bar' => 1,
+                'pos' => 1,
+                'off' => 0,
+                'visible' => '',
+                'lang' => '',
+                'display' => 'allpages',
+                'editgroups' => '',
+                'settings' => json_encode( array ('var1' => 0, 'var2' => '0', 'var3' => 0, 'var4' => 0, 'var5' => 0) ),
+            ),
+            'recent' =>array(
+                'type' => 12,
+                'frame' => 'theme',
+                'title' => 'Recent',
+                'body' => '10',
+                'access' => '-1,0,1,2,3',
+                'bar' => 2,
+                'pos' => 0,
+                'off' => 0,
+                'visible' => '',
+                'lang' => '',
+                'display' => 'allpages',
+                'editgroups' => '',
+                'settings' => json_encode( array ('var1' => 1, 'var2' => '0', 'var3' => 0, 'var4' => 0, 'var5' => 0) ),
+            ),
+            'stats' =>array(
+                'type' => 3,
+                'frame' => 'theme',
+                'title' => 'Stats',
+                'body' => '10',
+                'access' => '-1,0,1,2,3',
+                'bar' => 2,
+                'pos' => 1,
+                'off' => 0,
+                'visible' => '',
+                'lang' => '',
+                'display' => 'allpages',
+                'editgroups' => '',
+                'settings' => json_encode( array ('var1' => 0, 'var2' => '0', 'var3' => 0, 'var4' => 0, 'var5' => 0) ),
+            ),
+            'online' =>array(
+                'type' => 6,
+                'frame' => 'theme',
+                'title' => 'Online',
+                'body' => '',
+                'access' => '-1,0,1,2,3',
+                'bar' => 3,
+                'pos' => 0,
+                'off' => 0,
+                'visible' => '0',
+                'lang' => '',
+                'display' => 'allpages',
+                'editgroups' => '-2',
+                'settings' => json_encode( array ('var1' => 1, 'var2' => '0', 'var3' => 0, 'var4' => 0, 'var5' => 0) ),
+            ),
+        );
+        
+        $db->insert('ignore',
+            '{db_prefix}tp_blocks',
+            array(
+                'type' => 'int',
+                'frame' => 'string',
+                'title' => 'string',
+                'body' => 'string',
+                'access' => 'string',
+                'bar' => 'int',
+                'pos' => 'int',
+                'off' => 'int',
+                'visible' => 'string',
+                'lang' => 'string',
+                'display' => 'string',
+                'editgroups' => 'string',
+                'settings' => 'string',
+            ),
+            $blocks,
+            array('id')
+        );
+        $db->free_result($request);
+	}
+
+	// Check for date in variables table, if none insert default values.
+	$request = $db->query('', '
+		SELECT * FROM {db_prefix}tp_variables LIMIT 1'
+	);
+
+	if ($db->num_rows($request) < 1) {
+		$vars = array(
+			'var1' =>array(
+				'value1' => 'Portal features',
+				'value2' => '0',
+				'value3' => '-1,0,2,3',
+				'type' => 'category',
+				'value4' => '',
+				'value5' => -2,
+				'subtype' => '',
+				'value7' => 'sort=date|sortorder=desc|articlecount=5|layout=1|catlayout=1|showchild=0|leftpanel=1|rightpanel=1|toppanel=1|centerpanel=1|lowerpanel=1|bottompanel=1',
+				'value8' => 'Features',
+				'subtype2' => 0,
+				'value9' => '',
+			),
+			'var2' =>array(
+				'value1' => 'General Articles',
+				'value2' => '0',
+				'value3' => '-1,0,2,3',
+				'type' => 'category',
+				'value4' => '',
+				'value5' => -2,
+				'subtype' => 'General',
+				'value7' => 'sort=date|sortorder=desc|articlecount=5|layout=1|catlayout=1|showchild=0|leftpanel=1|rightpanel=1|toppanel=1|centerpanel=1|lowerpanel=1|bottompanel=1',
+				'value8' => '',
+				'subtype2' => 0,
+				'value9' => '',
+			),
+			'var3' =>array(
+				'value1' => 'Demo Articles',
+				'value2' => '0',
+				'value3' => 'cats1',
+				'type' => 'menubox',
+				'value4' => '0',
+				'value5' => 10,
+				'subtype' => '',
+				'value7' => '',
+				'value8' => '',
+				'subtype2' => 0,
+				'value9' => '',
+			),
+		);
+
+		$db->insert('ignore',
+			'{db_prefix}tp_variables',
+			array(
+				'value1' => 'string',
+				'value2' => 'string',
+				'value3' => 'string',
+				'type' => 'string',
+				'value4' => 'string',
+				'value5' => 'int',
+				'subtype' => 'string',
+				'value7' => 'string',
+				'value8' => 'string',
+				'subtype2' => 'int',
+				'value9' => 'string',
+			),
+			$vars,
+			array('id')
+		);
+		$db->free_result($request);
+	}
+
+}}}
+
 ?>

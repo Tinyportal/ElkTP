@@ -679,13 +679,13 @@ function TPwysiwyg_setup()
 	global $context, $boardurl, $txt;
 
 	$context['html_headers'] .= '
-		<link rel="stylesheet" href="'.$boardurl.'/Themes/default/scripts/tinyportal/sceditor/minified/themes/default.min.css" />
-		<script src="'.$boardurl.'/Themes/default/scripts/tinyportal/sceditor/minified/sceditor.min.js"></script>
-		<script src="'.$boardurl.'/Themes/default/scripts/tinyportal/sceditor/minified/formats/xhtml.js"></script>
-		<script src="'.$boardurl.'/Themes/default/scripts/tinyportal/sceditor/languages/'.$txt['lang_dictionary'].'.js"></script>
+		<link rel="stylesheet" href="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/themes/default.min.css" />
+		<script src="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/sceditor.min.js"></script>
+		<script src="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/formats/xhtml.js"></script>
+		<script src="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/languages/'.$txt['lang_dictionary'].'.js"></script>
 		<style>
-			.sceditor-button-floatleft div { background: url('.$boardurl.'/Themes/default/images/tinyportal/floatleft.png); width:24px; height:24px; margin: -3px; }
-			.sceditor-button-floatright div { background: url('.$boardurl.'/Themes/default/images/tinyportal/floatright.png); width:24px; height:24px; margin: -3px; }
+			.sceditor-button-floatleft div { background: url('.$boardurl.'/themes/default/images/tinyportal/floatleft.png); width:24px; height:24px; margin: -3px; }
+			.sceditor-button-floatright div { background: url('.$boardurl.'/themes/default/images/tinyportal/floatright.png); width:24px; height:24px; margin: -3px; }
 		</style>';
 
 	$context['html_headers'] .= '
@@ -706,7 +706,7 @@ function TPwysiwyg_setup()
 				txtExec: [\'<div style="float:right;">\', \'</div>\'],
 				tooltip: \''.$txt['editor_tp_floatright'].'\'
 			});
-			// Taken from ELK2.1 https://github.com/SimpleMachines/ELK2.1/blob/24a10ca4fcac45f0bd73b6185618217aaa531cd2/Themes/default/scripts/jquery.sceditor.smf.js#L289
+			// Taken from ELK2.1 https://github.com/SimpleMachines/ELK2.1/blob/24a10ca4fcac45f0bd73b6185618217aaa531cd2/themes/default/scripts/jquery.sceditor.smf.js#L289
 			sceditor.command.set( \'youtube\', {
 				exec: function (caller) {
 					var editor = this;
@@ -724,7 +724,7 @@ function TPwysiwyg_setup()
 		// ]]></script>';
 	if($context['TPortal']['use_dragdrop']) {
 		$context['html_headers'] .= '
-			<script src="'.$boardurl.'/Themes/default/scripts/tinyportal/sceditor/minified/plugins/dragdrop.js"></script>
+			<script src="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/plugins/dragdrop.js"></script>
 			<script type="text/javascript"><!-- // --><![CDATA[
 			function detectIE() {
 				var ua = window.navigator.userAgent;
@@ -780,7 +780,7 @@ function TPwysiwyg_setup()
 
 function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $showchoice = true)
 {
-	global $user_info, $boardurl, $boarddir, $context, $txt, $scripturl;
+    global $context, $scripturl, $txt, $boardurl, $user_info;
 
 	echo '
 	<div style="padding-top: 10px;">
@@ -842,8 +842,8 @@ function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $sho
 		echo '
 				format: \'xhtml\',
 				locale: "' . $txt['lang_dictionary'] . '",
-				style: \''.$boardurl.'/Themes/default/scripts/tinyportal/sceditor/minified/themes/content/default.min.css\',
-				emoticonsRoot: \''.$boardurl.'/Themes/default/scripts/tinyportal/sceditor/\'
+				style: \''.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/themes/content/default.min.css\',
+				emoticonsRoot: \''.$boardurl.'/themes/default/scripts/tinyportal/sceditor/\'
 			});
 
 		// ]]></script>';
@@ -1855,8 +1855,7 @@ function tpattach()
     $db = database();
 
 	// Some defaults that we need.
-	$context['character_set'] = empty($modSettings['global_character_set']) ? (empty($txt['lang_character_set']) ? 'ISO-8859-1' : $txt['lang_character_set']) : $modSettings['global_character_set'];
-	$context['utf8'] = $context['character_set'] === 'UTF-8' && (strpos(strtolower(PHP_OS), 'win') === false || @version_compare(PHP_VERSION, '4.2.3') != -1);
+	$context['utf8'] = true;
 	$context['no_last_modified'] = true;
 
 	// Make sure some attachment was requested!
@@ -1917,7 +1916,7 @@ function tpattach()
 		loadLanguage('Errors');
 
 		header('HTTP/1.0 404 ' . $txt['attachment_not_found']);
-		header('Content-Type: text/plain; charset=' . (empty($context['character_set']) ? 'ISO-8859-1' : $context['character_set']));
+		header('Content-Type: text/plain; charset=UTF-8');
 
 		// We need to die like this *before* we send any anti-caching headers as below.
 		die('404 - ' . $txt['attachment_not_found']);

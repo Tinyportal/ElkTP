@@ -73,7 +73,7 @@ function template_tp_articles()
 				
 	<table class="table_grid tp_grid" style="width:100%">
 		<thead>
-			<tr class="title_bar titlebg2">
+			<tr class="title_bar category_header">
 			<th scope="col" class="articles">
 			<div class="font-strong" style="padding:0px;">
 				<div class="float-items pos tpleft" style="width:25%;">', $context['TPortal']['tpsort']=='subject' ? '<img src="' .$settings['tp_images_url']. '/TPsort_up.png" alt="" /> ' : '' ,'<a href="'.$scripturl.'?action=profile;u='.$context['TPortal']['memID'].';area=tparticles;tpsort=subject">'.$txt['tp-arttitle'].'</a></div>
@@ -218,7 +218,7 @@ function template_tp_download()
 			</div><br>
 		<table class="table_grid tp_grid" style="width:100%">
 			<thead>
-				<tr class="title_bar titlebg2 titlebg2">
+				<tr class="title_bar category_header category_header">
 				<th scope="col" class="tp_profile_uploaded">
 				<div style="width:30%;" class="font-strong float-items pos tpleft">', $context['TPortal']['tpsort']=='name' ? '<img src="' .$settings['tp_images_url']. '/TPsort_up.png" alt="" /> ' : '' ,'<a href="'.$scripturl.'?action=profile;area=tpdownload;u='.$context['TPortal']['memID'].';tpsort=name">'.$txt['subject'].'</a></div>
 				<div style="width:25%;" class="font-strong float-items title-admin-area tpleft">', ($context['TPortal']['tpsort']=='created'  || $context['TPortal']['tpsort']=='') ? '<img src="' .$settings['tp_images_url']. '/TPsort_down.png" alt="" /> ' : '' ,'<a href="'.$scripturl.'?action=profile;area=tpdownload;u='.$context['TPortal']['memID'].';tpsort=created">'.$txt['date'].'</a></div>

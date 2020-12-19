@@ -56,7 +56,7 @@ function template_submitarticle()
     }
 
 	echo '
-	<form accept-charset="', $context['character_set'], '" name="TPadmin3" action="' . $scripturl . '?action='.$action.'" enctype="multipart/form-data" method="post" onsubmit="submitonce(this);">
+	<form accept-charset="', 'UTF-8', '" name="TPadmin3" action="' . $scripturl . '?action='.$action.'" enctype="multipart/form-data" method="post" onsubmit="submitonce(this);">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />';
 
     if(allowedTo('admin_forum') || allowedTo('tp_articles')) {
@@ -75,7 +75,7 @@ function template_submitarticle()
 					<div class="font-strong"><label for="tp_article_subject">' , $txt['tp-arttitle'] , '</label></div>
 				</dt>
 				<dd>
-					<input type="text" id="tp_article_subject" name="tp_article_subject" value="'. html_entity_decode($mg['subject'], ENT_QUOTES, $context['character_set']) .'" style="width: 92%;" required>
+					<input type="text" id="tp_article_subject" name="tp_article_subject" value="'. html_entity_decode($mg['subject'], ENT_QUOTES, 'UTF-8') .'" style="width: 92%;" required>
 				</dd>
 				<dt>
 					<div class="font-strong"><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-shortname_articledesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_article_shortname">'.$txt['tp-shortname_article'].'</label></div>
@@ -609,7 +609,7 @@ function template_editcomment()
 
     if(isset($context['TPortal']['comment_edit'])){
         echo '
-            <form accept-charset="', $context['character_set'], '"  name="tp_edit_comment" action="'.$scripturl.'?action=tportal;sa=editcomment" method="post" style="margin: 1ex;">
+            <form accept-charset="', 'UTF-8', '"  name="tp_edit_comment" action="'.$scripturl.'?action=tportal;sa=editcomment" method="post" style="margin: 1ex;">
                 <input type="text" name="tp_editcomment_title" value="'.$context['TPortal']['comment_edit']['title'].'"> <br>
                 <textarea name="tp_editcomment_body" rows="6" cols="20" style="width: 90%;" wrap="on">'.$context['TPortal']['comment_edit']['body'].'</textarea>
                 <br>
@@ -634,7 +634,7 @@ function template_showcomments()
 			<div id="show-art-comm" class="content padding-div">
 			<table class="table_grid tp_grid" style="width:100%">
 				<thead>
-					<tr class="title_bar titlebg2">
+					<tr class="title_bar category_header">
 					<th scope="col" class="tp_comments">
 					<div style="word-break:break-all;">
 						<div class="float-items tpleft" style="width:30%;">' . $txt['tp-article'] . '</div>
@@ -688,7 +688,7 @@ function template_showcomments()
 			<div id="latest-art-comm" class="content padding-div">
 			<table class="table_grid tp_grid" style="width:100%">
 				<thead>
-					<tr class="title_bar titlebg2">
+					<tr class="title_bar category_header">
 					<th scope="col" class="tp_comments">
 			<div>
 				<div class="float-items tpleft" style="width:30%;">' . $txt['tp-article'] . '</div>
@@ -759,7 +759,7 @@ function template_showarticle()
 		<div class="content padding-div">
 	<table class="table_grid tp_grid" style="width:100%";>
 		<thead>
-			<tr class="title_bar titlebg2">
+			<tr class="title_bar category_header">
 			<th scope="col" class="myarticles">
 				<div class="font-strong" style="padding:0px;">
 					<div align="center" class="float-items">', $context['TPortal']['tpsort']=='subject' ? '<img src="' .$settings['tp_images_url']. '/TPsort_up.png" alt="" /> ' : '' ,'<a href="'.$scripturl.'?action=tportal;sa=myarticles;tpsort=subject">'.$txt['tp-arttitle'].'</a></div>

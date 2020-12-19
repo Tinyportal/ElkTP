@@ -308,7 +308,7 @@ function template_frontpage()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language, $smcFunc;
 
 		echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="frontpage">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-frontpage_settings'] . '</h3></div>
@@ -505,8 +505,8 @@ function template_frontpage()
 						</dt>
 						<dd>
 						  <select id="tp_boardnews_headerstyle" name="tp_boardnews_headerstyle" value="' ,$context['TPortal']['boardnews_headerstyle'], '">
-								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='titlebg' ? ' selected="selected"' : '' , '>titlebg</option>
-								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='category_header' ? ' selected="selected"' : '' , '>catbg</option>
+								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='category_header' ? ' selected="selected"' : '' , '>category_header</option>
+								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='category_header' ? ' selected="selected"' : '' , '>category_header</option>
 							</select>
 						</dd>
 						<dt>
@@ -533,7 +533,7 @@ function template_categories()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 	echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="categories">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-artcat'] . '</h3></div>
@@ -542,7 +542,7 @@ function template_categories()
 			<div class="content noup padding-div">
 				<table class="table_grid tp_grid" style="width:100%">
 				<thead>
-					<tr class="title_bar titlebg">
+					<tr class="title_bar category_header">
 					<th scope="col">
 						<div>
 							<div class="float-items" style="width:72%;"><strong>' , $txt['tp-artcat'] , '</strong></div>
@@ -604,7 +604,7 @@ function template_editcategory()
 
 		$mg = $context['TPortal']['editcategory'];
 		echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="editcategory">
 		<input type="hidden" name="tpadmin_form_id" value="' . $mg['id'] . '">
@@ -823,7 +823,7 @@ function template_addcategory()
 		$currcat = $_GET['cu'];
 
 	echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="addcategory">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-addcategory'] . '</h3></div>
@@ -873,7 +873,7 @@ function template_clist()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 		echo '
-	<form  accept-charset="', $context['character_set'], '" name="TPadmin" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form  accept-charset="', 'UTF-8', '" name="TPadmin" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="clist">
 		<div class="cat_bar"><h3 class="category_header">'.$txt['tp-tabs11'].'</h3></div>
@@ -907,7 +907,7 @@ function template_articles()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 	echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="articles">
 		<div class="cat_bar"><h3 class="category_header">' , $txt['tp-articles'] , !empty($context['TPortal']['categoryNAME']) ? $txt['tp-incategory']. ' ' . $context['TPortal']['categoryNAME'].' ' : '' ,  '</h3></div>
@@ -920,7 +920,7 @@ function template_articles()
 		echo '
 		<table class="table_grid tp_grid" style="width:100%">
 		<thead>
-			<tr class="title_bar titlebg">
+			<tr class="title_bar category_header">
 			<th scope="col" class="articles">
 				<div>
 					<div class="float-items" style="width:65%;"><strong>' , $txt['tp-artcat'] , '</strong></div>
@@ -966,7 +966,7 @@ function template_articles()
 		echo '
 	<table class="table_grid tp_grid" style="width:100%">
 		<thead>
-			<tr class="title_bar titlebg">
+			<tr class="title_bar category_header">
 			<th scope="col" class="articles">
 				<div class="category_header3">
 					<div style="width:7%;" class="pos float-items">' , $context['TPortal']['sort']=='parse' ? '<img src="' . $settings['tp_images_url'] . '/TPsort_down.png" alt="'.$txt['tp-sort-on-position'].'" /> ' : '' , '<a title="'.$txt['tp-sort-on-position'].'" href="' . $scripturl . '?action=tpadmin;sa=articles;cu='.$context['TPortal']['categoryID'].';sort=parse"><strong>' , $txt['tp-pos'] , '</strong></a></div>
@@ -1073,7 +1073,7 @@ function template_strays()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 	echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="strays">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-uncategorised2'] . '</h3></div>
@@ -1085,7 +1085,7 @@ function template_strays()
 				<div>
 					<table class="table_grid tp_grid" style="width:100%">
 					<thead>
-						<tr class="title_bar titlebg">
+						<tr class="title_bar category_header">
 						<th scope="col">
 							<div>
 								<div style="width:7%;" class="pos float-items"><strong>'.$txt['tp-select'].'</strong></div>
@@ -1210,7 +1210,7 @@ function template_submission()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 	echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="submission">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-submissionsettings']  . '</h3></div>
@@ -1222,7 +1222,7 @@ function template_submission()
 		echo '
 				<table class="table_grid tp_grid" style="width:100%">
 					<thead>
-						<tr class="title_bar titlebg">
+						<tr class="title_bar category_header">
 						<th scope="col" class="articles">
 							<div class="category_header3">
 								<div style="width:7%;" class="pos float-items"><strong>'.$txt['tp-select'].'</strong></div>
@@ -1338,7 +1338,7 @@ function template_artsettings()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language, $date;
 
 		echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input  type="hidden"name="tpadmin_form" value="artsettings">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-articlesettings'] . '</h3></div>
@@ -1456,7 +1456,7 @@ function template_articons()
 		tp_collectArticleIcons();
 
 		echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="articons">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-adminicons7'] . '</h3></div>
@@ -1510,7 +1510,7 @@ function template_panels()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 	echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'] ,'" />
 		<input type="hidden" name="tpadmin_form" value="panels">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-panelsettings'] . '</h3></div>
@@ -1727,7 +1727,7 @@ function template_blocks()
 	global $context, $settings, $txt, $scripturl;
 
 	echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="blocks">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-blocksettings'] . '</h3></div>
@@ -1761,7 +1761,7 @@ function template_blocks()
 				echo '
 				<table class="table_grid tp_grid" style="width:100%">
 					<thead>
-						<tr class="title_bar titlebg">
+						<tr class="title_bar category_header">
 						<th scope="col" class="blocks">
 							<div>
 								<div style="width:10%;" class="smalltext pos float-items"><strong>'.$txt['tp-pos'].'</strong></div>
@@ -2085,7 +2085,7 @@ function template_addblock()
 	$panels = array('','left','right','top','center','front','lower','bottom');
 
 	echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="addblock">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-addblock'] . '</h3></div>
@@ -2181,7 +2181,7 @@ function template_blockoverview()
 	global $context, $settings, $txt, $boardurl, $scripturl;
 
 	echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="blockoverview">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-blockoverview'] . '</h3></div><div></div>
@@ -2232,7 +2232,7 @@ function template_menubox()
 		{
 			$mid=is_numeric($_GET['mid']) ? $_GET['mid'] : 0;
 			echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="menuitems">
 		<input type="hidden" name="tp_menuid" value="'.$mid.'">
@@ -2243,7 +2243,7 @@ function template_menubox()
 			<span style="float: right;"><strong><a href="' . $scripturl . '?action=tpadmin;sa=addmenu;mid=' , (isset($_GET['mid']) && is_numeric($_GET['mid'])) ? $_GET['mid'] : 0 , '">['.$txt['tp-addmenuitem'].']</a></strong></span>
 			<table class="table_grid tp_grid" style="width:100%">
 				<thead>
-					<tr class="title_bar titlebg">
+					<tr class="title_bar category_header">
 					<th scope="col" class="menuitems">			
 							<div style="width:7%;" class="smalltext pos float-items"><strong>'.$txt['tp-pos'].'</strong></div>
 							<div style="width:15%;" class="smalltext name float-items"><strong>'.$txt['tp-title'].'</strong></div>
@@ -2388,7 +2388,7 @@ function template_menubox()
 		else
 		{
 			echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="menus">
 		<div class="cat_bar"><h3 class="category_header">'.$txt['tp-menumanager'].'</h3></div>
@@ -2401,7 +2401,7 @@ function template_menubox()
 				echo '
 				<table class="table_grid tp_grid" style="width:100%">
 				<thead>
-					<tr class="title_bar titlebg">
+					<tr class="title_bar category_header">
 					<th scope="col" class="menus">
 						<div>
 							<div class="float-items" style="width:65%;"><strong>' , $txt['tp-title'] , '</strong></div>
@@ -2466,7 +2466,7 @@ function template_addmenu()
 		$context['TPortal']['editmenuitem']['menuicon'] = 'tinyportal/menu_tpmenu.png';
 
 		echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadminmenu" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadminmenu" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="menuaddsingle">
 		<div class="cat_bar"><h3 class="category_header">'.$txt['tp-addmenu'].'</h3></div>
@@ -2485,7 +2485,7 @@ function template_addmenu()
 			$mid = 0;
 
 		echo '
-	<form accept-charset="', $context['character_set'], '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="menuadd">
 		<div class="cat_bar"><h3 class="category_header">'.$txt['tp-addmenu'].'</h3></div>
@@ -2510,7 +2510,7 @@ function template_linkmanager()
     global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 		echo '    
-	<form accept-charset="', $context['character_set'], '" name="tpadminmenu" action="' . $scripturl . '?action=tpadmin" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadminmenu" action="' . $scripturl . '?action=tpadmin" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="singlemenuedit">
 		<input type="hidden" name="tpadmin_form_id" value="'.$context['TPortal']['editmenuitem']['id'].'">
