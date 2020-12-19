@@ -61,8 +61,8 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
     public function action_index() {{{
         global $context, $txt;
       
-        require_once(SOURCEDIR . '/TPortal.php');
 
+        require_once(SOURCEDIR . '/TPortal.php');
         $context['TPortal']['action'] = TPUtil::filter('action', 'get', 'string');
         if($context['TPortal']['action'] == 'tpadmin') {
             setupTPSettings();
@@ -71,7 +71,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
         }
 
 		\loadLanguage('TPortal');
-        TPortalInit();
+        \TPortalInit();
         \loadTemplate('TPortal');
 
     }}}
@@ -93,6 +93,10 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
 
     }}}
 
+    public function trackStats($stats = array()) {{{
+
+
+    }}}
 }
 
 ?>

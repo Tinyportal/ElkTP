@@ -263,7 +263,6 @@ function setupTPsettings() {{{
     }
 
     // setup sizes for DL and articles
-    $context['TPortal']['dl_screenshotsize'] = explode(',', $context['TPortal']['dl_screenshotsizes']);
     $context['TPortal']['art_imagesize'] = explode(',', $context['TPortal']['art_imagesizes']);
 
     // another special case: sitemap items
@@ -402,7 +401,7 @@ function fetchTPhooks() {{{
     }
 
 	// something should always load? + submissions
-	$types = array('art_not_approved', 'dl_not_approved');
+	$types = array('art_not_approved');
 
 	$request2 = $db->query('', '
 		SELECT *
@@ -419,10 +418,6 @@ function fetchTPhooks() {{{
 	while ($row = $db->fetch_assoc($request2)) {
 		if ($row['type'] == 'art_not_approved' && allowedTo('tp_articles')) {
 			$context['TPortal']['submitcheck']['articles']++;
-        }
-		// check submission on dl manager, but only if its active
-		elseif ($row['type'] == 'dl_not_approved' && $context['TPortal']['show_download'] && allowedTo('tp_dlmanager')) {
-			$context['TPortal']['submitcheck']['uploads']++;
         }
 	}
 	$db->free_result($request2);

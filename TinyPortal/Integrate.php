@@ -51,29 +51,20 @@ class Integrate
                 'SOURCEDIR/TPArticle.php|TPArticleActions',
                 'SOURCEDIR/TPSearch.php|TPSearchActions',
                 'SOURCEDIR/TPBlock.php|TPBlockActions',
-                'SOURCEDIR/TPdlmanager.php|TPDownloadActions',
                 'SOURCEDIR/TPcommon.php|TPCommonActions',
             ),
             'tp_post_subactions'                => array ( 
             ),           
             'tp_post_init'                      => array (
                 'SOURCEDIR/TPBlock.php|getBlocks',
-                'SOURCEDIR/TPShout.php|TPShoutLoad',
             ),
             'tp_admin_areas'                    => array (
-                'SOURCEDIR/TPdlmanager.php|TPDownloadAdminAreas',
-                'SOURCEDIR/TPShout.php|TPShoutAdminAreas',
-                'SOURCEDIR/TPListImages.php|TPListImageAdminAreas',
             ),
             'tp_shoutbox'                       => array (
-                'SOURCEDIR/TPShout.php|TPShoutBlock',
             ),
             'tp_block'                          => array (
             ),
             'tp_pre_admin_subactions'           => array ( 
-                'SOURCEDIR/TPBlock.php|TPBlockAdminActions',
-                'SOURCEDIR/TPShout.php|TPShoutAdminActions',
-                'SOURCEDIR/TPListImages.php|TPListImageAdminActions',
             ),
         );
 
@@ -99,7 +90,14 @@ class Integrate
                 }
             }
 		}
-        
+
+        // Call TPortalInit if we are not on the home page or tpadmin
+        $action = Util::filter('action', 'get', 'string');
+        if($action != false && !in_array($action, array('home', 'tpadmin'))) {
+            require_once(SOURCEDIR . '/TPortal.php');        
+            \TPortalInit();
+        }
+
         }}}
 
     public static function hookFrontPage(&$defaultAction) {{{
@@ -537,9 +535,6 @@ class Integrate
     public static function hookPreLogStats(&$no_stat_actions) {{{
         $no_stat_actions = array_merge($no_stat_actions, array('shout'));
 
-        // We can also call init from here although it's not meant for this
-        require_once(SOURCEDIR . '/TPortal.php');
-        \TPortal_init();
     }}}
 
     public static function hookRedirect(&$setLocation, &$refresh) {{{
