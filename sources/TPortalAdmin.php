@@ -259,7 +259,7 @@ function TPortalAdmin()
             );
     }
 
-    if (!Template_Layers::getInstance()->hasLayers(true) && !in_array('tpadm', Template_Layers::getInstance()->getLayers())) {
+    if(!in_array('tpadm', Template_Layers::getInstance()->getLayers())) {
         Template_Layers::getInstance()->add('tpadm');
         Template_Layers::getInstance()->add('subtab');
     }

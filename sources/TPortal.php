@@ -128,8 +128,8 @@ function TPortalInit() {{{
         Template_Layers::getInstance()->add($context['TPortal']['hooks']['tp_layer']);
     }
 
-	\loadtemplate('TPsubs');
-	\loadtemplate('TPBlockLayout');
+	\loadTemplate('TPsubs');
+	\loadTemplate('TPBlockLayout');
 
 	// is the permanent theme option set?
 	if(isset($_GET['permanent']) && !empty($_GET['theme']) && $context['user']['is_logged']) {
