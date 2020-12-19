@@ -1027,7 +1027,7 @@ function template_TPsearch_above()
 		<div class="cat_bar">
 			<h3 class="category_header">' , $txt['tp-searcharticles'] , '</h3>
 		</div>
-		<div class="content noup">
+		<div class="content">
 			<span class="topslice"><span></span></span>
 			<p style="margin: 0; padding: 0 1em;">
 				<a href="' . $scripturl. '?action=tportal;sa=searcharticle">' . $txt['tp-searcharticles2'] . '</a>';
@@ -1038,7 +1038,7 @@ function template_TPsearch_above()
 		<div class="cat_bar">
 			<h3 class="category_header">' , $txt['tp-searcharticles'] , '</h3>
 		</div>
-		<div class="content noup">
+		<div class="content">
 			<span class="topslice"><span></span></span>
 			<p style="margin: 0; padding: 0 1em;">
 				<a href="' . $scripturl. '?action=tportal;sa=searcharticle">' . $txt['tp-searcharticles2'] . '</a> |
@@ -1144,7 +1144,7 @@ function article_renders($type = 1, $single = false, $first = false)
     $useframestyle = in_array($context['TPortal']['article']['frame'], array('theme', 'frame'));
 	$divheader = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divheader'] : 'title_bar';
 	$headerstyle = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_headerstyle'] : 'category_header';
-	$divbody = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divbody'] : ($usetitlestyle ? 'content noup' : 'content');
+	$divbody = isset($context['TPortal']['article']['boardnews']) ? $context['TPortal']['boardnews_divbody'] : ($usetitlestyle ? 'content' : 'content');
 	$showtitle = in_array('title', $context['TPortal']['article']['visual_options']);
 
 	if($type == 1)
@@ -2416,7 +2416,7 @@ function template_tpadm_above()
 			<h3 class="category_header">' . $txt['tp-adminmenu'] .'</h3>
 		</div>
 		<span class="upperframe"><span></span></span>
-		<div class="roundframe noup">';
+		<div class="roundframe">';
 
 
 	if(is_array($context['admin_tabs']) && count($context['admin_tabs']) > 0) {

@@ -210,8 +210,8 @@ $settingsArray = array(
     'forumposts_avatar' => '1',
     'use_attachment' => '0',
     'boardnews_divheader' => 'cat_bar',
-    'boardnews_headerstyle' => 'catbg',
-    'boardnews_divbody' => 'windowbg noup',
+    'boardnews_headerstyle' => 'category_header',
+    'boardnews_divbody' => 'content',
     // article settings
     'use_wysiwyg' => '2',
     'editorheight' => '400',
