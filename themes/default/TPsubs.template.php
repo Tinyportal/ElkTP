@@ -92,7 +92,7 @@ function TPblock($block, $theme, $side, $double=false)
 
             // can you edit the block?
             if($block['can_manage'] && !$context['TPortal']['blocks_edithide']) {
-                echo '<a href="',$scripturl,'?action=tpadmin&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
+                echo '<a href="',$scripturl,'?action=admin;area=tparticles&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
             }
 			
 			echo $block['title'];
@@ -154,7 +154,7 @@ function TPblock($block, $theme, $side, $double=false)
 
 		// can you edit the block?
 		if($block['can_manage'] && !$context['TPortal']['blocks_edithide'])
-			echo '<a href="',$scripturl,'?action=tpadmin&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin-right: 4px;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
+			echo '<a href="',$scripturl,'?action=admin;area=tparticles&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin-right: 4px;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
 
 		echo $block['title'];
 		echo $context['TPortal']['blocktheme'][$block['frame']]['title']['after'];
@@ -267,18 +267,18 @@ function TPortal_userbox()
 		// tpadmin checks
 		if (allowedTo('tp_settings'))
 			echo '
-			<li><hr><a href="' . $scripturl . '?action=tpadmin;sa=settings">' . $bullet4.$txt['permissionname_tp_settings'] . '</a></li>';
+			<li><hr><a href="' . $scripturl . '?action=admin;area=tparticles;sa=settings">' . $bullet4.$txt['permissionname_tp_settings'] . '</a></li>';
 		if (allowedTo('tp_blocks'))
 					echo '
-			<li><a href="' . $scripturl . '?action=tpadmin;sa=blocks">' . $bullet4.$txt['permissionname_tp_blocks'] . '</a></li>';
+			<li><a href="' . $scripturl . '?action=admin;area=tparticles;sa=blocks">' . $bullet4.$txt['permissionname_tp_blocks'] . '</a></li>';
 		if (allowedTo('tp_articles'))
 		{
 					echo '
-			<li><a href="' . $scripturl . '?action=tpadmin;sa=articles">' . $bullet4.$txt['permissionname_tp_articles'] . '</a></li>';
+			<li><a href="' . $scripturl . '?action=admin;area=tparticles;sa=articles">' . $bullet4.$txt['permissionname_tp_articles'] . '</a></li>';
 					// any submissions?
 					if($context['TPortal']['submitcheck']['articles']>0)
 						echo '
-			<li><a href="' . $scripturl . '?action=tpadmin;sa=submission"><b>' . $bullet4 . ' ' .$txt['tp-articlessubmitted'] . ' ' .$context['TPortal']['submitcheck']['articles'] . '</b></a></li>';
+			<li><a href="' . $scripturl . '?action=admin;area=tparticles;sa=submission"><b>' . $bullet4 . ' ' .$txt['tp-articlessubmitted'] . ' ' .$context['TPortal']['submitcheck']['articles'] . '</b></a></li>';
 		}
 		if (allowedTo('tp_dlmanager'))
 		{
@@ -1838,12 +1838,12 @@ function article_options($render = true)
 		// give 'em a edit link? :)
 		if(allowedTo('tp_articles') && ($context['TPortal']['hide_editarticle_link']==1)) {
 			$data .= '
-					<a href="' . $scripturl . '?action=tpadmin;sa=editarticle;article=' . $context['TPortal']['article']['id'] . '"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['tp-edit'].'" /></a>';
+					<a href="' . $scripturl . '?action=admin;area=tparticles;sa=editarticle;article=' . $context['TPortal']['article']['id'] . '"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['tp-edit'].'" /></a>';
         }
 		// their own article?
 		elseif(allowedTo('tp_editownarticle') && !allowedTo('tp_articles') && ($context['TPortal']['article']['author_id'] == $context['user']['id']) && $context['TPortal']['hide_editarticle_link']==1 && $context['TPortal']['article']['locked']!=1) {
 			$data .= '
-					<a href="' . $scripturl . '?action=tpadmin;sa=editarticle;article=' . $context['TPortal']['article']['id'] . '"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['tp-edit'].'" /></a>';
+					<a href="' . $scripturl . '?action=admin;area=tparticles;sa=editarticle;article=' . $context['TPortal']['article']['id'] . '"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['tp-edit'].'" /></a>';
         }
 	}
 

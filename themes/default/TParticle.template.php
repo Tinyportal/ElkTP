@@ -37,12 +37,9 @@ function template_submitarticle()
 		$context['TPortal']['category_name'] = $txt['tp-uncategorised'];
     }
 
-    $action = 'tportal;sa=savearticle';
-    if(allowedTo('admin_forum') || allowedTo('tp_articles')) {
-        $action = 'tpadmin';
-    }
-    else if(isset($mg['id'])) {
-        $action .= ';article='.$mg['id'];
+    $action = '';
+    if(isset($mg['id'])) {
+        $action = ';article='.$mg['id'];
     }
 
     if(empty($mg['articletype']) && !empty($context['TPortal']['articletype'])) {
@@ -56,7 +53,7 @@ function template_submitarticle()
     }
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" name="TPadmin3" action="' . $scripturl . '?action='.$action.'" enctype="multipart/form-data" method="post" onsubmit="submitonce(this);">
+	<form accept-charset="', 'UTF-8', '" name="TPadmin3" action="' . $scripturl . '?action=admin;areas=tparticles;sa=savearticle'.$action.'" enctype="multipart/form-data" method="post" onsubmit="submitonce(this);">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />';
 
     if(allowedTo('admin_forum') || allowedTo('tp_articles')) {
@@ -245,7 +242,7 @@ function template_submitarticle()
 				}
 				echo '</select>';
 				if(allowedTo('admin_forum') || allowedTo('tp_articles')) {
-					echo '&nbsp;<a href="', $scripturl, '?action=tpadmin;sa=categories;cu='.$mg['category'].';sesc=' .$context['session_id']. '">',$txt['tp-editcategory'],'</a>';
+					echo '&nbsp;<a href="', $scripturl, '?action=admin;area=tparticles;sa=categories;cu='.$mg['category'].';sesc=' .$context['session_id']. '">',$txt['tp-editcategory'],'</a>';
 				}
 				echo '
 						</div><br>
@@ -780,7 +777,7 @@ function template_showarticle()
 					}
 					if((allowedTo('tp_editownarticle') || allowedTo('tp_articles')) && $art['locked']==0) {
 						echo '
-						<a href="' . $scripturl . '?action=tpadmin;sa=editarticle;article='.$art['id'].'" title="'. $txt['tp-editarticle'] .'"><img src="' . $settings['tp_images_url'] . '/TPmodify.png" alt="*" /></a>&nbsp; ';
+						<a href="' . $scripturl . '?action=admin;area=tparticles;sa=editarticle;article='.$art['id'].'" title="'. $txt['tp-editarticle'] .'"><img src="' . $settings['tp_images_url'] . '/TPmodify.png" alt="*" /></a>&nbsp; ';
 					} 
 					if($art['off']==0) { 
 							echo '<img src="' . $settings['tp_images_url'] . '/TPactive2.png" title="" alt="*" />&nbsp; ';

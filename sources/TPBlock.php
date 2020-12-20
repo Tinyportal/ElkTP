@@ -248,11 +248,11 @@ function adminBlocks() {{{
     $tpBlock    = TPBlock::getInstance();
 
 	if(($context['TPortal']['subaction']=='blocks') && !isset($_GET['overview'])) {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=blocks', $txt['tp-blocks']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=blocks', $txt['tp-blocks']);
 	}
 	
 	if(isset($_GET['addblock'])) {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=addblock', $txt['tp-addblock']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=addblock', $txt['tp-addblock']);
 		// collect all available PHP block snippets
 		$context['TPortal']['blockcodes']   = TPcollectSnippets();
 		$context['TPortal']['copyblocks']   = $tpBlock->getBlocks();
@@ -280,7 +280,7 @@ function adminBlocks() {{{
             }
         }
         $tpBlock->updateBlock($id, array( 'pos' => $new));
-		redirectexit('action=tpadmin;sa=blocks');
+		redirectexit('action=admin;area=tpblocks;sa=blocks');
 	}
 
 	// change the on/off
@@ -296,7 +296,7 @@ function adminBlocks() {{{
                 $tpBlock->updateBlock($id, array( 'off' => '1' ));
             }
         }
-        redirectexit('action=tpadmin;sa=blocks');
+        redirectexit('action=admin;area=tpblocks;sa=blocks');
 	}
 
 	// remove it?
@@ -304,7 +304,7 @@ function adminBlocks() {{{
 		checksession('get');
 		$id         = is_numeric($_GET['blockdelete']) ? $_GET['blockdelete'] : 0;
         $tpBlock->deleteBlock($id);
-		redirectexit('action=tpadmin;sa=blocks');
+		redirectexit('action=admin;area=tpblocks;sa=blocks');
 	}
    
     foreach( array ( 'blockright', 'blockleft', 'blockcenter', 'blockfront', 'blockbottom', 'blocktop', 'blocklower') as $block_location ) {
@@ -313,13 +313,13 @@ function adminBlocks() {{{
             $id     = is_numeric($_GET[$block_location]) ? $_GET[$block_location] : 0;
             $loc    = $tpBlock->getBlockBarId(str_replace('block', '', $block_location));
             $tpBlock->updateBlock($id, array( 'bar' => $loc ));
-            redirectexit('action=tpadmin;sa=blocks');
+            redirectexit('action=admin;area=tpblocks;sa=blocks');
         }
 	}
 
 	// are we on overview screen?
 	if(isset($_GET['overview'])) {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=blocks;overview', $txt['tp-blockoverview']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=blocks;overview', $txt['tp-blockoverview']);
 		
 		// fetch all blocks member group permissions
         $data   = $tpBlock->getBlockData(array('id', 'title', 'bar', 'access', 'type'), array( 'off' => 0 ) );
@@ -346,7 +346,7 @@ function adminBlocks() {{{
 	}
 
 	if($context['TPortal']['subaction']=='panels') {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=panels', $txt['tp-panels']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=panels', $txt['tp-panels']);
     }
 	
 	else {
@@ -417,7 +417,7 @@ function adminBlocks() {{{
 				  target = target.parentNode;
 			var id = target.id.replace("blockonbutton", "");
 			var Ajax = getXMLHttpRequest();
-			Ajax.open("POST", "?action=tpadmin;blockon=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+			Ajax.open("POST", "?action=admin;area=tpblocks;blockon=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
 			Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 			var source = target.src;
 			target.src = "' . $settings['tp_images_url'] . '/ajax.gif"
@@ -428,7 +428,7 @@ function adminBlocks() {{{
 					target.src = source == "' . $settings['tp_images_url'] . '/TPactive1.png" ? "' . $settings['tp_images_url'] . '/TPactive2.png" : "' . $settings['tp_images_url'] . '/TPactive1.png";
 				}
 			}
-			var params = "?action=tpadmin;blockon=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+			var params = "?action=admin;area=tpblocks;blockon=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
 			Ajax.send(params);
 		}
 	// ]]></script>';
@@ -458,7 +458,7 @@ function editBlock( $block_id = 0 ) {{{
 
     require_once(SOURCEDIR.'/TPortalAdmin.php');
 
-	TPadd_linktree($scripturl.'?action=tpadmin;sa=blocks', $txt['tp-blocks']);
+	TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=blocks', $txt['tp-blocks']);
 	TPadd_linktree($scripturl.'?action=tpadmin&sa=editblock&id='.$block_id . ';'.$context['session_var'].'='.$context['session_id'], $txt['tp-editblock']);
 
     $row = $tpBlock->getBlock($block_id);
