@@ -9,10 +9,6 @@ $txt['tp-frontpage'] = 'Frontpage';
 $txt['tp-articles'] = 'Articles';
 $txt['tp-tabs4'] = 'Submissions';
 $txt['tp-adminpanels'] = 'Panels and Blocks';
-$txt['tp-menumanager'] = 'Menu manager';
-$txt['tp-addmenu'] = 'Add menu';
-$txt['custom_modules'] = 'TP Modules';
-$txt['tp-dlmanager'] = 'TPDownloads';
  
 // Settings page
 $txt['tp-generalsettings'] = 'General settings';

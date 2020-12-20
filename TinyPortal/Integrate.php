@@ -40,6 +40,7 @@ class Integrate
             'buffer'                            => '\TinyPortal\Integrate::hookBuffer',
             'menu_buttons'                      => '\TinyPortal\Integrate::hookMenuButtons',
             //'display_buttons'                   => '\TinyPortal\Integrate::hookDisplayButton',
+            'admin_areas'                       => '\TinyPortal\Integrate::hookAdminAreas',
             'actions'                           => '\TinyPortal\Integrate::hookActions',
             'whos_online'                       => '\TinyPortal\Integrate::hookWhosOnline',
             'pre_profile_areas'                 => '\TinyPortal\Integrate::hookProfileArea',
@@ -299,8 +300,6 @@ class Integrate
 
 		\loadLanguage('TPortal');
 
-        $version = Admin::getInstance()->getSetting('version');
-
         $buttons = \elk_array_insert($buttons, 'home', array (
             'base' => array(
                 'title' 	    => $txt['tp-home'],
@@ -316,7 +315,9 @@ class Integrate
         $buttons['home']['data-icon'] = 'i-users';
         $buttons['home']['href']      = $scripturl . '?action=forum';
 
-		if(\allowedTo('tp_settings') || \allowedTo('tp_articles') || \allowedTo('tp_blocks') || \allowedTo('tp_can_list_images')) {
+        return; // Moved admin to admin area
+
+		if(\allowedTo('tp_settings') || \allowedTo('tp_articles') || \allowedTo('tp_blocks')) {
 			$context['html_headers'] .= '
 			<style>
 				.i-newspaper::before {
@@ -335,6 +336,61 @@ class Integrate
 				),
 			), 'after');
 		}
+
+    }}}
+
+    public static function hookAdminAreas(&$adminAreas) {{{
+        global $txt;
+        
+        \loadLanguage('TPortal');
+        \loadLanguage('TPortalAdmin');
+
+
+        $adminAreas['tpadmin'] = array (
+			'title' => $txt['tp-tphelp'],
+			'permission' => array ('admin_forum', 'tp_articles', 'tp_blocks', 'tp_settings'),
+			'areas' => array (
+				'tpsettings' => array (
+					'label'       => $txt['tp-adminheader1'],
+					'file'        => 'TPortalAdmin.controller.php',
+					'controller'  => 'TPortalAdmin_Controller',
+					'function'    => 'action_index',
+					'icon'        => 'transparent.png',
+					'class'       => 'admin_home_page',
+					'permission'  => array ( 'admin_forum', 'tp_settings' ),
+					'subsections' => array (
+						'settings'	=> array ( $txt['tp-settings'] ),
+						'frontpage'	=> array ( $txt['tp-frontpage'] ),
+					),
+				),
+				'tparticles' => array (
+					'label'       => $txt['tp-articles'],
+					'file'        => 'TPortalAdmin.controller.php',
+					'controller'  => 'TPortalAdmin_Controller',
+					'function'    => 'action_index',
+					'icon'        => 'transparent.png',
+					'class'       => 'admin_home_page',
+					'permission'  => array ( 'admin_forum', 'tp_articles' ),
+					'subsections' => array (
+						'articles'	=> array ( $txt['tp-articles'] ),
+						'category'	=> array ( $txt['tp-tabs5'] ),
+					),
+				),
+				'tpblocks' => array (
+					'label'       => $txt['tp-adminpanels'],
+					'file'        => 'TPortalAdmin.controller.php',
+					'controller'  => 'TPortalAdmin_Controller',
+					'function'    => 'action_index',
+					'icon'        => 'transparent.png',
+					'class'       => 'admin_home_page',
+					'permission'  => array ( 'admin_forum', 'tp_blocks' ),
+					'subsections' => array (
+						'blocks'	=> array ( $txt['tp-blocks'] ),
+						'panels'	=> array ( $txt['tp-panels'] ),
+					),
+				),
+            ),
+        );
 
     }}}
 
@@ -394,7 +450,6 @@ class Integrate
         $actionArray = array_merge(
             array (
                 'forum'     => array('BoardIndex.php',                  'BoardIndex'),
-                'tpadmin'   => array('TPortal.controller.php',          'action_admin'),
                 'tportal'   => array('TPortal.controller.php',          'action_index'),
             ),
             $actionArray

@@ -75,7 +75,7 @@ function TPortalAdmin()
 			$context['TPortal']['frontpage_visualopts_admin']['sortorder'] = substr($r, 10);
 	}
 
-	TPadd_linktree($scripturl.'?action=tpadmin', $txt['tp-admin']);
+	TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=admin', $txt['tp-admin']);
 
 	// some GET values set up
 	$context['TPortal']['tpstart'] = isset($_GET['tpstart']) ? $_GET['tpstart'] : 0;
@@ -100,12 +100,15 @@ function TPortalAdmin()
 	$return = do_postchecks();
  
 	if(!empty($return)) {
-		redirectexit('action=tpadmin;sa=' . $return);
+		redirectexit('action=admin;area=tpadmin;sa=' . $return);
     }
 	
     $tpsub = '';
 
 	$subAction  = TPUtil::filter('sa', 'get', 'string');
+    if($subAction == false) {
+        $subAction  = TPUtil::filter('area', 'get', 'string');
+    }
     $subActions = array();
    
     call_integration_hook('integrate_tp_pre_admin_subactions', array(&$subActions));
@@ -168,43 +171,43 @@ function TPortalAdmin()
 				'articles' => array(
 					'lang' => true,
 					'text' => 'tp-articles',
-					'url' => $scripturl . '?action=tpadmin;sa=articles',
+					'url' => $scripturl . '?action=admin;area=tpadmin;sa=articles',
 					'active' => ($context['TPortal']['subaction'] == 'articles' || $context['TPortal']['subaction'] == 'editarticle') && $context['TPortal']['subaction'] != 'strays',
 					),
 				'articles_nocat' => array(
 					'lang' => true,
 					'text' => 'tp-uncategorised' ,
-					'url' => $scripturl . '?action=tpadmin;sa=articles;sa=strays',
+					'url' => $scripturl . '?action=admin;area=tpadmin;sa=articles;sa=strays',
 					'active' => $context['TPortal']['subaction'] == 'strays',
 					),
 				'submissions' => array(
 					'lang' => true,
 					'text' => 'tp-tabs4' ,
-					'url' => $scripturl . '?action=tpadmin;sa=articles;sa=submission',
+					'url' => $scripturl . '?action=admin;area=tpadmin;sa=articles;sa=submission',
 					'active' => $context['TPortal']['subaction'] == 'submission',
 					),
 				'addarticle' => array(
 					'lang' => true,
 					'text' => 'tp-tabs2',
-					'url' => $scripturl . '?action=tpadmin;sa=addarticle_html' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
+					'url' => $scripturl . '?action=admin;area=tpadmin;sa=addarticle_html' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
 					'active' => $context['TPortal']['subaction'] == 'addarticle_html',
 					),
 				'addarticle_php' => array(
 					'lang' => true,
 					'text' => 'tp-tabs3',
-					'url' => $scripturl . '?action=tpadmin;sa=addarticle_php' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
+					'url' => $scripturl . '?action=admin;area=tpadmin;sa=addarticle_php' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
 					'active' => $context['TPortal']['subaction'] == 'addarticle_php',
 					),
 				'addarticle_bbc' => array(
 					'lang' => true,
 					'text' => 'tp-addbbc',
-					'url' => $scripturl . '?action=tpadmin;sa=addarticle_bbc' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
+					'url' => $scripturl . '?action=admin;area=tpadmin;sa=addarticle_bbc' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
 					'active' => $context['TPortal']['subaction'] == 'addarticle_bbc',
 					),
 				'article_import' => array(
 					'lang' => true,
 					'text' => 'tp-addimport',
-					'url' => $scripturl . '?action=tpadmin;sa=addarticle_import' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
+					'url' => $scripturl . '?action=admin;area=tpadmin;sa=addarticle_import' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
 					'active' => $context['TPortal']['subaction'] == 'addarticle_import',
 					),
 				);
@@ -214,19 +217,19 @@ function TPortalAdmin()
                 'categories' => array(
                     'lang' => true,
                     'text' => 'tp-tabs5',
-                    'url' => $scripturl . '?action=tpadmin;sa=categories',
+                    'url' => $scripturl . '?action=admin;area=tpadmin;sa=categories',
                     'active' => $tpsub == 'categories',
                     ),
                 'addcategory' => array(
                     'lang' => true,
                     'text' => 'tp-tabs6',
-                    'url' => $scripturl . '?action=tpadmin;sa=addcategory',
+                    'url' => $scripturl . '?action=admin;area=tpadmin;sa=addcategory',
                     'active' => $tpsub == 'addcategory',
                     ),
                 'clist' => array(
                     'lang' => true,
                     'text' => 'tp-tabs11',
-                    'url' => $scripturl . '?action=tpadmin;sa=clist',
+                    'url' => $scripturl . '?action=admin;area=tpadmin;sa=clist',
                     'active' => $tpsub == 'clist',
                     ),
                 );
@@ -236,25 +239,25 @@ function TPortalAdmin()
                 'panels' => array(
                     'lang' => true,
                     'text' => 'tp-panels',
-                    'url' => $scripturl . '?action=tpadmin;sa=panels',
+                    'url' => $scripturl . '?action=admin;area=tpadmin;sa=panels',
                     'active' => $tpsub == 'panels',
                 ),
 				'blocks' => array(
                     'lang' => true,
                     'text' => 'tp-blocks',
-                    'url' => $scripturl . '?action=tpadmin;sa=blocks',
+                    'url' => $scripturl . '?action=admin;area=tpadmin;sa=blocks',
                     'active' => $tpsub == 'blocks' && !isset($_GET['overview']),
                 ),
 				'addblock' => array(
                     'lang' => true,
                     'text' => 'tp-addblock',
-                    'url' => $scripturl . '?action=tpadmin;addblock=;' . $context['session_var'] . '=' . $context['session_id'].'',
+                    'url' => $scripturl . '?action=admin;area=tpadmin;sa=addblock=;' . $context['session_var'] . '=' . $context['session_id'].'',
                     'active' => $tpsub == 'addblock',
                 ),
                 'blockoverview' => array(
                     'lang' => true,
                     'text' => 'tp-blockoverview',
-                    'url' => $scripturl . '?action=tpadmin;sa=blocks;overview',
+                    'url' => $scripturl . '?action=admin;area=tpadmin;sa=blocks;overview',
                     'active' => $tpsub == 'blocks' && isset($_GET['overview']),
                 ),
             );
@@ -292,7 +295,7 @@ function do_subaction($tpsub) {
 		fatal_error($txt['tp-noadmin'], false);
     }
     else {
-		redirectexit('action=tpadmin');
+		redirectexit('action=admin;area=tpadmin;sa=admin');
     }
 
 }
@@ -389,7 +392,7 @@ function do_articles()
 
 	// we are on categories screen
 	if(in_array($context['TPortal']['subaction'], array('categories', 'addcategory', 'clist'))) {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=categories', $txt['tp-categories']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=categories', $txt['tp-categories']);
 		// first check if we simply want to copy or set as child
 		if(isset($_GET['cu']) && is_numeric($_GET['cu'])) {
 			$ccat = $_GET['cu'];
@@ -432,7 +435,7 @@ function do_articles()
 						array('id')
 					);
 				}
-				redirectexit('action=tpadmin;sa=categories');
+				redirectexit('action=admin;area=tpadmin;sa=categories');
 			}
 			elseif(isset($_GET['child'])) {
 				$request = $db->query('', '
@@ -473,7 +476,7 @@ function do_articles()
 						array('id')
 					);
 				}
-				redirectexit('action=tpadmin;sa=categories');
+				redirectexit('action=admin;area=tpadmin;sa=categories');
 			}
 			// guess we only want the category then
 			else {
@@ -536,7 +539,7 @@ function do_articles()
 						$context['TPortal']['editcats'] = $allsorted;
                     }
 				}
-				TPadd_linktree($scripturl.'?action=tpadmin;sa=categories;cu='. $ccat, $txt['tp-editcategory']);
+				TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=categories;cu='. $ccat, $txt['tp-editcategory']);
 			}
 			return;
 		}
@@ -586,39 +589,39 @@ function do_articles()
 			}
 		}
 		if($context['TPortal']['subaction'] == 'addcategory') {
-			TPadd_linktree($scripturl.'?action=tpadmin;sa=addcategory', $txt['tp-addcategory']);
+			TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=addcategory', $txt['tp-addcategory']);
         }
 		if($context['TPortal']['subaction'] == 'clist') {
-			TPadd_linktree($scripturl.'?action=tpadmin;sa=clist', $txt['tp-tabs11']);
+			TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=clist', $txt['tp-tabs11']);
         }
 
 		return;
 	}
-	TPadd_linktree($scripturl.'?action=tpadmin;sa=articles', $txt['tp-articles']);
+	TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=articles', $txt['tp-articles']);
 	// are we inside a category?
 	if(isset($_GET['cu']) && is_numeric($_GET['cu'])) {
 		$where = $_GET['cu'];
 	}
 	// show the no category articles?
 	if(isset($_GET['sa']) && $_GET['sa'] == 'strays') {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=strays', $txt['tp-strays']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=strays', $txt['tp-strays']);
 		$show_nocategory = true;
 	}
 
 	// submissions?
 	if(isset($_GET['sa']) && $_GET['sa'] == 'submission') {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=submission', $txt['tp-submissions']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=submission', $txt['tp-submissions']);
 		$show_submission = true;
 	}
 
 	// single article?
 	if(isset($_GET['sa']) && substr($_GET['sa'], 0, 11) == 'editarticle') {
 		$whatarticle = TPUtil::filter('article', 'get', 'string');
-		TPadd_linktree($scripturl.'?action=tpadmin;sa='.$_GET['sa'].';article='.$whatarticle, $txt['tp-editarticle']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa='.$_GET['sa'].';article='.$whatarticle, $txt['tp-editarticle']);
 	}
 	// are we starting a new one?
 	if(isset($_GET['sa']) && substr($_GET['sa'], 0, 11) == 'addarticle_') {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa='.$_GET['sa'], $txt['tp-addarticle']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa='.$_GET['sa'], $txt['tp-addarticle']);
 		$context['TPortal']['editarticle'] = array(
             'id' => '',
             'date' => time(),
@@ -706,7 +709,7 @@ function do_articles()
 		$start = (!empty($_GET['p']) && is_numeric($_GET['p'])) ? $_GET['p'] : 0;
 		// sorting?
 		$sort = $context['TPortal']['sort'] = (!empty($_GET['sort']) && in_array($_GET['sort'], array('date', 'id','author_id', 'type', 'subject', 'parse'))) ? $_GET['sort'] : 'date';
-		$context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=tpadmin;sa=submission;sort=' . $sort , $start, $context['TPortal']['total_submissions'], 15);
+		$context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=admin;area=tpadmin;sa=submission;sort=' . $sort , $start, $context['TPortal']['total_submissions'], 15);
 		$request = $db->query('', '
 			SELECT	art.id, art.date, art.frontpage, art.category, art.author_id as author_id,
 				COALESCE(mem.real_name, art.author) as author, art.subject, art.approved,
@@ -738,7 +741,7 @@ function do_articles()
 		$start = (!empty($_GET['p']) && is_numeric($_GET['p'])) ? $_GET['p'] : 0;
 		// sorting?
 		$sort = $context['TPortal']['sort'] = (!empty($_GET['sort']) && in_array($_GET['sort'], array('off', 'date', 'id', 'author_id', 'locked', 'frontpage', 'sticky', 'featured', 'type', 'subject', 'parse'))) ? $_GET['sort'] : 'date';
-		$context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=tpadmin;sa=articles;sort=' . $sort , $start, $context['TPortal']['total_nocategory'], 15);
+		$context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=admin;area=tpadmin;sa=articles;sort=' . $sort , $start, $context['TPortal']['total_nocategory'], 15);
 		$request = $db->query('', '
 			SELECT	art.id, art.date, art.frontpage, art.category, art.author_id as author_id,
 				COALESCE(mem.real_name, art.author) as author, art.subject, art.approved, art.sticky,
@@ -894,7 +897,7 @@ function do_articles()
 		);
 
 		$row = $db->fetch_assoc($request);
-		$context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=tpadmin;sa=articles;sort=' . $sort . ';cu=' . $where, $start, $row['total'], 15);
+		$context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=admin;area=tpadmin;sa=articles;sort=' . $sort . ';cu=' . $where, $start, $row['total'], 15);
 		$db->free_result($request);
 
 		$request = $db->query('', '
@@ -912,7 +915,7 @@ function do_articles()
 				'start' => $start
 			)
 		);
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=articles;cu='.$where, $txt['tp-blocktype19']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=articles;cu='.$where, $txt['tp-blocktype19']);
 
 		if($db->num_rows($request) > 0) {
 			$context['TPortal']['arts']=array();
@@ -1135,10 +1138,10 @@ function do_articles()
 	// ]]></script>';
 
 	if($context['TPortal']['subaction'] == 'artsettings') {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=artsettings', $txt['tp-settings']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=artsettings', $txt['tp-settings']);
     }
 	elseif($context['TPortal']['subaction'] == 'articons') {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=articons', $txt['tp-adminicons']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=articons', $txt['tp-adminicons']);
     }
 
 }
@@ -1156,15 +1159,15 @@ function do_admin($tpsub = 'overview')
         }
 	}
 	elseif($tpsub == 'permissions') {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=permissions', $txt['tp-permissions']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=permissions', $txt['tp-permissions']);
 		$context['TPortal']['perm_all_groups'] = get_grps(true, true);
 		$context['TPortal']['perm_groups'] = tp_fetchpermissions($context['TPortal']['modulepermissions']);
 	}
 	else {
 		if($tpsub == 'settings')
-			TPadd_linktree($scripturl.'?action=tpadmin;sa=settings', $txt['tp-settings']);
+			TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=settings', $txt['tp-settings']);
 		elseif($tpsub == 'frontpage')
-			TPadd_linktree($scripturl.'?action=tpadmin;sa=frontpage', $txt['tp-frontpage']);
+			TPadd_linktree($scripturl.'?action=admin;area=tpadmin;sa=frontpage', $txt['tp-frontpage']);
 
 		isAllowedTo('tp_settings');
 	}
@@ -1539,7 +1542,7 @@ function do_postchecks()
 			}
 			updateTPSettings($updateArray);
 
-			redirectexit('action=tpadmin;sa=menubox;mid='. $_POST['tp_menuid']);
+			redirectexit('action=admin;area=tpadmin;sa=menubox;mid='. $_POST['tp_menuid']);
 		}
 		// all the menus
 		elseif($from == 'menus')
@@ -1560,7 +1563,7 @@ function do_postchecks()
 						)
 					);
 			}
-			redirectexit('action=tpadmin;sa=menubox');
+			redirectexit('action=admin;area=tpadmin;sa=menubox');
 		}
 		elseif($from == 'singlemenuedit')
 		{
@@ -1701,7 +1704,7 @@ function do_postchecks()
 			);
 
 			$go = $db->insert_id('{db_prefix}tp_variables', 'id');
-			redirectexit('action=tpadmin;sa=categories;cu='.$go);
+			redirectexit('action=admin;area=tpadmin;sa=categories;cu='.$go);
 		}
 		// the categort list
 		elseif($from == 'clist')
@@ -1891,7 +1894,7 @@ function do_postchecks()
 					array($mtitle, 'menus'),
 					array('id')
 				);
-				redirectexit('action=tpadmin;sa=menubox');
+				redirectexit('action=admin;area=tpadmin;sa=menubox');
 			}
 		}
 		// adding a menu item.
@@ -1945,7 +1948,7 @@ function do_postchecks()
 				array('id')
 			);
 
-			redirectexit('action=tpadmin;sa=menubox;mid='.$mid);
+			redirectexit('action=admin;area=tpadmin;sa=menubox;mid='.$mid);
 		}
 		// submitted ones
 		elseif($from == 'submission')
@@ -2093,7 +2096,7 @@ function do_postchecks()
 					);
 				}
 			}
-			redirectexit('action=tpadmin;sa=blocks');
+			redirectexit('action=admin;area=tpadmin;sa=blocks');
 		}
 		// from editing block
 		elseif($from == 'addblock')
@@ -2223,9 +2226,9 @@ function do_postchecks()
 
 			$where = $db->insert_id('{db_prefix}tp_blocks', 'id');
 			if(!empty($where))
-				redirectexit('action=tpadmin&sa=editblock&id='.$where.';sesc='. $context['session_id']);
+				redirectexit('action=admin;area=tpadmin;sa=editblock&id='.$where.';sesc='. $context['session_id']);
 			else
-				redirectexit('action=tpadmin;sa=blocks');
+				redirectexit('action=admin;area=tpadmin;sa=blocks');
 		}
 		// from editing block
 		elseif($from == 'blockedit') {
@@ -2420,7 +2423,7 @@ function do_postchecks()
 			}
 			updateTPSettings($updateArray);
 
-			redirectexit('action=tpadmin&sa=editblock&id='.$where.';' . $context['session_var'] . '=' . $context['session_id']);
+			redirectexit('action=admin;area=tpadmin;sa=editblock&id='.$where.';' . $context['session_var'] . '=' . $context['session_id']);
 		}
 		// Editing an article?
 		elseif(substr($from, 0, 11) == 'editarticle') {
