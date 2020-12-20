@@ -212,9 +212,9 @@ class Integrate
         }
 
 
-        $string = '<a target="_blank" href="https://www.tinyportal.net" title="TinyPortal">TinyPortal 2.1.0</a> &copy; <a href="' . $scripturl . '?action=tportal;sa=credits" title="Credits">2005-2020</a>';
+        $string = '<a target="_blank" href="https://www.tinyportal.net" title="TinyPortal">TinyPortal 1.0.0</a> &copy; <a href="' . $scripturl . '?action=tportal;sa=credits" title="Credits">2005-2020</a>';
 
-        if (ELK == 'SSI' || empty($context['template_layers']) || (defined('WIRELESS') && WIRELESS ) || strpos($buffer, $string) !== false) {
+        if (ELK == 'SSI' || strpos($buffer, $string) !== false) {
             return $buffer;
         }
 
@@ -244,8 +244,8 @@ class Integrate
             return $buffer;
         }
         else {
-            $find       = '//www.simplemachines.org" title="Simple Machines" target="_blank" class="new_win">Simple Machines</a>';
-            $replace    = '//www.simplemachines.org" title="Simple Machines" target="_blank" class="new_win">Simple Machines</a><br />' . $string;
+            $find       = array( sprintf('%1$s</a>', FORUM_VERSION), );
+            $replace    = array( sprintf('%1$s</a> | ', FORUM_VERSION) . $string , );
             $buffer     = str_replace($find, $replace, $buffer);
         }
 
