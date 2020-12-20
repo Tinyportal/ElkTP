@@ -123,10 +123,15 @@ class Permissions
         global $context, $user_info;
 
         $show   = false;
-        $acc    = explode(',', $perm);
-        foreach($acc as $grp => $val) {
-            if(in_array($val, $user_info['groups']) && $val > -2) {
-                $show = true;
+        if(empty($perm)) {
+            $show = false;
+        }
+        else {
+            $acc    = explode(',', $perm);
+            foreach($acc as $grp => $val) {
+                if(in_array($val, $user_info['groups']) && $val > -2) {
+                    $show = true;
+                }
             }
         }
 
