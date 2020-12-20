@@ -415,13 +415,6 @@ function template_editblock()
 			elseif($context['TPortal']['blockedit']['type']=='16'){
 				echo '
 					</div><div>';
-				if($context['TPortal']['show_download']=='1')
-					echo '
-					<hr>
-					<dl class="tptitle settings">
-						<dt>'.$txt['tp-sitemapmodules'].'<ul class="disc"></dt>
-						<dd><li>&nbsp;'.$txt['tp-dldownloads'].'</ul></li></dd>
-					</dl>';
 			}
 // Block type: Single Article
 			elseif($context['TPortal']['blockedit']['type']=='18'){
