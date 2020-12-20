@@ -320,27 +320,6 @@ function template_editblock()
 						</dd>
 					</dl>';
 			}
-// Block type: Article / Download functions
-			elseif($context['TPortal']['blockedit']['type']=='14'){
-				// Module block...choose module and module ID , check if module is active
-						echo '
-						</div><div>
-						<hr><dl class="tptitle settings">
-						<dt>'.$txt['tp-showstatsbox'].'</dt>
-						<dd>
-							<input type="radio" id="tp_block_body0" name="tp_block_body" value="" ' , $context['TPortal']['blockedit']['body']=='' ? 'checked' : '' , '><label for="tp_block_body0"> ' .$txt['tp-none-']. '</label><br>
-							<input type="radio" id="tp_block_body1" name="tp_block_body" value="dl-stats" ' , $context['TPortal']['blockedit']['body']=='dl-stats' ? 'checked' : '' , '><label for="tp_block_body1"> '.$txt['tp-module1'].'</label><br>
-							<input type="radio" id="tp_block_body2" name="tp_block_body" value="dl-stats2" ' , $context['TPortal']['blockedit']['body']=='dl-stats2' ? 'checked' : '' , '><label for="tp_block_body2"> '.$txt['tp-module2'].'</label><br>
-							<input type="radio" id="tp_block_body3" name="tp_block_body" value="dl-stats3" ' , $context['TPortal']['blockedit']['body']=='dl-stats3' ? 'checked' : '' , '><label for="tp_block_body3"> '.$txt['tp-module3'].'</label><br>
-							<input type="radio" id="tp_block_body4" name="tp_block_body" value="dl-stats4" ' , $context['TPortal']['blockedit']['body']=='dl-stats4' ? 'checked' : '' , '><label for="tp_block_body4"> '.$txt['tp-module4'].'</label><br>
-							<input type="radio" id="tp_block_body5" name="tp_block_body" value="dl-stats5" ' , $context['TPortal']['blockedit']['body']=='dl-stats5' ? 'checked' : '' , '><label for="tp_block_body5"> '.$txt['tp-module5'].'</label><br>
-							<input type="radio" id="tp_block_body6" name="tp_block_body" value="dl-stats6" ' , $context['TPortal']['blockedit']['body']=='dl-stats6' ? 'checked' : '' , '><label for="tp_block_body6"> '.$txt['tp-module6'].'</label><br>
-							<input type="radio" id="tp_block_body7" name="tp_block_body" value="dl-stats7" ' , $context['TPortal']['blockedit']['body']=='dl-stats7' ? 'checked' : '' , '><label for="tp_block_body7"> '.$txt['tp-module7'].'</label><br>
-							<input type="radio" id="tp_block_body8" name="tp_block_body" value="dl-stats8" ' , $context['TPortal']['blockedit']['body']=='dl-stats8' ? 'checked' : '' , '><label for="tp_block_body8"> '.$txt['tp-module8'].'</label><br>
-							<input type="radio" id="tp_block_body9" name="tp_block_body" value="dl-stats9" ' , $context['TPortal']['blockedit']['body']=='dl-stats9' ? 'checked' : '' , '><label for="tp_block_body9"> '.$txt['tp-module9'].'</label><br>
-						</dd>
-					</dl>';
-			}
 // Block type: Stats
 			elseif($context['TPortal']['blockedit']['type']=='3'){
 				echo '
@@ -731,26 +710,7 @@ function template_editblock()
 				}
 				// if none is chosen, have a control value
 				echo '</div><input type="checkbox" id="togglecat" onclick="invertAll(this, this.form, \'categorytype\');" /><label for="togglecat">'.$txt['tp-checkall'];
-				echo '</label><br>
-						</dd>
-					</dl>
-					<dl class="settings">
-						<dt><b>' . $txt['tp-dlmanager'] . '</b></dt>
-						<dd>
-							<div class="tp_largelist">';
-				$a=1;
-				if(!empty($context['TPortal']['dlcats']))
-				{
-					$a++;
-					foreach($context['TPortal']['dlcats'] as $bb)
-					{
-						echo '
-								<input type="checkbox" id="dlcattype' , $a, '" name="dlcattype' , $a, '" value="'.$bb['id'].'" ' , in_array($bb['id'], $context['TPortal']['blockedit']['display']['dlcat']) ? 'checked="checked"' : '' , '><label for="dlcattype' , $a, '"> '.$bb['name'].'</label><br>';
-						$a++;
-					}
-				}
-				// if none is chosen, have a control value
-				echo '		</div><input type="checkbox" id="toggledlcat" onclick="invertAll(this, this.form, \'dlcattype\');" /><label for="toggledlcat">'.$txt['tp-checkall'];
+
 				echo '</label<br>
 						</dd>
 					</dl>

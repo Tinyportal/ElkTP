@@ -22,7 +22,7 @@
 // Submit Article
 function template_submitarticle() 
 {
-	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language, $smcFunc;
+	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language, $user_info;
 
 	$tpmonths=array(' ','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
     if(!empty($context['TPortal']['editarticle'])) {
@@ -37,9 +37,23 @@ function template_submitarticle()
 		$context['TPortal']['category_name'] = $txt['tp-uncategorised'];
     }
 
-    $action = '';
-    if(isset($mg['id'])) {
+    if(empty($mg['id'])) {
+        $action = '';
+    }
+    else {
         $action = ';article='.$mg['id'];
+    }
+
+    if(empty($mg['author_id'])) {
+        $mg['author_id']    = $user_info['id'];
+    }
+
+    if(empty($mg['real_name'])) {
+        $mg['real_name']    = $user_info['username'];
+    }
+
+    if(empty($mg['approved'])) {
+        $mg['approved']     = 0;
     }
 
     if(empty($mg['articletype']) && !empty($context['TPortal']['articletype'])) {
@@ -53,7 +67,7 @@ function template_submitarticle()
     }
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" name="TPadmin3" action="' . $scripturl . '?action=admin;areas=tparticles;sa=savearticle'.$action.'" enctype="multipart/form-data" method="post" onsubmit="submitonce(this);">
+	<form accept-charset="', 'UTF-8', '" name="TPadmin3" action="' . $scripturl . '?action=admin;area=tparticles;sa=savearticle'.$action.'" enctype="multipart/form-data" method="post" onsubmit="submitonce(this);">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />';
 
     if(allowedTo('admin_forum') || allowedTo('tp_articles')) {

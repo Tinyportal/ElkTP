@@ -798,5 +798,27 @@ function articleAjax() {{{
 
 }}}
 
+function TPArticleAdminActions(&$subActions) {{{
+
+    return;
+
+    $subActions = array_merge(
+        array (
+            'killcomment'       => array('TPArticle.php', 'articleDeleteComment', array()),
+            'editcomment'       => array('TPArticle.php', 'articleEditComment', array()),
+            'editarticle'       => array('TPArticle.php', 'articleEdit', array()),
+            'tpattach'          => array('TPArticle.php', 'articleAttachment', array()),
+            'submitarticle'     => array('TPArticle.php', 'articleNew', array()),
+            'addarticle_html'   => array('TPArticle.php', 'articleNew', array()),
+            'addarticle_bbc'    => array('TPArticle.php', 'articleNew', array()),
+            'publish'           => array('TPArticle.php', 'articlePublish', array()),
+            'savearticle'       => array('TPArticle.php', 'articleEdit', array()),
+            'uploadimage'       => array('TPArticle.php', 'articleUploadImage', array()),
+            'submitsuccess'     => array('TPArticle.php', 'articleSubmitSuccess', array()),
+        ),
+        $subActions
+    );
+
+}}}
 
 ?>

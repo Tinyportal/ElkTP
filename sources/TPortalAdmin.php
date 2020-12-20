@@ -119,7 +119,6 @@ function TPortalAdmin()
         if (!empty($subActions[$subAction][0])) {
             require_once(SOURCEDIR . '/' . $subActions[$subAction][0]);
         }
-
         call_user_func_array($subActions[$subAction][1], $subActions[$subAction][2]);
     }
     elseif(isset($_GET['sa'])) {
