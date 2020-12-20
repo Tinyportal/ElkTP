@@ -90,9 +90,6 @@ function getBlocks() {{{
 					$fetch_articles[] = $row['body'];
                 }
 			}
-			elseif($row['type'] == TP_BLOCK_CATMENU || $row['type'] == TP_BLOCK_SITEMAP  ) {
-				$test_menubox = true;
-			}
             elseif($row['type'] == TP_BLOCK_CATEGORYBOX) {
 				$test_catbox = true;
 				if(is_numeric($row['body'])) {
@@ -195,11 +192,6 @@ function getBlocks() {{{
 		}
     }
 
-	// get menubox items
-	if(isset($test_menubox)) {
-        TPortal_menubox();
-	}
-
 	// for tpadmin
 	$context['TPortal']['adminleftpanel']   = $context['TPortal']['leftpanel'];
 	$context['TPortal']['adminrightpanel']  = $context['TPortal']['rightpanel'];
@@ -212,11 +204,6 @@ function getBlocks() {{{
 	if (in_array($context['TPortal']['action'], array('moderate', 'theme', 'tpadmin', 'admin', 'ban', 'boardrecount', 'cleanperms', 'detailedversion', 'dumpdb', 'featuresettings', 'featuresettings2', 'findmember', 'maintain', 'manageattachments', 'manageboards', 'managecalendar', 'managesearch', 'membergroups', 'modlog', 'news', 'optimizetables', 'packageget', 'packages', 'permissions', 'pgdownload', 'postsettings', 'regcenter', 'repairboards', 'reports', 'serversettings', 'serversettings2', 'smileys', 'viewErrorLog', 'viewmembers'))) {
 	    $in_admin = true;
     }
-
-	if($context['TPortal']['action'] == 'tportal' && isset($_GET['dl']) && substr($_GET['dl'], 0, 5) == 'admin') {
-		$in_admin = true;
-		$context['current_action'] = 'admin';
-	}
 
 	if(($context['user']['is_admin'] && isset($_GET['noblocks'])) || ($context['TPortal']['hidebars_admin_only']=='1' && isset($in_admin))) {
 		tp_hidebars();
@@ -492,8 +479,6 @@ function editBlock( $block_id = 0 ) {{{
 			'page' => array(),
 			'cat' => array(),
 			'lang' => array(),
-			'tpmod' => array(),
-			'dlcat' => array(),
 			'custo' => array(),
 		);
 
@@ -508,8 +493,6 @@ function editBlock( $block_id = 0 ) {{{
 				$context['TPortal']['blockedit']['display']['tpmod'][]  = substr($svalue,6);
 			elseif(substr($svalue, 0, 6) == 'tlang=')
 				$context['TPortal']['blockedit']['display']['lang'][]   = substr($svalue,6);
-			elseif(substr($svalue, 0, 6) == 'dlcat=')
-				$context['TPortal']['blockedit']['display']['dlcat'][]  = substr($svalue,6);
 			elseif(substr($svalue, 0, 6) == 'custo=')
 				$context['TPortal']['blockedit']['display']['custo']    = substr($svalue,6);
             else
@@ -584,31 +567,6 @@ function editBlock( $block_id = 0 ) {{{
 				);
 			}
 			$db->free_result($request);
-		}
-		$request = $db->query('', '
-			SELECT * FROM {db_prefix}tp_variables
-			WHERE type = {string:type}
-			ORDER BY value1 ASC',
-			array(
-				'type' => 'menus'
-			)
-		);
-		$context['TPortal']['menus'] = array();
-		$context['TPortal']['menus'][0] = array(
-			'id' => 0,
-			'name' => 'Internal',
-			'var1' => '',
-			'var2' => ''
-		);
-		if($db->num_rows($request) > 0) {
-			while ($row = $db->fetch_assoc($request)) {
-				$context['TPortal']['menus'][$row['id']] = array(
-					'id' => $row['id'],
-					'name' => $row['value1'],
-					'var1' => $row['value2'],
-					'var2' => $row['value3']
-				);
-			}
 		}
 	}
 	// if not throw an error
