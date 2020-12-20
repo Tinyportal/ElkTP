@@ -90,9 +90,6 @@ function getBlocks() {{{
 					$fetch_articles[] = $row['body'];
                 }
 			}
-			elseif($row['type'] == TP_BLOCK_CATMENU || $row['type'] == TP_BLOCK_SITEMAP  ) {
-				$test_menubox = true;
-			}
             elseif($row['type'] == TP_BLOCK_CATEGORYBOX) {
 				$test_catbox = true;
 				if(is_numeric($row['body'])) {
@@ -195,11 +192,6 @@ function getBlocks() {{{
 		}
     }
 
-	// get menubox items
-	if(isset($test_menubox)) {
-        TPortal_menubox();
-	}
-
 	// for tpadmin
 	$context['TPortal']['adminleftpanel']   = $context['TPortal']['leftpanel'];
 	$context['TPortal']['adminrightpanel']  = $context['TPortal']['rightpanel'];
@@ -212,11 +204,6 @@ function getBlocks() {{{
 	if (in_array($context['TPortal']['action'], array('moderate', 'theme', 'tpadmin', 'admin', 'ban', 'boardrecount', 'cleanperms', 'detailedversion', 'dumpdb', 'featuresettings', 'featuresettings2', 'findmember', 'maintain', 'manageattachments', 'manageboards', 'managecalendar', 'managesearch', 'membergroups', 'modlog', 'news', 'optimizetables', 'packageget', 'packages', 'permissions', 'pgdownload', 'postsettings', 'regcenter', 'repairboards', 'reports', 'serversettings', 'serversettings2', 'smileys', 'viewErrorLog', 'viewmembers'))) {
 	    $in_admin = true;
     }
-
-	if($context['TPortal']['action'] == 'tportal' && isset($_GET['dl']) && substr($_GET['dl'], 0, 5) == 'admin') {
-		$in_admin = true;
-		$context['current_action'] = 'admin';
-	}
 
 	if(($context['user']['is_admin'] && isset($_GET['noblocks'])) || ($context['TPortal']['hidebars_admin_only']=='1' && isset($in_admin))) {
 		tp_hidebars();
@@ -261,11 +248,11 @@ function adminBlocks() {{{
     $tpBlock    = TPBlock::getInstance();
 
 	if(($context['TPortal']['subaction']=='blocks') && !isset($_GET['overview'])) {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=blocks', $txt['tp-blocks']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=blocks', $txt['tp-blocks']);
 	}
 	
 	if(isset($_GET['addblock'])) {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=addblock', $txt['tp-addblock']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=addblock', $txt['tp-addblock']);
 		// collect all available PHP block snippets
 		$context['TPortal']['blockcodes']   = TPcollectSnippets();
 		$context['TPortal']['copyblocks']   = $tpBlock->getBlocks();
@@ -293,7 +280,7 @@ function adminBlocks() {{{
             }
         }
         $tpBlock->updateBlock($id, array( 'pos' => $new));
-		redirectexit('action=tpadmin;sa=blocks');
+		redirectexit('action=admin;area=tpblocks;sa=blocks');
 	}
 
 	// change the on/off
@@ -309,7 +296,7 @@ function adminBlocks() {{{
                 $tpBlock->updateBlock($id, array( 'off' => '1' ));
             }
         }
-        redirectexit('action=tpadmin;sa=blocks');
+        redirectexit('action=admin;area=tpblocks;sa=blocks');
 	}
 
 	// remove it?
@@ -317,7 +304,7 @@ function adminBlocks() {{{
 		checksession('get');
 		$id         = is_numeric($_GET['blockdelete']) ? $_GET['blockdelete'] : 0;
         $tpBlock->deleteBlock($id);
-		redirectexit('action=tpadmin;sa=blocks');
+		redirectexit('action=admin;area=tpblocks;sa=blocks');
 	}
    
     foreach( array ( 'blockright', 'blockleft', 'blockcenter', 'blockfront', 'blockbottom', 'blocktop', 'blocklower') as $block_location ) {
@@ -326,13 +313,13 @@ function adminBlocks() {{{
             $id     = is_numeric($_GET[$block_location]) ? $_GET[$block_location] : 0;
             $loc    = $tpBlock->getBlockBarId(str_replace('block', '', $block_location));
             $tpBlock->updateBlock($id, array( 'bar' => $loc ));
-            redirectexit('action=tpadmin;sa=blocks');
+            redirectexit('action=admin;area=tpblocks;sa=blocks');
         }
 	}
 
 	// are we on overview screen?
 	if(isset($_GET['overview'])) {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=blocks;overview', $txt['tp-blockoverview']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=blocks;overview', $txt['tp-blockoverview']);
 		
 		// fetch all blocks member group permissions
         $data   = $tpBlock->getBlockData(array('id', 'title', 'bar', 'access', 'type'), array( 'off' => 0 ) );
@@ -359,7 +346,7 @@ function adminBlocks() {{{
 	}
 
 	if($context['TPortal']['subaction']=='panels') {
-		TPadd_linktree($scripturl.'?action=tpadmin;sa=panels', $txt['tp-panels']);
+		TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=panels', $txt['tp-panels']);
     }
 	
 	else {
@@ -430,7 +417,7 @@ function adminBlocks() {{{
 				  target = target.parentNode;
 			var id = target.id.replace("blockonbutton", "");
 			var Ajax = getXMLHttpRequest();
-			Ajax.open("POST", "?action=tpadmin;blockon=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+			Ajax.open("POST", "?action=admin;area=tpblocks;blockon=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
 			Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 			var source = target.src;
 			target.src = "' . $settings['tp_images_url'] . '/ajax.gif"
@@ -441,7 +428,7 @@ function adminBlocks() {{{
 					target.src = source == "' . $settings['tp_images_url'] . '/TPactive1.png" ? "' . $settings['tp_images_url'] . '/TPactive2.png" : "' . $settings['tp_images_url'] . '/TPactive1.png";
 				}
 			}
-			var params = "?action=tpadmin;blockon=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+			var params = "?action=admin;area=tpblocks;blockon=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
 			Ajax.send(params);
 		}
 	// ]]></script>';
@@ -471,8 +458,8 @@ function editBlock( $block_id = 0 ) {{{
 
     require_once(SOURCEDIR.'/TPortalAdmin.php');
 
-	TPadd_linktree($scripturl.'?action=tpadmin;sa=blocks', $txt['tp-blocks']);
-	TPadd_linktree($scripturl.'?action=tpadmin&sa=editblock&id='.$block_id . ';'.$context['session_var'].'='.$context['session_id'], $txt['tp-editblock']);
+	TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=blocks', $txt['tp-blocks']);
+	TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=editblock;id='.$block_id . ';'.$context['session_var'].'='.$context['session_id'], $txt['tp-editblock']);
 
     $row = $tpBlock->getBlock($block_id);
     if(is_array($row)) {
@@ -492,8 +479,6 @@ function editBlock( $block_id = 0 ) {{{
 			'page' => array(),
 			'cat' => array(),
 			'lang' => array(),
-			'tpmod' => array(),
-			'dlcat' => array(),
 			'custo' => array(),
 		);
 
@@ -508,8 +493,6 @@ function editBlock( $block_id = 0 ) {{{
 				$context['TPortal']['blockedit']['display']['tpmod'][]  = substr($svalue,6);
 			elseif(substr($svalue, 0, 6) == 'tlang=')
 				$context['TPortal']['blockedit']['display']['lang'][]   = substr($svalue,6);
-			elseif(substr($svalue, 0, 6) == 'dlcat=')
-				$context['TPortal']['blockedit']['display']['dlcat'][]  = substr($svalue,6);
 			elseif(substr($svalue, 0, 6) == 'custo=')
 				$context['TPortal']['blockedit']['display']['custo']    = substr($svalue,6);
             else
@@ -584,31 +567,6 @@ function editBlock( $block_id = 0 ) {{{
 				);
 			}
 			$db->free_result($request);
-		}
-		$request = $db->query('', '
-			SELECT * FROM {db_prefix}tp_variables
-			WHERE type = {string:type}
-			ORDER BY value1 ASC',
-			array(
-				'type' => 'menus'
-			)
-		);
-		$context['TPortal']['menus'] = array();
-		$context['TPortal']['menus'][0] = array(
-			'id' => 0,
-			'name' => 'Internal',
-			'var1' => '',
-			'var2' => ''
-		);
-		if($db->num_rows($request) > 0) {
-			while ($row = $db->fetch_assoc($request)) {
-				$context['TPortal']['menus'][$row['id']] = array(
-					'id' => $row['id'],
-					'name' => $row['value1'],
-					'var1' => $row['value2'],
-					'var2' => $row['value3']
-				);
-			}
 		}
 	}
 	// if not throw an error

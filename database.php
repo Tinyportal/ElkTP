@@ -21,6 +21,7 @@ define('TP_MINIMUM_PHP_VERSION', '7.2.0');
 
 global $db_prefix, $package_log, $db_type;
 
+
 if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('ELK')) {
 	require_once(dirname(__FILE__) . '/SSI.php');
 }
@@ -30,6 +31,13 @@ elseif (!defined('ELK')) {
 
 if ((!function_exists('version_compare') || version_compare(TP_MINIMUM_PHP_VERSION, PHP_VERSION, '>='))) {
 	die('<strong>Install Error:</strong> - please install a version of php greater than '.TP_MINIMUM_PHP_VERSION);
+}
+
+if($db_type == 'mysql') {
+    $type = array('null' => true );
+}
+else {
+    $type = array('default' => '' );
 }
 
 $tables = array(
@@ -48,8 +56,8 @@ $tables = array(
     'tp_settings' => array(
         'columns' => array(
             array('name' => 'id', 'type' => 'mediumint', 'size' => 9, 'auto' => true,),
-            array('name' => 'name', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '') ),
-            array('name' => 'value', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '') ),
+            array('name' => 'name', 'type' => 'text' ) + $type ,
+            array('name' => 'value', 'type' => 'text' ) + $type ,
         ),
         'indexes' => array(
             array('type' => 'primary', 'columns' => array('id'),),
@@ -59,18 +67,18 @@ $tables = array(
         'columns' => array(
             array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
             array('name' => 'type', 'type' => 'smallint', 'size' => 6, 'default' => 0,),
-			array('name' => 'frame', 'type' => 'tinytext', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'title', 'type' => 'tinytext', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'body', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
+			array('name' => 'frame', 'type' => 'tinytext' ) + $type ,
+			array('name' => 'title', 'type' => 'tinytext' ) + $type ,
+			array('name' => 'body', 'type' => 'text' ) + $type ,
 			array('name' => 'bar', 'type' => 'smallint', 'size' => 4, 'default' => 0 ),
 			array('name' => 'pos', 'type' => 'int', 'size' => 11, 'default' => 0 ),
             array('name' => 'off', 'type' => 'smallint', 'size' => 1, 'default' => 0 ),
-			array('name' => 'visible', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'lang', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'access', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'display', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'editgroups', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'settings', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
+			array('name' => 'visible', 'type' => 'text' ) + $type ,
+			array('name' => 'lang', 'type' => 'text' ) + $type ,
+			array('name' => 'access', 'type' => 'text' ) + $type ,
+			array('name' => 'display', 'type' => 'text' ) + $type ,
+			array('name' => 'editgroups', 'type' => 'text' ) + $type ,
+			array('name' => 'settings', 'type' => 'text' ) + $type ,
         ),
         'indexes' => array(
             array('type' => 'primary', 'columns' => array('id')),
@@ -79,17 +87,17 @@ $tables = array(
     'tp_variables' => array(
         'columns' => array(
             array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
-            array('name' => 'value1', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'value2', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'value3', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'type', 'type' => 'tinytext', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'value4', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
+            array('name' => 'value1', 'type' => 'text' ) + $type ,
+			array('name' => 'value2', 'type' => 'text' ) + $type ,
+			array('name' => 'value3', 'type' => 'text' ) + $type ,
+			array('name' => 'type', 'type' => 'tinytext' ) + $type ,
+			array('name' => 'value4', 'type' => 'text' ) + $type ,
 			array('name' => 'value5', 'type' => 'int', 'size' => 11, 'default' => -2,),
-			array('name' => 'subtype', 'type' => 'tinytext', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'value7', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-			array('name' => 'value8', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
+			array('name' => 'subtype', 'type' => 'tinytext' ) + $type ,
+			array('name' => 'value7', 'type' => 'text' ) + $type ,
+			array('name' => 'value8', 'type' => 'text' ) + $type ,
 			array('name' => 'subtype2', 'type' => 'int', 'size' => 11, 'default' => 0,),
-			array('name' => 'value9', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
+			array('name' => 'value9', 'type' => 'text' ) + $type ,
         ),
         'indexes' => array(
             array('type' => 'primary', 'columns' => array('id')),
@@ -99,33 +107,33 @@ $tables = array(
         'columns' => array(
             array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
             array('name' => 'date', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'body', 'type' => ($db_type == 'mysql' ? 'longtext' : 'text'), 'default' => ($db_type == 'mysql' ? null : '')),
-            array('name' => 'intro', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
+            array('name' => 'body', 'type' => ($db_type == 'mysql' ? 'longtext' : 'text') ) + $type ,
+            array('name' => 'intro', 'type' => 'text' ) + $type ,
             array('name' => 'useintro', 'type' => 'smallint', 'size' => 1, 'default' => 0,),
             array('name' => 'category', 'type' => 'smallint', 'size' => 6, 'default' => 0,),
             array('name' => 'frontpage', 'type' => 'smallint', 'size' => 1, 'default' => 0,),
-            array('name' => 'subject', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '') ),
+            array('name' => 'subject', 'type' => 'text' ) + $type ,
             array('name' => 'author_id', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'author', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '') ),
-            array('name' => 'frame', 'type' => 'tinytext', 'default' => ($db_type == 'mysql' ? null : '') ),
+            array('name' => 'author', 'type' => 'text' ) + $type ,
+            array('name' => 'frame', 'type' => 'tinytext' ) + $type ,
             array('name' => 'approved', 'type' => 'smallint', 'size' => 6, 'default' => 0,),
             array('name' => 'off', 'type' => 'smallint', 'size' => 6, 'default' => 0,),
-            array('name' => 'options', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
+            array('name' => 'options', 'type' => 'text' ) + $type ,
             array('name' => 'parse', 'type' => 'smallint', 'size' => 6, 'default' => 0,),
             array('name' => 'comments', 'type' => 'smallint', 'size' => 4, 'default' => 0,),
-            array('name' => 'comments_var', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
+            array('name' => 'comments_var', 'type' => 'text' ) + $type ,
             array('name' => 'views', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'rating', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-            array('name' => 'voters', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
+            array('name' => 'rating', 'type' => 'text' ) + $type ,
+            array('name' => 'voters', 'type' => 'text' ) + $type ,
             array('name' => 'id_theme', 'type' => 'smallint', 'size' => 6, 'default' => 0,),
-            array('name' => 'shortname', 'type' => 'tinytext', 'default' => ($db_type == 'mysql' ? null : '')),
+            array('name' => 'shortname', 'type' => 'tinytext' ) + $type ,
             array('name' => 'sticky', 'type' => 'smallint', 'size' => 6, 'default' => 0,),
-            array('name' => 'fileimport', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
+            array('name' => 'fileimport', 'type' => 'text' ) + $type ,
             array('name' => 'topic', 'type' => 'int', 'size' => 11, 'default' => 0,),
             array('name' => 'locked', 'type' => 'smallint', 'size' => 6, 'default' => 0,),
-            array('name' => 'illustration', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-            array('name' => 'headers', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-            array('name' => 'type', 'type' => 'tinytext', 'default' => ($db_type == 'mysql' ? null : '')),
+            array('name' => 'illustration', 'type' => 'text' ) + $type ,
+            array('name' => 'headers', 'type' => 'text' ) + $type ,
+            array('name' => 'type', 'type' => 'tinytext' ) + $type ,
             array('name' => 'featured', 'type' => 'smallint', 'size' => 6, 'default' => 0,),
             array('name' => 'pub_start', 'type' => 'int', 'size' => 11, 'default' => 0,),
             array('name' => 'pub_end', 'type' => 'int', 'size' => 11, 'default' => 0,),
@@ -137,11 +145,11 @@ $tables = array(
     'tp_comments' => array (
         'columns' => array (
             array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
-            array('name' => 'item_type', 'type' => 'varchar', 'size' => 255, 'default' => ($db_type == 'mysql' ? null : '')),
+            array('name' => 'item_type', 'type' => 'varchar', 'size' => 255 ) + $type ,
             array('name' => 'item_id', 'type' => 'int', 'size' => 11, 'default' => 0,),
             array('name' => 'datetime', 'type' => 'int', 'size' => 11, 'default' => 0,),
-            array('name' => 'subject', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
-            array('name' => 'comment', 'type' => 'text', 'default' => ($db_type == 'mysql' ? null : '')),
+            array('name' => 'subject', 'type' => 'text' ) + $type ,
+            array('name' => 'comment', 'type' => 'text' ) + $type ,
             array('name' => 'member_id', 'type' => 'int', 'size' => 11, 'default' => 0,),
         ),
         'indexes' => array (
@@ -153,10 +161,10 @@ $tables = array(
             array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
             array('name' => 'id_member', 'type' => 'int', 'size' => 11, 'default' => 0),
 			array('name' => 'date', 'type' => 'int', 'size' => 11, 'default' => 0),
-            array('name' => 'textvariable', 'type' => 'mediumtext', 'default' => ($db_type == 'mysql' ? null : '')),
-            array('name' => 'link', 'type' => 'mediumtext', 'default' => ($db_type == 'mysql' ? null : '')),
-            array('name' => 'description', 'type' => 'mediumtext', 'default' => ($db_type == 'mysql' ? null : '')),
-            array('name' => 'allowed', 'type' => 'mediumtext', 'default' => ($db_type == 'mysql' ? null : '')),
+            array('name' => 'textvariable', 'type' => 'mediumtext' ) + $type ,
+            array('name' => 'link', 'type' => 'mediumtext' ) + $type ,
+            array('name' => 'description', 'type' => 'mediumtext' ) + $type ,
+            array('name' => 'allowed', 'type' => 'mediumtext' ) + $type ,
             array('name' => 'eventid', 'type' => 'int', 'size' => 11, 'default' => 0),
             array('name' => 'on', 'type' => 'smallint', 'size' => 4, 'default' => 0),
         ),
@@ -318,7 +326,6 @@ foreach($settingsArray as $what => $val) {
             array($what, $val),
             array('id')
         );
-		$updates++;
 	}
 	elseif($db->num_rows($request) > 0 && in_array($what, $updateSettings)){
 		$db->query('', '

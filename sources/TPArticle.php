@@ -765,10 +765,10 @@ function articleAjax() {{{
 				WHERE category = {int:catid}',
 				array('cat' => $newcat, 'catid' => $what)
 			);
-			redirectexit('action=tpadmin;sa=categories');
+			redirectexit('action=admin;area=tparticles;sa=categories');
 		}
 		else {
-			redirectexit('action=tpadmin;sa=categories');
+			redirectexit('action=admin;area=tparticles;sa=categories');
 		}
 	}
 	elseif(isset($_GET['artdelete'])) {
@@ -791,12 +791,34 @@ function articleAjax() {{{
 				array('artid' => $what)
 			);
 		}
-		redirectexit('action=tpadmin' . (!empty($cu) ? ';cu='.$cu : '') . (isset($strays) ? ';sa=strays'.$cu : ';sa=articles'));
+		redirectexit('action=admin;area=tparticles' . (!empty($cu) ? ';cu='.$cu : '') . (isset($strays) ? ';sa=strays'.$cu : ';sa=articles'));
 	}
 
     unset($tpArticle);
 
 }}}
 
+function TPArticleAdminActions(&$subActions) {{{
+
+    return;
+
+    $subActions = array_merge(
+        array (
+            'killcomment'       => array('TPArticle.php', 'articleDeleteComment', array()),
+            'editcomment'       => array('TPArticle.php', 'articleEditComment', array()),
+            'editarticle'       => array('TPArticle.php', 'articleEdit', array()),
+            'tpattach'          => array('TPArticle.php', 'articleAttachment', array()),
+            'submitarticle'     => array('TPArticle.php', 'articleNew', array()),
+            'addarticle_html'   => array('TPArticle.php', 'articleNew', array()),
+            'addarticle_bbc'    => array('TPArticle.php', 'articleNew', array()),
+            'publish'           => array('TPArticle.php', 'articlePublish', array()),
+            'savearticle'       => array('TPArticle.php', 'articleEdit', array()),
+            'uploadimage'       => array('TPArticle.php', 'articleUploadImage', array()),
+            'submitsuccess'     => array('TPArticle.php', 'articleSubmitSuccess', array()),
+        ),
+        $subActions
+    );
+
+}}}
 
 ?>

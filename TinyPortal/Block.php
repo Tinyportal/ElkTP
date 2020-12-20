@@ -76,7 +76,7 @@ class Block extends Base {
             11  => 'scriptbox',
             12  => 'recentbox',
             13  => 'ssi',
-            14  => 'module',
+            14  => '--', // Was modulebox
             15  => 'rss',
             16  => 'sitemap',
             17  => 'admin',
@@ -115,7 +115,7 @@ class Block extends Base {
     }}}
 
     public function getBlockPermissions( ) {{{
-        global $context, $user_info;
+        global $context;
         
         $blocks = array();
 
@@ -125,7 +125,7 @@ class Block extends Base {
             if(allowedTo('tp_blocks') && (!empty($context['TPortal']['admin_showblocks']) || !isset($context['TPortal']['admin_showblocks']))) {
                 
             } 
-            else if(in_array($user_info['groups'], explode(',', $block['access']))) {
+            else if(Permissions::getInstance()->getPermissions($block['access']) == false) {
                 continue;
             }
 

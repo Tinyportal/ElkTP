@@ -61,21 +61,8 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
     public function action_index() {{{
         global $context, $txt;
       
-        $context['TPortal']['action'] = TPUtil::filter('action', 'get', 'string');
-        if($context['TPortal']['action'] == 'tpadmin') {
-            return $this->action_admin();
-        }
-
 		\loadLanguage('TPortal');
         \loadTemplate('TPortal');
-
-    }}}
-
-    public function action_admin() {{{
-
-        // Wrap around the old TinyPortal logic for now
-        require_once(SOURCEDIR . '/TPortalAdmin.php');
-        TPortalAdmin();
 
     }}}
 

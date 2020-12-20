@@ -780,9 +780,6 @@ function TP_fetchprofile_areas2($member_id) {{{
 		if ($context['user']['is_owner'] || allowedTo('tp_articles')) {
 			$context['profile_areas']['tinyportal']['areas']['tp_articles'] = '<a href="' . $scripturl . '?action=profile;u=' . $member_id . ';sa=tp_articles">' . $txt['articlesprofile'] . '</a>';
         }
-		if(($context['user']['is_owner'] || allowedTo('tp_dlmanager')) && $context['TPortal']['show_download']) {
-			$context['profile_areas']['tinyportal']['areas']['tp_download'] = '<a href="' . $scripturl . '?action=profile;u=' . $member_id . ';sa=tp_download">' . $txt['downloadsprofile'] . '</a>';
-        }
     
         call_integration_hook('integrate_tp_profile', array(&$member_id));
 	}
@@ -790,7 +787,7 @@ function TP_fetchprofile_areas2($member_id) {{{
 }}}
 
 function get_perm($perm, $moderate = '') {{{   
-    return TPPermissions::getPermission($perm, $moderate);	
+    return TPPermissions::getInstance()->getPermissions($perm, $moderate);	
 }}}
 
 function tpsort($a, $b)
@@ -1240,13 +1237,13 @@ function TPadminIndex($tpsub = '', $module_admin = false) {{{
 			'settings' => array(
 				'title' => $txt['tp-settings'],
 				'description' => $txt['tp-settingdesc1'],
-				'href' => $scripturl . '?action=tpadmin;sa=settings',
+				'href' => $scripturl . '?action=admin;area=tpsettings;sa=settings',
 				'is_selected' => $tpsub == 'settings',
 			),
 			'frontpage' => array(
 				'title' => $txt['tp-frontpage'],
 				'description' => $txt['tp-frontpagedesc1'],
-				'href' => $scripturl . '?action=tpadmin;sa=frontpage',
+				'href' => $scripturl . '?action=admin;area=tpsettings;sa=frontpage',
 				'is_selected' => $tpsub == 'frontpage',
 			),
 		);
@@ -1267,25 +1264,25 @@ function TPadminIndex($tpsub = '', $module_admin = false) {{{
 			'articles' => array(
 				'title' => $txt['tp-articles'],
 				'description' => $txt['tp-articledesc1'],
-				'href' => $scripturl . '?action=tpadmin;sa=articles',
+				'href' => $scripturl . '?action=admin;area=tparticles;sa=articles',
 				'is_selected' => (substr($tpsub,0,11)=='editarticle' || in_array($tpsub, array('articles','addarticle','addarticle_php', 'addarticle_bbc', 'addarticle_import','strays','submission'))),
 			),
 			'categories' => array(
 				'title' => $txt['tp-tabs5'],
 				'description' => $txt['tp-articledesc2'],
-				'href' => $scripturl . '?action=tpadmin;sa=categories',
+				'href' => $scripturl . '?action=admin;area=tparticles;sa=categories',
 				'is_selected' => in_array($tpsub, array('categories', 'addcategory','clist')) ,
 			),
 			'artsettings' => array(
 				'title' => $txt['tp-settings'],
 				'description' => $txt['tp-articledesc3'],
-				'href' => $scripturl . '?action=tpadmin;sa=artsettings',
+				'href' => $scripturl . '?action=admin;area=tparticles;sa=artsettings',
 				'is_selected' => $tpsub == 'artsettings',
 			),
 			'icons' => array(
 				'title' => $txt['tp-adminicons'],
 				'description' => $txt['tp-articledesc5'],
-				'href' => $scripturl . '?action=tpadmin;sa=articons',
+				'href' => $scripturl . '?action=admin;area=tparticles;sa=articons',
 				'is_selected' => $tpsub == 'articons',
 			),
 		);
@@ -1296,19 +1293,19 @@ function TPadminIndex($tpsub = '', $module_admin = false) {{{
 			'panelsettings' => array(
 				'title' => $txt['tp-allpanels'],
 				'description' => $txt['tp-paneldesc1'],
-				'href' => $scripturl . '?action=tpadmin;sa=panels',
+				'href' => $scripturl . '?action=admin;area=tpblocks;sa=panels',
 				'is_selected' => $tpsub == 'panels',
 			),
 			'blocks' => array(
 				'title' => $txt['tp-allblocks'],
 				'description' => $txt['tp-blocksdesc1'],
-				'href' => $scripturl . '?action=tpadmin;sa=blocks',
+				'href' => $scripturl . '?action=admin;area=tpblocks;sa=blocks',
 				'is_selected' => $tpsub == 'blocks' && !isset($_GET['latest']) && !isset($_GET['overview']),
 			),
 			'blockoverview' => array(
 				'title' => $txt['tp-blockoverview'],
 				'description' => '',
-				'href' => $scripturl . '?action=tpadmin;sa=blocks;overview',
+				'href' => $scripturl . '?action=admin;area=tpblocks;sa=blocks;overview',
 				'is_selected' => ($tpsub == 'blocks' && isset($_GET['overview'])) || substr($tpsub,0,9) == 'editblock',
 			),
 		);
@@ -1997,35 +1994,13 @@ function TPGetMemberColour($member_ids) {{{
 }}}
 
 // profile summary
-function tp_profile_summary($memID) {{{
+function tp_profile_summary($member_id) {{{
 	global $txt, $context;
-    $db = database();
 	$context['page_title'] = $txt['tpsummary'];
 	// get all articles written by member
-	$request =  $db->query('', '
-		SELECT COUNT(*) FROM {db_prefix}tp_articles
-		WHERE author_id = {int:author}',
-		array('author' => $memID)
-	);
-	$result = $db->fetch_row($request);
-	$max_art = $result[0];
-	$db->free_result($request);
-	$max_upload = 0;
-	if($context['TPortal']['show_download'])
-	{
-		// get all uploads
-		$request =  $db->query('', '
-			SELECT COUNT(*) FROM {db_prefix}tp_dlmanager
-			WHERE author_id = {int:author} AND type = {string:type}',
-			array('author' => $memID, 'type' => 'dlitem')
-		);
-		$result = $db->fetch_row($request);
-		$max_upload = $result[0];
-		$db->free_result($request);
-	}
+    $max_art = TPArticle::getInstance()->getTotalAuthorArticles($member_id);
 	$context['TPortal']['tpsummary']=array(
 		'articles' => $max_art,
-		'uploads' => $max_upload,
 	);
 }}}
 
@@ -2036,7 +2011,7 @@ function tp_profile_articles($member_id) {{{
     $db = database();
 
 	$context['page_title'] = $txt['articlesprofile'];
-    $context['TPortal']['memID'] = $member_id;
+    $context['TPortal']['member_id'] = $member_id;
 
     $tpArticle  = TPArticle::getInstance();
 	$start      = 0;
@@ -2120,7 +2095,7 @@ function tp_profile_articles($member_id) {{{
 					'locked' => $row['locked'],
 					'catID' => $row['category'],
 					'category' => '<a href="'.$scripturl.'?mycat='.$row['category'].'">' . (isset($context['TPortal']['catnames'][$row['category']]) ? $context['TPortal']['catnames'][$row['category']] : '') .'</a>',
-					'editlink' => allowedTo('tp_articles') ? $scripturl.'?action=tpadmin;sa=editarticle'.$row['id'] : $scripturl.'?action=tportal;sa=editarticle'.$row['id'],
+					'editlink' => allowedTo('tp_articles') ? $scripturl.'?action=admin;area=tpadmin;sa=editarticle'.$row['id'] : $scripturl.'?action=tportal;sa=editarticle'.$row['id'],
 				);
             }
 		}
@@ -2130,7 +2105,7 @@ function tp_profile_articles($member_id) {{{
     // construct pageindexes
 	$context['TPortal']['pageindex'] = '';
 	if($max > 0) {
-		$context['TPortal']['pageindex'] = TPageIndex($scripturl.'?action=profile;area=tparticles;u='.$member_id.';tpsort='.$sorting, $start, $max, '15');
+		$context['TPortal']['pageindex'] = TPageIndex($scripturl.'?action=profile;area=tpadmin;sa=tparticles;u='.$member_id.';tpsort='.$sorting, $start, $max, '15');
     }
 
 	// setup subaction
@@ -2175,19 +2150,19 @@ function tp_profile_articles($member_id) {{{
 }}}
 
 // Tinyportal
-function tp_summary($memID) {{{
+function tp_summary($member_id) {{{
 	global $txt, $context;
 	loadtemplate('TPprofile');
 	$context['page_title'] = $txt['tpsummary'];
-	tp_profile_summary($memID);
+	tp_profile_summary($member_id);
 }}}
 
-function tp_articles($memID) {{{
+function tp_articles($member_id) {{{
 	global $txt, $context;
 	TPArticleCategories();
 	loadtemplate('TPprofile');
 	$context['page_title'] = $txt['articlesprofile'];
-	tp_profile_articles($memID);
+	tp_profile_articles($member_id);
 }}}
 
 function TPSaveSettings() {{{
@@ -2218,7 +2193,7 @@ function TPSaveSettings() {{{
     }
 
     // go back to profile page
-    redirectexit('action=profile;u='.$member_id.';area=tparticles;sa=settings');
+    redirectexit('action=profile;u='.$member_id.';area=tpadmin;sa=tparticles;sa=settings');
 
 }}}
 

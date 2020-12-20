@@ -19,6 +19,7 @@
 		<remove-dir name="THEMEDIR/images/tinyportal" />
 		<remove-dir name="BOARDDIR/TinyPortal" />
 		<remove-dir name="THEMEDIR/scripts/tinyportal" />
+		<remove-file name="ADMINDIR/TPortalAdmin.controller.php" />
 		<remove-file name="CONTROLLERDIR/TPortal.controller.php" />
 		<remove-file name="SOURCEDIR/TPSSI.php" />
 		<remove-file name="SOURCEDIR/TPBlock.php" />

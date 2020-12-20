@@ -22,11 +22,25 @@ if (!defined('ELK')) {
 
 class Permissions 
 {
+    private static $_instance   = null;
 
-    public static function checkAdminAreas() {{{
+    public static function getInstance() {{{
+	
+    	if(self::$_instance == null) {
+			self::$_instance = new self();
+		}
+	
+    	return self::$_instance;
+	
+    }}}
+
+    // Empty Clone method
+    private function __clone() { }
+
+    public function checkAdminAreas() {{{
         global $context;
 
-        self::collectPermissions();
+        $this->collectPermissions();
         foreach($context['TPortal']['adminlist'] as $adm => $val) {
             if(\allowedTo($adm) || !empty($context['TPortal']['show_download'])) {
                 return true;
@@ -36,7 +50,7 @@ class Permissions
 
     }}}
 
-    public static function collectPermissions() {{{
+    public function collectPermissions() {{{
         global $context;
 
         $context['TPortal']['permissonlist'] = array();
@@ -79,7 +93,7 @@ class Permissions
         );
     }}}
 
-    public static function addPermsissions() {{{
+    public function addPermsissions() {{{
 
         $admperms = array(
             'admin_forum', 
@@ -104,15 +118,20 @@ class Permissions
 
     }}}
 
-    public static function getPermissions($perm, $moderate = '') {{{
+    public function getPermissions($perm, $moderate = '') {{{
 
         global $context, $user_info;
 
-        $show = false;
-        $acc = explode(',', $perm);
-        foreach($acc as $grp => $val) {
-            if(in_array($val, $user_info['groups']) && $val > -2) {
-                $show = true;
+        $show   = false;
+        if(empty($perm)) {
+            $show = false;
+        }
+        else {
+            $acc    = explode(',', $perm);
+            foreach($acc as $grp => $val) {
+                if(in_array($val, $user_info['groups']) && $val > -2) {
+                    $show = true;
+                }
             }
         }
 
@@ -122,95 +141,12 @@ class Permissions
         }
 
         // permission holds true? allow them as well!
-        if($moderate != '' && allowedTo($moderate)) {
+        if($moderate != '' && \allowedTo($moderate)) {
             $show = true;
         }
 
         return $show;
 
-    }}}
-
-    public static function getButtons() {{{
-        global $scripturl, $txt, $context;
-
-        if(loadLanguage('TPortal') == false) {
-            loadLanguage('TPortal', 'english');
-        }
-
-        $buts = array();
-
-        if($context['user']['is_logged'] && (allowedTo('tp_submithtml') || allowedTo('tp_submitbbc') || allowedTo('tp_articles'))) {
-            $buts['tpeditwonarticle'] = array(
-                'title' => $txt['tp-myarticles'],
-                'href' => $scripturl . '?action=tportal;sa=myarticles',
-                'show' => true,
-                'active_button' => false,
-                'sub_buttons' => array(),
-            );
-        }
-
-        if(allowedTo('tp_submithtml') || allowedTo('tp_articles')) {
-            $buts['tpeditwonarticle']['sub_buttons']['submithtml'] = array(
-                'title' => $txt['tp-submitarticle'],
-                'href' => $scripturl . '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tportal') . ';sa=addarticle_html',
-                'show' => true,
-                'active_button' => false,
-                'sub_buttons' => array(),
-            );
-        }
-
-        if(allowedTo('tp_submitbbc') || allowedTo('tp_articles')) {
-            $buts['tpeditwonarticle']['sub_buttons']['submitbbc'] = array(
-                'title' => $txt['tp-submitarticlebbc'],
-                'href' => $scripturl . '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tportal') . ';sa=addarticle_bbc',
-                'show' => true,
-                'active_button' => false,
-                'sub_buttons' => array(),
-            );
-        }
-
-        // the admin functions - divider
-        if(allowedTo('tp_settings') || allowedTo('tp_articles') || allowedTo('tp_blocks') || allowedTo('tp_dlmanager') || allowedTo('tp_shoutbox')) {
-            $buts['divde1'] = array(
-                'title' => '<hr />',
-                'href' => '#',
-                'show' => true,
-                'active_button' => false,
-                'sub_buttons' => array(),
-            );
-        }
-
-        if(allowedTo('tp_settings')) {
-            $buts['tpsettings'] = array(
-                'title' => $txt['tp-adminheader1'],
-                'href' => $scripturl . '?action=tpadmin;sa=settings',
-                'show' => true,
-                'active_button' => false,
-                'sub_buttons' => array(),
-            );
-        }
-
-        if(allowedTo('tp_articles')) {
-            $buts['tparticles'] = array(
-                'title' => $txt['tp_menuarticles'],
-                'href' => $scripturl . '?action=tpadmin;sa=articles',
-                'show' => true,
-                'active_button' => false,
-                'sub_buttons' => array(),
-            );
-        }
-
-        if(allowedTo('tp_blocks')) {
-            $buts['tpblocks'] = array(
-                'title' => $txt['tp-adminpanels'],
-                'href' => $scripturl . '?action=tpadmin;sa=blocks',
-                'show' => true,
-                'active_button' => false,
-                'sub_buttons' => array(),
-            );
-        }
-
-        return $buts;
     }}}
 
 }

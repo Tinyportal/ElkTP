@@ -154,7 +154,7 @@ function TPortalInit() {{{
 
 	// if we are in permissions admin section, load all permissions
 	if((isset($_GET['action']) && $_GET['action'] == 'permissions') || (isset($_GET['area']) && $_GET['area'] == 'permissions')) {
-		TPPermissions::collectPermissions();
+		TPPermissions::getInstance()->collectPermissions();
     }
 
 	// Show search/frontpage topic layers?
