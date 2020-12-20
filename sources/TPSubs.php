@@ -790,7 +790,7 @@ function TP_fetchprofile_areas2($member_id) {{{
 }}}
 
 function get_perm($perm, $moderate = '') {{{   
-    return TPPermissions::getPermission($perm, $moderate);	
+    return TPPermissions::getInstance()->getPermissions($perm, $moderate);	
 }}}
 
 function tpsort($a, $b)

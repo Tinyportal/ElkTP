@@ -115,10 +115,9 @@ class Block extends Base {
     }}}
 
     public function getBlockPermissions( ) {{{
-        global $context, $user_info;
+        global $context;
         
         $blocks = array();
-        $user   = reset($user_info['groups']);
 
         $activeBlocks = $this->getActiveBlocks();
         foreach($activeBlocks as $block) {
@@ -126,7 +125,7 @@ class Block extends Base {
             if(allowedTo('tp_blocks') && (!empty($context['TPortal']['admin_showblocks']) || !isset($context['TPortal']['admin_showblocks']))) {
                 
             } 
-            else if(in_array($user, explode(',', $block['access'])) == false) {
+            else if(Permissions::getInstance()->getPermissions($block['access']) == false) {
                 continue;
             }
 

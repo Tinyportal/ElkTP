@@ -329,8 +329,8 @@ class Integrate
 					'title' 	    => $txt['tp-tphelp'],
 					'href' 			=> $scripturl.'?action=tpadmin',
 					'data-icon'     => 'i-newspaper',
-					'show' 			=> Permissions::checkAdminAreas(),
-					'sub_buttons' 	=> Permissions::getButtons(),
+					'show' 			=> Permissions::getInstance()->checkAdminAreas(),
+					'sub_buttons' 	=> Permissions::getInstance()->getButtons(),
 					'action_hook' 	=> true,
 				),
 			), 'after');

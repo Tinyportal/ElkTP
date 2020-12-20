@@ -1151,7 +1151,7 @@ function do_admin($tpsub = 'overview')
 	$context['TPortal']['SSI_boards'] = explode(',', $context['TPortal']['SSI_board']);
 
 	if($tpsub == 'overview') {
-		if(!TPPermissions::checkAdminAreas()) {
+		if(!TPPermissions::getInstance()->checkAdminAreas()) {
 			fatal_error($txt['tp-noadmin'], false);
         }
 	}
