@@ -176,13 +176,13 @@ function TPortalAdmin()
 				'articles_nocat' => array(
 					'lang' => true,
 					'text' => 'tp-uncategorised' ,
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=articles;sa=strays',
+					'url' => $scripturl . '?action=admin;area=tparticles;sa=strays',
 					'active' => $context['TPortal']['subaction'] == 'strays',
 					),
 				'submissions' => array(
 					'lang' => true,
 					'text' => 'tp-tabs4' ,
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=articles;sa=submission',
+					'url' => $scripturl . '?action=admin;area=tparticles;sa=submission',
 					'active' => $context['TPortal']['subaction'] == 'submission',
 					),
 				'addarticle' => array(
@@ -995,7 +995,7 @@ function do_articles()
 			var id = target.id.replace("artActive", "");
 			var Ajax = getXMLHttpRequest();
 
-			Ajax.open("POST", "?action=admin;area=tparticles;sa=arton=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+			Ajax.open("POST", "?action=admin;area=tparticles;arton=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
 			Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
 			var source = target.src;
@@ -1023,7 +1023,7 @@ function do_articles()
 			var id = target.id.replace("artFront", "");
 			var Ajax = getXMLHttpRequest();
 
-			Ajax.open("POST", "?action=admin;area=tparticles;sa=artfront=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+			Ajax.open("POST", "?action=admin;area=tparticles;artfront=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
 			Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
 			var source = target.src;
@@ -1037,7 +1037,7 @@ function do_articles()
 				}
 			}
 
-			var params = "?action=admin;area=tparticles;sa=artfront=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+			var params = "?action=admin;area=tparticles;artfront=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
 			Ajax.send(params);
 		}
 		function toggleSticky(e)
@@ -1051,7 +1051,7 @@ function do_articles()
 			var id = target.id.replace("artSticky", "");
 			var Ajax = getXMLHttpRequest();
 
-			Ajax.open("POST", "?action=admin;area=tparticles;sa=artsticky=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+			Ajax.open("POST", "?action=admin;area=tparticles;artsticky=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
 			Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
 			var source = target.src;
@@ -1065,7 +1065,7 @@ function do_articles()
 				}
 			}
 
-			var params = "?action=admin;area=tparticles;sa=artsticky=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+			var params = "?action=admin;area=tparticles;artsticky=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
 			Ajax.send(params);
 		}
 		function toggleLock(e)
@@ -1079,7 +1079,7 @@ function do_articles()
 			var id = target.id.replace("artLock", "");
 			var Ajax = getXMLHttpRequest();
 
-			Ajax.open("POST", "?action=admin;area=tparticles;sa=artlock=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+			Ajax.open("POST", "?action=admin;area=tparticles;artlock=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
 			Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
 			var source = target.src;
@@ -1093,7 +1093,7 @@ function do_articles()
 				}
 			}
 
-			var params = "?action=admin;area=tparticles;sa=artlock=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+			var params = "?action=admin;area=tparticles;artlock=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
 			Ajax.send(params);
 		}
 		function toggleFeatured(e)
@@ -1117,7 +1117,7 @@ function do_articles()
 			var id = target.id.replace("artFeatured", "");
 			var Ajax = getXMLHttpRequest();
 
-			Ajax.open("POST", "?action=admin;area=tparticles;sa=artfeat=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+			Ajax.open("POST", "?action=admin;area=tparticles;artfeat=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
 			Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
 			var source = target.src;
@@ -1131,7 +1131,7 @@ function do_articles()
 				}
 			}
 
-			var params = "?action=admin;area=tparticles;sa=artfeat=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+			var params = "?action=admin;area=tparticles;artfeat=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
 			Ajax.send(params);
 		}
 	// ]]></script>';

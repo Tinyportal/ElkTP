@@ -42,15 +42,10 @@
 		<remove-file name="THEMEDIR/css/tp-style.css" />
 		<remove-file name="THEMEDIR/css/tp-responsive.css" />
 		<remove-file name="LANGUAGEDIR/TParticle.english.php" />
-		<remove-file name="LANGUAGEDIR/TParticle.english-utf8.php" />
 		<remove-file name="LANGUAGEDIR/TPhelp.english.php" />
-		<remove-file name="LANGUAGEDIR/TPhelp.english-utf8.php" />
 		<remove-file name="LANGUAGEDIR/TPmodules.english.php" />
-		<remove-file name="LANGUAGEDIR/TPmodules.english-utf8.php" />
 		<remove-file name="LANGUAGEDIR/TPortal.english.php" />
-		<remove-file name="LANGUAGEDIR/TPortal.english-utf8.php" />
 		<remove-file name="LANGUAGEDIR/TPortalAdmin.english.php" />
-		<remove-file name="LANGUAGEDIR/TPortalAdmin.english-utf8.php" />
         <hook reverse="true" hook="integrate_pre_load" function="\TinyPortal\Integrate::hookPreLoad" file="BOARDDIR/TinyPortal/Integrate.php" />
 	</uninstall>
 </package-info>
