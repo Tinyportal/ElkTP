@@ -765,10 +765,10 @@ function articleAjax() {{{
 				WHERE category = {int:catid}',
 				array('cat' => $newcat, 'catid' => $what)
 			);
-			redirectexit('action=tpadmin;sa=categories');
+			redirectexit('action=admin;area=tparticles;sa=categories');
 		}
 		else {
-			redirectexit('action=tpadmin;sa=categories');
+			redirectexit('action=admin;area=tparticles;sa=categories');
 		}
 	}
 	elseif(isset($_GET['artdelete'])) {
@@ -791,7 +791,7 @@ function articleAjax() {{{
 				array('artid' => $what)
 			);
 		}
-		redirectexit('action=tpadmin' . (!empty($cu) ? ';cu='.$cu : '') . (isset($strays) ? ';sa=strays'.$cu : ';sa=articles'));
+		redirectexit('action=admin;area=tparticles' . (!empty($cu) ? ';cu='.$cu : '') . (isset($strays) ? ';sa=strays'.$cu : ';sa=articles'));
 	}
 
     unset($tpArticle);
