@@ -1,5 +1,5 @@
 <?php
-// Version: 2.1.0; TPortalAdmin
+// Version: 1.0.0; TPortalAdmin
 global $context;
 
 // Menu
