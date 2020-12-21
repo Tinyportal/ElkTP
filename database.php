@@ -84,6 +84,21 @@ $tables = array(
             array('type' => 'primary', 'columns' => array('id')),
         ),
     ),
+    'tp_categories' => array(
+        'columns' => array(
+            array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
+            array('name' => 'item_type', 'type' => 'varchar', 'size' => 255 ) + $type ,
+            array('name' => 'item_id', 'type' => 'int', 'size' => 11, 'default' => 0,),
+			array('name' => 'access', 'type' => 'text' ) + $type ,
+            array('name' => 'display_name', 'type' => 'text' ) + $type ,
+            array('name' => 'short_name', 'type' => 'text' ) + $type ,
+			array('name' => 'settings', 'type' => 'text' ) + $type ,
+			array('name' => 'custom_template', 'type' => 'text' ) + $type ,
+        ),
+       'indexes' => array(
+            array('type' => 'primary', 'columns' => array('id')),
+        ),
+    ),
     'tp_variables' => array(
         'columns' => array(
             array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
