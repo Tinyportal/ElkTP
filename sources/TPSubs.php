@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0
+ * @version 2.1.0
  * @author IchBin - http://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0
@@ -15,6 +15,7 @@
  *
  */
 use \TinyPortal\Article as TPArticle;
+use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Permissions as TPPermissions;
 use \TinyPortal\Util as TPUtil;
 
@@ -79,7 +80,7 @@ function TPparseModfile($file , $returnarray) {{{
 function TPArticleCategories($use_sorted = false) {{{
 	global $context, $txt;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$context['TPortal']['catnames'] = array();
 	$context['TPortal']['categories_shortname'] = array();
@@ -319,7 +320,7 @@ function TP_permaTheme($theme)
 {
 	global $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$me = $context['user']['id'];
 	$db->query('', '
@@ -633,7 +634,7 @@ function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $sho
 function tp_fetchpermissions($perms) {{{
 	global $txt;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$perm = array();
 	if(is_array($perms))
@@ -708,7 +709,7 @@ function tp_fetchpermissions($perms) {{{
 
 function tp_fetchboards()
 {
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	// get all boards for board-spesific news
 	$request =  $db->query('', '
@@ -1321,7 +1322,7 @@ function tp_collectArticleIcons()
 {
 	global $context, $boarddir, $boardurl;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	// get all themes for selection
 	$context['TPthemes']  = array();
@@ -1379,7 +1380,7 @@ function tp_collectArticleIcons()
 
 function tp_recordevent($date, $id_member, $textvariable, $link, $description, $allowed, $eventid)
 {
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$db->insert('insert',
 		'{db_prefix}tp_events',
@@ -1417,7 +1418,7 @@ function tpattach()
 {
 	global $txt, $modSettings, $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	// Some defaults that we need.
 	$context['utf8'] = true;
@@ -1611,7 +1612,7 @@ function tpattach()
 
 function art_recentitems($max = 5, $type = 'date' ){
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$now = forum_time();
 	$data = array();
@@ -1852,7 +1853,7 @@ function tp_getblockstyles21() {{{
 function get_grps($save = true, $noposts = true) {{{
 	global $context, $txt;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	// get all membergroups for permissions
 	$context['TPmembergroups'] = array();
@@ -1903,7 +1904,7 @@ function tp_convertphp($code, $reverse = false) {{{
 function updateTPSettings($addSettings, $check = false) {{{
 	global $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	if (empty($addSettings) || !is_array($addSettings))
 		return;
@@ -1965,7 +1966,7 @@ function TPGetMemberColour($member_ids) {{{
 		return false;
     }
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$member_ids = is_array($member_ids) ? $member_ids : array($member_ids);
 
@@ -2008,7 +2009,7 @@ function tp_profile_summary($member_id) {{{
 function tp_profile_articles($member_id) {{{
 	global $txt, $context, $scripturl;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$context['page_title'] = $txt['articlesprofile'];
     $context['TPortal']['member_id'] = $member_id;
@@ -2167,7 +2168,7 @@ function tp_articles($member_id) {{{
 
 function TPSaveSettings() {{{
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
     // check the session
     checkSession('post');
@@ -2200,7 +2201,7 @@ function TPSaveSettings() {{{
 function TPUpdateLog() {{{
     global $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
     $context['TPortal']['subaction'] = 'updatelog';
     $request = $db->query('', '

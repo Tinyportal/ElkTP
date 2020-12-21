@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0
+ * @version 2.1.0
  * @author IchBin - http://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0
@@ -15,6 +15,7 @@
  *
  */
 use \TinyPortal\Util as TPUtil;
+use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Upload as TPUpload;
 
 if (!defined('ELK')) {
@@ -139,7 +140,7 @@ function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png
 function tp_groups() {{{
 	global $txt;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	// get all membergroups for permissions
 	$grp    = array();

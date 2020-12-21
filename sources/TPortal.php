@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0
+ * @version 2.1.0
  * @author IchBin - http://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0
@@ -17,6 +17,7 @@
 use \TinyPortal\Admin as TPAdmin;
 use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
+use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Integrate as TPIntegrate;
 use \TinyPortal\Mentions as TPMentions;
 use \TinyPortal\Permissions as TPPermissions;
@@ -233,7 +234,7 @@ function tpLoadCSS() {{{
 function setupTPsettings() {{{
     global $maintenance, $context, $txt, $settings, $modSettings;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
     $context['TPortal']['always_loaded'] = array();
 
@@ -352,7 +353,7 @@ function setupTPsettings() {{{
 function fetchTPhooks() {{{
 	global $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	// are we inside a board?
 	if (isset($context['current_topic'])) {
@@ -407,7 +408,7 @@ function doTPpage() {{{
 
 	global $context, $scripturl, $txt, $modSettings, $boarddir, $user_info;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 	$now = time();
 	// Set the avatar height/width
 	$avatar_width = '';
@@ -745,7 +746,7 @@ function doTPcat() {{{
 
 	global $context, $scripturl, $txt, $modSettings;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 	$now = time();
 
 	// check validity and fetch it
@@ -1004,7 +1005,7 @@ function doTPcat() {{{
 function doTPfrontpage() {{{
 	global $context, $scripturl, $user_info, $modSettings, $txt;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	// check we aren't in any other section because 'cat' is used in ELK and TP
 	if(isset($_GET['action']) || isset($_GET['board']) || isset($_GET['topic'])) {
@@ -2009,7 +2010,7 @@ function TPortal_panel($side) {{{
 function tpSetupUpshrinks() {{{
 	global $context, $settings;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$context['tp_panels'] = array();
 	if(isset($_COOKIE['tp_panels'])){

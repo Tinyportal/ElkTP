@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0
+ * @version 2.0.0
  * @author IchBin - http://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0
@@ -23,7 +23,7 @@ function ssi_TPIntegrate() {{{
 }}}
 
 function ssi_TPCategoryArticles($category = 0, $current = '-1', $output = 'echo', $display = 'list') {{{
-    global $smcFunc, $scripturl;
+    global $scripturl;
     
     // if category is not a number, return
     if(!is_numeric($category)) {

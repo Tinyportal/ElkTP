@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0
+ * @version 2.1.0
  * @author tinoest - http://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0
@@ -16,6 +16,7 @@
  */
 use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
+use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Mentions as TPMentions;
 use \TinyPortal\Util as TPUtil;
 
@@ -119,7 +120,7 @@ function articleInsertComment() {{{
 function articleShowComments() {{{
     global $scripturl, $user_info, $txt, $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
     if(!empty($_GET['tpstart']) && is_numeric($_GET['tpstart'])) {
         $tpstart = $_GET['tpstart'];
@@ -259,7 +260,7 @@ function articleEditComment() {{{
 function articleRate() {{{
     global $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 	// rating is underway
 	if(isset($_POST['tp_article_rating_submit']) && $_POST['tp_article_type'] == 'article_rating') {
 		// check the session
@@ -318,7 +319,7 @@ function articleAttachment() {{{
 function articleEdit() {{{
 	global $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 	checkSession('post');
 	isAllowedTo(array('tp_articles', 'tp_editownarticle', 'tp_submitbbc', 'tp_submithtml'));
 
@@ -547,7 +548,7 @@ function articleEdit() {{{
 function articleShow() {{{
     global $context, $scripturl, $txt;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 	// show own articles?
     // not for guests
     if($context['user']['is_guest']) {
@@ -601,7 +602,7 @@ function articleShow() {{{
 function articleNew() {{{
     global $context, $settings;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
     require_once(SOURCEDIR. '/TPcommon.php');
 
@@ -696,7 +697,7 @@ function articleUploadImage() {{{
 function articleAjax() {{{
     global $context, $boarddir, $boardurl;
 
-    $db         = database();
+    $db         = TPDatabase::getInstance();
     $tpArticle  = TPArticle::getInstance();
 
 	// first check any ajax stuff

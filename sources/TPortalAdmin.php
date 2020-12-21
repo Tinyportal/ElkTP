@@ -17,6 +17,7 @@
 use \TinyPortal\Admin as TPAdmin;
 use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
+use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Permissions as TPPermissions;
 use \TinyPortal\Util as TPUtil;
 
@@ -309,7 +310,7 @@ function do_articles()
 {
 	global $context, $txt, $settings, $boardurl, $scripturl;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
     if(allowedTo('tp_articles') == false) {
         if(isset($_GET['sa']) && substr($_GET['sa'], 0, 11) == 'editarticle') {
@@ -1176,7 +1177,7 @@ function do_postchecks()
 {
 	global $context, $txt, $settings, $boarddir, $sourcedir;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	// If we have any setting changes add them to this array
 	$updateArray = array();
@@ -2217,7 +2218,7 @@ function get_boards()
 {
 	global $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$context['TPortal']['boards'] = array();
 	$request = $db->query('', '
@@ -2240,7 +2241,7 @@ function get_articles()
 
 	global $context;
     
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$context['TPortal']['edit_articles'] = array();
 
@@ -2263,7 +2264,7 @@ function get_catnames()
 
 	global $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$context['TPortal']['catnames'] = array();
 

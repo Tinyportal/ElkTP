@@ -41,6 +41,8 @@ class Database
 
         $dB = \database();
 
+        var_dump($call);
+
         // Compatability with smf db_ methods
         $call = str_replace('db_', '', $call);
         if(is_callable(array($dB, $call), false)) { 
