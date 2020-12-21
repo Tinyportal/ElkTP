@@ -15,6 +15,7 @@
  *
  */
 use \TinyPortal\Article as TPArticle;
+use \TinyPortal\Admin as TPAdmin;
 use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Permissions as TPPermissions;
 use \TinyPortal\Util as TPUtil;
@@ -1904,54 +1905,29 @@ function tp_convertphp($code, $reverse = false) {{{
 function updateTPSettings($addSettings, $check = false) {{{
 	global $context;
 
-    $db = TPDatabase::getInstance();
+    $tpAdmin = TPAdmin::getInstance();
 
-	if (empty($addSettings) || !is_array($addSettings))
+	if (empty($addSettings) || !is_array($addSettings)) {
 		return;
+    }
 
-	if($check)
-	{
-		foreach ($addSettings as $variable => $value)
-		{
-			$request = $db->query('', 'SELECT value FROM {db_prefix}tp_settings WHERE name = \'' . $variable . '\'');
-
-			if($db->num_rows($request)==0)
-			{
-				$db->query('', '
-					INSERT INTO {db_prefix}tp_settings
-					(name,value) VALUES({string:variable},{' . ($value === false || $value === true ? 'raw' : 'string') . ':value})',
-					array(
-						'value' => $value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value),
-						'variable' => $variable,
-					)
-				);
-			}
-			$db->query('', '
-					UPDATE {db_prefix}tp_settings
-					SET value = {' . ($value === false || $value === true ? 'raw' : 'string') . ':value}
-					WHERE name = {string:variable}',
-					array(
-						'value' => $value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value),
-						'variable' => $variable,
-					)
-				);
+	if($check) {
+		foreach ($addSettings as $variable => $value) {
+            $id = $tpAdmin->getSettingData('id', array ( 'name' => $variable ));
+            if(is_null($id)) {
+                $tpAdmin->insertSetting(array( 'name' => $variable, 'value' => ($value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value)) ) );
+            }
+            else {
+                $tpAdmin->updateSetting($id[0]['id'], array( 'value' => ($value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value)))); 
+            }
 
 			$context['TPortal'][$variable] = $value === true ? $context['TPortal'][$variable] + 1 : ($value === false ? $context['TPortal'][$variable] - 1 : $value);
 		}
 	}
-	else
-	{
-		foreach ($addSettings as $variable => $value)
-		{
-			$db->query('', '
-				UPDATE {db_prefix}tp_settings
-				SET value = {' . ($value === false || $value === true ? 'raw' : 'string') . ':value}
-				WHERE name = {string:variable}',
-				array(
-					'value' => $value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value),
-					'variable' => $variable,
-				)
-			);
+	else {
+		foreach ($addSettings as $variable => $value) {
+            $id = $tpAdmin->getSettingData('id', array ( 'name' => $variable ));
+            $tpAdmin->updateSetting($id[0]['id'], array( 'value' => ($value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value)))); 
 			$context['TPortal'][$variable] = $value === true ? $context['TPortal'][$variable] + 1 : ($value === false ? $context['TPortal'][$variable] - 1 : $value);
 		}
 	}

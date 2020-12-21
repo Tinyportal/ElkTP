@@ -223,10 +223,10 @@ class Base
             $where_data = array();
             foreach($where as $key => $value) {
                 if(array_key_exists($key, $dBStructure)) {
-                    $where_data[] = $key.' = '.$value;
+                    $where_data[] = $key.' = \''.$value.'\'';
                 }
                 elseif(strpos($key, '!') === 0) {
-                    $where_data[] = substr($key, strpos($key, '!') + 1).' != '.$value; 
+                    $where_data[] = substr($key, strpos($key, '!') + 1).' != \''.$value.'\''; 
                 }
             }
             $where = implode(' AND ', array_values($where_data));

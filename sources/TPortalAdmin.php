@@ -1378,12 +1378,8 @@ function do_postchecks()
 							}
 							$themeschecked[] = $postname;
 							if(isset($themeschecked)) {
-								$db->query('', '
-									UPDATE {db_prefix}tp_settings
-									SET value = {string:value}
-									WHERE name = {string:name}',
-									array('value' => implode(',', $themeschecked), 'name' => 'resp',)
-								);
+                                $id = TPAdmin::getInstance()->getSettingData('id', array( 'name' => 'resp' ));
+                                TPAdmin::getInstance()->updateSettingData($id[0]['id'], array ('value' => implode(',', $themeschecked)));
 							}
 						}
 					}
