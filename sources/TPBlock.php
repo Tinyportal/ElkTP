@@ -532,7 +532,7 @@ function editBlock( $block_id = 0 ) {{{
 		$request = $db->query('', '
 			SELECT id, display_name as name
 			FROM {db_prefix}tp_categories
-			WHERE type = {string:type}
+			WHERE item_type = {string:type}
 			ORDER BY display_name',
 			array(
 				'type' => 'category'

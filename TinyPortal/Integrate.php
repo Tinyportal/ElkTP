@@ -334,7 +334,6 @@ class Integrate
 					'controller'  => 'TPortalAdmin_Controller',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
-					'class'       => 'admin_home_page',
 					'permission'  => array ( 'admin_forum', 'tp_settings' ),
 					'subsections' => array (
 						'settings'	=> array ( $txt['tp-settings'] ),
@@ -347,7 +346,6 @@ class Integrate
 					'controller'  => 'TPortalAdmin_Controller',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
-					'class'       => 'admin_home_page',
 					'permission'  => array ( 'admin_forum', 'tp_articles' ),
 					'subsections' => array (
 						'articles'	=> array ( $txt['tp-articles'] ),
@@ -360,7 +358,6 @@ class Integrate
 					'controller'  => 'TPortalAdmin_Controller',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
-					'class'       => 'admin_home_page',
 					'permission'  => array ( 'admin_forum', 'tp_blocks' ),
 					'subsections' => array (
 						'blocks'	=> array ( $txt['tp-blocks'] ),
