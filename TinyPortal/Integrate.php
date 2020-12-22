@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 2.1.0
+ * @version 1.0.0
  * @author IchBin - http://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0
@@ -212,9 +212,9 @@ class Integrate
         }
 
 
-        $string = '<a target="_blank" href="https://www.tinyportal.net" title="TinyPortal">TinyPortal 2.1.0</a> &copy; <a href="' . $scripturl . '?action=tportal;sa=credits" title="Credits">2005-2020</a>';
+        $string = '<a target="_blank" href="https://www.tinyportal.net" title="TinyPortal">TinyPortal 1.0.0</a> &copy; <a href="' . $scripturl . '?action=tportal;sa=credits" title="Credits">2005-2020</a>';
 
-        if (ELK == 'SSI' || empty($context['template_layers']) || (defined('WIRELESS') && WIRELESS ) || strpos($buffer, $string) !== false) {
+        if (ELK == 'SSI' || strpos($buffer, $string) !== false) {
             return $buffer;
         }
 
@@ -244,8 +244,8 @@ class Integrate
             return $buffer;
         }
         else {
-            $find       = '//www.simplemachines.org" title="Simple Machines" target="_blank" class="new_win">Simple Machines</a>';
-            $replace    = '//www.simplemachines.org" title="Simple Machines" target="_blank" class="new_win">Simple Machines</a><br />' . $string;
+            $find       = array( sprintf('%1$s</a>', FORUM_VERSION), );
+            $replace    = array( sprintf('%1$s</a> | ', FORUM_VERSION) . $string , );
             $buffer     = str_replace($find, $replace, $buffer);
         }
 
@@ -512,7 +512,7 @@ class Integrate
         if(isset($actions['cat'])) {
             if(is_numeric($actions['cat'])) {
                 $request = $dB->db_query('', '
-                    SELECT 	value1 FROM {db_prefix}tp_variables
+                    SELECT 	display_name FROM {db_prefix}tp_categories
                     WHERE id = {int:id}
                     LIMIT 1',
                     array (
@@ -522,8 +522,8 @@ class Integrate
             }
             else {
                 $request = $dB->db_query('', '
-                    SELECT value1 FROM {db_prefix}tp_variables
-                    WHERE value8 = {string:shortname}
+                    SELECT display_name FROM {db_prefix}tp_categories
+                    WHERE short_name = {string:shortname}
                     LIMIT 1',
                     array (
                         'shortname' => $actions['cat'],
@@ -538,7 +538,7 @@ class Integrate
                 $dB->db_free_result($request);
             }
             if(!empty($category)) {
-                return sprintf($txt['tp-who-category'], $category['value1'], $actions['cat'], $scripturl );
+                return sprintf($txt['tp-who-category'], $category['display_name'], $actions['cat'], $scripturl );
             }
             else {
                 return $txt['tp-who-categories'];

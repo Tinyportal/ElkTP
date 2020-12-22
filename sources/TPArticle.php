@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 2.1.0
+ * @version 1.0.0
  * @author tinoest - http://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0
@@ -16,6 +16,7 @@
  */
 use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
+use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Mentions as TPMentions;
 use \TinyPortal\Util as TPUtil;
 
@@ -119,7 +120,7 @@ function articleInsertComment() {{{
 function articleShowComments() {{{
     global $scripturl, $user_info, $txt, $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
     if(!empty($_GET['tpstart']) && is_numeric($_GET['tpstart'])) {
         $tpstart = $_GET['tpstart'];
@@ -136,28 +137,28 @@ function articleShowComments() {{{
     }
 
     $request = $db->query('', '
-        SELECT COUNT(var.value1)
-        FROM ({db_prefix}tp_variables AS var, {db_prefix}tp_articles AS art)
+        SELECT COUNT(var.display_name)
+        FROM ({db_prefix}tp_categories AS var, {db_prefix}tp_articles AS art)
         WHERE var.type = {string:type}
-        ' . ((!$showall || $mylast == 0) ? 'AND var.value4 > '.$mylast : '') .'
-        AND art.id = var.value5',
+        ' . ((!$showall || $mylast == 0) ? 'AND var.dt_log > '.$mylast : '') .'
+        AND art.id = var.page',
         array('type' => 'article_comment')
     );
     $check = $db->fetch_row($request);
     $db->free_result($request);
 
     $request = $db->query('', '
-        SELECT art.subject, memb.real_name AS author, art.author_id AS authorID, var.value1, var.value2, var.value3,
-        var.value5, var.value4, mem.real_name AS realName,
-        ' . ($user_info['is_guest'] ? '1' : '(COALESCE(log.item, 0) >= var.value4)') . ' AS isRead
-        FROM ({db_prefix}tp_variables AS var, {db_prefix}tp_articles AS art)
+        SELECT art.subject, memb.real_name AS author, art.author_id AS authorID, var.display_name, var.parent, var.access,
+        var.page, var.dt_log, mem.real_name AS realName,
+        ' . ($user_info['is_guest'] ? '1' : '(COALESCE(log.item, 0) >= var.dt_log)') . ' AS isRead
+        FROM ({db_prefix}tp_categories AS var, {db_prefix}tp_articles AS art)
         LEFT JOIN {db_prefix}members AS memb ON (art.author_id = memb.id_member)
-        LEFT JOIN {db_prefix}members AS mem ON (var.value3 = mem.id_member)
+        LEFT JOIN {db_prefix}members AS mem ON (var.access = mem.id_member)
         LEFT JOIN {db_prefix}tp_data AS log ON (log.value = art.id AND log.type = 1 AND log.id_member = '.$context['user']['id'].')
         WHERE var.type = {string:type}
-        AND art.id = var.value5
-        ' . ((!$showall || $mylast == 0 ) ? 'AND var.value4 > {int:last}' : '') .'
-        ORDER BY var.value4 DESC LIMIT {int:start}, 15',
+        AND art.id = var.page
+        ' . ((!$showall || $mylast == 0 ) ? 'AND var.dt_log > {int:last}' : '') .'
+        ORDER BY var.dt_log DESC LIMIT {int:start}, 15',
         array('type' => 'article_comment', 'last' => $mylast, 'start' => $tpstart)
     );
 
@@ -166,15 +167,15 @@ function articleShowComments() {{{
     if($db->num_rows($request) > 0) {
         while($row=$db->fetch_assoc($request)) {
             $context['TPortal']['artcomments']['new'][] = array(
-                'page' => $row['value5'],
+                'page' => $row['page'],
                 'subject' => $row['subject'],
-                'title' => $row['value1'],
-                'comment' => $row['value2'],
+                'title' => $row['display_name'],
+                'comment' => $row['parent'],
                 'membername' => $row['realName'],
-                'time' => standardTime($row['value4']),
+                'time' => standardTime($row['dt_log']),
                 'author' => $row['author'],
                 'authorID' => $row['authorID'],
-                'member_id' => $row['value3'],
+                'member_id' => $row['access'],
                 'is_read' => $row['isRead'],
                 'replies' => $check[0],
             );
@@ -241,8 +242,8 @@ function articleEditComment() {{{
 			if(allowedTo('tp_articles') || $comment['member_id'] == $context['user']['id']) {
                 $context['TPortal']['comment_edit'] = array(
                     'id' => $row['id'],
-                    'title' => $row['value1'],
-                    'body' => $row['value2'],
+                    'title' => $row['display_name'],
+                    'body' => $row['parent'],
                 );
                 $context['sub_template'] = 'editcomment';
                 loadTemplate('TParticle');
@@ -259,7 +260,7 @@ function articleEditComment() {{{
 function articleRate() {{{
     global $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 	// rating is underway
 	if(isset($_POST['tp_article_rating_submit']) && $_POST['tp_article_type'] == 'article_rating') {
 		// check the session
@@ -318,7 +319,7 @@ function articleAttachment() {{{
 function articleEdit() {{{
 	global $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 	checkSession('post');
 	isAllowedTo(array('tp_articles', 'tp_editownarticle', 'tp_submitbbc', 'tp_submithtml'));
 
@@ -362,13 +363,13 @@ function articleEdit() {{{
 					case 'category':
 						// for the event, get the allowed
 						$request = $db->query('', '
-							SELECT value3 FROM {db_prefix}tp_variables
+							SELECT access FROM {db_prefix}tp_categories
 							WHERE id = {int:varid} LIMIT 1',
 							array('varid' => is_numeric($value) ? $value : 0 )
 						);
 						if($db->num_rows($request) > 0) {
 							$row = $db->fetch_assoc($request);
-							$allowed = $row['value3'];
+							$allowed = $row['access'];
 							$db->free_result($request);
 						    $article_data['category'] = $value;
 						}
@@ -401,32 +402,6 @@ function articleEdit() {{{
 								elseif ($setting == 'intro') {
 									$value = $_POST['tp_article_intro'];
 								}
-							}
-							// save the choice too
-							$request = $db->query('', '
-								SELECT id FROM {db_prefix}tp_variables
-								WHERE subtype2 = {int:sub2}
-								AND type = {string:type} LIMIT 1',
-								array('sub2' => $where, 'type' => 'editorchoice')
-							);
-							if($db->num_rows($request) > 0) {
-								$row = $db->fetch_assoc($request);
-								$db->free_result($request);
-								$db->query('', '
-									UPDATE {db_prefix}tp_variables
-									SET value1 = {string:val1}
-									WHERE subtype2 = {int:sub2}
-									AND type = {string:type}',
-									array('val1' => $_POST['tp_article_body_choice'], 'sub2' => $where, 'type' => 'editorchoice')
-								);
-							}
-							else {
-								$db->insert('INSERT',
-									'{db_prefix}tp_variables',
-									array('value1' => 'string', 'type' => 'string', 'subtype2' => 'int'),
-									array($_POST['tp_article_body_choice'], 'editorchoice', $where),
-									array('id')
-								);
 							}
 						}
 						$article_data[$setting] = $value;
@@ -499,31 +474,7 @@ function articleEdit() {{{
 		// We are updating
 		$tpArticle->updateArticle((int)$where, $article_data);
 	}
-	// Update the approved status
-	if($article_data['approved'] == 1) {
-		$db->query('', '
-			DELETE FROM {db_prefix}tp_variables
-			WHERE type = {string:type}
-			AND value5 = {int:val5}',
-			array('type' => 'art_not_approved', 'val5' => $where)
-		);
-	}
-	elseif(empty($where)) {
-		$db->insert('insert',
-			'{db_prefix}tp_variables',
-			array (
-				'type' => 'string', 
-				'value5' => 'int'
-			),
-			array (  
-				'art_not_approved',
-				$where
-			),
-			array ( 
-				'id' 
-			)
-		);
-	}
+
 	unset($tpArticle);
 	// check if uploadad picture
 	if(isset($_FILES['qup_tp_article_body']) && file_exists($_FILES['qup_tp_article_body']['tmp_name'])) {
@@ -547,7 +498,7 @@ function articleEdit() {{{
 function articleShow() {{{
     global $context, $scripturl, $txt;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 	// show own articles?
     // not for guests
     if($context['user']['is_guest']) {
@@ -601,7 +552,7 @@ function articleShow() {{{
 function articleNew() {{{
     global $context, $settings;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
     require_once(SOURCEDIR. '/TPcommon.php');
 
@@ -696,7 +647,7 @@ function articleUploadImage() {{{
 function articleAjax() {{{
     global $context, $boarddir, $boardurl;
 
-    $db         = database();
+    $db         = TPDatabase::getInstance();
     $tpArticle  = TPArticle::getInstance();
 
 	// first check any ajax stuff
@@ -736,26 +687,26 @@ function articleAjax() {{{
 		if($what > 0) {
 			// first get info
 			$request = $db->query('', '
-				SELECT id, value2 FROM {db_prefix}tp_variables
+				SELECT id, parent FROM {db_prefix}tp_categories
 				WHERE id = {int:varid} LIMIT 1',
 				array('varid' => $what)
 			);
 			$row = $db->fetch_assoc($request);
 			$db->free_result($request);
 
-			$newcat = !empty($row['value2']) ? $row['value2'] : 0;
+			$newcat = !empty($row['parent']) ? $row['parent'] : 0;
 
 			$db->query('', '
-				UPDATE {db_prefix}tp_variables
-				SET value2 = {string:val2}
-				WHERE value2 = {string:varid}',
+				UPDATE {db_prefix}tp_categories
+				SET parent = {string:val2}
+				WHERE parent = {string:varid}',
 				array(
 					'val2' => $newcat, 'varid' => $what
 				)
 			);
 
 			$db->query('', '
-				DELETE FROM {db_prefix}tp_variables
+				DELETE FROM {db_prefix}tp_categories
 				WHERE id = {int:varid}',
 				array('varid' => $what)
 			);
@@ -786,8 +737,8 @@ function articleAjax() {{{
 				array('artid' => $what)
 			);
 			$db->query('', '
-				DELETE FROM {db_prefix}tp_variables
-				WHERE value5 = {int:artid}',
+				DELETE FROM {db_prefix}tp_categories
+				WHERE page = {int:artid}',
 				array('artid' => $what)
 			);
 		}

@@ -3,7 +3,7 @@
  * install.php
  *
  * @package TinyPortal
- * @version 2.1.0
+ * @version 1.0.0
  * @author IchBin - http://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0
@@ -84,22 +84,21 @@ $tables = array(
             array('type' => 'primary', 'columns' => array('id')),
         ),
     ),
-    'tp_variables' => array(
+    'tp_categories' => array(
         'columns' => array(
             array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
-            array('name' => 'value1', 'type' => 'text' ) + $type ,
-			array('name' => 'value2', 'type' => 'text' ) + $type ,
-			array('name' => 'value3', 'type' => 'text' ) + $type ,
-			array('name' => 'type', 'type' => 'tinytext' ) + $type ,
-			array('name' => 'value4', 'type' => 'text' ) + $type ,
-			array('name' => 'value5', 'type' => 'int', 'size' => 11, 'default' => -2,),
-			array('name' => 'subtype', 'type' => 'tinytext' ) + $type ,
-			array('name' => 'value7', 'type' => 'text' ) + $type ,
-			array('name' => 'value8', 'type' => 'text' ) + $type ,
-			array('name' => 'subtype2', 'type' => 'int', 'size' => 11, 'default' => 0,),
-			array('name' => 'value9', 'type' => 'text' ) + $type ,
+            array('name' => 'item_type', 'type' => 'varchar', 'size' => 255 ) + $type ,
+            array('name' => 'item_id', 'type' => 'int', 'size' => 11, 'default' => 0,),
+			array('name' => 'access', 'type' => 'text' ) + $type ,
+            array('name' => 'display_name', 'type' => 'text' ) + $type ,
+            array('name' => 'short_name', 'type' => 'text' ) + $type ,
+			array('name' => 'settings', 'type' => 'text' ) + $type ,
+			array('name' => 'custom_template', 'type' => 'text' ) + $type ,
+			array('name' => 'dt_log', 'type' => 'text' ) + $type ,
+			array('name' => 'page', 'type' => 'int', 'size' => 11, 'default' => -2,),
+			array('name' => 'parent', 'type' => 'text' ) + $type ,
         ),
-        'indexes' => array(
+       'indexes' => array(
             array('type' => 'primary', 'columns' => array('id')),
         ),
     ),
@@ -455,66 +454,44 @@ function addDefaults() {{{
 
 	// Check for date in variables table, if none insert default values.
 	$request = $db->query('', '
-		SELECT * FROM {db_prefix}tp_variables LIMIT 1'
+		SELECT * FROM {db_prefix}tp_categories LIMIT 1'
 	);
 
 	if ($db->num_rows($request) < 1) {
 		$vars = array(
 			'var1' =>array(
-				'value1' => 'Portal features',
-				'value2' => '0',
-				'value3' => '-1,0,2,3',
-				'type' => 'category',
-				'value4' => '',
-				'value5' => -2,
-				'subtype' => '',
-				'value7' => 'sort=date|sortorder=desc|articlecount=5|layout=1|catlayout=1|showchild=0|leftpanel=1|rightpanel=1|toppanel=1|centerpanel=1|lowerpanel=1|bottompanel=1',
-				'value8' => 'Features',
-				'subtype2' => 0,
-				'value9' => '',
+				'display_name' => 'Portal features',
+				'parent' => '0',
+				'access' => '-1,0,2,3',
+				'item_type' => 'category',
+				'dt_log' => '',
+				'settings' => 'sort=date|sortorder=desc|articlecount=5|layout=1|catlayout=1|showchild=0|leftpanel=1|rightpanel=1|toppanel=1|centerpanel=1|lowerpanel=1|bottompanel=1',
+				'short_name' => 'Features',
+				'custom_template' => '',
 			),
 			'var2' =>array(
-				'value1' => 'General Articles',
-				'value2' => '0',
-				'value3' => '-1,0,2,3',
-				'type' => 'category',
-				'value4' => '',
-				'value5' => -2,
-				'subtype' => 'General',
-				'value7' => 'sort=date|sortorder=desc|articlecount=5|layout=1|catlayout=1|showchild=0|leftpanel=1|rightpanel=1|toppanel=1|centerpanel=1|lowerpanel=1|bottompanel=1',
-				'value8' => '',
-				'subtype2' => 0,
-				'value9' => '',
-			),
-			'var3' =>array(
-				'value1' => 'Demo Articles',
-				'value2' => '0',
-				'value3' => 'cats1',
-				'type' => 'menubox',
-				'value4' => '0',
-				'value5' => 10,
-				'subtype' => '',
-				'value7' => '',
-				'value8' => '',
-				'subtype2' => 0,
-				'value9' => '',
+				'display_name' => 'General Articles',
+				'parent' => '0',
+				'access' => '-1,0,2,3',
+				'item_type' => 'category',
+				'dt_log' => '',
+				'settings' => 'sort=date|sortorder=desc|articlecount=5|layout=1|catlayout=1|showchild=0|leftpanel=1|rightpanel=1|toppanel=1|centerpanel=1|lowerpanel=1|bottompanel=1',
+				'short_name' => '',
+				'custom_template' => '',
 			),
 		);
 
 		$db->insert('ignore',
-			'{db_prefix}tp_variables',
+			'{db_prefix}tp_categories',
 			array(
-				'value1' => 'string',
-				'value2' => 'string',
-				'value3' => 'string',
-				'type' => 'string',
-				'value4' => 'string',
-				'value5' => 'int',
-				'subtype' => 'string',
-				'value7' => 'string',
-				'value8' => 'string',
-				'subtype2' => 'int',
-				'value9' => 'string',
+				'display_name' => 'string',
+				'parent' => 'string',
+				'access' => 'string',
+				'item_type' => 'string',
+				'dt_log' => 'string',
+				'settings' => 'string',
+				'short_name' => 'string',
+				'custom_template' => 'string',
 			),
 			$vars,
 			array('id')

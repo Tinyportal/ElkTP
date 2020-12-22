@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 2.1.0
+ * @version 1.0.0
  * @author tinoest - http://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0
@@ -43,7 +43,7 @@ class Admin extends Base {
     public function __construct() {{{
         parent::__construct();
 
-        $this->dbStructure = array (
+        $this->dBStructure = array (
             'id'        => 'mediumint',
             'name'      => 'text',
             'value'     => 'text',
@@ -53,7 +53,13 @@ class Admin extends Base {
 
     }}}
 
-    public function getSetting( $setting_name = null , $refresh = false ) {{{
+    public function getSettingData( $columns, array $where ) {{{
+
+        return self::getSQLData($columns, $where, $this->dBStructure, 'tp_settings');
+
+    }}}
+
+    public function getSetting( string $setting_name = null , bool $refresh = false ) {{{
 
         if($refresh == false && !is_null($setting_name) && array_key_exists($setting_name, $this->tpSettings)) {
             return $this->tpSettings[$setting_name];
@@ -94,19 +100,19 @@ class Admin extends Base {
 
     }}}
 
-   public function insertSetting($settings_data) {{{
+   public function insertSetting( array $settings_data) {{{
 
         return self::insertSQL($settings_data, $this->dBStructure, 'tp_settings');
 
     }}}
 
-     public function updateSetting($settings_id, $settings_data) {{{
+     public function updateSetting( int $settings_id, array $settings_data) {{{
 
         return self::updateSQL($settings_id, $settings_data, $this->dBStructure, 'tp_settings');
 
     }}}
 
-    public function deleteSetting( $settings_id ) {{{
+    public function deleteSetting( int $settings_id ) {{{
 
         return self::deleteSQL($settings_id, 'tp_settings');
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 2.0.0
+ * @version 1.0.0
  * @author IchBin - http://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0
@@ -2374,7 +2374,7 @@ function category_childs()
 	<ul class="category_children">';
 	foreach($context['TPortal']['category']['children'] as $ch => $child)
 		if (!empty($context['TPortal']['category']['options']['showchild']) == 1)
-			echo '<li><a href="' , $scripturl , '?cat=' , $child['id'] , '">' , $child['value1'] ,' (' , $child['articlecount'] , ')</a></li>';
+			echo '<li><a href="' , $scripturl , '?cat=' , $child['id'] , '">' , $child['display_name'] ,' (' , $child['articlecount'] , ')</a></li>';
 
 	echo '
 	</ul>';

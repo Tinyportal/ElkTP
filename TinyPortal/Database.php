@@ -11,7 +11,7 @@
  * author: tinoest - https://tinoest.co.uk
  * license: BSD-3-Clause 
  *
- * @version 2.1.0
+ * @version 1.0.0
  *
  */
 namespace TinyPortal;
@@ -38,6 +38,8 @@ class Database
     private function __clone() { }
 
 	public function __call($call, $vars) {{{
+
+        //debug_print_backtrace();
 
         $dB = \database();
 

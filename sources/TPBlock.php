@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 2.1.0
+ * @version 1.0.0
  * @author IchBin - http://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0
@@ -16,6 +16,7 @@
  */
 use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
+use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Util as TPUtil;
 
 if (!defined('ELK')) {
@@ -440,7 +441,7 @@ function editBlock( $block_id = 0 ) {{{
 	global $settings, $context, $scripturl, $txt, $boarddir;
 
     $tpBlock    = TPBlock::getInstance();
-    $db         = database();
+    $db         = TPDatabase::getInstance();
 
     if(empty($block_id)) {
 	    $block_id  = TPUtil::filter('id', 'get', 'int');
@@ -529,10 +530,10 @@ function editBlock( $block_id = 0 ) {{{
 		get_articles();
 		$context['TPortal']['edit_categories'] = array();
 		$request = $db->query('', '
-			SELECT id, value1 as name
-			FROM {db_prefix}tp_variables
+			SELECT id, display_name as name
+			FROM {db_prefix}tp_categories
 			WHERE type = {string:type}
-			ORDER BY value1',
+			ORDER BY display_name',
 			array(
 				'type' => 'category'
 			)

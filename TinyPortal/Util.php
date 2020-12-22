@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 2.1.0
+ * @version 1.0.0
  * @author tinoest - https://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0

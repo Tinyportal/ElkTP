@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 2.1.0
+ * @version 1.0.0
  * @author IchBin - http://www.tinyportal.net
  * @founder Bloc
  * @license MPL 2.0
@@ -15,6 +15,8 @@
  *
  */
 use \TinyPortal\Article as TPArticle;
+use \TinyPortal\Admin as TPAdmin;
+use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Permissions as TPPermissions;
 use \TinyPortal\Util as TPUtil;
 
@@ -79,7 +81,7 @@ function TPparseModfile($file , $returnarray) {{{
 function TPArticleCategories($use_sorted = false) {{{
 	global $context, $txt;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$context['TPortal']['catnames'] = array();
 	$context['TPortal']['categories_shortname'] = array();
@@ -114,9 +116,9 @@ function TPArticleCategories($use_sorted = false) {{{
 	}
 	$total2 = array();
 	$request2 =  $db->query('', '
-		SELECT value2, COUNT(*) as siblings
-		FROM {db_prefix}tp_variables
-		WHERE type = {string:type} GROUP BY value2',
+		SELECT parent, COUNT(*) as siblings
+		FROM {db_prefix}tp_categories
+		WHERE type = {string:type} GROUP BY parent',
 		array(
 			'type' => 'category'
 		)
@@ -125,16 +127,16 @@ function TPArticleCategories($use_sorted = false) {{{
 	{
 		while($row = $db->fetch_assoc($request2))
 		{
-			$total2[$row['value2']] = $row['siblings'];
+			$total2[$row['parent']] = $row['siblings'];
 		}
 		$db->free_result($request2);
 	}
 
 	$request =  $db->query('', '
 		SELECT cats.*
-		FROM {db_prefix}tp_variables as cats
+		FROM {db_prefix}tp_categories as cats
 		WHERE cats.type = {string:type}
-		ORDER BY cats.value1 ASC',
+		ORDER BY cats.display_name ASC',
 		array(
 			'type' => 'category'
 		)
@@ -161,7 +163,7 @@ function TPArticleCategories($use_sorted = false) {{{
 				'upperpanel' => '0' ,
 				'lowerpanel' => '0',
 			);
-			$opts = explode('|' , $row['value7']);
+			$opts = explode('|' , $row['settings']);
 			foreach($opts as $op => $val)
 			{
 				if(substr($val,0,7) == 'layout=')
@@ -195,18 +197,18 @@ function TPArticleCategories($use_sorted = false) {{{
 			}
 
 			// check the parent
-			if($row['value2'] == $row['id'] || $row['value2'] == '' || $row['value2'] == '0')
-				$row['value2'] = 9999;
+			if($row['parent'] == $row['id'] || $row['parent'] == '' || $row['parent'] == '0')
+				$row['parent'] = 9999;
 			// check access
-			$show = get_perm($row['value3']);
+			$show = get_perm($row['access']);
 			if($show) {
 				$sorted[$row['id']] = array(
 					'id' => $row['id'],
-					'shortname' => !empty($row['value8']) ? $row['value8'] : $row['id'],
-					'name' => $row['value1'],
-					'parent' => $row['value2'],
-					'access' => $row['value3'],
-					'icon' => $row['value4'],
+					'shortname' => !empty($row['short_name']) ? $row['short_name'] : $row['id'],
+					'name' => $row['display_name'],
+					'parent' => $row['parent'],
+					'access' => $row['access'],
+					'icon' => $row['dt_log'],
 					'totalfiles' => !empty($total[$row['id']][0]) ? $total[$row['id']][0] : 0,
 					'children' => !empty($total2[$row['id']][0]) ? $total2[$row['id']][0] : 0,
 					'options' => array(
@@ -226,7 +228,7 @@ function TPArticleCategories($use_sorted = false) {{{
 						'lowerpanel' => $options['lowerpanel'],
 					),
 				);
-				$context['TPortal']['catnames'][$row['id']]=$row['value1'];
+				$context['TPortal']['catnames'][$row['id']]=$row['display_name'];
 				$context['TPortal']['categories_shortname'][$sorted[$row['id']]['shortname']]=$row['id'];
 			}
 		}
@@ -319,7 +321,7 @@ function TP_permaTheme($theme)
 {
 	global $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$me = $context['user']['id'];
 	$db->query('', '
@@ -633,7 +635,7 @@ function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $sho
 function tp_fetchpermissions($perms) {{{
 	global $txt;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$perm = array();
 	if(is_array($perms))
@@ -708,7 +710,7 @@ function tp_fetchpermissions($perms) {{{
 
 function tp_fetchboards()
 {
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	// get all boards for board-spesific news
 	$request =  $db->query('', '
@@ -1321,7 +1323,7 @@ function tp_collectArticleIcons()
 {
 	global $context, $boarddir, $boardurl;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	// get all themes for selection
 	$context['TPthemes']  = array();
@@ -1379,7 +1381,7 @@ function tp_collectArticleIcons()
 
 function tp_recordevent($date, $id_member, $textvariable, $link, $description, $allowed, $eventid)
 {
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$db->insert('insert',
 		'{db_prefix}tp_events',
@@ -1417,7 +1419,7 @@ function tpattach()
 {
 	global $txt, $modSettings, $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	// Some defaults that we need.
 	$context['utf8'] = true;
@@ -1611,7 +1613,7 @@ function tpattach()
 
 function art_recentitems($max = 5, $type = 'date' ){
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$now = forum_time();
 	$data = array();
@@ -1852,7 +1854,7 @@ function tp_getblockstyles21() {{{
 function get_grps($save = true, $noposts = true) {{{
 	global $context, $txt;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	// get all membergroups for permissions
 	$context['TPmembergroups'] = array();
@@ -1903,54 +1905,29 @@ function tp_convertphp($code, $reverse = false) {{{
 function updateTPSettings($addSettings, $check = false) {{{
 	global $context;
 
-    $db = database();
+    $tpAdmin = TPAdmin::getInstance();
 
-	if (empty($addSettings) || !is_array($addSettings))
+	if (empty($addSettings) || !is_array($addSettings)) {
 		return;
+    }
 
-	if($check)
-	{
-		foreach ($addSettings as $variable => $value)
-		{
-			$request = $db->query('', 'SELECT value FROM {db_prefix}tp_settings WHERE name = \'' . $variable . '\'');
-
-			if($db->num_rows($request)==0)
-			{
-				$db->query('', '
-					INSERT INTO {db_prefix}tp_settings
-					(name,value) VALUES({string:variable},{' . ($value === false || $value === true ? 'raw' : 'string') . ':value})',
-					array(
-						'value' => $value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value),
-						'variable' => $variable,
-					)
-				);
-			}
-			$db->query('', '
-					UPDATE {db_prefix}tp_settings
-					SET value = {' . ($value === false || $value === true ? 'raw' : 'string') . ':value}
-					WHERE name = {string:variable}',
-					array(
-						'value' => $value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value),
-						'variable' => $variable,
-					)
-				);
+	if($check) {
+		foreach ($addSettings as $variable => $value) {
+            $id = $tpAdmin->getSettingData('id', array ( 'name' => $variable ));
+            if(is_null($id)) {
+                $tpAdmin->insertSetting(array( 'name' => $variable, 'value' => ($value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value)) ) );
+            }
+            else {
+                $tpAdmin->updateSetting($id[0]['id'], array( 'value' => ($value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value)))); 
+            }
 
 			$context['TPortal'][$variable] = $value === true ? $context['TPortal'][$variable] + 1 : ($value === false ? $context['TPortal'][$variable] - 1 : $value);
 		}
 	}
-	else
-	{
-		foreach ($addSettings as $variable => $value)
-		{
-			$db->query('', '
-				UPDATE {db_prefix}tp_settings
-				SET value = {' . ($value === false || $value === true ? 'raw' : 'string') . ':value}
-				WHERE name = {string:variable}',
-				array(
-					'value' => $value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value),
-					'variable' => $variable,
-				)
-			);
+	else {
+		foreach ($addSettings as $variable => $value) {
+            $id = $tpAdmin->getSettingData('id', array ( 'name' => $variable ));
+            $tpAdmin->updateSetting($id[0]['id'], array( 'value' => ($value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value)))); 
 			$context['TPortal'][$variable] = $value === true ? $context['TPortal'][$variable] + 1 : ($value === false ? $context['TPortal'][$variable] - 1 : $value);
 		}
 	}
@@ -1965,7 +1942,7 @@ function TPGetMemberColour($member_ids) {{{
 		return false;
     }
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$member_ids = is_array($member_ids) ? $member_ids : array($member_ids);
 
@@ -2008,7 +1985,7 @@ function tp_profile_summary($member_id) {{{
 function tp_profile_articles($member_id) {{{
 	global $txt, $context, $scripturl;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
 	$context['page_title'] = $txt['articlesprofile'];
     $context['TPortal']['member_id'] = $member_id;
@@ -2167,7 +2144,7 @@ function tp_articles($member_id) {{{
 
 function TPSaveSettings() {{{
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
     // check the session
     checkSession('post');
@@ -2200,17 +2177,17 @@ function TPSaveSettings() {{{
 function TPUpdateLog() {{{
     global $context;
 
-    $db = database();
+    $db = TPDatabase::getInstance();
 
     $context['TPortal']['subaction'] = 'updatelog';
     $request = $db->query('', '
-        SELECT value1 FROM {db_prefix}tp_variables
+        SELECT display_name FROM {db_prefix}tp_categories
         WHERE type = {string:type} ORDER BY id DESC',
         array('type' => 'updatelog')
     );
     if($db->num_rows($request) > 0) {
         $check = $db->fetch_assoc($request);
-        $context['TPortal']['updatelog'] = $check['value1'];
+        $context['TPortal']['updatelog'] = $check['display_name'];
         $db->free_result($request);
     }
     else {

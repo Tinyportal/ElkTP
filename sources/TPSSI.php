@@ -23,7 +23,7 @@ function ssi_TPIntegrate() {{{
 }}}
 
 function ssi_TPCategoryArticles($category = 0, $current = '-1', $output = 'echo', $display = 'list') {{{
-    global $smcFunc, $scripturl;
+    global $scripturl;
     
     // if category is not a number, return
     if(!is_numeric($category)) {
