@@ -337,8 +337,8 @@ function do_articles()
 	// do an update of stray articles and categories
 	$acats = array();
 	$request = $db->query('', '
-		SELECT id FROM {db_prefix}tp_variables
-		WHERE type = {string:type}',
+		SELECT id FROM {db_prefix}tp_categories
+		WHERE item_type = {string:type}',
 		array('type' => 'category')
 	);
 	if($db->num_rows($request) > 0)
@@ -350,11 +350,11 @@ function do_articles()
 	if(count($acats) > 0)
 	{
 		$db->query('', '
-			UPDATE {db_prefix}tp_variables
-			SET value2 = {int:val2}
-			WHERE type = {string:type}
-			AND value2 NOT IN ({array_string:value2})',
-			array('val2' => 0, 'type' => 'category', 'value2' => $acats)
+			UPDATE {db_prefix}tp_categories
+			SET parent = {int:val2}
+			WHERE item_type = {string:type}
+			AND parent NOT IN ({array_string:parent})',
+			array('val2' => 0, 'type' => 'category', 'parent' => $acats)
 		);
 		$db->query('', '
 			UPDATE {db_prefix}tp_articles
@@ -398,39 +398,35 @@ function do_articles()
 			$ccat = $_GET['cu'];
 			if(isset($_GET['copy'])) {
 				$request = $db->query('', '
-					SELECT * FROM {db_prefix}tp_variables
+					SELECT * FROM {db_prefix}tp_categories
 					WHERE id = {int:varid}',
 					array('varid' => $ccat)
 				);
 				if($db->num_rows($request) > 0) {
 					$row = $db->fetch_assoc($request);
-					$row['value1'] .= '__copy';
+					$row['display_name'] .= '__copy';
 					$db->free_result($request);
 					$db->insert('insert',
-						'{db_prefix}tp_variables',
+						'{db_prefix}tp_categories',
 						array(
-							'value1' => 'string',
-							'value2' => 'string',
-							'value3' => 'string',
-							'type' => 'string',
-							'value4' => 'string',
-							'value5' => 'int',
-							'subtype' => 'string',
-							'value7' => 'string',
-							'value8' => 'string',
-							'subtype2'=> 'int'
+							'display_name' => 'string',
+							'parent' => 'string',
+							'access' => 'string',
+							'item_type' => 'string',
+							'dt_log' => 'string',
+							'page' => 'int',
+							'settings' => 'string',
+							'short_name' => 'string',
 						),
 						array(
-							$row['value1'],
-							$row['value2'],
-							$row['value3'],
+							$row['display_name'],
+							$row['parent'],
+							$row['access'],
 							$row['type'],
-							$row['value4'],
-							$row['value5'],
-							$row['subtype'],
-							$row['value7'],
-							$row['value8'],
-							$row['subtype2']
+							$row['dt_log'],
+							$row['page'],
+							$row['settings'],
+							$row['short_name'],
 						),
 						array('id')
 					);
@@ -439,39 +435,35 @@ function do_articles()
 			}
 			elseif(isset($_GET['child'])) {
 				$request = $db->query('', '
-					SELECT * FROM {db_prefix}tp_variables
+					SELECT * FROM {db_prefix}tp_categories
 					WHERE id = {int:varid}',
 					array('varid' => $ccat)
 				);
 				if($db->num_rows($request) > 0) {
 					$row = $db->fetch_assoc($request);
-					$row['value1'] .= '__copy';
+					$row['display_name'] .= '__copy';
 					$db->free_result($request);
 					$db->insert('INSERT',
-						'{db_prefix}tp_variables',
+						'{db_prefix}tp_categories',
 						array(
-							'value1' => 'string',
-							'value2' => 'string',
-							'value3' => 'string',
-							'type' => 'string',
-							'value4' => 'string',
-							'value5' => 'int',
-							'subtype' => 'string',
-							'value7' => 'string',
-							'value8' => 'string',
-							'subtype2'=> 'int'
+							'display_name' => 'string',
+							'parent' => 'string',
+							'access' => 'string',
+							'item_type' => 'string',
+							'dt_log' => 'string',
+							'page' => 'int',
+							'settings' => 'string',
+							'short_name' => 'string',
 						),
 						array(
-							$row['value1'],
+							$row['display_name'],
 							$row['id'],
-							$row['value3'],
+							$row['access'],
 							$row['type'],
-							$row['value4'],
-							$row['value5'],
-							$row['subtype'],
-							$row['value7'],
-							$row['value8'],
-							$row['subtype2']
+							$row['dt_log'],
+							$row['page'],
+							$row['settings'],
+							$row['short_name'],
 						),
 						array('id')
 					);
@@ -491,13 +483,13 @@ function do_articles()
 			// ]]></script>';
 
 				$request = $db->query('', '
-					SELECT * FROM {db_prefix}tp_variables
+					SELECT * FROM {db_prefix}tp_categories
 					WHERE id = {int:varid} LIMIT 1',
 					array('varid' => $ccat)
 				);
 				if($db->num_rows($request) > 0) {
 					$row = $db->fetch_assoc($request);
-					$o = explode('|', $row['value7']);
+					$o = explode('|', $row['settings']);
 					foreach($o as $t => $opt) {
 						$b = explode('=', $opt);
 						if(isset($b[1])) {
@@ -515,10 +507,10 @@ function do_articles()
 				}
 				// fetch all categories and subcategories
 				$request = $db->query('', '
-					SELECT	id, value1 as name, value2 as parent, value3, value4,
-						value5, subtype, value7, value8, subtype2
-					FROM {db_prefix}tp_variables
-					WHERE type = {string:type}',
+					SELECT	id, display_name as name, parent as parent, access, dt_log,
+						page, settings, short_name
+					FROM {db_prefix}tp_categories
+					WHERE item_type = {string:type}',
 					array('type' => 'category')
 				);
 
@@ -546,10 +538,10 @@ function do_articles()
 
 		// fetch all categories and subcategories
 		$request = $db->query('', '
-			SELECT id, value1 as name, value2 as parent, value3, value4,
-				value5, subtype, value7, value8, subtype2
-			FROM {db_prefix}tp_variables
-			WHERE type = {string:type}',
+			SELECT id, display_name as name, parent as parent, access, dt_log,
+				page, settings, short_name 
+			FROM {db_prefix}tp_categories
+			WHERE item_type = {string:type}',
 			array('type' => 'category')
 		);
 
@@ -677,10 +669,10 @@ function do_articles()
 	// fetch categories and subcategories
 	if(!isset($show_nocategory)) {
 		$request = $db->query('', '
-			SELECT DISTINCT var.id AS id, var.value1 AS name, var.value2 AS parent
-			FROM {db_prefix}tp_variables AS var
-			WHERE var.type = {string:type} 
-			' . (isset($where) ? 'AND var.value2'.((TP_PGSQL == true) ? '::Integer' : ' ' ).' = {int:whereval}' : '') . '
+			SELECT DISTINCT var.id AS id, var.display_name AS name, var.parent AS parent
+			FROM {db_prefix}tp_categories AS var
+			WHERE var.item_type = {string:type} 
+			' . (isset($where) ? 'AND var.parent'.((TP_PGSQL == true) ? '::Integer' : ' ' ).' = {int:whereval}' : '') . '
 			ORDER BY parent, id DESC',
 			array('type' => 'category', 'whereval' => isset($where) ? $where : 0)
 		);
@@ -796,23 +788,7 @@ function do_articles()
 			TP_prebbcbox($context['TPortal']['editor_id'], strip_tags($context['TPortal']['editarticle']['body']));
 		}
 
-		// fetch the WYSIWYG value
-		$request = $db->query('', '
-			SELECT value1 FROM {db_prefix}tp_variables
-			WHERE subtype2 = {int:subtype}
-			AND type = {string:type} LIMIT 1',
-			array(
-				'subtype' => is_numeric($whatarticle) ? $whatarticle : 0, 'type' => 'editorchoice',
-			)
-		);
-		if($db->num_rows($request) > 0) {
-			$row = $db->fetch_assoc($request);
-			$db->free_result($request);
-			$context['TPortal']['editorchoice'] = $row['value1'];
-		}
-		else {
-			$context['TPortal']['editorchoice'] = 1;
-        }
+		$context['TPortal']['editorchoice'] = 1;
 
 		$context['html_headers'] .= '
 			<script type="text/javascript"><!-- // --><![CDATA[
@@ -845,9 +821,9 @@ function do_articles()
 
 	// fetch all categories and subcategories
 	$request = $db->query('', '
-		SELECT	id, value1 as name, value2 as parent
-		FROM {db_prefix}tp_variables
-		WHERE type = {string:type}',
+		SELECT	id, display_name as name, parent as parent
+		FROM {db_prefix}tp_categories
+		WHERE item_type = {string:type}',
 		array('type' => 'category')
 	);
 
@@ -876,8 +852,8 @@ function do_articles()
 		$context['TPortal']['categoryID'] = $where;
 		// get the name
 		$request = $db->query('', '
-			SELECT value1
-			FROM {db_prefix}tp_variables
+			SELECT display_name
+			FROM {db_prefix}tp_categories
 			WHERE id = {int:varid} LIMIT 1',
 			array(
 				'varid' => $where
@@ -885,7 +861,7 @@ function do_articles()
 		);
 		$f = $db->fetch_assoc($request);
 		$db->free_result($request);
-		$context['TPortal']['categoryNAME'] = $f['value1'];
+		$context['TPortal']['categoryNAME'] = $f['display_name'];
 		// get the total first
 		$request = $db->query('', '
 			SELECT	COUNT(*) as total
@@ -1424,12 +1400,12 @@ function do_postchecks()
 					// for frontpage, do some extra
 					if($from == 'categories')
 					{
-						if(substr($what, 0, 19) == 'tp_category_value2_')
+						if(substr($what, 0, 19) == 'tp_category_parent_')
 						{
 							$where = substr($what, 19);
 							//make sure parent are not its own parent
 							$request = $db->query('', '
-								SELECT value2 FROM {db_prefix}tp_variables
+								SELECT parent FROM {db_prefix}tp_categories
 								WHERE id = {string:varid} LIMIT 1',
 								array(
 									'varid' => $value
@@ -1437,10 +1413,10 @@ function do_postchecks()
 							);
 							$row = $db->fetch_assoc($request);
 							$db->free_result($request);
-							if($row['value2'] == $where)
+							if($row['parent'] == $where)
 								$db->query('', '
-									UPDATE {db_prefix}tp_variables
-									SET value2 = {string:val2}
+									UPDATE {db_prefix}tp_categories
+									SET parent = {string:val2}
 									WHERE id = {string:varid}',
 									array(
 										'val2' => '0',
@@ -1449,8 +1425,8 @@ function do_postchecks()
 								);
 
 							$db->query('', '
-								UPDATE {db_prefix}tp_variables
-								SET value2 = {string:val2}
+								UPDATE {db_prefix}tp_categories
+								SET parent = {string:val2}
 								WHERE id = {string:varid}',
 								array(
 									'val2' => $value,
@@ -1500,24 +1476,22 @@ function do_postchecks()
 			$shortname = !empty($_POST['tp_cat_shortname']) ? $_POST['tp_cat_shortname'] : '';
 
 			$db->insert('INSERT',
-				'{db_prefix}tp_variables',
+				'{db_prefix}tp_categories',
 				array(
-					'value1' => 'string',
-					'value2' => 'string',
-					'value3' => 'string',
-					'type' => 'string',
-					'value4' => 'string',
-					'value5' => 'int',
-					'subtype' => 'string',
-					'value7' => 'string',
-					'value8' => 'string',
-					'subtype2'=> 'int'
+					'display_name' => 'string',
+					'parent' => 'string',
+					'access' => 'string',
+					'item_type' => 'string',
+					'dt_log' => 'string',
+					'page' => 'int',
+					'settings' => 'string',
+					'short_name' => 'string',
 				),
-				array(strip_tags($name), $parent, '', 'category', '', 0, '', 'sort=date|sortorder=desc|articlecount=5|layout=1|catlayout=1|showchild=0|leftpanel=1|rightpanel=1|toppanel=1|centerpanel=1|lowerpanel=1|bottompanel=1', $shortname, 0),
+				array(strip_tags($name), $parent, '', 'category', '', 0, 'sort=date|sortorder=desc|articlecount=5|layout=1|catlayout=1|showchild=0|leftpanel=1|rightpanel=1|toppanel=1|centerpanel=1|lowerpanel=1|bottompanel=1', $shortname),
 				array('id')
 			);
 
-			$go = $db->insert_id('{db_prefix}tp_variables', 'id');
+			$go = $db->insert_id('{db_prefix}tp_categories', 'id');
 			redirectexit('action=admin;area=tparticles;sa=categories;cu='.$go);
 		}
 		// the categort list
@@ -1558,57 +1532,57 @@ function do_postchecks()
 				{
 					$clean = $value;
 					$param = substr($what, 12);
-					if(in_array($param, array('value5', 'value6', 'value8')))
+					if(in_array($param, array('page', 'short_name')))
 						$db->query('', '
-							UPDATE {db_prefix}tp_variables
+							UPDATE {db_prefix}tp_categories
 							SET '. $param .' = {string:val}
 							WHERE id = {int:varid}',
 							array('val' => $value, 'varid' => $where)
 						);
 					// parents needs some checking..
-					elseif($param == 'value2')
+					elseif($param == 'parent')
 					{
 						//make sure parent are not its own parent
 						$request = $db->query('', '
-							SELECT value2 FROM {db_prefix}tp_variables
+							SELECT parent FROM {db_prefix}tp_categories
 							WHERE id = {int:varid} LIMIT 1',
 							array('varid' => $value)
 						);
 						$row = $db->fetch_assoc($request);
 						$db->free_result($request);
-						if(isset($row['value2']) && ( $row['value2'] == $where ))
+						if(isset($row['parent']) && ( $row['parent'] == $where ))
 							$db->query('', '
-								UPDATE {db_prefix}tp_variables
-								SET value2 = {string:val2}
+								UPDATE {db_prefix}tp_categories
+								SET parent = {string:val2}
 								WHERE id = {int:varid}',
 								array('val2' => '0', 'varid' => $value)
 							);
 
 						$db->query('', '
-							UPDATE {db_prefix}tp_variables
-							SET value2 = {string:val2}
+							UPDATE {db_prefix}tp_categories
+							SET parent = {string:val2}
 							WHERE id = {int:varid}',
 							array('val2' => $value, 'varid' => $where)
 						);
 					}
-					elseif($param == 'value1')
+					elseif($param == 'display_name')
 						$db->query('', '
-							UPDATE {db_prefix}tp_variables
-							SET value1 = {string:val1}
+							UPDATE {db_prefix}tp_categories
+							SET display_name = {string:val1}
 							WHERE id = {int:varid}',
 							array('val1' => strip_tags($value), 'varid' => $where)
 						);
-					elseif($param == 'value4')
+					elseif($param == 'dt_log')
 						$db->query('', '
-							UPDATE {db_prefix}tp_variables
-							SET value4 = {string:val4}
+							UPDATE {db_prefix}tp_categories
+							SET dt_log = {string:val4}
 							WHERE id = {int:varid}',
 							array('val4' => $value, 'varid' => $where)
 						);
-					elseif($param == 'value9')
+					elseif($param == 'custom_template')
 						$db->query('', '
-							UPDATE {db_prefix}tp_variables
-							SET value9 = {string:val9}
+							UPDATE {db_prefix}tp_categories
+							SET custom_template = {string:val9}
 							WHERE id = {int:varid}',
 							array('val9' => $value, 'varid' => $where)
 						);
@@ -1619,8 +1593,8 @@ function do_postchecks()
 				}
 			}
 			$db->query('', '
-				UPDATE {db_prefix}tp_variables
-				SET value3 = {string:val3}, value7 = {string:val7}
+				UPDATE {db_prefix}tp_categories
+				SET access = {string:val3}, settings = {string:val7}
 				WHERE id = {int:varid}',
 				array('val3' => implode(',', $groups), 'val7' => implode('|', $options), 'varid' => $where)
 			);
@@ -1651,13 +1625,13 @@ function do_postchecks()
 				if($category == 0 && !empty($straynewcat))
 				{
 					$request = $db->insert('INSERT',
-						'{db_prefix}tp_variables',
-						array('value1' => 'string', 'value2' => 'string', 'type' => 'string'),
+						'{db_prefix}tp_categories',
+						array('display_name' => 'string', 'parent' => 'string', 'item_type' => 'string'),
 						array(strip_tags($straynewcat), '0', 'category'),
 						array('id')
 					);
 
-					$newcategory = $db->insert_id('{db_prefix}tp_variables', 'id');
+					$newcategory = $db->insert_id('{db_prefix}tp_categories', 'id');
 					$db->free_result($request);
 				}
 				$db->query('', '
@@ -1716,17 +1690,17 @@ function do_postchecks()
 				if($category == 0 && !empty($straynewcat))
 				{
 					$request = $db->insert('INSERT',
-						'{db_prefix}tp_variables',
+						'{db_prefix}tp_categories',
 						array(
-							'value1' => 'string',
-							'value2' => 'string',
-							'type' => 'string',
+							'display_name' => 'string',
+							'parent' => 'string',
+							'item_type' => 'string',
 						),
 						array($straynewcat, '0', 'category'),
 						array('id')
 					);
 
-					$newcategory = $db->insert_id('{db_prefix}tp_variables', 'id');
+					$newcategory = $db->insert_id('{db_prefix}tp_categories', 'id');
 					$db->free_result($request);
 				}
 				$db->query('', '
@@ -1740,9 +1714,9 @@ function do_postchecks()
 					)
 				);
 				$db->query('', '
-					DELETE FROM {db_prefix}tp_variables
-					WHERE type = {string:type}
-					AND value5 IN ({array_int:val5})',
+					DELETE FROM {db_prefix}tp_categories
+					WHERE item_type = {string:type}
+					AND page IN ({array_int:val5})',
 					array(
 						'type' => 'art_not_approved',
 						'val5' => $ccats,
@@ -2265,13 +2239,13 @@ function get_catnames()
 	$context['TPortal']['catnames'] = array();
 
 	$request = $db->query('', '
-		SELECT id, value1 FROM {db_prefix}tp_variables
-		WHERE type = {string:type}',
+		SELECT id, display_name FROM {db_prefix}tp_categories
+		WHERE item_type = {string:type}',
 		array('type' => 'category')
 	);
 	if($db->num_rows($request) > 0) {
 		while($row = $db->fetch_assoc($request))
-			$context['TPortal']['catnames'][$row['id']] = $row['value1'];
+			$context['TPortal']['catnames'][$row['id']] = $row['display_name'];
 
 		$db->free_result($request);
 	}

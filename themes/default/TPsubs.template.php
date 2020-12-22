@@ -2374,7 +2374,7 @@ function category_childs()
 	<ul class="category_children">';
 	foreach($context['TPortal']['category']['children'] as $ch => $child)
 		if (!empty($context['TPortal']['category']['options']['showchild']) == 1)
-			echo '<li><a href="' , $scripturl , '?cat=' , $child['id'] , '">' , $child['value1'] ,' (' , $child['articlecount'] , ')</a></li>';
+			echo '<li><a href="' , $scripturl , '?cat=' , $child['id'] , '">' , $child['display_name'] ,' (' , $child['articlecount'] , ')</a></li>';
 
 	echo '
 	</ul>';

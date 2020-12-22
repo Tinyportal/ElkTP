@@ -124,8 +124,6 @@ function TPortalInit() {{{
 	// Grab the SSI for its functionality
 	require_once(BOARDDIR. '/SSI.php');
 
-	fetchTPhooks();
-
 	// set up the layers, but not for certain actions
 	if(!isset($_REQUEST['preview']) && !isset($_REQUEST['quote']) && !isset($_REQUEST['xml']) && !isset($aoptions['nolayer'])) {
         Template_Layers::getInstance()->add($context['TPortal']['hooks']['tp_layer']);
@@ -350,60 +348,6 @@ function setupTPsettings() {{{
 
 }}}
 
-function fetchTPhooks() {{{
-	global $context;
-
-    $db = TPDatabase::getInstance();
-
-	// are we inside a board?
-	if (isset($context['current_topic'])) {
-		$what = 'what_topic';
-		$param = $context['current_topic'];
-	}
-	// perhaps a topic then?
-	elseif (isset($context['current_board'])) {
-		$what = 'what_board';
-		$param = $context['current_board'];
-	}
-	// alright, an article?
-	elseif (isset($_GET['page']) && $context['current_action'] != 'help') {
-		$what = 'what_page';
-		$param = $_GET['page'];
-	}
-	// a category of articles?
-	elseif (isset($_GET['cat'])) {
-		$what = 'what_cat';
-		$param = $_GET['cat'];
-	}
-	// guess neither..
-	else {
-		$param = 0;
-    }
-
-	// something should always load? + submissions
-	$types = array('art_not_approved');
-
-	$request2 = $db->query('', '
-		SELECT *
-		FROM {db_prefix}tp_variables
-		WHERE type IN ({array_string:type})',
-		array(
-			'type' => $types
-		)
-	);
-
-	$context['TPortal']['submitcheck'] = array('articles' => 0, 'uploads' => 0);
-
-	// do the actual hooks
-	while ($row = $db->fetch_assoc($request2)) {
-		if ($row['type'] == 'art_not_approved' && allowedTo('tp_articles')) {
-			$context['TPortal']['submitcheck']['articles']++;
-        }
-	}
-	$db->free_result($request2);
-
-}}}
-
 function doTPpage() {{{
 
 	global $context, $scripturl, $txt, $modSettings, $boarddir, $user_info;
@@ -457,7 +401,7 @@ function doTPpage() {{{
 				$valid = false;
             }
 
-			if( get_perm($article['value3']) && $valid) {
+			if( get_perm($article['access']) && $valid) {
 				// compability towards old articles
 				if(empty($article['type'])) {
 					$article['type'] = $article['rendertype'] = 'html';
@@ -570,7 +514,7 @@ function doTPpage() {{{
 						$context['TPortal'][$all[$p]] = $secondary;
                     }
 				}
-				$ct = explode('|', $article['value7']);
+				$ct = explode('|', $article['settings']);
 				$cat_opts = array();
 				foreach($ct as $cc => $val) {
 					$ts = explode('=', $val);
@@ -581,7 +525,7 @@ function doTPpage() {{{
 
 				// decide the template
 				if(isset($cat_opts['catlayout']) && $cat_opts['catlayout'] == 7) {
-					$cat_opts['template'] = $article['value9'];
+					$cat_opts['template'] = $article['custom_template'];
                 }
 
 				$context['TPortal']['article']['category_opts'] = $cat_opts;
@@ -665,7 +609,7 @@ function doTPpage() {{{
 					// we need the categories for the linktree
 					$allcats = array();
 					$request =  $db->query('', '
-						SELECT * FROM {db_prefix}tp_variables
+						SELECT * FROM {db_prefix}tp_categories
 						WHERE type = {string:type}',
 						array('type' => 'category')
 					);
@@ -687,10 +631,10 @@ function doTPpage() {{{
 						while($parent !=0 && isset($allcats[$parent]['id'])) {
 							$parents[] = array(
 								'id' => $allcats[$parent]['id'],
-								'name' => $allcats[$parent]['value1'],
-								'shortname' => !empty($allcats[$parent]['value8']) ? $allcats[$parent]['value8'] : $allcats[$parent]['id'],
+								'name' => $allcats[$parent]['display_name'],
+								'shortname' => !empty($allcats[$parent]['short_name']) ? $allcats[$parent]['short_name'] : $allcats[$parent]['id'],
 							);
-							$parent = $allcats[$parent]['value2'];
+							$parent = $allcats[$parent]['parent'];
 						}
 					}
 					// make the linktree
@@ -752,11 +696,11 @@ function doTPcat() {{{
 	// check validity and fetch it
 	if(!empty($_GET['cat'])) {
 		$cat    = TPUtil::filter('cat', 'get', 'string');
-		$catid  = is_numeric($cat) ? 'id = {int:cat}' : 'value8 = {string:cat}';
+		$catid  = is_numeric($cat) ? 'id = {int:cat}' : 'short_name = {string:cat}';
 
 		// get the category first
 		$request =  $db->query('', '
-			SELECT * FROM {db_prefix}tp_variables
+			SELECT * FROM {db_prefix}tp_categories
 			WHERE '. $catid .' LIMIT 1',
 			array('cat' => is_numeric($cat) ? (int) $cat : $cat)
 		);
@@ -764,9 +708,9 @@ function doTPcat() {{{
 			$category = $db->fetch_assoc($request);
 			$db->free_result($request);
 			// check permission
-			if(get_perm($category['value3'])) {
+			if(get_perm($category['access'])) {
 				// get the sorting from the category
-				$op = explode('|', $category['value7']);
+				$op = explode('|', $category['settings']);
 				$options = array();
 				foreach($op as $po => $val) {
 					$a = explode('=', $val);
@@ -789,7 +733,7 @@ function doTPcat() {{{
 
 				// make the template
 				if($options['catlayout'] == 7) {
-					$context['TPortal']['frontpage_template'] = $category['value9'];
+					$context['TPortal']['frontpage_template'] = $category['custom_template'];
                 }
 
 				// allowed and all is well, go on with it.
@@ -879,16 +823,16 @@ function doTPcat() {{{
 				$allcats = array();
 				$context['TPortal']['category']['children'] = array();
 				$request =  $db->query('', '
-					SELECT cat.id, cat.value1, cat.value2, COUNT(art.id) as articlecount
-					FROM {db_prefix}tp_variables AS cat
+					SELECT cat.id, cat.display_name, cat.parent, COUNT(art.id) as articlecount
+					FROM {db_prefix}tp_categories AS cat
 					LEFT JOIN {db_prefix}tp_articles AS art ON (art.category = cat.id)
-					WHERE cat.type = {string:type} GROUP BY art.category, cat.id, cat.value1, cat.value2',
+					WHERE cat.type = {string:type} GROUP BY art.category, cat.id, cat.display_name, cat.parent',
 					array('type' => 'category')
 				);
 				if($db->num_rows($request) > 0) {
 					while($row = $db->fetch_assoc($request)) {
 						// get any children
-						if($row['value2'] == $cat) {
+						if($row['parent'] == $cat) {
 							$context['TPortal']['category']['children'][] = $row;
                         }
 						$allcats[$row['id']] = $row;
@@ -929,12 +873,12 @@ function doTPcat() {{{
 
 				// do the category have any parents?
 				$parents = array();
-				$parent = $context['TPortal']['category']['value2'];
+				$parent = $context['TPortal']['category']['parent'];
 				// save the immediate for wireless
 
 				if (defined('WIRELESS') && WIRELESS) {
-					if($context['TPortal']['category']['value2'] > 0) {
-						$context['TPortal']['category']['catname'] =  $allcats[$context['TPortal']['category']['value2']]['value1'];
+					if($context['TPortal']['category']['parent'] > 0) {
+						$context['TPortal']['category']['catname'] =  $allcats[$context['TPortal']['category']['parent']]['display_name'];
                     }
 					else {
 						$context['TPortal']['category']['catname'] =  $txt['tp-frontpage'];
@@ -944,10 +888,10 @@ function doTPcat() {{{
 				while($parent != 0) {
 					$parents[] = array(
 						'id' => $allcats[$parent],
-						'name' => $allcats[$parent]['value1'],
-						'shortname' => !empty($allcats[$parent]['value8']) ? $allcats[$parent]['value8'] : $allcats[$parent]['id'],
+						'name' => $allcats[$parent]['display_name'],
+						'shortname' => !empty($allcats[$parent]['short_name']) ? $allcats[$parent]['short_name'] : $allcats[$parent]['id'],
 					);
-					$parent = $allcats[$parent]['value2'];
+					$parent = $allcats[$parent]['parent'];
 				}
 
 				// make the linktree
@@ -958,10 +902,10 @@ function doTPcat() {{{
                 }
 
 				if(!empty($context['TPortal']['category']['shortname'])) {
-					TPadd_linktree($scripturl.'?cat='. $context['TPortal']['category']['value8'], $context['TPortal']['category']['value1']);
+					TPadd_linktree($scripturl.'?cat='. $context['TPortal']['category']['short_name'], $context['TPortal']['category']['display_name']);
                 }
 				else {
-					TPadd_linktree($scripturl.'?cat='. $context['TPortal']['category']['id'], $context['TPortal']['category']['value1']);
+					TPadd_linktree($scripturl.'?cat='. $context['TPortal']['category']['id'], $context['TPortal']['category']['display_name']);
                 }
 
 				// check clist
@@ -970,10 +914,10 @@ function doTPcat() {{{
 					if(isset($allcats[$value]) && is_numeric($value)) {
 						$context['TPortal']['clist'][] = array(
 								'id' => $value,
-								'name' => $allcats[$value]['value1'],
+								'name' => $allcats[$value]['display_name'],
 								'selected' => $value == $cat ? true : false,
 								);
-						$txt['catlist'. $value] = $allcats[$value]['value1'];
+						$txt['catlist'. $value] = $allcats[$value]['display_name'];
 					}
 				}
 				$context['TPortal']['show_catlist'] = count($context['TPortal']['clist']) > 0 ? true : false;
@@ -984,7 +928,7 @@ function doTPcat() {{{
 					// decide what subtemplate
 					$context['sub_template'] = WIRELESS_PROTOCOL . '_tp_cat';
 				}
-				$context['page_title'] = $context['TPortal']['category']['value1'];
+				$context['page_title'] = $context['TPortal']['category']['display_name'];
 				return $category['id'];
 			}
 			else {
@@ -1056,7 +1000,7 @@ function doTPfrontpage() {{{
             // first, get all available
             $artgroups = '';
             if(!$context['user']['is_admin']) {
-                $artgroups = TPUtil::find_in_set($user_info['groups'], 'var.value3', 'AND');
+                $artgroups = TPUtil::find_in_set($user_info['groups'], 'var.access', 'AND');
             }
 
 
@@ -1067,14 +1011,14 @@ function doTPfrontpage() {{{
 
             $request =  $db->query('', '
                 SELECT art.id, ( CASE WHEN art.useintro = 1 THEN art.intro ELSE  art.body END ) AS body,
-                    art.date, art.category, art.subject, art.author_id as author_id, var.value1 as category_name, var.value8 as category_shortname,
+                    art.date, art.category, art.subject, art.author_id as author_id, var.display_name as category_name, var.short_name as category_shortname,
                     art.frame, art.comments, art.options, art.intro, art.useintro,
                     art.comments_var, art.views, art.rating, art.voters, art.shortname,
                     art.fileimport, art.topic, art.locked, art.illustration,art.type as rendertype ,
                     COALESCE(mem.real_name, art.author) as real_name, mem.avatar, mem.posts, mem.date_registered as date_registered,mem.last_login as last_login,
                     COALESCE(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type as attachment_type, mem.email_address AS email_address
                 FROM {db_prefix}tp_articles AS art
-                LEFT JOIN {db_prefix}tp_variables AS var ON(var.id = art.category)
+                LEFT JOIN {db_prefix}tp_categories AS var ON(var.id = art.category)
                 LEFT JOIN {db_prefix}members AS mem ON (art.author_id = mem.id_member)
                 LEFT JOIN {db_prefix}attachments AS a ON (a.id_member = mem.id_member AND a.attachment_type!=3)
                 WHERE art.off = 0
@@ -1136,14 +1080,14 @@ function doTPfrontpage() {{{
     case 'single_page':
 		$request =  $db->query('', '
 			SELECT art.id, ( CASE WHEN art.useintro = 1 THEN art.intro ELSE  art.body END ) AS body,
-				art.date, art.category, art.subject, art.author_id as author_id, var.value1 as category_name, var.value8 as category_shortname,
+				art.date, art.category, art.subject, art.author_id as author_id, var.display_name as category_name, var.short_name as category_shortname,
 				art.frame, art.comments, art.options, art.intro, art.useintro,
 				art.comments_var, art.views, art.rating, art.voters, art.shortname,
 				art.fileimport, art.topic, art.locked, art.illustration,art.type as rendertype ,
 				COALESCE(mem.real_name, art.author) as real_name, mem.avatar, mem.posts, mem.date_registered as date_registered,mem.last_login as last_login,
 				COALESCE(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type as attachment_type, mem.email_address AS email_address
 			FROM {db_prefix}tp_articles AS art
-			LEFT JOIN {db_prefix}tp_variables AS var ON(var.id = art.category)
+			LEFT JOIN {db_prefix}tp_categories AS var ON(var.id = art.category)
 			LEFT JOIN {db_prefix}members AS mem ON (art.author_id = mem.id_member)
 			LEFT JOIN {db_prefix}attachments AS a ON (a.id_member = mem.id_member AND a.attachment_type!=3)
 			WHERE art.off = 0
@@ -1283,7 +1227,7 @@ function doTPfrontpage() {{{
 		// first, get all available
 		$artgroups = '';
 		if(!$context['user']['is_admin']) {
-            $artgroups = TPUtil::find_in_set($user_info['groups'], 'var.value3', 'AND');
+            $artgroups = TPUtil::find_in_set($user_info['groups'], 'var.access', 'AND');
         }
 
 		$totalmax = 200;
@@ -1294,7 +1238,7 @@ function doTPfrontpage() {{{
 		$request =  $db->query('',
 		'SELECT art.id, art.date, art.sticky, art.featured
 			FROM {db_prefix}tp_articles AS art
-			INNER JOIN {db_prefix}tp_variables AS var
+			INNER JOIN {db_prefix}tp_categories AS var
 				ON var.id = art.category
 			WHERE art.off = 0
 			' . $artgroups . '
@@ -1580,13 +1524,13 @@ function doTPfrontpage() {{{
     if(isset($test_articlebox) && $fetchart != '') {
 		$context['TPortal']['blockarticles'] = array();
 		$request =  $db->query('', '
-			SELECT art.*, var.value1, var.value2, var.value3, var.value4, var.value5, var.value7, var.value8, art.type as rendertype,
+			SELECT art.*, var.display_name, var.parent, var.access, var.dt_log, var.page, var.settings, var.short_name, art.type as rendertype,
 				COALESCE(mem.real_name,art.author) as real_name, mem.avatar, mem.posts, mem.date_registered as date_registered, mem.last_login as last_login,
-				COALESCE(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type as attachment_type, var.value9, mem.email_address AS email_address
+				COALESCE(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type as attachment_type, var.custom_template, mem.email_address AS email_address
 			FROM {db_prefix}tp_articles as art
 			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = art.author_id)
 			LEFT JOIN {db_prefix}attachments AS a ON (a.id_member = art.author_id AND a.attachment_type !=3)
-			LEFT JOIN {db_prefix}tp_variables as var ON (var.id= art.category)
+			LEFT JOIN {db_prefix}tp_categories as var ON (var.id= art.category)
 			WHERE ' . $fetchart.'
 			AND art.off = 0
 			AND ((art.pub_start = 0 AND art.pub_end = 0)

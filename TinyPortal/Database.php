@@ -39,6 +39,8 @@ class Database
 
 	public function __call($call, $vars) {{{
 
+        //debug_print_backtrace();
+
         $dB = \database();
 
         // Compatability with smf db_ methods

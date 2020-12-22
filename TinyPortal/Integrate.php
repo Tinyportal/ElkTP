@@ -512,7 +512,7 @@ class Integrate
         if(isset($actions['cat'])) {
             if(is_numeric($actions['cat'])) {
                 $request = $dB->db_query('', '
-                    SELECT 	value1 FROM {db_prefix}tp_variables
+                    SELECT 	display_name FROM {db_prefix}tp_categories
                     WHERE id = {int:id}
                     LIMIT 1',
                     array (
@@ -522,8 +522,8 @@ class Integrate
             }
             else {
                 $request = $dB->db_query('', '
-                    SELECT value1 FROM {db_prefix}tp_variables
-                    WHERE value8 = {string:shortname}
+                    SELECT display_name FROM {db_prefix}tp_categories
+                    WHERE short_name = {string:shortname}
                     LIMIT 1',
                     array (
                         'shortname' => $actions['cat'],
@@ -538,7 +538,7 @@ class Integrate
                 $dB->db_free_result($request);
             }
             if(!empty($category)) {
-                return sprintf($txt['tp-who-category'], $category['value1'], $actions['cat'], $scripturl );
+                return sprintf($txt['tp-who-category'], $category['display_name'], $actions['cat'], $scripturl );
             }
             else {
                 return $txt['tp-who-categories'];

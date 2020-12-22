@@ -125,12 +125,12 @@ class Article extends Base
                 $categoryData               = $categoryData[0];
                 $row['category_name']       = $categoryData['display_name'];
                 $row['category_shortname']  = $categoryData['short_name'];
-                $row['value2']              = 0;
-                $row['value3']              = $categoryData['access'];
-                $row['value4']              = '';
-                $row['value5']              = -2;
-                $row['value7']              = $categoryData['settings'];
-                $row['value9']              = $categoryData['custom_template'];
+                $row['parent']              = 0;
+                $row['access']              = $categoryData['access'];
+                $row['dt_log']              = '';
+                $row['page']              = -2;
+                $row['settings']              = $categoryData['settings'];
+                $row['custom_template']              = $categoryData['custom_template'];
                 $articles[]                 = $row;
             }
             $this->dB->db_free_result($request);

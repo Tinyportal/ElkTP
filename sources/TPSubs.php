@@ -116,9 +116,9 @@ function TPArticleCategories($use_sorted = false) {{{
 	}
 	$total2 = array();
 	$request2 =  $db->query('', '
-		SELECT value2, COUNT(*) as siblings
-		FROM {db_prefix}tp_variables
-		WHERE type = {string:type} GROUP BY value2',
+		SELECT parent, COUNT(*) as siblings
+		FROM {db_prefix}tp_categories
+		WHERE type = {string:type} GROUP BY parent',
 		array(
 			'type' => 'category'
 		)
@@ -127,16 +127,16 @@ function TPArticleCategories($use_sorted = false) {{{
 	{
 		while($row = $db->fetch_assoc($request2))
 		{
-			$total2[$row['value2']] = $row['siblings'];
+			$total2[$row['parent']] = $row['siblings'];
 		}
 		$db->free_result($request2);
 	}
 
 	$request =  $db->query('', '
 		SELECT cats.*
-		FROM {db_prefix}tp_variables as cats
+		FROM {db_prefix}tp_categories as cats
 		WHERE cats.type = {string:type}
-		ORDER BY cats.value1 ASC',
+		ORDER BY cats.display_name ASC',
 		array(
 			'type' => 'category'
 		)
@@ -163,7 +163,7 @@ function TPArticleCategories($use_sorted = false) {{{
 				'upperpanel' => '0' ,
 				'lowerpanel' => '0',
 			);
-			$opts = explode('|' , $row['value7']);
+			$opts = explode('|' , $row['settings']);
 			foreach($opts as $op => $val)
 			{
 				if(substr($val,0,7) == 'layout=')
@@ -197,18 +197,18 @@ function TPArticleCategories($use_sorted = false) {{{
 			}
 
 			// check the parent
-			if($row['value2'] == $row['id'] || $row['value2'] == '' || $row['value2'] == '0')
-				$row['value2'] = 9999;
+			if($row['parent'] == $row['id'] || $row['parent'] == '' || $row['parent'] == '0')
+				$row['parent'] = 9999;
 			// check access
-			$show = get_perm($row['value3']);
+			$show = get_perm($row['access']);
 			if($show) {
 				$sorted[$row['id']] = array(
 					'id' => $row['id'],
-					'shortname' => !empty($row['value8']) ? $row['value8'] : $row['id'],
-					'name' => $row['value1'],
-					'parent' => $row['value2'],
-					'access' => $row['value3'],
-					'icon' => $row['value4'],
+					'shortname' => !empty($row['short_name']) ? $row['short_name'] : $row['id'],
+					'name' => $row['display_name'],
+					'parent' => $row['parent'],
+					'access' => $row['access'],
+					'icon' => $row['dt_log'],
 					'totalfiles' => !empty($total[$row['id']][0]) ? $total[$row['id']][0] : 0,
 					'children' => !empty($total2[$row['id']][0]) ? $total2[$row['id']][0] : 0,
 					'options' => array(
@@ -228,7 +228,7 @@ function TPArticleCategories($use_sorted = false) {{{
 						'lowerpanel' => $options['lowerpanel'],
 					),
 				);
-				$context['TPortal']['catnames'][$row['id']]=$row['value1'];
+				$context['TPortal']['catnames'][$row['id']]=$row['display_name'];
 				$context['TPortal']['categories_shortname'][$sorted[$row['id']]['shortname']]=$row['id'];
 			}
 		}
@@ -2181,13 +2181,13 @@ function TPUpdateLog() {{{
 
     $context['TPortal']['subaction'] = 'updatelog';
     $request = $db->query('', '
-        SELECT value1 FROM {db_prefix}tp_variables
+        SELECT display_name FROM {db_prefix}tp_categories
         WHERE type = {string:type} ORDER BY id DESC',
         array('type' => 'updatelog')
     );
     if($db->num_rows($request) > 0) {
         $check = $db->fetch_assoc($request);
-        $context['TPortal']['updatelog'] = $check['value1'];
+        $context['TPortal']['updatelog'] = $check['display_name'];
         $db->free_result($request);
     }
     else {

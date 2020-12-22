@@ -530,10 +530,10 @@ function editBlock( $block_id = 0 ) {{{
 		get_articles();
 		$context['TPortal']['edit_categories'] = array();
 		$request = $db->query('', '
-			SELECT id, value1 as name
-			FROM {db_prefix}tp_variables
+			SELECT id, display_name as name
+			FROM {db_prefix}tp_categories
 			WHERE type = {string:type}
-			ORDER BY value1',
+			ORDER BY display_name',
 			array(
 				'type' => 'category'
 			)
