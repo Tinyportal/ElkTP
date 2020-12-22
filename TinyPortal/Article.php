@@ -96,14 +96,12 @@ class Article extends Base
 
         $request    = $this->dB->db_query('', '
             SELECT 
-                art.*, art.author_id AS author_id, art.id_theme AS id_theme, var.value1 AS category_name, var.value2,
-                var.value3, var.value4, var.value5, var.value7, var.value8 AS category_shortname, art.type AS rendertype, mem.email_address AS email_address,
+                art.*, art.author_id AS author_id, art.id_theme AS id_theme, art.type AS rendertype, mem.email_address AS email_address,
                 COALESCE(mem.real_name,art.author) AS real_name, mem.avatar, mem.posts, mem.date_registered AS date_registered, mem.last_login AS last_login,
-                COALESCE(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type AS attachment_type, var.value9, mem.email_address AS email_address
+                COALESCE(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type AS attachment_type, mem.email_address AS email_address, art.category AS category_id
             FROM {db_prefix}tp_articles AS art
             LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = art.author_id)
             LEFT JOIN {db_prefix}attachments AS a ON (a.id_member = art.author_id AND a.attachment_type != 3)
-            LEFT JOIN {db_prefix}tp_variables AS var ON (var.id= art.category)
             WHERE '. $where . 
             (
                 !allowedTo( 'tp_articles' ) ? '
@@ -122,7 +120,18 @@ class Article extends Base
 
         if($this->dB->db_num_rows($request) > 0) {
             while ( $row = $this->dB->db_fetch_assoc($request)) {
-                $articles[] = $row;
+                $categoryData = Category::getInstance()->getCategoryData(array('display_name', 'short_name', 'settings', 'access', 'custom_template'), array( 'item_type' => 'article', 'item_id' => $row['category']));
+                // FixME
+                $categoryData               = $categoryData[0];
+                $row['category_name']       = $categoryData['display_name'];
+                $row['category_shortname']  = $categoryData['short_name'];
+                $row['value2']              = 0;
+                $row['value3']              = $categoryData['access'];
+                $row['value4']              = '';
+                $row['value5']              = -2;
+                $row['value7']              = $categoryData['settings'];
+                $row['value9']              = $categoryData['custom_template'];
+                $articles[]                 = $row;
             }
             $this->dB->db_free_result($request);
         }
@@ -372,8 +381,6 @@ class Article extends Base
 		$request =  $this->dB->db_query('', '
 			SELECT COUNT(art.id) AS num_articles
 			FROM {db_prefix}tp_articles AS art
-            INNER JOIN  {db_prefix}tp_variables AS var
-			ON var.id = art.category
 			WHERE art.off = 0
 			' . $group . '
 			AND art.category > 0
