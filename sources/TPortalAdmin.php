@@ -1713,15 +1713,6 @@ function do_postchecks()
 						'artid' => $ccats,
 					)
 				);
-				$db->query('', '
-					DELETE FROM {db_prefix}tp_categories
-					WHERE item_type = {string:type}
-					AND page IN ({array_int:val5})',
-					array(
-						'type' => 'art_not_approved',
-						'val5' => $ccats,
-					)
-				);
 			}
 			return $from;
 		}
