@@ -372,7 +372,7 @@ function TPortal_searchbox()
 	global $context, $txt, $scripturl;
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" action="', $scripturl, '?action=search2" method="post" style="padding: 0; text-align: center; margin: 0; ">
+	<form accept-charset="', 'UTF-8', '" action="', $scripturl, '?action=search;sa=results" method="post" style="padding: 0; text-align: center; margin: 0; ">
 		<input type="text" class="block_search" name="search" value="" />
 		<input type="submit" name="submit" value="', $txt['search'], '" class="block_search_submit button_submit" /><br>
 		<br><span class="smalltext"><a href="', $scripturl, '?action=search;advanced">', $txt['search_advanced'], '</a></span>
