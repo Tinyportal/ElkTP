@@ -271,26 +271,11 @@ function TPortal_userbox()
 		if (allowedTo('tp_blocks'))
 					echo '
 			<li><a href="' . $scripturl . '?action=admin;area=tparticles;sa=blocks">' . $bullet4.$txt['permissionname_tp_blocks'] . '</a></li>';
-		if (allowedTo('tp_articles'))
-		{
+		if (allowedTo('tp_articles')) {
 					echo '
 			<li><a href="' . $scripturl . '?action=admin;area=tparticles;sa=articles">' . $bullet4.$txt['permissionname_tp_articles'] . '</a></li>';
-					// any submissions?
-					if($context['TPortal']['submitcheck']['articles']>0)
-						echo '
-			<li><a href="' . $scripturl . '?action=admin;area=tparticles;sa=submission"><b>' . $bullet4 . ' ' .$txt['tp-articlessubmitted'] . ' ' .$context['TPortal']['submitcheck']['articles'] . '</b></a></li>';
 		}
-		if (allowedTo('tp_dlmanager'))
-		{
-					echo '
-			<li><a href="' . $scripturl . '?action=tportal;sa=download;dl=admin">' . $bullet5.$txt['permissionname_tp_dlmanager'] . '</a></li>';
-					// any submissions?
-					if($context['TPortal']['submitcheck']['uploads']>0)
-						echo '
-			<li><a href="' . $scripturl . '?action=tportal;sa=download;dl=adminsubmission"><b>' . $bullet5.$context['TPortal']['submitcheck']['uploads'] . ' ' .$txt['tp-dluploaded'] . '</b></a></li>';
-		}
-
-		echo '
+				echo '
 		</ul>';
 	}
 	// Otherwise they're a guest - so politely ask them to register or login.
@@ -387,7 +372,7 @@ function TPortal_searchbox()
 	global $context, $txt, $scripturl;
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" action="', $scripturl, '?action=search2" method="post" style="padding: 0; text-align: center; margin: 0; ">
+	<form accept-charset="', 'UTF-8', '" action="', $scripturl, '?action=search;sa=results" method="post" style="padding: 0; text-align: center; margin: 0; ">
 		<input type="text" class="block_search" name="search" value="" />
 		<input type="submit" name="submit" value="', $txt['search'], '" class="block_search_submit button_submit" /><br>
 		<br><span class="smalltext"><a href="', $scripturl, '?action=search;advanced">', $txt['search_advanced'], '</a></span>
