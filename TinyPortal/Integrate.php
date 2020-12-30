@@ -170,7 +170,12 @@ class Integrate
     // Adds TP copyright in the buffer so we don't have to edit an ELK file
     public static function hookBuffer($buffer) {{{
         global $context, $scripturl, $txt, $boardurl;
-        
+       
+        // add upshrink buttons
+        if( array_key_exists('TPortal', $context) && !empty($context['TPortal']['upshrinkpanel']) ) {
+            $buffer = preg_replace('~<ul class="navigate_section">~', '<ul class="navigate_section"><li class="tp_upshrink21">'.$context['TPortal']['upshrinkpanel'].'</li>', $buffer, 1);
+        }
+ 
         // Dynamic body ID
         if (isset($context['TPortal']) && $context['TPortal']['action'] == 'profile') {
             $bodyid = "profilepage";
