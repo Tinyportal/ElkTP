@@ -204,14 +204,14 @@ class Base
         }
         elseif(is_array($columns)) {
             foreach($columns as $column) {
-                if(!array_key_exists($column, $dBStructure)) {
+                if(!array_key_exists($column, $dBStructure) && ($column != '*')) {
                     return $values;
                 }
             }
             $columns = implode(',', $columns);
         }
         else {
-            if(!array_key_exists($columns, $dBStructure)) {
+            if(!array_key_exists($columns, $dBStructure) && ($column != '*')) {
                 return $values;
             }
         }

@@ -17,6 +17,7 @@
 use \TinyPortal\Admin as TPAdmin;
 use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
+use \TinyPortal\Category as TPCategory;
 use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Integrate as TPIntegrate;
 use \TinyPortal\Mentions as TPMentions;
@@ -401,7 +402,7 @@ function doTPpage() {{{
 				$valid = false;
             }
 
-			if( get_perm($article['access']) && $valid) {
+			if( TPPermissions::getInstance()->getPermissions($article['access'], '') && $valid) {
 				// compability towards old articles
 				if(empty($article['type'])) {
 					$article['type'] = $article['rendertype'] = 'html';
@@ -607,19 +608,7 @@ function doTPpage() {{{
                 }
 				else {
 					// we need the categories for the linktree
-					$allcats = array();
-					$request =  $db->query('', '
-						SELECT * FROM {db_prefix}tp_categories
-						WHERE type = {string:type}',
-						array('type' => 'category')
-					);
-					if($db->num_rows($request) > 0) {
-						while($row = $db->fetch_assoc($request)) {
-							$allcats[$row['id']] = $row;
-                        }
-
-						$db->free_result($request);
-					}
+                    $allcats    = TinyPortal\Category::getInstance()->getCategoryData(array('*') , array('item_type' => 'category'));
 
 					// setup the linkree
 					TPstrip_linktree();
@@ -695,20 +684,18 @@ function doTPcat() {{{
 
 	// check validity and fetch it
 	if(!empty($_GET['cat'])) {
-		$cat    = TPUtil::filter('cat', 'get', 'string');
-		$catid  = is_numeric($cat) ? 'id = {int:cat}' : 'short_name = {string:cat}';
-
+		$cat            = TPUtil::filter('cat', 'get', 'string');
 		// get the category first
-		$request =  $db->query('', '
-			SELECT * FROM {db_prefix}tp_categories
-			WHERE '. $catid .' LIMIT 1',
-			array('cat' => is_numeric($cat) ? (int) $cat : $cat)
-		);
-		if($db->num_rows($request) > 0) {
-			$category = $db->fetch_assoc($request);
-			$db->free_result($request);
+        if(is_numeric($cat)) {
+            $category   = TinyPortal\Category::getInstance()->getCategoryData(array('*') , array('id' => $cat));
+        }
+        else {
+            $category   = TinyPortal\Category::getInstance()->getCategoryData(array('*') , array('short_name' => $cat));
+        }
+		if(is_array($category) && (count($category) > 0)) {
+            $category = $category[0];
 			// check permission
-			if(get_perm($category['access'])) {
+			if(TPPermissions::getInstance()->getPermissions($category['access'], '')) {
 				// get the sorting from the category
 				$op = explode('|', $category['settings']);
 				$options = array();
@@ -826,7 +813,7 @@ function doTPcat() {{{
 					SELECT cat.id, cat.display_name, cat.parent, COUNT(art.id) as articlecount
 					FROM {db_prefix}tp_categories AS cat
 					LEFT JOIN {db_prefix}tp_articles AS art ON (art.category = cat.id)
-					WHERE cat.type = {string:type} GROUP BY art.category, cat.id, cat.display_name, cat.parent',
+					WHERE cat.item_type = {string:type} GROUP BY art.category, cat.id, cat.display_name, cat.parent',
 					array('type' => 'category')
 				);
 				if($db->num_rows($request) > 0) {
@@ -1477,7 +1464,7 @@ function doTPfrontpage() {{{
             elseif($row['type'] == 20) {
                 call_integration_hook('integrate_tp_blocks', array(&$row));
             }
-			$can_edit = get_perm($row['editgroups'], '');
+			$can_edit   = TPPermissions::getInstance()->getPermissions($row['editgroups'], '');
 			$can_manage = allowedTo('tp_blocks');
 			if($can_manage) {
 				$can_edit = false;
