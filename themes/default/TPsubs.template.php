@@ -259,11 +259,6 @@ function TPortal_userbox()
 					echo '
 		<li><a href="', $scripturl, '?action=tportal;sa=myarticles">' . $bullet3.$txt['tp-myarticles']. '</a></li>';
 
-		// upload a file?
-        if(allowedTo('tp_dlupload') || allowedTo('tp_dlmanager'))
-             echo '
-			<li><a href="', $scripturl, '?action=tportal;sa=download;dl=upload">' . $bullet3.$txt['permissionname_tp_dlupload']. '</a></li>';
-
 		// tpadmin checks
 		if (allowedTo('tp_settings'))
 			echo '
