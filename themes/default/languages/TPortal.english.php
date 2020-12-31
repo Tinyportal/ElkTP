@@ -38,29 +38,6 @@ $txt['cannot_tp_alwaysapproved'] = 'Article submission or update needs to be app
 $txt['permissionname_tp_artcomment'] = $txt['group_perms_name_tp_artcomment'] = 'Can comment on articles';
 $txt['permissionhelp_tp_artcomment'] = 'Allows users to add comments to articles.';
 
-$txt['permissionname_tp_can_admin_shout'] = $txt['group_perms_name_can_admin_shout'] = 'Manage TPshout';
-$txt['permissionhelp_tp_can_admin_shout'] = 'Allows users to manage shouts.';
-$txt['cannot_tp_can_admin_shout'] = 'Sorry, you aren\'t allowed to manage the Shoutbox.';
-
-$txt['permissionname_tp_can_shout'] = $txt['group_perms_name_tp_can_shout'] = 'Can Post Shouts';
-$txt['permissionhelp_tp_can_shout'] = 'Allows users to post in the shoutbox.';
-
-$txt['permissionname_tp_dlmanager'] = $txt['group_perms_name_tp_dlmanager'] = 'Manage TPdownloads';
-$txt['permissionhelp_tp_dlmanager'] = 'Allows users to visit and operate any part of the File manager admin screens.';
-$txt['cannot_tp_dlmanager'] = 'Sorry, you aren\'t allowed to manage the File Manager module.';
-
-$txt['permissionname_tp_dlupload'] = $txt['group_perms_name_tp_dlupload'] = 'Upload file';
-$txt['permissionhelp_tp_dlupload'] = 'Allow you to upload files for the File manager';
-$txt['cannot_tp_dlupload'] = 'Sorry, you aren\'t allowed to upload files to the File Manager.';
-
-$txt['permissionname_tp_dlcreatetopic'] = $txt['group_perms_name_tp_dlcreatetopic'] = 'Create Download topic';
-$txt['permissionhelp_tp_dlcreatetopic'] = 'Allows users to create a linked support topic, and also link the topic to the download. Uses pre-defined boards to choose from.';
-$txt['cannot_tp_dlcreatetopic'] = 'Sorry, you aren\'t allowed to create support topics.';
-
-$txt['permissionname_tp_can_list_images'] = $txt['group_perms_name_tp_can_list_images'] = 'Manage TPlistimages';
-$txt['permissionhelp_tp_can_list_images'] = 'Allows users to remove uploaded images from the Tiny Portal Image Directory.';
-$txt['cannot_tp_can_list_images'] = 'Sorry, you aren\'t allowed to manage article images.';
-
 // Panels
 $txt['bottom-tp-upshrink_description'] = 'Bottom Panel';
 $txt['center-tp-upshrink_description'] = 'Upper Panel';
@@ -79,9 +56,6 @@ $txt['tp-who-category'] = 'Viewing the category page &quot;<a href="%3$s?cat=%2$
 $txt['tp-who-downloads'] = 'Viewing Downloads';
 $txt['tp-who-forum-index'] = 'Viewing the Forum Index';
 $txt['whoall_forum'] = 'Viewing the board index of <a href="' . $scripturl . '">' . (!empty($context['forum_name']) ? $context['forum_name'] : '*') . '</a>.';
-$txt['whoall_tpmod_dl'] = 'Viewing the File Manager.';
-$txt['whoall_tpmod_dlcat'] = 'Viewing a File category.';
-$txt['whoall_tpmod_dlitem'] = 'Viewing a files item.';
 
 // Articles
 $txt['tp-author'] = 'Author';
@@ -181,35 +155,9 @@ $txt['tp-prof_waitapproval2'] = 'articles waiting approval.';
 $txt['tpsummary'] = 'Portal Summary';
 $txt['tp-wysiwygchoice'] = 'Use WYSIWYG editor';
 
-// File Manager
-$txt['tp-dlhaverated'] = 'You have rated this file.';
-$txt['tp-dlmanageroff'] = 'The DL Manager module is not active.';
-$txt['tp-dlsettings'] = 'Settings';
-$txt['tp-dluploaded'] = 'New upload(s)';
-$txt['tp-downloads'] = 'Downloads';
-$txt['tp-downloadss1'] = 'Files';
-$txt['tp-uploadedby'] = 'Uploaded by ';
-
-// Shoutbox
-$txt['shout!'] = 'Shout!';
-$txt['tp-shout'] = 'Shout';
-$txt['tp-shouts'] = 'Shouts:';
-$txt['tp-shoutbox'] = 'TinyPortal Shoutbox';
-$txt['tp-shoutboxitems'] = 'Edit/Remove last shouts';
-$txt['tp-shout-history'] = 'History';
-$txt['tp-shout-refresh'] = 'Refresh';
-$txt['tpsummary_noshout'] = 'No shout messages found';
-$txt['alert_shout_mention'] = 'You have been mentioned by {user_mention} in a {text}!';
-$txt['alert_tp_comment_mention'] = 'You have been mentioned by {user_mention} in a {text}!';
-
 // SCE Editor
 $txt['editor_tp_floatleft'] = 'Insert float left div';
 $txt['editor_tp_floatright'] = 'Insert float right div';
-
-// Menu texts
-$txt['tp-adminheader1'] = 'Settings & Frontpage';
-$txt['tp_menuarticles'] = 'Articles and Categories';
-$txt['tp-adminpanels'] = 'Panels and Blocks';
 
 // Various
 $txt['tp-forum']    = 'Forum';
