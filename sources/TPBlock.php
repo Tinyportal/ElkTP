@@ -58,7 +58,7 @@ function TPBlockActions(&$subActions) {{{
 
 function getBlocks() {{{
 
-	global $context, $scripturl, $user_info, $smcFunc, $modSettings;
+	global $context, $scripturl, $user_info, $modSettings;
 
     $tpBlock    = TPBlock::getInstance();
 
@@ -242,7 +242,7 @@ function TPBlockAdminActions(&$subActions) {{{
 }}}
 
 function adminBlocks() {{{
-	global $context, $smcFunc, $txt, $settings, $scripturl;
+	global $context, $txt, $settings, $scripturl;
 
 	isAllowedTo('tp_blocks');
     
@@ -583,7 +583,7 @@ function editBlock( $block_id = 0 ) {{{
 }}}
 
 function saveBlock( $block_id = 0 ) {{{
-	global $settings, $context, $scripturl, $txt, $boarddir, $smcFunc;
+	global $settings, $context, $scripturl, $txt, $boarddir;
 
     if(empty($block_id)) {
 	    $block_id  = TPUtil::filter('id', 'get', 'int');

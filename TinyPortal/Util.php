@@ -26,7 +26,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-// Static method to call smcFunc calls which are not database related.
+// Static method to call Database or Util calls which are not database related.
 class Util
 {
 

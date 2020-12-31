@@ -57,7 +57,9 @@ function TPSearchActions(&$subActions)
 
 function TPSearchArticle()
 {
-	global $scripturl, $txt, $context, $smcFunc;
+	global $scripturl, $txt, $context;
+
+    $db = TinyPortal\Database::getInstance();
 
 	$start          = 0;
     $max_results    = 20;
@@ -177,7 +179,7 @@ function TPSearchArticle()
 	$context['TPortal']['searchterm']       = $what;
 	$context['TPortal']['searchpage']       = $start;
 	$now        = forum_time();
-	$request    = $smcFunc['db_query']('', '
+	$request    = $db->query('', '
         SELECT a.id, a.date, a.views, a.subject, a.body AS body, a.author_id AS author_id, a.type, m.real_name AS real_name {raw:select}
         FROM {db_prefix}tp_articles AS a
         LEFT JOIN {db_prefix}members as m ON a.author_id = m.id_member
@@ -197,8 +199,8 @@ function TPSearchArticle()
             'order_by'  => $order_by,
         )
 	);
-	if($smcFunc['db_num_rows']($request) > 0) {
-		while($row = $smcFunc['db_fetch_assoc']($request)) {
+	if($db->num_rows($request) > 0) {
+		while($row = $db->fetch_assoc($request)) {
 			TPUtil::shortenString($row['body'], 300);
             if($row['type'] == 'bbc') {
 				$row['body'] = parse_bbc($row['body']);
@@ -221,10 +223,10 @@ function TPSearchArticle()
 				'author' 	=> '<a href="'.$scripturl.'?action=profile;u='.$row['author_id'].'">'.$row['real_name'].'</a>',
 			);
 		}
-		$smcFunc['db_free_result']($request);
+		$db->free_result($request);
 	}
 
-    $request    = $smcFunc['db_query']('', '
+    $request    = $db->query('', '
         SELECT COUNT(id) AS num_results
         FROM {db_prefix}tp_articles AS a
         LEFT JOIN {db_prefix}members as m ON a.author_id = m.id_member
@@ -240,8 +242,8 @@ function TPSearchArticle()
         )
 	);
 
-    $num_results = $smcFunc['db_fetch_assoc']($request)['num_results'];
-	$smcFunc['db_free_result']($request);
+    $num_results = $db->fetch_assoc($request)['num_results'];
+	$db->free_result($request);
 
     $params = base64_encode(json_encode(array( 'search' => $what, 'title' => $usetitle, 'body' => $usebody)));
     

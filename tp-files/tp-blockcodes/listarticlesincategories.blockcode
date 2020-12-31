@@ -30,9 +30,11 @@ $categories = array(1,2);
 
 // End Config
 
-global $scripturl, $smcFunc;
+global $scripturl;
 
-$request = $smcFunc['db_query']('', ' 
+$db = TinyPortal\Database::getInstance();
+
+$request = $db->query('', ' 
      SELECT shortname, id, subject, parse
      FROM {db_prefix}tp_articles 
      WHERE category IN ({array_int:cats})
@@ -45,7 +47,7 @@ $request = $smcFunc['db_query']('', '
 echo '
 		<ul style="list-style-type:disc; margin: 0pt; padding: 0pt 15px;">
  ';
-while ($row = $smcFunc['db_fetch_assoc']($request))
+while ($row = $db->fetch_assoc($request))
 {
 if (!empty($row['shortname']))
 	{
@@ -57,7 +59,7 @@ else
 	}
 } 
 echo '</ul>';
-$smcFunc['db_free_result']($request);
+$db->free_result($request);
 </code>
 
 <description>
