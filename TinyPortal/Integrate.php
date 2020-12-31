@@ -39,11 +39,10 @@ class Integrate
             'load_illegal_guest_permissions'    => '\TinyPortal\Integrate::hookIllegalPermissions',
             'buffer'                            => '\TinyPortal\Integrate::hookBuffer',
             'menu_buttons'                      => '\TinyPortal\Integrate::hookMenuButtons',
-            //'display_buttons'                   => '\TinyPortal\Integrate::hookDisplayButton',
             'admin_areas'                       => '\TinyPortal\Integrate::hookAdminAreas',
             'actions'                           => '\TinyPortal\Integrate::hookActions',
             'whos_online'                       => '\TinyPortal\Integrate::hookWhosOnline',
-            'pre_profile_areas'                 => '\TinyPortal\Integrate::hookProfileArea',
+            'profile_areas'                     => '\TinyPortal\Integrate::hookProfileArea',
             'pre_load_theme'                    => '\TinyPortal\Integrate::hookLoadTheme',
             'redirect'                          => '\TinyPortal\Integrate::hookRedirect',
             'action_frontpage'                  => '\TinyPortal\Integrate::hookFrontPage',
@@ -385,7 +384,7 @@ class Integrate
         // Profile area for 1.0
         $profile_areas['tp']['areas']['tpsummary'] = array(
             'label' => $txt['tpsummary'],
-            'file' => 'TPSubs.php',
+            'file' => '../TPSubs.php',
             'function' => 'tp_summary',
             'icon' => 'menu_tp',
             'permission' => array(
@@ -397,7 +396,7 @@ class Integrate
         if (!$context['TPortal']['use_wysiwyg']=='0') {
             $profile_areas['tp']['areas']['tparticles'] = array(
                 'label' => $txt['articlesprofile'],
-                'file' => 'TPSubs.php',
+                'file' => '../TPSubs.php',
                 'function' => 'tp_articles',
                 'icon' => 'menu_tparticle',
                 'permission' => array(
@@ -413,7 +412,7 @@ class Integrate
         else {
             $profile_areas['tp']['areas']['tparticles'] = array(
                 'label' => $txt['articlesprofile'],
-                'file' => 'TPSubs.php',
+                'file' => '../TPSubs.php',
                 'function' => 'tp_articles',
                 'icon' => 'menu_tparticle',
                 'permission' => array(

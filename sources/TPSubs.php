@@ -118,7 +118,7 @@ function TPArticleCategories($use_sorted = false) {{{
 	$request2 =  $db->query('', '
 		SELECT parent, COUNT(*) as siblings
 		FROM {db_prefix}tp_categories
-		WHERE type = {string:type} GROUP BY parent',
+		WHERE item_type = {string:type} GROUP BY parent',
 		array(
 			'type' => 'category'
 		)
@@ -135,7 +135,7 @@ function TPArticleCategories($use_sorted = false) {{{
 	$request =  $db->query('', '
 		SELECT cats.*
 		FROM {db_prefix}tp_categories as cats
-		WHERE cats.type = {string:type}
+		WHERE cats.item_type = {string:type}
 		ORDER BY cats.display_name ASC',
 		array(
 			'type' => 'category'
@@ -757,36 +757,6 @@ function tp_hidepanel2($id, $id2, $alt)
 	return $what;
 }
 
-function TP_fetchprofile_areas() {{{
-
-	$areas = array(
-		'tp_summary' => array('name' => 'tp_summary', 'permission' => 'profile_view_any'),
-		'tp_articles' => array('name' => 'tp_articles', 'permission' => 'tp_articles'),
-	);
-
-    call_integration_hook('integrate_tp_profile_areas', array(&$areas));
-    
-	return $areas;
-}}}
-
-function TP_fetchprofile_areas2($member_id) {{{
-	global $context, $scripturl, $txt, $user_info;
-
-	if (!$user_info['is_guest'] && (($context['user']['is_owner'] && allowedTo('profile_view_own')) || allowedTo(array('profile_view_any', 'moderate_forum', 'manage_permissions','tp_dlmanager','tp_blocks','tp_articles','tp_gallery','tp_linkmanager')))) {
-		$context['profile_areas']['tinyportal'] = array(
-			'title' => $txt['tp-profilesection'],
-			'areas' => array()
-		);
-
-		$context['profile_areas']['tinyportal']['areas']['tp_summary'] = '<a href="' . $scripturl . '?action=profile;u=' . $member_id . ';sa=tp_summary">' . $txt['tpsummary'] . '</a>';
-		if ($context['user']['is_owner'] || allowedTo('tp_articles')) {
-			$context['profile_areas']['tinyportal']['areas']['tp_articles'] = '<a href="' . $scripturl . '?action=profile;u=' . $member_id . ';sa=tp_articles">' . $txt['articlesprofile'] . '</a>';
-        }
-    
-        call_integration_hook('integrate_tp_profile', array(&$member_id));
-	}
-
-}}}
 
 function get_perm($perm, $moderate = '') {{{   
     return TPPermissions::getInstance()->getPermissions($perm, $moderate);	
@@ -2100,26 +2070,7 @@ function tp_profile_articles($member_id) {{{
 			'settings' => array(),
 			),
 	);
-	// setup values for personal settings - for now only editor choice
-	// type = 1 -
-	// type = 2 - editor choice
-	$result = $db->query('', '
-		SELECT id, value FROM {db_prefix}tp_data
-		WHERE type = {int:type} AND id_member = {int:id_mem} LIMIT 1',
-		array('type' => 2, 'id_mem' => $member_id)
-	);
-	if($db->num_rows($result) > 0) {
-		$row = $db->fetch_assoc($result);
-		$context['TPortal']['selected_member_choice'] = $row['value'];
-		$context['TPortal']['selected_member_choice_id'] = $row['id'];
-		$db->free_result($result);
-	}
-	else {
-		$context['TPortal']['selected_member_choice'] = 0;
-		$context['TPortal']['selected_member_choice_id'] = 0;
-	}
-	
-    $context['TPortal']['selected_member'] = $member_id;
+
 	if(loadLanguage('TPortalAdmin') == false) {
 		loadLanguage('TPortalAdmin', 'english');
     }
@@ -2127,51 +2078,29 @@ function tp_profile_articles($member_id) {{{
 }}}
 
 // Tinyportal
-function tp_summary($member_id) {{{
+function tp_summary($member_id = null) {{{
 	global $txt, $context;
+
+    if(is_null($member_id)) {
+        $member_id = TPUtil::filter('u', 'get', 'int');
+    }
+
 	loadtemplate('TPprofile');
 	$context['page_title'] = $txt['tpsummary'];
 	tp_profile_summary($member_id);
 }}}
 
-function tp_articles($member_id) {{{
+function tp_articles($member_id = null) {{{
 	global $txt, $context;
-	TPArticleCategories();
+
+    if(is_null($member_id)) {
+        $member_id = TPUtil::filter('u', 'get', 'int');
+    }	
+
+    TPArticleCategories();
 	loadtemplate('TPprofile');
 	$context['page_title'] = $txt['articlesprofile'];
 	tp_profile_articles($member_id);
-}}}
-
-function TPSaveSettings() {{{
-
-    $db = TPDatabase::getInstance();
-
-    // check the session
-    checkSession('post');
-    $member_id  = TPUtil::filter('memberid', 'post', 'int');
-    $item       = TPUtil::filter('item', 'post', 'int');
-    $value      = TPUtil::filter('tpwysiwyg', 'post', 'int');
-    if( $value !== false ) {
-        if( $item > 0 ) {
-            $db->query('', '
-                UPDATE {db_prefix}tp_data
-                SET value = {int:val} WHERE id = {int:id}',
-                array('val' => $value, 'id' => $item)
-            );
-        }
-        elseif ($member_id != false) {
-            $db->insert('INSERT',
-                '{db_prefix}tp_data',
-                array('type' => 'int', 'id_member' => 'int', 'value' => 'int'),
-                array(2, $member_id, $value),
-                array('id')
-            );
-        }
-    }
-
-    // go back to profile page
-    redirectexit('action=profile;u='.$member_id.';area=tpadmin;sa=tparticles;sa=settings');
-
 }}}
 
 function TPUpdateLog() {{{
