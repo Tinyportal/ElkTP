@@ -154,12 +154,6 @@ class Integrate
                 'tp_editownarticle' => array(false, 'tp', 'tp'),
 				'tp_alwaysapproved' => array(false, 'tp', 'tp'),
                 'tp_artcomment' => array(false, 'tp', 'tp'),
-                'tp_can_admin_shout' => array(false, 'tp', 'tp'),
-                'tp_can_shout' => array(false, 'tp', 'tp'),
-                'tp_dlmanager' => array(false, 'tp', 'tp'),
-                'tp_dlupload' => array(false, 'tp', 'tp'),
-                'tp_dlcreatetopic' => array(false, 'tp', 'tp'),
-                'tp_can_list_images' => array(false, 'tp', 'tp'),
             ),
             $permissionList['membergroup']
         );
@@ -276,11 +270,6 @@ class Integrate
             'tp_editownarticle',
 			'tp_alwaysapproved',
             'tp_artcomment',
-            'tp_can_admin_shout',
-            'tp_can_shout',
-            'tp_dlmanager',
-            'tp_dlupload',
-            'tp_dlcreatetopic',
             'tp_can_list_images',
         );
         $context['non_guest_permissions'] = array_merge($context['non_guest_permissions'], $tp_illegal_perms);
