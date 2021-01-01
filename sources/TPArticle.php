@@ -92,7 +92,7 @@ function articleInsertComment() {{{
         redirectexit('page='.$article.'#tp-comment');
     }
 
-    require_once(SOURCEDIR.'/Subs-Post.php');
+    require_once(SUBSDIR.'/Post.subs.php');
     preparsecode($comment);
 
     $tpArticle  = TPArticle::getInstance();
