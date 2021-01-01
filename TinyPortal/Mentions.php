@@ -56,8 +56,8 @@ class Mentions extends Base {
 
     public function addMention( $mention ) {{{
         if (!empty($this->modSettings['enable_mentions'])) {
-            require_once(SOURCEDIR . '/Subs-Post.php');
-            require_once(SOURCEDIR . '/Mentions.php');
+            require_once(SUBSDIR . '/Post.subs.php');
+            require_once(SUBSDIR . '/Mentions.subs.php');
             $mentions = \Mentions::getMentionedMembers($mention['content']);
             if (is_array($mentions)) {
                 \Mentions::insertMentions($mention['type'], $mention['id'], $mentions, $mention['member_id']);
