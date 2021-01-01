@@ -175,7 +175,7 @@ function getBlocks() {{{
             foreach($categories as $row) {
                 if(empty($row['author'])) {
                     global $memberContext;
-                    loadMemberData($row['author_id']);
+				    loadMemberData($row['author_id'], false, 'minimal');
                     loadMemberContext($row['author_id']);
                     $row['real_name'] = $memberContext[$row['author_id']]['username'];
                 }
