@@ -17,6 +17,7 @@
 use \TinyPortal\Admin as TPAdmin;
 use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
+use \TinyPortal\Category as TPCategory;
 use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Integrate as TPIntegrate;
 use \TinyPortal\Mentions as TPMentions;
@@ -35,7 +36,7 @@ if(function_exists('loadLanguage') && loadLanguage('TPortal') == false) {
     loadLanguage('TPortal', 'english');
 }
 
-function TPortal() {{{
+function TPortalAction() {{{
 	global $txt, $context;
 
 	$subAction  = TPUtil::filter('sa', 'get', 'string');
@@ -45,7 +46,6 @@ function TPortal() {{{
     $subActions = array (
         'credits'           => array('TPhelp.php', 'TPCredits'      , array()),
         'updatelog'         => array('TPSubs.php', 'TPUpdateLog'    , array()),
-        'savesettings'      => array('TPSubs.php', 'TPSaveSettings' , array()),
     );
   
     call_integration_hook('integrate_tp_pre_subactions', array(&$subActions));
@@ -159,9 +159,6 @@ function TPortalInit() {{{
 	// Show search/frontpage topic layers?
 	TPIntegrate::hookSearchLayers();
 
-	// set cookie change for selected upshrinks
-	tpSetupUpshrinks();
-
 	// finally..any errors finding an article or category?
 	if(!empty($context['art_error'])) {
 		fatal_error($txt['tp-articlenotexist'], false);
@@ -172,6 +169,9 @@ function TPortalInit() {{{
     }
 
     call_integration_hook('integrate_tp_post_init');
+
+    // set cookie change for selected upshrinks
+	tpSetupUpshrinks();
 
 }}}
 
@@ -401,7 +401,7 @@ function doTPpage() {{{
 				$valid = false;
             }
 
-			if( get_perm($article['access']) && $valid) {
+			if( TPPermissions::getInstance()->getPermissions($article['access'], '') && $valid) {
 				// compability towards old articles
 				if(empty($article['type'])) {
 					$article['type'] = $article['rendertype'] = 'html';
@@ -414,12 +414,12 @@ function doTPpage() {{{
 				// allowed and all is well, go on with it.
 				$context['TPortal']['article'] = $article;
 
-                $context['TPortal']['article']['avatar'] = set_avatar_data( array(      
-                        'avatar' => $article['avatar'],
-                        'email' => $article['email_address'],
-                        'filename' => !empty($article['filename']) ? $article['filename'] : '',
-                        'id_attach' => $article['id_attach'],
-                        'attachment_type' => $article['attachment_type'],
+                $context['TPortal']['article']['avatar'] = determineAvatar( array(      
+                        'avatar'            => $article['avatar'],
+                        'email_address'     => $article['email_address'],
+                        'filename'          => !empty($article['filename']) ? $article['filename'] : '',
+                        'id_attach'         => $article['id_attach'],
+                        'attachment_type'   => $article['attachment_type'],
                      )
                 )['image'];
 
@@ -448,9 +448,9 @@ function doTPpage() {{{
 					
                     foreach($comments as $row) {
 
-                        $avatar = set_avatar_data( array(      
+                        $avatar = determineAvatar( array(      
                                     'avatar'            => $row['avatar'],
-                                    'email'             => $row['email_address'],
+                                    'email_address'     => $row['email_address'],
                                     'filename'          => !empty($row['filename']) ? $row['filename'] : '',
                                     'id_attach'         => $row['id_attach'],
                                     'attachment_type'  => $row['attachment_type'],
@@ -607,19 +607,7 @@ function doTPpage() {{{
                 }
 				else {
 					// we need the categories for the linktree
-					$allcats = array();
-					$request =  $db->query('', '
-						SELECT * FROM {db_prefix}tp_categories
-						WHERE type = {string:type}',
-						array('type' => 'category')
-					);
-					if($db->num_rows($request) > 0) {
-						while($row = $db->fetch_assoc($request)) {
-							$allcats[$row['id']] = $row;
-                        }
-
-						$db->free_result($request);
-					}
+                    $allcats    = TinyPortal\Category::getInstance()->getCategoryData(array('*') , array('item_type' => 'category'));
 
 					// setup the linkree
 					TPstrip_linktree();
@@ -695,20 +683,18 @@ function doTPcat() {{{
 
 	// check validity and fetch it
 	if(!empty($_GET['cat'])) {
-		$cat    = TPUtil::filter('cat', 'get', 'string');
-		$catid  = is_numeric($cat) ? 'id = {int:cat}' : 'short_name = {string:cat}';
-
+		$cat            = TPUtil::filter('cat', 'get', 'string');
 		// get the category first
-		$request =  $db->query('', '
-			SELECT * FROM {db_prefix}tp_categories
-			WHERE '. $catid .' LIMIT 1',
-			array('cat' => is_numeric($cat) ? (int) $cat : $cat)
-		);
-		if($db->num_rows($request) > 0) {
-			$category = $db->fetch_assoc($request);
-			$db->free_result($request);
+        if(is_numeric($cat)) {
+            $category   = TinyPortal\Category::getInstance()->getCategoryData(array('*') , array('id' => $cat));
+        }
+        else {
+            $category   = TinyPortal\Category::getInstance()->getCategoryData(array('*') , array('short_name' => $cat));
+        }
+		if(is_array($category) && (count($category) > 0)) {
+            $category = $category[0];
 			// check permission
-			if(get_perm($category['access'])) {
+			if(TPPermissions::getInstance()->getPermissions($category['access'], '')) {
 				// get the sorting from the category
 				$op = explode('|', $category['settings']);
 				$options = array();
@@ -796,12 +782,12 @@ function doTPcat() {{{
 						// expand the vislaoptions
 						$row['visual_options'] = explode(',', $row['options']);
 
-                        $row['avatar'] = set_avatar_data( array(      
-                                    'avatar' => $row['avatar'],
-                                    'email' => $row['email_address'],
-                                    'filename' => !empty($row['filename']) ? $row['filename'] : '',
-                                    'id_attach' => $row['id_attach'],
-                                    'attachment_type' => $row['attachment_type'],
+                        $row['avatar'] = determineAvatar( array(      
+                                    'avatar'            => $row['avatar'],
+                                    'emai_addressl'     => $row['email_address'],
+                                    'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                                    'id_attach'         => $row['id_attach'],
+                                    'attachment_type'   => $row['attachment_type'],
                                 )
                         )['image'];
 
@@ -826,7 +812,7 @@ function doTPcat() {{{
 					SELECT cat.id, cat.display_name, cat.parent, COUNT(art.id) as articlecount
 					FROM {db_prefix}tp_categories AS cat
 					LEFT JOIN {db_prefix}tp_articles AS art ON (art.category = cat.id)
-					WHERE cat.type = {string:type} GROUP BY art.category, cat.id, cat.display_name, cat.parent',
+					WHERE cat.item_type = {string:type} GROUP BY art.category, cat.id, cat.display_name, cat.parent',
 					array('type' => 'category')
 				);
 				if($db->num_rows($request) > 0) {
@@ -1054,12 +1040,12 @@ function doTPfrontpage() {{{
                     // expand the vislaoptions
                     $row['visual_options'] = explode(',', $row['options']);
 
-                    $row['avatar'] = set_avatar_data( array(      
-                                'avatar' => $row['avatar'],
-                                'email' => $row['email_address'],
-                                'filename' => !empty($row['filename']) ? $row['filename'] : '',
-                                'id_attach' => $row['id_attach'],
-                                'attachment_type' => $row['attachment_type'],
+                    $row['avatar'] = determineAvatar( array(      
+                                'avatar'            => $row['avatar'],
+                                'email_address'     => $row['email_address'],
+                                'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                                'id_attach'         => $row['id_attach'],
+                                'attachment_type'   => $row['attachment_type'],
                             )
                     )['image'];
 
@@ -1114,12 +1100,12 @@ function doTPfrontpage() {{{
 			// expand the vislaoptions
 			$row['visual_options'] = explode(',', $row['options']);
             
-            $row['avatar'] = set_avatar_data( array(      
-                        'avatar' => $row['avatar'],
-                        'email' => $row['email_address'],
-                        'filename' => !empty($row['filename']) ? $row['filename'] : '',
-                        'id_attach' => $row['id_attach'],
-                        'attachment_type' => $row['attachment_type'],
+            $row['avatar'] = determineAvatar( array(      
+                        'avatar'            => $row['avatar'],
+                        'email_address'     => $row['email_address'],
+                        'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                        'id_attach'         => $row['id_attach'],
+                        'attachment_type'   => $row['attachment_type'],
                     )
             )['image'];
 
@@ -1373,12 +1359,12 @@ function doTPfrontpage() {{{
                 $row['visual_options'] = explode(',', $row['options']);
                 $row['visual_options']['layout'] = $context['TPortal']['frontpage_layout'];
                 $row['rating'] = array_sum(explode(',', $row['rating']));
-                $row['avatar'] = set_avatar_data( array(      
-                            'avatar' => $row['avatar'],
-                            'email' => $row['email_address'],
-                            'filename' => !empty($row['filename']) ? $row['filename'] : '',
-                            'id_attach' => $row['id_attach'],
-                            'attachment_type' => $row['attachment_type'],
+                $row['avatar'] = determineAvatar( array(      
+                            'avatar'            => $row['avatar'],
+                            'email_address'     => $row['email_address'],
+                            'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                            'id_attach'         => $row['id_attach'],
+                            'attachment_type'   => $row['attachment_type'],
                         )
                 )['image'];
                 // we need some trick to put featured/sticky on top
@@ -1477,7 +1463,7 @@ function doTPfrontpage() {{{
             elseif($row['type'] == 20) {
                 call_integration_hook('integrate_tp_blocks', array(&$row));
             }
-			$can_edit = get_perm($row['editgroups'], '');
+			$can_edit   = TPPermissions::getInstance()->getPermissions($row['editgroups'], '');
 			$can_manage = allowedTo('tp_blocks');
 			if($can_manage) {
 				$can_edit = false;
@@ -1545,12 +1531,12 @@ function doTPfrontpage() {{{
 			while($article = $db->fetch_assoc($request)) {
 				// allowed and all is well, go on with it.
 				$context['TPortal']['blockarticles'][$article['id']] = $article;
-                $context['TPortal']['blockarticles'][$article['id']]['avatar'] = set_avatar_data( array(      
-                            'avatar' => isset($row['avatar']) ? $row['avatar'] : '',
-                            'email' => isset($row['email_address']) ? $row['email_address'] : '',
-                            'filename' => !empty($row['filename']) ? $row['filename'] : '',
-                            'id_attach' => isset($row['id_attach']) ? $row['id_attach'] : '',
-                            'attachment_type' => isset($row['attachment_type']) ? $row['attachment_type'] : '',
+                $context['TPortal']['blockarticles'][$article['id']]['avatar'] = determineAvatar( array(      
+                            'avatar'            => isset($row['avatar']) ? $row['avatar'] : '',
+                            'email_address'     => isset($row['email_address']) ? $row['email_address'] : '',
+                            'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                            'id_attach'         => isset($row['id_attach']) ? $row['id_attach'] : '',
+                            'attachment_type'   => isset($row['attachment_type']) ? $row['attachment_type'] : '',
                         )
                 )['image'];
 
@@ -2148,28 +2134,6 @@ function TPortal_centerbar() {{{
 function TPortal_rightbar() {{{
 	TPortal_sidebar('right');
 }}}
-
-// Backwards compat function for ELK2.0
-if(!function_exists('set_avatar_data')) {
-
-    function set_avatar_data( $data ) {
-
-        global $image_proxy_enabled, $image_proxy_secret, $scripturl, $modSettings, $smcFunc, $boardurl;
-
-        if ($image_proxy_enabled && !empty($data['avatar']) && stripos($data['avatar'], 'http://') !== false) {
-            $tmp = '<img src="'. $boardurl . '/proxy.php?request=' . urlencode($data['avatar']) . '&hash=' . md5($data['avatar'] . $image_proxy_secret) .'" alt="&nbsp;" />';
-    }
-        else {
-            $tmp = $data['avatar'] == '' ? ($data['id_attach'] > 0 ? '<img src="' . (empty($data['attachment_type']) ? $scripturl . '?action=dlattach;attach=' . $data['id_attach'] . ';type=avatar' : $modSettings['custom_avatar_url'] . '/' . $data['filename']) . '" alt="&nbsp;"  />' : '') : (stristr($data['avatar'], 'https://') ? '<img src="' . $data['avatar'] . '" alt="&nbsp;" />' : (stristr($data['avatar'], 'http://') ? '<img src="' . $data['avatar'] . '" alt="&nbsp;" />' : '<img src="' . $modSettings['avatar_url'] . '/' . $smcFunc['htmlspecialchars']($data['avatar'], ENT_QUOTES) . '" alt="&nbsp;" />'));
-        }
-
-        $avatar = array();
-        $avatar['image'] = $tmp;
-
-        return $avatar;
-
-    }
-}
 
 if(!function_exists('loadJavaScriptFile')) {
     function loadJavaScriptFile($fileName, $params = array(), $id = '') {

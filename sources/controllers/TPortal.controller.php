@@ -64,6 +64,11 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
 		\loadLanguage('TPortal');
         \loadTemplate('TPortal');
 
+        $action = TPUtil::filter('action', 'get', 'string');
+        if($action == 'tportal') {
+            TPortalAction();
+        }
+
     }}}
 
     public function action_portal() {{{

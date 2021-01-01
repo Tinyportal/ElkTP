@@ -108,7 +108,6 @@ class Permissions
             'manage_attachments', 
             'tp_articles', 
             'tp_blocks', 
-            'tp_dlmanager', 
             'tp_settings'
         );
         

@@ -39,11 +39,10 @@ class Integrate
             'load_illegal_guest_permissions'    => '\TinyPortal\Integrate::hookIllegalPermissions',
             'buffer'                            => '\TinyPortal\Integrate::hookBuffer',
             'menu_buttons'                      => '\TinyPortal\Integrate::hookMenuButtons',
-            //'display_buttons'                   => '\TinyPortal\Integrate::hookDisplayButton',
             'admin_areas'                       => '\TinyPortal\Integrate::hookAdminAreas',
             'actions'                           => '\TinyPortal\Integrate::hookActions',
             'whos_online'                       => '\TinyPortal\Integrate::hookWhosOnline',
-            'pre_profile_areas'                 => '\TinyPortal\Integrate::hookProfileArea',
+            'profile_areas'                     => '\TinyPortal\Integrate::hookProfileArea',
             'pre_load_theme'                    => '\TinyPortal\Integrate::hookLoadTheme',
             'redirect'                          => '\TinyPortal\Integrate::hookRedirect',
             'action_frontpage'                  => '\TinyPortal\Integrate::hookFrontPage',
@@ -155,12 +154,6 @@ class Integrate
                 'tp_editownarticle' => array(false, 'tp', 'tp'),
 				'tp_alwaysapproved' => array(false, 'tp', 'tp'),
                 'tp_artcomment' => array(false, 'tp', 'tp'),
-                'tp_can_admin_shout' => array(false, 'tp', 'tp'),
-                'tp_can_shout' => array(false, 'tp', 'tp'),
-                'tp_dlmanager' => array(false, 'tp', 'tp'),
-                'tp_dlupload' => array(false, 'tp', 'tp'),
-                'tp_dlcreatetopic' => array(false, 'tp', 'tp'),
-                'tp_can_list_images' => array(false, 'tp', 'tp'),
             ),
             $permissionList['membergroup']
         );
@@ -170,7 +163,12 @@ class Integrate
     // Adds TP copyright in the buffer so we don't have to edit an ELK file
     public static function hookBuffer($buffer) {{{
         global $context, $scripturl, $txt, $boardurl;
-        
+       
+        // add upshrink buttons
+        if( array_key_exists('TPortal', $context) && !empty($context['TPortal']['upshrinkpanel']) ) {
+            $buffer = preg_replace('~<ul class="navigate_section">~', '<ul class="navigate_section"><li class="tp_upshrink21">'.$context['TPortal']['upshrinkpanel'].'</li>', $buffer, 1);
+        }
+ 
         // Dynamic body ID
         if (isset($context['TPortal']) && $context['TPortal']['action'] == 'profile') {
             $bodyid = "profilepage";
@@ -272,11 +270,6 @@ class Integrate
             'tp_editownarticle',
 			'tp_alwaysapproved',
             'tp_artcomment',
-            'tp_can_admin_shout',
-            'tp_can_shout',
-            'tp_dlmanager',
-            'tp_dlupload',
-            'tp_dlcreatetopic',
             'tp_can_list_images',
         );
         $context['non_guest_permissions'] = array_merge($context['non_guest_permissions'], $tp_illegal_perms);
@@ -380,7 +373,7 @@ class Integrate
         // Profile area for 1.0
         $profile_areas['tp']['areas']['tpsummary'] = array(
             'label' => $txt['tpsummary'],
-            'file' => 'TPSubs.php',
+            'file' => '../TPSubs.php',
             'function' => 'tp_summary',
             'icon' => 'menu_tp',
             'permission' => array(
@@ -392,7 +385,7 @@ class Integrate
         if (!$context['TPortal']['use_wysiwyg']=='0') {
             $profile_areas['tp']['areas']['tparticles'] = array(
                 'label' => $txt['articlesprofile'],
-                'file' => 'TPSubs.php',
+                'file' => '../TPSubs.php',
                 'function' => 'tp_articles',
                 'icon' => 'menu_tparticle',
                 'permission' => array(
@@ -408,7 +401,7 @@ class Integrate
         else {
             $profile_areas['tp']['areas']['tparticles'] = array(
                 'label' => $txt['articlesprofile'],
-                'file' => 'TPSubs.php',
+                'file' => '../TPSubs.php',
                 'function' => 'tp_articles',
                 'icon' => 'menu_tparticle',
                 'permission' => array(
@@ -577,7 +570,9 @@ class Integrate
 
         // are we on search page? then add TP search options as well!
         if($context['TPortal']['action'] == 'search') {
-            $context['template_layers'][] = 'TPsearch';
+            if(!in_array('TPsearch', \Template_Layers::getInstance()->getLayers())) {
+                \Template_Layers::getInstance()->add('TPsearch');
+            }
         }
 
     }}}

@@ -130,7 +130,7 @@ function template_overview()
 // General Settings page
 function template_settings()
 {
-	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language, $smcFunc;
+	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 	echo '
 	<form accept-charset="UTF-8" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
@@ -305,7 +305,7 @@ function template_settings()
 // Frontpage Settings page
 function template_frontpage()
 {
-	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language, $smcFunc;
+	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 		echo '
 	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
@@ -600,7 +600,7 @@ function template_categories()
 // Edit Article Category Page
 function template_editcategory()
 {
-	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language, $smcFunc;
+	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 		$mg = $context['TPortal']['editcategory'];
 		echo '

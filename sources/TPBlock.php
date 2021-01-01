@@ -58,7 +58,7 @@ function TPBlockActions(&$subActions) {{{
 
 function getBlocks() {{{
 
-	global $context, $scripturl, $user_info, $smcFunc, $modSettings;
+	global $context, $scripturl, $user_info, $modSettings;
 
     $tpBlock    = TPBlock::getInstance();
 
@@ -148,12 +148,12 @@ function getBlocks() {{{
 					$avatar_width = '';
 					$avatar_height = '';
 				}
-                $context['TPortal']['blockarticles'][$article['id']]['avatar'] = set_avatar_data( array(      
-                            'avatar' => $article['avatar'],
-                            'email' => $article['email_address'],
-                            'filename' => !empty($article['filename']) ? $article['filename'] : '',
-                            'id_attach' => $article['id_attach'],
-                            'attachment_type' => $article['attachment_type'],
+                $context['TPortal']['blockarticles'][$article['id']]['avatar'] = determineAvatar( array(      
+                            'avatar'            => $article['avatar'],
+                            'email_address'     => $article['email_address'],
+                            'filename'          => !empty($article['filename']) ? $article['filename'] : '',
+                            'id_attach'         => $article['id_attach'],
+                            'attachment_type'   => $article['attachment_type'],
                         )
                 )['image'];
 				// sort out the options
@@ -175,7 +175,7 @@ function getBlocks() {{{
             foreach($categories as $row) {
                 if(empty($row['author'])) {
                     global $memberContext;
-                    loadMemberData($row['author_id']);
+				    loadMemberData($row['author_id'], false, 'minimal');
                     loadMemberContext($row['author_id']);
                     $row['real_name'] = $memberContext[$row['author_id']]['username'];
                 }
@@ -242,7 +242,7 @@ function TPBlockAdminActions(&$subActions) {{{
 }}}
 
 function adminBlocks() {{{
-	global $context, $smcFunc, $txt, $settings, $scripturl;
+	global $context, $txt, $settings, $scripturl;
 
 	isAllowedTo('tp_blocks');
     
@@ -583,7 +583,7 @@ function editBlock( $block_id = 0 ) {{{
 }}}
 
 function saveBlock( $block_id = 0 ) {{{
-	global $settings, $context, $scripturl, $txt, $boarddir, $smcFunc;
+	global $settings, $context, $scripturl, $txt, $boarddir;
 
     if(empty($block_id)) {
 	    $block_id  = TPUtil::filter('id', 'get', 'int');
