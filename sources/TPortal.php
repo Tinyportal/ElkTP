@@ -36,7 +36,7 @@ if(function_exists('loadLanguage') && loadLanguage('TPortal') == false) {
     loadLanguage('TPortal', 'english');
 }
 
-function TPortal() {{{
+function TPortalAction() {{{
 	global $txt, $context;
 
 	$subAction  = TPUtil::filter('sa', 'get', 'string');
@@ -46,7 +46,6 @@ function TPortal() {{{
     $subActions = array (
         'credits'           => array('TPhelp.php', 'TPCredits'      , array()),
         'updatelog'         => array('TPSubs.php', 'TPUpdateLog'    , array()),
-        'savesettings'      => array('TPSubs.php', 'TPSaveSettings' , array()),
     );
   
     call_integration_hook('integrate_tp_pre_subactions', array(&$subActions));
@@ -415,12 +414,12 @@ function doTPpage() {{{
 				// allowed and all is well, go on with it.
 				$context['TPortal']['article'] = $article;
 
-                $context['TPortal']['article']['avatar'] = set_avatar_data( array(      
-                        'avatar' => $article['avatar'],
-                        'email' => $article['email_address'],
-                        'filename' => !empty($article['filename']) ? $article['filename'] : '',
-                        'id_attach' => $article['id_attach'],
-                        'attachment_type' => $article['attachment_type'],
+                $context['TPortal']['article']['avatar'] = determineAvatar( array(      
+                        'avatar'            => $article['avatar'],
+                        'email_address'     => $article['email_address'],
+                        'filename'          => !empty($article['filename']) ? $article['filename'] : '',
+                        'id_attach'         => $article['id_attach'],
+                        'attachment_type'   => $article['attachment_type'],
                      )
                 )['image'];
 
@@ -449,9 +448,9 @@ function doTPpage() {{{
 					
                     foreach($comments as $row) {
 
-                        $avatar = set_avatar_data( array(      
+                        $avatar = determineAvatar( array(      
                                     'avatar'            => $row['avatar'],
-                                    'email'             => $row['email_address'],
+                                    'email_address'     => $row['email_address'],
                                     'filename'          => !empty($row['filename']) ? $row['filename'] : '',
                                     'id_attach'         => $row['id_attach'],
                                     'attachment_type'  => $row['attachment_type'],
@@ -783,12 +782,12 @@ function doTPcat() {{{
 						// expand the vislaoptions
 						$row['visual_options'] = explode(',', $row['options']);
 
-                        $row['avatar'] = set_avatar_data( array(      
-                                    'avatar' => $row['avatar'],
-                                    'email' => $row['email_address'],
-                                    'filename' => !empty($row['filename']) ? $row['filename'] : '',
-                                    'id_attach' => $row['id_attach'],
-                                    'attachment_type' => $row['attachment_type'],
+                        $row['avatar'] = determineAvatar( array(      
+                                    'avatar'            => $row['avatar'],
+                                    'emai_addressl'     => $row['email_address'],
+                                    'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                                    'id_attach'         => $row['id_attach'],
+                                    'attachment_type'   => $row['attachment_type'],
                                 )
                         )['image'];
 
@@ -1041,12 +1040,12 @@ function doTPfrontpage() {{{
                     // expand the vislaoptions
                     $row['visual_options'] = explode(',', $row['options']);
 
-                    $row['avatar'] = set_avatar_data( array(      
-                                'avatar' => $row['avatar'],
-                                'email' => $row['email_address'],
-                                'filename' => !empty($row['filename']) ? $row['filename'] : '',
-                                'id_attach' => $row['id_attach'],
-                                'attachment_type' => $row['attachment_type'],
+                    $row['avatar'] = determineAvatar( array(      
+                                'avatar'            => $row['avatar'],
+                                'email_address'     => $row['email_address'],
+                                'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                                'id_attach'         => $row['id_attach'],
+                                'attachment_type'   => $row['attachment_type'],
                             )
                     )['image'];
 
@@ -1101,12 +1100,12 @@ function doTPfrontpage() {{{
 			// expand the vislaoptions
 			$row['visual_options'] = explode(',', $row['options']);
             
-            $row['avatar'] = set_avatar_data( array(      
-                        'avatar' => $row['avatar'],
-                        'email' => $row['email_address'],
-                        'filename' => !empty($row['filename']) ? $row['filename'] : '',
-                        'id_attach' => $row['id_attach'],
-                        'attachment_type' => $row['attachment_type'],
+            $row['avatar'] = determineAvatar( array(      
+                        'avatar'            => $row['avatar'],
+                        'email_address'     => $row['email_address'],
+                        'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                        'id_attach'         => $row['id_attach'],
+                        'attachment_type'   => $row['attachment_type'],
                     )
             )['image'];
 
@@ -1360,12 +1359,12 @@ function doTPfrontpage() {{{
                 $row['visual_options'] = explode(',', $row['options']);
                 $row['visual_options']['layout'] = $context['TPortal']['frontpage_layout'];
                 $row['rating'] = array_sum(explode(',', $row['rating']));
-                $row['avatar'] = set_avatar_data( array(      
-                            'avatar' => $row['avatar'],
-                            'email' => $row['email_address'],
-                            'filename' => !empty($row['filename']) ? $row['filename'] : '',
-                            'id_attach' => $row['id_attach'],
-                            'attachment_type' => $row['attachment_type'],
+                $row['avatar'] = determineAvatar( array(      
+                            'avatar'            => $row['avatar'],
+                            'email_address'     => $row['email_address'],
+                            'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                            'id_attach'         => $row['id_attach'],
+                            'attachment_type'   => $row['attachment_type'],
                         )
                 )['image'];
                 // we need some trick to put featured/sticky on top
@@ -1532,12 +1531,12 @@ function doTPfrontpage() {{{
 			while($article = $db->fetch_assoc($request)) {
 				// allowed and all is well, go on with it.
 				$context['TPortal']['blockarticles'][$article['id']] = $article;
-                $context['TPortal']['blockarticles'][$article['id']]['avatar'] = set_avatar_data( array(      
-                            'avatar' => isset($row['avatar']) ? $row['avatar'] : '',
-                            'email' => isset($row['email_address']) ? $row['email_address'] : '',
-                            'filename' => !empty($row['filename']) ? $row['filename'] : '',
-                            'id_attach' => isset($row['id_attach']) ? $row['id_attach'] : '',
-                            'attachment_type' => isset($row['attachment_type']) ? $row['attachment_type'] : '',
+                $context['TPortal']['blockarticles'][$article['id']]['avatar'] = determineAvatar( array(      
+                            'avatar'            => isset($row['avatar']) ? $row['avatar'] : '',
+                            'email_address'     => isset($row['email_address']) ? $row['email_address'] : '',
+                            'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                            'id_attach'         => isset($row['id_attach']) ? $row['id_attach'] : '',
+                            'attachment_type'   => isset($row['attachment_type']) ? $row['attachment_type'] : '',
                         )
                 )['image'];
 

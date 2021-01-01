@@ -814,8 +814,6 @@ function TPortal_sitemap()
          echo '
 	<div class="tborder">
 		<ul class="tpsitemap">';
-	if($context['TPortal']['show_download'] == '1')
-		echo '<li><a class="tpsitemapheader" href="'.$scripturl.'?action=tportal;sa=download;dl"><img src="' .$settings['tp_images_url']. '/TPmodule2.png" alt="" /> '.$txt['tp-downloads'].'</a></li>';
 
 	if(!empty($context['TPortal']['sitemap']) && !empty($context['TPortal']['menu']))
 	{
@@ -960,12 +958,12 @@ function progetAvatars($ids)
 	if($db->num_rows($request) > 0)
 	{
 		while ($row = $db->fetch_assoc($request)) {
-            $avy[$row['id_member']] = set_avatar_data( array(      
-                    'avatar' => $row['avatar'],
-                    'email' => $row['email_address'],
-                    'filename' => !empty($row['filename']) ? $row['filename'] : '',
-                    'id_attach' => $row['id_attach'],
-                    'attachment_type' => $row['attachment_type'],
+            $avy[$row['id_member']] = determineAvatar( array(      
+                    'avatar'            => $row['avatar'],
+                    'email_address'     => $row['email_address'],
+                    'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                    'id_attach'         => $row['id_attach'],
+                    'attachment_type'   => $row['attachment_type'],
                 )
             )['image'];
 		}
@@ -1003,8 +1001,7 @@ function template_TPsearch_above()
 {
 	global $context, $txt, $scripturl;
 
-	if($context['TPortal']['show_download']==0) {
-		echo '
+    echo '
 	<div style="padding: 0 5px;">
 		<div class="cat_bar">
 			<h3 class="category_header">' , $txt['tp-searcharticles'] , '</h3>
@@ -1013,19 +1010,6 @@ function template_TPsearch_above()
 			<span class="topslice"><span></span></span>
 			<p style="margin: 0; padding: 0 1em;">
 				<a href="' . $scripturl. '?action=tportal;sa=searcharticle">' . $txt['tp-searcharticles2'] . '</a>';
-	}
-	else {
-        echo '
-	<div style="padding: 0 5px;">
-		<div class="cat_bar">
-			<h3 class="category_header">' , $txt['tp-searcharticles'] , '</h3>
-		</div>
-		<div class="content">
-			<span class="topslice"><span></span></span>
-			<p style="margin: 0; padding: 0 1em;">
-				<a href="' . $scripturl. '?action=tportal;sa=searcharticle">' . $txt['tp-searcharticles2'] . '</a> |
-				<a href="' . $scripturl. '?action=tportal;sa=download;dl=search">' . $txt['tp-searchdownloads'] . '</a>';
-    }
 
 	// any others?
 	if(!empty($context['TPortal']['searcharray']) && count($context['TPortal']['searcharray']) > 0) {

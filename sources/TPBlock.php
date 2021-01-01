@@ -148,12 +148,12 @@ function getBlocks() {{{
 					$avatar_width = '';
 					$avatar_height = '';
 				}
-                $context['TPortal']['blockarticles'][$article['id']]['avatar'] = set_avatar_data( array(      
-                            'avatar' => $article['avatar'],
-                            'email' => $article['email_address'],
-                            'filename' => !empty($article['filename']) ? $article['filename'] : '',
-                            'id_attach' => $article['id_attach'],
-                            'attachment_type' => $article['attachment_type'],
+                $context['TPortal']['blockarticles'][$article['id']]['avatar'] = determineAvatar( array(      
+                            'avatar'            => $article['avatar'],
+                            'email_address'     => $article['email_address'],
+                            'filename'          => !empty($article['filename']) ? $article['filename'] : '',
+                            'id_attach'         => $article['id_attach'],
+                            'attachment_type'   => $article['attachment_type'],
                         )
                 )['image'];
 				// sort out the options
