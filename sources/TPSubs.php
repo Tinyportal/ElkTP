@@ -388,7 +388,7 @@ function get_snippets_xml() {{{
 function TP_createtopic($title, $text, $icon, $board, $sticky = 0, $submitter) {{{
 	global $user_info, $board_info, $sourcedir;
 
-	require_once($sourcedir.'/Subs-Post.php');
+	require_once(SUBSDIR.'/Post.subs.php');
 
 	$body = str_replace(array("<",">","\n","	"), array("&lt;","&gt;","<br>","&nbsp;"), $text);
 	preparsecode($body);

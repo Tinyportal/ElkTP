@@ -627,7 +627,7 @@ function saveBlock( $block_id = 0 ) {{{
             elseif(substr($what, 0, 9) == 'blockbody' && substr($what, -4) != 'mode') {
                 // If we came from WYSIWYG then turn it back into BBC regardless.
                 if (!empty($_REQUEST[$what.'_mode']) && isset($_REQUEST[$what])) {
-                    require_once(SOURCEDIR . '/Subs-Editor.php');
+                    require_once(SUBSDIR . '/Editor.subs.php');
                     $_REQUEST[$what] = html_to_bbc($_REQUEST[$what]);
                     // We need to unhtml it now as it gets done shortly.
                     $_REQUEST[$what] = un_htmlspecialchars($_REQUEST[$what]);
