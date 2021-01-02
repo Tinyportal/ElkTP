@@ -236,9 +236,8 @@ class Util
                 $nodeLen    = mb_strlen($node->nodeValue);
                 $totalLen   += $nodeLen;
 
-
                 if($totalLen > $length) {
-                    $node->nodeValue    = mb_substr($node->nodeValue, 0, $nodeLen - ($totalLen - $length));
+                    $node->nodeValue    = mb_substr($node->nodeValue, 0, mb_strpos($node->nodeValue, ' ', ($nodeLen - ($totalLen - $length))));
                     $reachedLimit       = true;
                 }
             }
