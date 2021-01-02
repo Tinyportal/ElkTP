@@ -163,7 +163,7 @@ class Block extends Base {
         else if($context['TPortal']['hidebars_search'] == '1' && in_array($context['TPortal']['action'], array('search', 'search2'))) {
             return FALSE;
         }
-        else if($context['TPortal']['hidebars_memberlist'] == '1' && $context['TPortal']['action'] == 'mlist') {
+        else if($context['TPortal']['hidebars_memberlist'] == '1' && $context['TPortal']['action'] == 'memberlist') {
             return FALSE;
         }
 

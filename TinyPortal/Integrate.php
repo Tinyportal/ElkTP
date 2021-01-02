@@ -176,7 +176,7 @@ class Integrate
             $bodyid = "pmpage";
         } elseif (isset($context['TPortal']) && $context['TPortal']['action'] == 'calendar') {
             $bodyid = "calendarpage";
-        } elseif (isset($context['TPortal']) && $context['TPortal']['action'] == 'mlist') {
+        } elseif (isset($context['TPortal']) && $context['TPortal']['action'] == 'memberlist') {
             $bodyid = "mlistpage";
         } elseif (isset($context['TPortal']) && in_array($context['TPortal']['action'], array('search', 'search2'))) {
             $bodyid = "searchpage";
