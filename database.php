@@ -17,7 +17,7 @@
  *
  */
 
-define('TP_MINIMUM_PHP_VERSION', '7.2.0');
+define('TP_MINIMUM_PHP_VERSION', '7.0.0');
 
 global $db_prefix, $package_log, $db_type;
 
