@@ -1872,7 +1872,7 @@ function tp_convertphp($code, $reverse = false) {{{
 	}
 }}}
 
-function updateTPSettings($addSettings, $check = false) {{{
+function updateTPSettings($addSettings) {{{
 	global $context;
 
     $tpAdmin = TPAdmin::getInstance();
@@ -1881,26 +1881,16 @@ function updateTPSettings($addSettings, $check = false) {{{
 		return;
     }
 
-	if($check) {
-		foreach ($addSettings as $variable => $value) {
-            $id = $tpAdmin->getSettingData('id', array ( 'name' => $variable ));
-            if(is_null($id)) {
-                $tpAdmin->insertSetting(array( 'name' => $variable, 'value' => ($value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value)) ) );
-            }
-            else {
-                $tpAdmin->updateSetting($id[0]['id'], array( 'value' => ($value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value)))); 
-            }
-
-			$context['TPortal'][$variable] = $value === true ? $context['TPortal'][$variable] + 1 : ($value === false ? $context['TPortal'][$variable] - 1 : $value);
-		}
-	}
-	else {
-		foreach ($addSettings as $variable => $value) {
-            $id = $tpAdmin->getSettingData('id', array ( 'name' => $variable ));
-            $tpAdmin->updateSetting($id[0]['id'], array( 'value' => ($value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value)))); 
-			$context['TPortal'][$variable] = $value === true ? $context['TPortal'][$variable] + 1 : ($value === false ? $context['TPortal'][$variable] - 1 : $value);
-		}
-	}
+    foreach ($addSettings as $variable => $value) {
+        $id = $tpAdmin->getSettingData('id', array ( 'name' => $variable ));
+        if(is_array($id)) {
+            $tpAdmin->updateSetting($id[0]['id'], array( 'value' => ($value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value))));
+        }
+        else {
+            $tpAdmin->insertSetting(array( 'name' => $variable, 'value' => ($value === true ? 'value + 1' : ($value === false ? 'value - 1' : $value))));
+        }
+        $context['TPortal'][$variable] = $value === true ? $context['TPortal'][$variable] + 1 : ($value === false ? $context['TPortal'][$variable] - 1 : $value);
+    }
 	// Clean out the cache and make sure the cobwebs are gone too.
 	cache_put_data('tpSettings', null, 90);
 
