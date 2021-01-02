@@ -22,6 +22,8 @@
  */
 namespace TinyPortal;
 
+define('BR', '{BR}');
+
 if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
@@ -155,7 +157,7 @@ class Util
             // Remove all the entities and change them to a space..
             $string     = preg_replace('/&nbsp;|&zwnj;|&raquo;|&laquo;|&gt;/', ' ', $string);
             // Change all the new lines to \r\n
-            $string     = str_ireplace(array("<br />","<br>","<br/>","<br />","&lt;br /&gt;","&lt;br/&gt;","&lt;br&gt;"), "\r\n", $string);
+            $string     = str_ireplace(array("<br />","<br>","<br/>","<br />","&lt;br /&gt;","&lt;br/&gt;","&lt;br&gt;"), BR, $string);
             
             if( self::strlen($string) > $length ) {
                 $shorten    = TRUE;
@@ -181,7 +183,7 @@ class Util
                     // check that no html has been cut off
                     if(self::isHTML($string)) {
                         // Change the newlines back to <br>
-                        $string = str_ireplace("\r\n", '<br>', $string);
+                        $string = str_ireplace(BR, '<br>', $string);
 
                         $reachedLimit   = false;
                         $totalLen       = 0;
@@ -217,7 +219,7 @@ class Util
             }
 
             // Change the newlines back to <br>
-            $string = str_ireplace("\r\n", '<br>', $string);
+            $string = str_ireplace(BR, '<br>', $string);
         }
 
         return $shorten;
