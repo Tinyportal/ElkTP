@@ -22,8 +22,6 @@
  */
 namespace TinyPortal;
 
-define('BR', '{BR}');
-
 if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
@@ -156,9 +154,7 @@ class Util
         if(!empty($length)) {
             // Remove all the entities and change them to a space..
             $string     = preg_replace('/&nbsp;|&zwnj;|&raquo;|&laquo;|&gt;/', ' ', $string);
-            // Change all the new lines to \r\n
-            $string     = str_ireplace(array("<br />","<br>","<br/>","<br />","&lt;br /&gt;","&lt;br/&gt;","&lt;br&gt;"), BR, $string);
-            
+ 
             if( self::strlen($string) > $length ) {
                 $shorten    = TRUE;
                 // Now we can find the closest space character
@@ -182,8 +178,10 @@ class Util
 
                     // check that no html has been cut off
                     if(self::isHTML($string)) {
-                        // Change the newlines back to <br>
-                        $string = str_ireplace(BR, '<br>', $string);
+                        // Change all the new lines to <br>
+                        $string         = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
+                        $string         = str_ireplace(array("<br />","<br>","<br/>","<br />","&lt;br /&gt;","&lt;br/&gt;","&lt;br&gt;"), '<br>', $string);
+                        $string         = mb_convert_encoding($string, 'HTML-ENTITIES', 'UTF-8');
 
                         $reachedLimit   = false;
                         $totalLen       = 0;
@@ -194,7 +192,7 @@ class Util
 						// set error level
 						$internalErrors = libxml_use_internal_errors(true);
 
-                        $dom->loadHTML(mb_convert_encoding($string, 'HTML-ENTITIES', 'UTF-8'));
+                        $dom->loadHTML($string);
 
 						// Restore error level
 						libxml_use_internal_errors($internalErrors);
@@ -206,20 +204,22 @@ class Util
                         }
 
                         $tmpString = $dom->saveHTML();
+
                         // Strip out the doctype and html body
-                        if(($pos = strpos($tmpString, '<html><body>')) !== FALSE) {
-                            $tmpString = substr($tmpString, $pos + 12);
+                        if(($pos = mb_strpos($tmpString, '<html><body>')) !== FALSE) {
+                            $tmpString = mb_substr($tmpString, $pos + 12);
                         }
 
+                        // Remove the html body from the end
+                        if(($pos = mb_strpos($tmpString, '</body></html>')) != FALSE) {
+                            $tmpString = mb_substr($tmpString, 0, $pos);
+                        }
                     }
                     
                     // Assign it back to the string
                     $string = $tmpString;
                 }
             }
-
-            // Change the newlines back to <br>
-            $string = str_ireplace(BR, '<br>', $string);
         }
 
         return $shorten;
@@ -236,9 +236,8 @@ class Util
                 $nodeLen    = mb_strlen($node->nodeValue);
                 $totalLen   += $nodeLen;
 
-
                 if($totalLen > $length) {
-                    $node->nodeValue    = mb_substr($node->nodeValue, 0, $nodeLen - ($totalLen - $length));
+                    $node->nodeValue    = mb_substr($node->nodeValue, 0, mb_strpos($node->nodeValue, ' ', ($nodeLen - ($totalLen - $length))));
                     $reachedLimit       = true;
                 }
             }
