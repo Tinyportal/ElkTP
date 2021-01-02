@@ -206,10 +206,14 @@ class Util
                         $tmpString = $dom->saveHTML();
 
                         // Strip out the doctype and html body
-                        if(($pos = strpos($tmpString, '<html><body>')) !== FALSE) {
-                            $tmpString = substr($tmpString, $pos + 12);
+                        if(($pos = mb_strpos($tmpString, '<html><body>')) !== FALSE) {
+                            $tmpString = mb_substr($tmpString, $pos + 12);
                         }
 
+                        // Remove the html body from the end
+                        if(($pos = mb_strpos($tmpString, '</body></html>')) != FALSE) {
+                            $tmpString = mb_substr($tmpString, 0, $pos);
+                        }
                     }
                     
                     // Assign it back to the string
