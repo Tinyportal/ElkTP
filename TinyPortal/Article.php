@@ -495,8 +495,20 @@ class Article extends Base
                 $row['parsed_bbc']      = true;
 
 				// Load their context data.
-				\loadMemberData($row['author_id'], false, 'minimal');
+                if(!array_key_exists('admin_features', $context)) {
+                    $context['admin_features']  = array();
+                    $adminFeatures              = true;
+                }
+                else {
+                    $adminFeatures              = false;
+                }
+				
+                \loadMemberData($row['author_id']);
 				\loadMemberContext($row['author_id']);
+                
+                if($adminFeatures == true) {
+                    unset($context['admin_features']);
+                }
 
 				// Store this member's information.
 				if(!is_null($memberContext) && array_key_exists($row['author_id'], $memberContext)) {

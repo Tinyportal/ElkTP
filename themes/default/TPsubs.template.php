@@ -176,7 +176,7 @@ function TPblock($block, $theme, $side, $double=false)
 // blocktype 1: User
 function TPortal_userbox()
 {
-	global $context, $settings, $scripturl, $txt, $user_info, $maintenance;
+	global $context, $settings, $scripturl, $txt, $user_info, $maintenance, $modSettings;
 
 	$bullet = '<img src="'.$settings['tp_images_url'].'/TPdivider.png" alt="" style="margin:0 4px 0 0;" />';
 	$bullet2 = '<img src="'.$settings['tp_images_url'].'/TPdivider2.png" alt="" style="margin:0 4px 0 0;" />';
@@ -190,8 +190,7 @@ function TPortal_userbox()
 
 	// If the user is logged in, display stuff like their name, new messages, etc.
 
-	if ($context['user']['is_logged'])
-	{
+	if ($context['user']['is_logged']) {
 
 		if (!empty($context['user']['avatar']) &&  isset($context['TPortal']['userbox']['avatar']))
 			echo '
@@ -274,8 +273,14 @@ function TPortal_userbox()
 		</ul>';
 	}
 	// Otherwise they're a guest - so politely ask them to register or login.
-	else  {
-		echo '<div style="line-height: 1.4em;">', sprintf($txt[$context['can_register'] ? 'welcome_guest_register' : 'welcome_guest'], $txt['guest_title'], $context['forum_name_html_safe'], $scripturl . '?action=login', 'return reqOverlayDiv(this.href, ' . JavaScriptEscape($txt['login']) . ');', $scripturl . '?action=signup'), '<br><br>', $context['current_time'], '</div>';
+    else  {
+        if (!empty($modSettings['registration_method']) && $modSettings['registration_method'] == 1) {
+            $txt['welcome_guest'] .= $txt['welcome_guest_activate'];
+        }
+
+        $txt['welcome_guest'] = replaceBasicActionUrl($txt['welcome_guest']);
+
+        echo '<div style="line-height: 1.4em;">', $txt['welcome_guest'], '</div>';
     echo '
         <form style="margin-top: 5px;" action="', $scripturl, '?action=login2" method="post" >
             <input type="text" class="input_text" name="user" size="10" style="max-width: 45%!important;"/> <input type="password" class="input_password" name="passwrd" size="10" style="max-width: 45%!important;"/><br>
@@ -319,7 +324,7 @@ function TPortal_statsbox()
 	if(isset($context['TPortal']['userbox']['stats']))
 		// members stats
 		echo '
-		<h5 class="mlist"><a href="'.$scripturl.'?action=mlist">'.$txt['members'].'</a></h5>
+		<h5 class="mlist"><a href="'.$scripturl.'?action=memberlist">'.$txt['members'].'</a></h5>
 		<ul>
 			<li>' . $bullet. $txt['total_members'].': ' , isset($modSettings['memberCount']) ? $modSettings['memberCount'] : $modSettings['totalMembers'] , '</li>
 			<li>' . $bullet. $txt['tp-latest']. ': <a href="', $scripturl, '?action=profile;u=', $modSettings['latestMember'], '"><strong>', $modSettings['latestRealName'], '</strong></a></li>
