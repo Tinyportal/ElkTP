@@ -9,7 +9,6 @@
 		<redirect url="">Installed!</redirect>
 		<require-dir name="themes" destination="BOARDDIR" />
 		<require-dir name="sources" destination="BOARDDIR" />
-		<require-dir name="subs" destination="SUBSDIR" />
 		<require-dir name="TinyPortal" destination="BOARDDIR" />
 		<require-dir name="tp-files" destination="BOARDDIR" />
 		<require-dir name="tp-images" destination="BOARDDIR" />
