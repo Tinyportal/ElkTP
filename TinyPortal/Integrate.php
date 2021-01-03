@@ -47,6 +47,7 @@ class Integrate
             'redirect'                          => '\TinyPortal\Integrate::hookRedirect',
             'action_frontpage'                  => '\TinyPortal\Integrate::hookFrontPage',
             'init_theme'                        => '\TinyPortal\Integrate::hookInitTheme',
+            'search'                            => '\TinyPortal\Integrate::hookSearchLayers',
             'tp_pre_subactions'                 => array ( 
                 'SOURCEDIR/TPArticle.php|TPArticleActions',
                 'SOURCEDIR/TPSearch.php|TPSearchActions',
