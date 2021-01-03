@@ -2,22 +2,10 @@
 /**
  * @package TinyPortal
  * @version 1.0.0
- * @author tinoest - https://www.tinyportal.net
- * @founder Bloc
- * @license MPL 2.0
- *
- * Handles all TinyPortal Util operations
- *
- * The contents of this file are subject to the Mozilla Public License Version 2.0
- * (the "License"); you may not use this package except in compliance with
- * the License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/
+ * @author TinyPortal - http://www.tinyportal.net
+ * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
  * Copyright (C) 2020 - The TinyPortal Team
- *
- * This file contains code covered by:
- * author: tinoest - https://tinoest.co.uk
- * license: BSD-3-Clause 
  *
  */
 namespace TinyPortal;
