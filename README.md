@@ -26,7 +26,8 @@ ELK version must be ELK 1.1.x
 License Information:
 --------------------------------------
 
-The contents of this file are subject to the BSD 3.0 Licence https://opensource.org/licenses/BSD-3-Clause
+The contents of this file are subject to the BSD 3.0 Licence, you may not use this package except in compliance with the License. 
+You may obtain a copy of the License at https://opensource.org/licenses/BSD-3-Clause
 
 
 Questions?
