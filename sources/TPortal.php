@@ -86,18 +86,6 @@ function TPortalInit() {{{
 		TP_permaTheme($_GET['theme']);
     }
 
-	// do after action
-/*
-	if(isset($_GET['page']) && !isset($context['current_action'])) {
-		$context['shortID'] = doTPpage();
-    }
-	else if(isset($_GET['cat'])) {
-		$context['catshortID'] = doTPcat();
-    }
-	else if(!isset($_GET['action']) && !isset($_GET['board']) && !isset($_GET['topic'])) {
-		doTPfrontpage();
-	}
-*/
 	// Load the stylesheet stuff
 	tpLoadCSS();
 
