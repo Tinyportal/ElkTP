@@ -368,7 +368,7 @@ class Integrate
         // Profile area for 1.0
         $profile_areas['tp']['areas']['tpsummary'] = array(
             'label' => $txt['tpsummary'],
-            'file' => '../'.SUBSIDR.'TPortal.subs.php',
+            'file' => '../subs/TPortal.subs.php',
             'function' => 'tp_summary',
             'icon' => 'menu_tp',
             'permission' => array(
@@ -380,7 +380,7 @@ class Integrate
         if (!$context['TPortal']['use_wysiwyg']=='0') {
             $profile_areas['tp']['areas']['tparticles'] = array(
                 'label' => $txt['articlesprofile'],
-                'file' => '../'.SUBSIDR.'TPortal.subs.php',
+                'file' => '../subs/TPortal.subs.php',
                 'function' => 'tp_articles',
                 'icon' => 'menu_tparticle',
                 'permission' => array(
@@ -396,7 +396,7 @@ class Integrate
         else {
             $profile_areas['tp']['areas']['tparticles'] = array(
                 'label' => $txt['articlesprofile'],
-                'file' => '../'.SUBSIDR.'TPortal.subs.php',
+                'file' => '../subs/TPortal.subs.php',
                 'function' => 'tp_articles',
                 'icon' => 'menu_tparticle',
                 'permission' => array(
