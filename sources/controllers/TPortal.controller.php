@@ -69,7 +69,6 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
 
             $subActions = array (
                 'credits'           => array('TPhelp.php', 'TPCredits'      , array()),
-                'updatelog'         => array('TPSubs.php', 'TPUpdateLog'    , array()),
             );
 
             call_integration_hook('integrate_tp_pre_subactions', array(&$subActions));

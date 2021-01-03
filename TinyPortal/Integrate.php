@@ -368,7 +368,7 @@ class Integrate
         // Profile area for 1.0
         $profile_areas['tp']['areas']['tpsummary'] = array(
             'label' => $txt['tpsummary'],
-            'file' => '../TPSubs.php',
+            'file' => '../'.SUBSIDR.'TPortal.subs.php',
             'function' => 'tp_summary',
             'icon' => 'menu_tp',
             'permission' => array(
@@ -380,7 +380,7 @@ class Integrate
         if (!$context['TPortal']['use_wysiwyg']=='0') {
             $profile_areas['tp']['areas']['tparticles'] = array(
                 'label' => $txt['articlesprofile'],
-                'file' => '../TPSubs.php',
+                'file' => '../'.SUBSIDR.'TPortal.subs.php',
                 'function' => 'tp_articles',
                 'icon' => 'menu_tparticle',
                 'permission' => array(
@@ -396,7 +396,7 @@ class Integrate
         else {
             $profile_areas['tp']['areas']['tparticles'] = array(
                 'label' => $txt['articlesprofile'],
-                'file' => '../TPSubs.php',
+                'file' => '../'.SUBSIDR.'TPortal.subs.php',
                 'function' => 'tp_articles',
                 'icon' => 'menu_tparticle',
                 'permission' => array(
@@ -432,13 +432,13 @@ class Integrate
 
         // Action and board are both empty... maybe the portal page?
         if (empty($board) && empty($topic) && $context['TPortal']['front_type'] != 'boardindex') {
-            require_once(SOURCEDIR . '/TPortal.php');
+            require_once(SUBSDIR . '/TPortal.subs.php');
             $theAction = 'TPortalMain';
         }
 
         // If frontpage set to boardindex but it's an article or category
         if (empty($board) && empty($topic) && $context['TPortal']['front_type'] == 'boardindex' && (isset($_GET['cat']) || isset($_GET['page']))) {
-            require_once(SOURCEDIR . '/TPortal.php');
+            require_once(SUBSDIR . '/TPortal.subs.php');
             $theAction = 'TPortalMain';
         }
         // Action and board are still both empty...and no portal startpage - BoardIndex!
@@ -546,7 +546,7 @@ class Integrate
 
     public static function hookInitTheme($id_theme, &$settings) {{{
 
-        require_once(SOURCEDIR . '/TPortal.php');        
+        require_once(SUBSDIR . '/TPortal.subs.php');        
         \TPortalInit();
 
     }}}
@@ -588,7 +588,7 @@ class Integrate
     public static function hookLoadTheme(&$id_theme) {{{
         global $modSettings;
 
-        require_once(SOURCEDIR . '/TPSubs.php');
+        require_once(SUBSDIR . '/TPortal.subs.php');
 
         $theme  = 0;
         $dB     = Database::getInstance();
