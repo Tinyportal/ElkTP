@@ -1,17 +1,11 @@
 <?php
 /**
- * Handles all TinyPortal Upload operations
- *
- * @name      	TinyPortal
- * @package 	Upload
- * @copyright 	TinyPortal
- * @license   	MPL 1.1
- *
- * This file contains code covered by:
- * author: tinoest - https://tinoest.co.uk
- * license: BSD-3-Clause 
- *
+ * @package TinyPortal
  * @version 1.0.0
+ * @author TinyPortal - http://www.tinyportal.net
+ * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
+ *
+ * Copyright (C) 2020 - The TinyPortal Team
  *
  */
 namespace TinyPortal;
