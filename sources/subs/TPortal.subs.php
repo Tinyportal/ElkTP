@@ -24,14 +24,6 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-// TinyPortal startpage
-function TPortalMain() {{{
-	global $context;
-
-	loadTemplate('TPortal');
-
-}}}
-
 // TinyPortal init
 function TPortalInit() {{{
 	global $context, $txt, $user_info, $settings, $modSettings;

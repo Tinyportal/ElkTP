@@ -420,38 +420,6 @@ class Integrate
 
     }}}
 
-    public static function hookDefaultAction() {{{
-        global $topic, $board, $context;
-
-        $theAction = false;
-        // first..if the action is set, but empty, don't go any further
-        if (isset($_REQUEST['action']) && $_REQUEST['action']=='') {
-            require_once(SOURCEDIR . '/BoardIndex.php');
-            $theAction = 'BoardIndex';
-        }
-
-        // Action and board are both empty... maybe the portal page?
-        if (empty($board) && empty($topic) && $context['TPortal']['front_type'] != 'boardindex') {
-            require_once(SUBSDIR . '/TPortal.subs.php');
-            $theAction = 'TPortalMain';
-        }
-
-        // If frontpage set to boardindex but it's an article or category
-        if (empty($board) && empty($topic) && $context['TPortal']['front_type'] == 'boardindex' && (isset($_GET['cat']) || isset($_GET['page']))) {
-            require_once(SUBSDIR . '/TPortal.subs.php');
-            $theAction = 'TPortalMain';
-        }
-        // Action and board are still both empty...and no portal startpage - BoardIndex!
-        elseif (empty($board) && empty($topic) && $context['TPortal']['front_type'] == 'boardindex') {
-            require_once(SOURCEDIR . '/BoardIndex.php');
-            $theAction = 'BoardIndex';
-        }
-
-        // We need to manually call the action as this function was called be default
-        call_user_func($theAction);
-
-    }}}
-
     public static function hookWhosOnline($actions) {{{
         global $txt, $scripturl;
 
