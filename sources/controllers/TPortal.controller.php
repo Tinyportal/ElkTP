@@ -90,13 +90,13 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
             call_integration_hook('integrate_tp_post_subactions');
         }
 
-        if(isset($_GET['page']) && !isset($context['current_action'])) {
+        if(TPUtil::filter('page', 'get', 'string') && !isset($context['current_action'])) {
             $context['shortID'] = self::action_page();
         }
-        else if(isset($_GET['cat'])) {
+        else if(TPUtil::filter('cat', 'get', 'string')) {
             $context['catshortID'] = self::action_category();
         }
-        else if(!isset($_GET['action']) && !isset($_GET['board']) && !isset($_GET['topic'])) {
+        else if(!(TPUtil::filter('action', 'get', 'string') && TPUtil::filter('board', 'get', 'string') && TPUtil::filter('topic', 'get', 'string'))) {
             self::action_frontpage();
         }
 
@@ -131,8 +131,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
         }
 
         // check validity and fetch it
-        if(!empty($_GET['page'])) {
-            $page = TPUtil::filter('page', 'get', 'string');
+        if($page = TPUtil::filter('page', 'get', 'string')) {
 
             $_SESSION['login_url'] = $scripturl . '?page=' . $page;
 
@@ -676,12 +675,6 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
                     }
                     $context['TPortal']['show_catlist'] = count($context['TPortal']['clist']) > 0 ? true : false;
 
-                    if (defined('WIRELESS') && WIRELESS) {
-                        $context['TPortal']['single_article'] = false;
-                        loadtemplate('TPwireless');
-                        // decide what subtemplate
-                        $context['sub_template'] = WIRELESS_PROTOCOL . '_tp_cat';
-                    }
                     $context['page_title'] = $context['TPortal']['category']['display_name'];
                     return $category['id'];
                 }
