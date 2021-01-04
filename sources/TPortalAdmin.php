@@ -245,7 +245,7 @@ function TPortalAdmin()
 				'addblock' => array(
                     'lang' => true,
                     'text' => 'tp-addblock',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=addblock=;' . $context['session_var'] . '=' . $context['session_id'].'',
+                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=addblock;' . $context['session_var'] . '=' . $context['session_id'].'',
                     'active' => $tpsub == 'addblock',
                 ),
                 'blockoverview' => array(
