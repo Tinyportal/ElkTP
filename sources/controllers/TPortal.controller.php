@@ -131,8 +131,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
         }
 
         // check validity and fetch it
-        if(!empty($_GET['page'])) {
-            $page = TPUtil::filter('page', 'get', 'string');
+        if($page = TPUtil::filter('page', 'get', 'string')) {
 
             $_SESSION['login_url'] = $scripturl . '?page=' . $page;
 
@@ -676,12 +675,6 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
                     }
                     $context['TPortal']['show_catlist'] = count($context['TPortal']['clist']) > 0 ? true : false;
 
-                    if (defined('WIRELESS') && WIRELESS) {
-                        $context['TPortal']['single_article'] = false;
-                        loadtemplate('TPwireless');
-                        // decide what subtemplate
-                        $context['sub_template'] = WIRELESS_PROTOCOL . '_tp_cat';
-                    }
                     $context['page_title'] = $context['TPortal']['category']['display_name'];
                     return $category['id'];
                 }
