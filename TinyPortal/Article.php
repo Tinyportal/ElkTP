@@ -114,17 +114,18 @@ class Article extends Base
 
         if($this->dB->db_num_rows($request) > 0) {
             while ( $row = $this->dB->db_fetch_assoc($request)) {
-                $categoryData = Category::getInstance()->getCategoryData(array('display_name', 'short_name', 'settings', 'access', 'custom_template'), array( 'item_type' => 'article', 'item_id' => $row['category']));
-                // FixME
-                $categoryData               = $categoryData[0];
-                $row['category_name']       = $categoryData['display_name'];
-                $row['category_shortname']  = $categoryData['short_name'];
-                $row['parent']              = 0;
-                $row['access']              = $categoryData['access'];
-                $row['dt_log']              = '';
-                $row['page']              = -2;
-                $row['settings']              = $categoryData['settings'];
-                $row['custom_template']              = $categoryData['custom_template'];
+                $categoryData               = Category::getInstance()->getCategoryData(array('display_name', 'short_name', 'settings', 'access', 'custom_template'), array( 'item_type' => 'category', 'id' => $row['category']));
+                if(is_array($categoryData)) {
+                    $categoryData               = $categoryData[0];
+                    $row['category_name']       = $categoryData['display_name'];
+                    $row['category_shortname']  = $categoryData['short_name'];
+                    $row['parent']              = 0;
+                    $row['access']              = $categoryData['access'];
+                    $row['dt_log']              = '';
+                    $row['page']                = -2;
+                    $row['settings']            = $categoryData['settings'];
+                    $row['custom_template']     = $categoryData['custom_template'];
+                }
                 $articles[]                 = $row;
             }
             $this->dB->db_free_result($request);
