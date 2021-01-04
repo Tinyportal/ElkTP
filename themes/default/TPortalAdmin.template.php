@@ -1736,7 +1736,7 @@ function template_blocks()
 			echo '
 				<div class="font_strong">
 					<b>'.$txt['tp-'.$side[$i].'sideblocks'].'</b>
-					<a href="'.$scripturl.'?action=admin;area=tparticles;addblock=' . $side[$i] . ';' . $context['session_var'] . '=' . $context['session_id'].'">
+					<a href="'.$scripturl.'?action=admin;area=tpblocks;addblock=' . $side[$i] . ';' . $context['session_var'] . '=' . $context['session_id'].'">
 					<span style="float: right;"><strong>[' , $txt['tp-addblock'] , ']</strong></span></a>
 				</div>';
 			if(isset($context['TPortal']['admin' . $side[$i].'panel']) && $context['TPortal']['admin' . $side[$i].'panel']==0 && $side[$i]!='front')
