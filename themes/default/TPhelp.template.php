@@ -13,8 +13,9 @@ function template_main()
 {
 	global $context;
 
-	if ($context['TPortal']['subaction'] == 'credits')
+	if ($context['TPortal']['subaction'] == 'credits') {
 		template_tpcredits();
+    }
 }
 
 // Credits Page

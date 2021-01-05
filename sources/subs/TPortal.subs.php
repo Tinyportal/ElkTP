@@ -1037,6 +1037,7 @@ function chain($primary_field, $parent_field, $sort_field, $rows, $root_id = 0, 
    return $c->chain_table;
 }}}
 
+{{{
 class chain
 {
    var $table;
@@ -1090,6 +1091,7 @@ class chain
        }
    }
 }
+}}}
 
 function chainCMP($a, $b) {{{
    if($a[$a['key']] == $b[$b['key']]) {
@@ -1098,8 +1100,7 @@ function chainCMP($a, $b) {{{
    return($a[$a['key']] < $b[$b['key']]) ? -1 : 1;
 }}}
 
-function TP_permaTheme($theme)
-{
+function TP_permaTheme($theme) {{{
 	global $context;
 
     $db = TPDatabase::getInstance();
@@ -1120,18 +1121,16 @@ function TP_permaTheme($theme)
 		$tp_where = 'action=forum;';
 
 	redirectexit($tp_where);
-}
+}}}
 
-function TP_error($text)
-{
+function TP_error($text) {{{
 	global $context;
 
 	$context['TPortal']['tperror'] = $text;
 	$context['template_layers'][] = 'tperror';
-}
+}}}
 
-function tp_renderbbc($message)
-{
+function tp_renderbbc($message) {{{
 	global $context, $txt;
 
 	$descriptionEditorOptions = array(
@@ -1160,7 +1159,7 @@ function tp_renderbbc($message)
 		echo '
 				</td>
 			</tr>';
-}
+}}}
 
 function get_snippets_xml() {{{
 	return;
@@ -1489,8 +1488,7 @@ function tp_fetchpermissions($perms) {{{
 	}
 }}}
 
-function tp_fetchboards()
-{
+function tp_fetchboards() {{{
     $db = TPDatabase::getInstance();
 
 	// get all boards for board-spesific news
@@ -1502,18 +1500,16 @@ function tp_fetchboards()
 		array()
 	);
 	$boards = array();
-	if ($db->num_rows($request) > 0)
-	{
-		while($row = $db->fetch_assoc($request))
+	if ($db->num_rows($request) > 0) {
+		while($row = $db->fetch_assoc($request)) {
 			$boards[] = array('id' => $row['id_board'], 'name' => $row['name']);
-
+        }
 		$db->free_result($request);
 	}
 	return $boards;
-}
+}}}
 
-function tp_hidepanel($id, $inline = false, $string = false, $margin='')
-{
+function tp_hidepanel($id, $inline = false, $string = false, $margin='') {{{
 	global $context, $settings;
 
 	$what = '
@@ -1524,10 +1520,9 @@ function tp_hidepanel($id, $inline = false, $string = false, $margin='')
 		return $what;
 	else
 		echo $what;
-}
+}}}
 
-function tp_hidepanel2($id, $id2, $alt)
-{
+function tp_hidepanel2($id, $id2, $alt) {{{
 	global $txt, $context, $settings;
 
 	$what = '
@@ -1536,38 +1531,34 @@ function tp_hidepanel2($id, $id2, $alt)
 	</a>';
 
 	return $what;
-}
+}}}
 
 
 function get_perm($perm, $moderate = '') {{{   
     return TPPermissions::getInstance()->getPermissions($perm, $moderate);	
 }}}
 
-function tpsort($a, $b)
-{
+function tpsort($a, $b) {{{
 	return strnatcasecmp($b["timestamp"], $a["timestamp"]);
-}
+}}}
 
 // add to the linktree
-function TPadd_linktree($url,$name)
-{
+function TPadd_linktree($url,$name) {{{
 	global $context;
 
 	$context['linktree'][] = array('url' => $url, 'name' => $name);
-}
+}}}
 
 // strip the linktree
-function TPstrip_linktree()
-{
+function TPstrip_linktree() {{{
 	global $context, $scripturl;
 
 	$context['linktree'] = array();
 	$context['linktree'][] = array('url' => $scripturl, 'name' => $context['forum_name']);
-}
+}}}
 
 // Constructs a page list.
-function TPageIndex($base_url, &$start, $max_value, $num_per_page)
-{
+function TPageIndex($base_url, &$start, $max_value, $num_per_page) {{{
 	global $modSettings, $txt;
 
     $flexible_start = false;
@@ -1654,10 +1645,9 @@ function TPageIndex($base_url, &$start, $max_value, $num_per_page)
 	}
 	$pageindex = $txt['pages']. ': ' . $pageindex;
 	return $pageindex;
-}
+}}}
 
-function tp_renderarticle($intro = '')
-{
+function tp_renderarticle($intro = '') {{{
 	global $context, $txt, $scripturl, $boarddir;
 	global $image_proxy_enabled, $image_proxy_secret, $boardurl;
 
@@ -1740,10 +1730,9 @@ function tp_renderarticle($intro = '')
 	}
 	$data .= '</div> <!-- article_inner -->';
 	return $data;
-}
+}}}
 
-function tp_renderblockarticle()
-{
+function tp_renderblockarticle() {{{
 
 	global $context, $txt, $boarddir;
 
@@ -1769,10 +1758,10 @@ function tp_renderblockarticle()
 	echo '
 	</div>';
 	return;
-}
 
-function render_template($code, $render = true)
-{
+}}}
+
+function render_template($code, $render = true) {{{
     global $context;
 
     if(!empty($context['TPortal']['disable_template_eval']) && $render == true) { 
@@ -1795,10 +1784,9 @@ function render_template($code, $render = true)
 		    return $ncode;
         }
     }
-}
+}}}
 
-function render_template_layout($code, $prefix = '')
-{
+function render_template_layout($code, $prefix = '') {{{
     global $context;
 
     if(!empty($context['TPortal']['disable_template_eval'])) { 
@@ -1819,10 +1807,9 @@ function render_template_layout($code, $prefix = '')
 	    $ncode = 'echo \'' . str_replace(array('{','}'),array("', " . $prefix , "(), '"),$code).'\';';
 	    eval($ncode);
     }
-}
+}}}
 
-function tp_hidebars($what = 'all' )
-{
+function tp_hidebars($what = 'all' ) {{{
 	global $context;
 
 	if($what == 'all'){
@@ -1845,10 +1832,9 @@ function tp_hidebars($what = 'all' )
 		$context['TPortal']['toppanel'] = 0;
 	elseif($what=='lower')
 		$context['TPortal']['lowerpanel'] = 0;
-}
+}}}
 
-function TPgetlangOption($langlist, $set)
-{
+function TPgetlangOption($langlist, $set) {{{
 
 	$lang   = explode("|", $langlist);
 	if(is_countable($lang)) {
@@ -1866,10 +1852,9 @@ function TPgetlangOption($langlist, $set)
 	}
 
 	return $setlang;
-}
+}}}
 
-function category_col($column, $featured = false, $render = true)
-{
+function category_col($column, $featured = false, $render = true) {{{
     global $context;
 
     unset($context['TPortal']['article']);
@@ -1896,28 +1881,24 @@ function category_col($column, $featured = false, $render = true)
         }
         unset($context['TPortal']['article']);
     }
-}
+}}}
 
 // the featured or first article
-function category_featured( $render = true)
-{
+function category_featured( $render = true) {{{
     return category_col('featured', true, $render);
+}}}
 
-}
 // the first half
-function category_col1($render = true)
-{
+function category_col1($render = true) {{{
     return category_col('col1', false, $render);
-}
+}}}
 
 // the second half
-function category_col2($render = true)
-{
+function category_col2($render = true) {{{
     return category_col('col2', false, $render);
-}
+}}}
 
-function TPparseRSS($override = '', $encoding = 0)
-{
+function TPparseRSS($override = '', $encoding = 0) {{{
 	global $context;
 
 	// Initialise the number of RSS Feeds to show
@@ -1966,7 +1947,7 @@ function TPparseRSS($override = '', $encoding = 0)
 		}
 	}
 
-}
+}}}
 
 // Set up the administration sections.
 function TPadminIndex($tpsub = '', $module_admin = false) {{{
@@ -2070,8 +2051,7 @@ function TPadminIndex($tpsub = '', $module_admin = false) {{{
 
 }}}
 
-function tp_collectArticleIcons()
-{
+function tp_collectArticleIcons() {{{
 	global $context, $boarddir, $boardurl;
 
     $db = TPDatabase::getInstance();
@@ -2128,10 +2108,9 @@ function tp_collectArticleIcons()
 		closedir($handle);
 	}
 	sort($context['TPortal']['articons']['illustrations']);
-}
+}}}
 
-function tp_recordevent($date, $id_member, $textvariable, $link, $description, $allowed, $eventid)
-{
+function tp_recordevent($date, $id_member, $textvariable, $link, $description, $allowed, $eventid) {{{
     $db = TPDatabase::getInstance();
 
 	$db->insert('insert',
@@ -2149,25 +2128,22 @@ function tp_recordevent($date, $id_member, $textvariable, $link, $description, $
 		array($id_member, $date, $textvariable, $link, $description, $allowed, $eventid, 0),
 		array('id')
 	);
-}
+}}}
 
-function tp_fatal_error($error)
-{
+function tp_fatal_error($error) {{{
 	global $context;
 
 	$context['sub_template'] = 'tp_fatal_error';
 	$context['TPortal']['errormessage'] = $error;
-}
+}}}
 
 // Recent topic list:   [board] Subject by Poster	Date
-function tp_recentTopics($num_recent = 8, $exclude_boards = null, $include_boards = null, $output_method = 'echo')
-{
+function tp_recentTopics($num_recent = 8, $exclude_boards = null, $include_boards = null, $output_method = 'echo') {{{
     return ssi_recentTopics($num_recent, $exclude_boards, $include_boards, $output_method);
-}
+}}}
 
 // Download an attachment.
-function tpattach()
-{
+function tpattach() {{{
 	global $txt, $modSettings, $context;
 
     $db = TPDatabase::getInstance();
@@ -2360,9 +2336,9 @@ function tpattach()
 		echo isset($callback) ? $callback(file_get_contents($filename)) : file_get_contents($filename);
 
 	obExit(false);
-}
+}}}
 
-function art_recentitems($max = 5, $type = 'date' ){
+function art_recentitems($max = 5, $type = 'date' ) {{{
 
     $db = TPDatabase::getInstance();
 
@@ -2429,7 +2405,7 @@ function art_recentitems($max = 5, $type = 'date' ){
 		$db->free_result($request);
 	}
 	return $data;
-}
+}}}
 
 function TP_bbcbox($input) {{{
    echo'<div id="tp_smilebox"></div>';

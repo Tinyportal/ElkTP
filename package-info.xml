@@ -24,7 +24,6 @@
 		<remove-file name="SOURCEDIR/TPSSI.php" />
 		<remove-file name="SOURCEDIR/TPBlock.php" />
 		<remove-file name="SOURCEDIR/TPcommon.php" />
-		<remove-file name="SOURCEDIR/TPhelp.php" />
 		<remove-file name="SOURCEDIR/TPortalAdmin.php" />
 		<remove-file name="SOURCEDIR/TPArticle.php" />
 		<remove-file name="SOURCEDIR/TPSearch.php" />

@@ -499,7 +499,7 @@ function template_frontpage()
 						</dt>
 						<dd>
 						  <select id="tp_boardnews_headerstyle" name="tp_boardnews_headerstyle" value="' ,$context['TPortal']['boardnews_headerstyle'], '">
-								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='category_header' ? ' selected="selected"' : '' , '>category_header</option>
+								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='boardnews_cat_header' ? ' selected="selected"' : '' , '>boardnews_cat_header</option>
 								<option value="category_header"' , $context['TPortal']['boardnews_headerstyle']=='category_header' ? ' selected="selected"' : '' , '>category_header</option>
 							</select>
 						</dd>
