@@ -54,27 +54,31 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
         return true;
     }}}
 
+    public function trackStats($stats = array()) {{{
+
+
+    }}}
+
     public function action_index() {{{
         global $context, $txt;
       
 		\loadLanguage('TPortal');
-        \loadTemplate('TPortal');
 
         $action = TPUtil::filter('action', 'get', 'string');
         if($action == 'tportal') {
             $subAction  = TPUtil::filter('sa', 'get', 'string');
             if($subAction == false) {
-                fatal_error($txt['tp-no-sa-url'], false);
+                Errors::instance()->log_error($txt['tp-no-sa-url'], 'general');
             }
 
-            $subActions = array (
-                'credits'           => array('TPhelp.php', 'TPCredits'      , array()),
+            $subActions = array(
+                'credits'   => array('', 'self::action_credits', array()),
             );
 
             call_integration_hook('integrate_tp_pre_subactions', array(&$subActions));
 
             if(!array_key_exists($subAction, $subActions)) {
-                fatal_error($txt['tp-no-sa-list'], false);
+                Errors::instance()->log_error($txt['tp-no-sa-list'], 'general');
             }
 
             $context['TPortal']['subaction'] = $subAction;
@@ -89,36 +93,24 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
 
             call_integration_hook('integrate_tp_post_subactions');
         }
-
-        if(TPUtil::filter('page', 'get', 'string') && !isset($context['current_action'])) {
-            $context['shortID'] = self::action_page();
+        else {
+            if(TPUtil::filter('page', 'get', 'string') && !isset($context['current_action'])) {
+                $context['shortID'] = self::action_page();
+            }
+            else if(TPUtil::filter('cat', 'get', 'string')) {
+                $context['catshortID'] = self::action_category();
+            }
+            else if(!(TPUtil::filter('action', 'get', 'string') && TPUtil::filter('board', 'get', 'string') && TPUtil::filter('topic', 'get', 'string'))) {
+                self::action_frontpage();
+            }
         }
-        else if(TPUtil::filter('cat', 'get', 'string')) {
-            $context['catshortID'] = self::action_category();
-        }
-        else if(!(TPUtil::filter('action', 'get', 'string') && TPUtil::filter('board', 'get', 'string') && TPUtil::filter('topic', 'get', 'string'))) {
-            self::action_frontpage();
-        }
-
-    }}}
-
-    public function action_portal() {{{
-
-        $subAction  = TPUtil::filter('sa', 'get', 'string');
-        if($subAction == false) {
-            Errors::instance()->fatal_error($txt['tp-no-sa-url'], false);
-        }
-
-    }}}
-
-    public function trackStats($stats = array()) {{{
-
 
     }}}
 
     function action_page() {{{
-
         global $context, $scripturl, $txt, $modSettings, $boarddir, $user_info;
+
+        \loadTemplate('TPortal');
 
         $db = TPDatabase::getInstance();
         $now = time();
@@ -445,6 +437,8 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
 
         global $context, $scripturl, $txt, $modSettings;
 
+        \loadTemplate('TPortal');
+
         $db = TPDatabase::getInstance();
         $now = time();
 
@@ -692,9 +686,10 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
 
     }}}
 
-    // do the frontpage
     function action_frontpage() {{{
         global $context, $scripturl, $user_info, $modSettings, $txt;
+
+        \loadTemplate('TPortal');
 
         $db = TPDatabase::getInstance();
 
@@ -1360,6 +1355,20 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
             // decide what subtemplate
             $context['sub_template'] = WIRELESS_PROTOCOL . '_tp_frontpage';
         }
+    }}}
+
+    function action_credits() {{{
+        global $context;
+
+        tp_hidebars();
+        $context['TPortal']['not_forum'] = false;
+
+        if(\loadLanguage('TPhelp') == false) {
+            \loadLanguage('TPhelp', 'english');
+        }
+
+        \loadTemplate('TPhelp');
+
     }}}
 
 }
