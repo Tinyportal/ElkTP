@@ -187,7 +187,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
 
                     $comments = $tpArticle->getArticleComments($context['user']['id'] , $article['id']);
 
-                    require_once(SOURCEDIR . '/TPcommon.php');
+	                require_once(SUBSDIR . '/TPortal.subs.php');
 
                     $context['TPortal']['article']['countarticles'] = $tpArticle->getTotalAuthorArticles($context['TPortal']['article']['author_id'], true, true);
 

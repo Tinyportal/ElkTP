@@ -35,7 +35,7 @@ function TPArticle() {{{
 	$context['TPortal']['not_forum'] = true;
 
 	// call the editor setup
-	require_once(SOURCEDIR. '/TPcommon.php');
+	require_once(SUBSDIR . '/TPortal.subs.php');
 
 	// clear the linktree first
 	TPstrip_linktree();
@@ -548,7 +548,7 @@ function articleNew() {{{
 
     $db = TPDatabase::getInstance();
 
-    require_once(SOURCEDIR. '/TPcommon.php');
+	require_once(SUBSDIR . '/TPortal.subs.php');
 
     // a BBC article?
     if(isset($_GET['bbc']) || $_GET['sa'] == 'addarticle_bbc') {
@@ -626,7 +626,8 @@ function articlePublish() {{{
 function articleUploadImage() {{{
     global $context, $boarddir, $boardurl;
 
-    require_once(SOURCEDIR.'/TPcommon.php');
+	require_once(SUBSDIR . '/TPortal.subs.php');
+
     $name = TPuploadpicture( 'image', $context['user']['id'].'uid', null, null, $context['TPortal']['image_upload_path']);
     tp_createthumb( $context['TPortal']['image_upload_path'] . $name, 50, 50, $context['TPortal']['image_upload_path'].'thumbs/thumb_'.$name );
     $response['data'] = str_replace($boarddir, $boardurl, $context['TPortal']['image_upload_path']) . $name;

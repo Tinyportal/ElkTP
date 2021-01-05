@@ -30,7 +30,6 @@ function TPortalAdmin()
 	if(loadLanguage('TPortal') == false)
 		loadLanguage('TPortal', 'english');
 
-	require_once(SOURCEDIR . '/TPcommon.php');
 	require_once(SUBSDIR . '/Post.subs.php');
 	require_once(SUBSDIR . '/TPortal.subs.php');
 

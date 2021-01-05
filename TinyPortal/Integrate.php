@@ -46,7 +46,6 @@ class Integrate
                 'SOURCEDIR/TPArticle.php|TPArticleActions',
                 'SOURCEDIR/TPSearch.php|TPSearchActions',
                 'SOURCEDIR/TPBlock.php|TPBlockActions',
-                'SOURCEDIR/TPcommon.php|TPCommonActions',
             ),
             'tp_post_subactions'                => array ( 
             ),           

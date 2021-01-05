@@ -32,7 +32,7 @@ function TPBlockInit() {{{
 	$context['TPortal']['not_forum'] = true;
 
 	// call the editor setup
-	require_once(SOURCEDIR. '/TPcommon.php');
+	require_once(SUBSDIR . '/TPortal.subs.php');
 
 	// clear the linktree first
 	TPstrip_linktree();
