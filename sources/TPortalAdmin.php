@@ -11,6 +11,7 @@
 use \TinyPortal\Admin as TPAdmin;
 use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
+use \TinyPortal\Category as TPCategory;
 use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Permissions as TPPermissions;
 use \TinyPortal\Util as TPUtil;
@@ -83,8 +84,13 @@ function TPortalAdmin()
 	// get the layout schemes
 	get_catlayouts();
 
-	// get the categories
-	get_catnames();
+    // Get the category names
+    $categories = TPCategory::getInstance()->getCategoryData(array('id', 'display_name'), array('item_type' => 'category'));
+    if(is_array($categories)) {
+        foreach($categories as $k => $v) {
+            $context['TPortal']['catnames'][$v['id']] = $v['display_name'];
+        }
+    }
 
 	if(isset($_GET['id'])) {
 		$context['TPortal']['subaction_id'] = $_GET['id'];
@@ -2208,28 +2214,6 @@ function get_articles()
 		while($row=$db->fetch_assoc($request)) {
 			$context['TPortal']['edit_articles'][] = $row;
         }
-
-		$db->free_result($request);
-	}
-}
-
-function get_catnames()
-{
-
-	global $context;
-
-    $db = TPDatabase::getInstance();
-
-	$context['TPortal']['catnames'] = array();
-
-	$request = $db->query('', '
-		SELECT id, display_name FROM {db_prefix}tp_categories
-		WHERE item_type = {string:type}',
-		array('type' => 'category')
-	);
-	if($db->num_rows($request) > 0) {
-		while($row = $db->fetch_assoc($request))
-			$context['TPortal']['catnames'][$row['id']] = $row['display_name'];
 
 		$db->free_result($request);
 	}

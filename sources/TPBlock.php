@@ -10,6 +10,7 @@
  */
 use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
+use \TinyPortal\Category as TPCategory;
 use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Util as TPUtil;
 
@@ -517,27 +518,22 @@ function editBlock( $block_id = 0 ) {{{
 		}
 		// collect all available PHP block snippets
 		$context['TPortal']['blockcodes'] = TPcollectSnippets();
-        get_catnames();
+
+        // Get the category names
+        $categories = TPCategory::getInstance()->getCategoryData(array('id', 'display_name'), array('item_type' => 'category'));
+        if(is_array($categories)) {
+            foreach($categories as $k => $v) {
+                $context['TPortal']['catnames'][$v['id']] = $v['display_name'];
+				$context['TPortal']['article_categories'][] = array( 'id' => $v['id'], 'name' => $v['display_name'] );
+            }
+        }
+
 		get_grps();
 		get_langfiles();
 		get_boards();
 		get_articles();
 		$context['TPortal']['edit_categories'] = array();
-		$request = $db->query('', '
-			SELECT id, display_name as name
-			FROM {db_prefix}tp_categories
-			WHERE item_type = {string:type}
-			ORDER BY display_name',
-			array(
-				'type' => 'category'
-			)
-		);
 
-		if($db->num_rows($request) > 0) {
-			while($row = $db->fetch_assoc($request))
-				$context['TPortal']['article_categories'][] = $row;
-			$db->free_result($request);
-		}
 		// get all themes for selection
 		$context['TPthemes'] = array();
 		$request = $db->query('', '
