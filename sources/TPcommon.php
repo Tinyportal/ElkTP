@@ -131,38 +131,6 @@ function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png
 	return basename($dstPath);
 }}}
 
-function tp_groups() {{{
-	global $txt;
-
-    $db = TPDatabase::getInstance();
-
-	// get all membergroups for permissions
-	$grp    = array();
-	$grp[]  = array(
-		'id' => '-1',
-		'name' => $txt['tp-guests'],
-		'posts' => '-1'
-	);
-	$grp[]  = array(
-		'id' => '0',
-		'name' => $txt['tp-ungroupedmembers'],
-		'posts' => '-1'
-	);
-
-	$request =  $db->query('', '
-		SELECT * FROM {db_prefix}membergroups
-		WHERE 1=1 ORDER BY id_group'
-	);
-	while ($row = $db->fetch_assoc($request)) {
-		$grp[] = array(
-			'id' => $row['id_group'],
-			'name' => $row['group_name'],
-			'posts' => $row['min_posts']
-		);
-	}
-	return $grp;
-}}}
-
 function upshrink() {{{
 
     global $settings;
