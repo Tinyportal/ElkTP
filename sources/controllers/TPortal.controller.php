@@ -73,6 +73,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
 
             $subActions = array(
                 'credits'   => array('', 'self::action_credits', array()),
+                'upshrink'  => array('', 'self::action_upshrink', array()),
             );
 
             call_integration_hook('integrate_tp_pre_subactions', array(&$subActions));
@@ -108,7 +109,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
     }}}
 
     function action_page() {{{
-        global $context, $scripturl, $txt, $modSettings, $boarddir, $user_info;
+        global $context, $scripturl, $txt, $modSettings, $user_info;
 
         \loadTemplate('TPortal');
 
@@ -186,7 +187,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
 
                     $comments = $tpArticle->getArticleComments($context['user']['id'] , $article['id']);
 
-                    require_once(SOURCEDIR . '/TPcommon.php');
+	                require_once(SUBSDIR . '/TPortal.subs.php');
 
                     $context['TPortal']['article']['countarticles'] = $tpArticle->getTotalAuthorArticles($context['TPortal']['article']['author_id'], true, true);
 
@@ -338,7 +339,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
                             $context['TPortal']['printbody'] = eval($pwhat);
                         }
                         elseif($article['type'] == 'import') {
-                            if(!file_exists($boarddir. '/' . $article['fileimport'])) {
+                            if(!file_exists(BOARDDIR. '/' . $article['fileimport'])) {
                                 echo '<em>' , $txt['tp-cannotfetchfile'] , '</em>';
                             }
                             else {
@@ -1368,6 +1369,41 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
         }
 
         \loadTemplate('TPhelp');
+
+    }}}
+
+    function action_upshrink() {{{
+        global $settings;
+        
+        if(isset($_GET['id']) && isset($_GET['state'])) {
+            $blockid    = TPUtil::filter('id', 'get', 'string');
+            $state      = TPUtil::filter('state', 'get', 'string');
+            if(isset($_COOKIE['tp-upshrinks'])) { 
+                $shrinks = explode(',', $_COOKIE['tp-upshrinks']);
+                if($state == 0 && !in_array($blockid, $shrinks)) {
+                    $shrinks[] = $blockid;
+                }   
+                elseif($state == 1 && in_array($blockid, $shrinks)) {
+                    $spos = array_search($blockid, $shrinks);
+                    if($spos > -1) {
+                        unset($shrinks[$spos]);
+                    }   
+                }   
+                $newshrink = implode(',', $shrinks);
+                setcookie ('tp-upshrinks', $newshrink , time()+7776000);
+            }   
+            else {
+                if($state == 0) {
+                    setcookie ('tp-upshrinks', $blockid, (time()+7776000));
+                }   
+            }   
+            // Don't output anything...
+            $tid = time();
+            redirectexit($settings['images_url'] . '/blank.png?ti='.$tid);
+        }   
+        else {
+            redirectexit();
+        }
 
     }}}
 

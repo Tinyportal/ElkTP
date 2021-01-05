@@ -17,6 +17,7 @@ use \TinyPortal\Integrate as TPIntegrate;
 use \TinyPortal\Mentions as TPMentions;
 use \TinyPortal\Permissions as TPPermissions;
 use \TinyPortal\Util as TPUtil;
+use \TinyPortal\Upload as TPUpload;
 
 define('TPVERSION', 100);
 
@@ -1399,7 +1400,7 @@ function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $sho
 		<div class="tpthumb">';
 		if(isset($imgs)) {
 			foreach($imgs as $im) {
-				echo '<img src="', str_replace($boarddir, $boardurl, $context['TPortal']['image_upload_path']), substr($im,6) , '"  alt="'.substr($im,6).'" title="'.substr($im,6).'" />';
+				echo '<img src="', str_replace(BOARDDIR, $boardurl, $context['TPortal']['image_upload_path']), substr($im,6) , '"  alt="'.substr($im,6).'" title="'.substr($im,6).'" />';
             }
 		}
 
@@ -1648,7 +1649,7 @@ function TPageIndex($base_url, &$start, $max_value, $num_per_page) {{{
 }}}
 
 function tp_renderarticle($intro = '') {{{
-	global $context, $txt, $scripturl, $boarddir;
+	global $context, $txt, $scripturl;
 	global $image_proxy_enabled, $image_proxy_secret, $boardurl;
 
     $data = '';
@@ -1699,7 +1700,7 @@ function tp_renderarticle($intro = '') {{{
             }
 		}
 		elseif($context['TPortal']['article']['rendertype'] == 'import') {
-			if(!file_exists($boarddir. '/' . $context['TPortal']['article']['fileimport'])) {
+			if(!file_exists(BOARDDIR. '/' . $context['TPortal']['article']['fileimport'])) {
 				$data .= '<em>' . $txt['tp-cannotfetchfile'] . '</em>';
             }
 			else {
@@ -1734,7 +1735,7 @@ function tp_renderarticle($intro = '') {{{
 
 function tp_renderblockarticle() {{{
 
-	global $context, $txt, $boarddir;
+	global $context, $txt;
 
 	// just return if data is missing
 	if(!isset($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]))
@@ -1746,7 +1747,7 @@ function tp_renderblockarticle() {{{
 		eval($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['body']);
 	elseif($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['rendertype'] == 'import')
 	{
-		if(!file_exists($boarddir. '/' . $context['TPortal']['blockarticles'][$context['TPortals']['blockarticle']]['fileimport']))
+		if(!file_exists(BOARDDIR. '/' . $context['TPortal']['blockarticles'][$context['TPortals']['blockarticle']]['fileimport']))
 			echo '<em>' , $txt['tp-cannotfetchfile'] , '</em>';
 		else
 			include($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['fileimport']);
@@ -2052,7 +2053,7 @@ function TPadminIndex($tpsub = '', $module_admin = false) {{{
 }}}
 
 function tp_collectArticleIcons() {{{
-	global $context, $boarddir, $boardurl;
+	global $context, $boardurl;
 
     $db = TPDatabase::getInstance();
 
@@ -2089,7 +2090,7 @@ function tp_collectArticleIcons() {{{
 
 	$sorted2 = array();
 	//illustrations/images
-	if ($handle = opendir($boarddir.'/tp-files/tp-articles/illustrations'))
+	if ($handle = opendir(BOARDDIR.'/tp-files/tp-articles/illustrations'))
 	{
 		while (false !== ($file = readdir($handle)))
 		{
@@ -2848,6 +2849,110 @@ function tp_articles($member_id = null) {{{
 	loadtemplate('TPprofile');
 	$context['page_title'] = $txt['articlesprofile'];
 	tp_profile_articles($member_id);
+}}}
+
+function tp_createthumb($picture, $width, $height, $thumb) {{{
+
+    //code modified from http://www.akemapa.com/2008/07/10/php-gd-resize-transparent-image-png-gif/
+    //Check if GD extension is loaded
+    if (!extension_loaded('gd') && !extension_loaded('gd2')) {
+        trigger_error("GD is not loaded", E_USER_WARNING);
+        return false;
+    }
+
+    //Get Image size info
+    $pictureInfo = getimagesize($picture);
+    switch ($pictureInfo[2]) {
+        case 1: $im = imagecreatefromgif($picture); break;
+        case 2: $im = imagecreatefromjpeg($picture);  break;
+        case 3: $im = imagecreatefrompng($picture); break;
+        default:  trigger_error('Unsupported filetype!', E_USER_WARNING);  break;
+    }
+
+    //If image dimension is smaller, do not resize
+    if ($pictureInfo[0] <= $width && $pictureInfo[1] <= $height) {
+        $nHeight = $pictureInfo[1];
+        $nWidth = $pictureInfo[0];
+    }
+    else {
+        //yeah, resize it, but keep it proportional
+        if ($width/$pictureInfo[0] > $height/$pictureInfo[1]) {
+            $nWidth = $width;
+            $nHeight = $pictureInfo[1]*($width/$pictureInfo[0]);
+        }
+        else {
+            $nWidth = $pictureInfo[0]*($height/$pictureInfo[1]);
+            $nHeight = $height;
+        }
+    }
+
+    $nWidth     = round($nWidth);
+    $nHeight    = round($nHeight);
+
+    $newpicture = imagecreatetruecolor($nWidth, $nHeight);
+
+    /* Check if this image is PNG or GIF, then set if Transparent*/
+    if(($pictureInfo[2] == 1) OR ($pictureInfo[2]==3)) {
+        imagealphablending($newpicture, false);
+        imagesavealpha($newpicture,true);
+        $transparent = imagecolorallocatealpha($newpicture, 255, 255, 255, 127);
+        imagefilledrectangle($newpicture, 0, 0, $nWidth, $nHeight, $transparent);
+    }
+    imagecopyresampled($newpicture, $im, 0, 0, 0, 0, $nWidth, $nHeight, $pictureInfo[0], $pictureInfo[1]);
+
+    //Generate the file, and rename it to $thumb
+    switch ($pictureInfo[2]) {
+        case 1: imagegif($newpicture,$thumb); break;
+        case 2: imagejpeg($newpicture,$thumb);  break;
+        case 3: imagepng($newpicture,$thumb); break;
+        default:  trigger_error('Failed resize image!', E_USER_WARNING);  break;
+    }
+
+    return $thumb;
+}}}
+
+function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png', $destdir = 'tp-images') {{{
+    global $txt;
+
+    loadLanguage('TPdlmanager');
+
+    $upload = TPUpload::getInstance();
+
+    if(!is_null($maxsize)) {
+        $upload->set_max_file_size($maxsize);
+    }
+
+    if(is_null($exts)) {
+        $exts = array('jpg', 'gif', 'png');
+    }
+    elseif(is_string($exts)) {
+        $exts = explode(',', $exts);
+    }
+    $upload->set_mime_types($exts);
+
+    // add prefix
+    $name   = $_FILES[$widthhat]['name'];
+    $name   = $upload->check_filename($name);
+    $sname  = $prefix.$name;
+
+    if(is_dir($destdir)) {
+        $dstPath = $destdir . '/' . $sname;
+    }
+    else { 
+        $dstPath = BOARDDIR . '/'. $destdir .'/' . $sname;
+    }
+
+    if($upload->check_file_exists($dstPath)) {
+        $dstPath = dirname($dstPath) . '/' . $prefix . $upload->generate_filename(dirname($dstPath)) . $sname;
+    }
+
+    if($upload->upload_file($_FILES[$widthhat]['tmp_name'], $dstPath) === FALSE) {
+        unlink($_FILES[$widthhat]['tmp_name']);
+        $error_string = sprintf($txt['tp-dlnotuploaded'], $upload->get_error(TRUE));
+        fatal_error($error_string, false);
+    }
+
+    return basename($dstPath);
 }}}
 
 if (!function_exists('is_countable')) {

@@ -32,7 +32,7 @@ function TPBlockInit() {{{
 	$context['TPortal']['not_forum'] = true;
 
 	// call the editor setup
-	require_once(SOURCEDIR. '/TPcommon.php');
+	require_once(SUBSDIR . '/TPortal.subs.php');
 
 	// clear the linktree first
 	TPstrip_linktree();
@@ -432,7 +432,7 @@ function adminBlocks() {{{
 
 function editBlock( $block_id = 0 ) {{{
 
-	global $settings, $context, $scripturl, $txt, $boarddir;
+	global $settings, $context, $scripturl, $txt;
 
     $tpBlock    = TPBlock::getInstance();
     $db         = TPDatabase::getInstance();
@@ -577,7 +577,7 @@ function editBlock( $block_id = 0 ) {{{
 }}}
 
 function saveBlock( $block_id = 0 ) {{{
-	global $settings, $context, $scripturl, $txt, $boarddir;
+	global $settings, $context, $scripturl, $txt;
 
     if(empty($block_id)) {
 	    $block_id  = TPUtil::filter('id', 'get', 'int');

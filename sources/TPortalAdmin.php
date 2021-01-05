@@ -30,7 +30,6 @@ function TPortalAdmin()
 	if(loadLanguage('TPortal') == false)
 		loadLanguage('TPortal', 'english');
 
-	require_once(SOURCEDIR . '/TPcommon.php');
 	require_once(SUBSDIR . '/Post.subs.php');
 	require_once(SUBSDIR . '/TPortal.subs.php');
 
@@ -1145,7 +1144,7 @@ function do_admin($tpsub = 'overview')
 
 function do_postchecks()
 {
-	global $context, $txt, $settings, $boarddir, $sourcedir;
+	global $context, $txt, $settings;
 
     $db = TPDatabase::getInstance();
 
@@ -1358,7 +1357,7 @@ function do_postchecks()
                         unset($updateArray['image_upload_path']);
                         if(strcmp($context['TPortal']['image_upload_path'],$value) != 0) {
                             // Only allow if part of the boarddir
-                            if(strncmp($value, $boarddir, strlen($boarddir)) == 0) {
+                            if(strncmp($value, BOARDDIR, strlen(BOARDDIR)) == 0) {
                                 // It cann't be part of the existing path
                                 if(strncmp($value, $context['TPortal']['image_upload_path'], strlen($context['TPortal']['image_upload_path'])) != 0) {
                                     if(tp_create_dir($value)) {
@@ -1656,7 +1655,7 @@ function do_postchecks()
 			foreach($_POST as $what => $value)
 			{
 				if(substr($what, 0, 15) == 'artillustration')
-					unlink($boarddir.'/tp-files/tp-articles/illustrations/'.$value);
+					unlink(BOARDDIR.'/tp-files/tp-articles/illustrations/'.$value);
 			}
 			return $from;
 		}
@@ -2237,7 +2236,6 @@ function get_catnames()
 }
 
 function tp_create_dir($path) {{{
-    global $sourcedir;
 
     require_once(SOURCEDIR . '/Package.subs.php');
 
@@ -2253,7 +2251,6 @@ function tp_create_dir($path) {{{
 }}}
 
 function tp_delete_dir($path) {{{
-    global $sourcedir;
 
     require_once(SOURCEDIR . '/Package.subs.php');
 
