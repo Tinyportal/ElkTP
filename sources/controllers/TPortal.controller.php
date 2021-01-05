@@ -109,7 +109,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
     }}}
 
     function action_page() {{{
-        global $context, $scripturl, $txt, $modSettings, $boarddir, $user_info;
+        global $context, $scripturl, $txt, $modSettings, $user_info;
 
         \loadTemplate('TPortal');
 
@@ -339,7 +339,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
                             $context['TPortal']['printbody'] = eval($pwhat);
                         }
                         elseif($article['type'] == 'import') {
-                            if(!file_exists($boarddir. '/' . $article['fileimport'])) {
+                            if(!file_exists(BOARDDIR. '/' . $article['fileimport'])) {
                                 echo '<em>' , $txt['tp-cannotfetchfile'] , '</em>';
                             }
                             else {

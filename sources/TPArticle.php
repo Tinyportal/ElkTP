@@ -624,13 +624,13 @@ function articlePublish() {{{
 }}}
 
 function articleUploadImage() {{{
-    global $context, $boarddir, $boardurl;
+    global $context, $boardurl;
 
 	require_once(SUBSDIR . '/TPortal.subs.php');
 
     $name = TPuploadpicture( 'image', $context['user']['id'].'uid', null, null, $context['TPortal']['image_upload_path']);
     tp_createthumb( $context['TPortal']['image_upload_path'] . $name, 50, 50, $context['TPortal']['image_upload_path'].'thumbs/thumb_'.$name );
-    $response['data'] = str_replace($boarddir, $boardurl, $context['TPortal']['image_upload_path']) . $name;
+    $response['data'] = str_replace(BOARDDIR, $boardurl, $context['TPortal']['image_upload_path']) . $name;
     $response['success'] = 'true';
     header( 'Content-type: application/json' );
     echo json_encode( $response );
@@ -640,7 +640,7 @@ function articleUploadImage() {{{
 }}}
 
 function articleAjax() {{{
-    global $context, $boarddir, $boardurl;
+    global $context, $boardurl;
 
     $db         = TPDatabase::getInstance();
     $tpArticle  = TPArticle::getInstance();

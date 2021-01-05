@@ -17,6 +17,7 @@ use \TinyPortal\Integrate as TPIntegrate;
 use \TinyPortal\Mentions as TPMentions;
 use \TinyPortal\Permissions as TPPermissions;
 use \TinyPortal\Util as TPUtil;
+use \TinyPortal\Upload as TPUpload;
 
 define('TPVERSION', 100);
 
@@ -1399,7 +1400,7 @@ function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $sho
 		<div class="tpthumb">';
 		if(isset($imgs)) {
 			foreach($imgs as $im) {
-				echo '<img src="', str_replace($boarddir, $boardurl, $context['TPortal']['image_upload_path']), substr($im,6) , '"  alt="'.substr($im,6).'" title="'.substr($im,6).'" />';
+				echo '<img src="', str_replace(BOARDDIR, $boardurl, $context['TPortal']['image_upload_path']), substr($im,6) , '"  alt="'.substr($im,6).'" title="'.substr($im,6).'" />';
             }
 		}
 
@@ -1648,7 +1649,7 @@ function TPageIndex($base_url, &$start, $max_value, $num_per_page) {{{
 }}}
 
 function tp_renderarticle($intro = '') {{{
-	global $context, $txt, $scripturl, $boarddir;
+	global $context, $txt, $scripturl;
 	global $image_proxy_enabled, $image_proxy_secret, $boardurl;
 
     $data = '';
@@ -1699,7 +1700,7 @@ function tp_renderarticle($intro = '') {{{
             }
 		}
 		elseif($context['TPortal']['article']['rendertype'] == 'import') {
-			if(!file_exists($boarddir. '/' . $context['TPortal']['article']['fileimport'])) {
+			if(!file_exists(BOARDDIR. '/' . $context['TPortal']['article']['fileimport'])) {
 				$data .= '<em>' . $txt['tp-cannotfetchfile'] . '</em>';
             }
 			else {
@@ -1734,7 +1735,7 @@ function tp_renderarticle($intro = '') {{{
 
 function tp_renderblockarticle() {{{
 
-	global $context, $txt, $boarddir;
+	global $context, $txt;
 
 	// just return if data is missing
 	if(!isset($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]))
@@ -1746,7 +1747,7 @@ function tp_renderblockarticle() {{{
 		eval($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['body']);
 	elseif($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['rendertype'] == 'import')
 	{
-		if(!file_exists($boarddir. '/' . $context['TPortal']['blockarticles'][$context['TPortals']['blockarticle']]['fileimport']))
+		if(!file_exists(BOARDDIR. '/' . $context['TPortal']['blockarticles'][$context['TPortals']['blockarticle']]['fileimport']))
 			echo '<em>' , $txt['tp-cannotfetchfile'] , '</em>';
 		else
 			include($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['fileimport']);
@@ -2052,7 +2053,7 @@ function TPadminIndex($tpsub = '', $module_admin = false) {{{
 }}}
 
 function tp_collectArticleIcons() {{{
-	global $context, $boarddir, $boardurl;
+	global $context, $boardurl;
 
     $db = TPDatabase::getInstance();
 
@@ -2089,7 +2090,7 @@ function tp_collectArticleIcons() {{{
 
 	$sorted2 = array();
 	//illustrations/images
-	if ($handle = opendir($boarddir.'/tp-files/tp-articles/illustrations'))
+	if ($handle = opendir(BOARDDIR.'/tp-files/tp-articles/illustrations'))
 	{
 		while (false !== ($file = readdir($handle)))
 		{
@@ -2911,7 +2912,7 @@ function tp_createthumb($picture, $width, $height, $thumb) {{{
 }}}
 
 function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png', $destdir = 'tp-images') {{{
-    global $boarddir, $txt;
+    global $txt;
 
     loadLanguage('TPdlmanager');
 
@@ -2938,7 +2939,7 @@ function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png
         $dstPath = $destdir . '/' . $sname;
     }
     else { 
-        $dstPath = $boarddir . '/'. $destdir .'/' . $sname;
+        $dstPath = BOARDDIR . '/'. $destdir .'/' . $sname;
     }
 
     if($upload->check_file_exists($dstPath)) {
