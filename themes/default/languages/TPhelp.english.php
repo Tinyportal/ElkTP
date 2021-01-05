@@ -7,7 +7,7 @@ $txt['tp-credit1'] = '
 tino
 <br><br>
 <h4>Former Developers and Contributors</h4>
-Bjorn "Bloc" Kristiansen, Brad "IchBin" Grow, Bloc, Illori, Arantor, lurkalot, emanuele, @rjen.
+Bjorn "Bloc" Kristiansen, Brad "IchBin" Grow, Illori, Arantor, lurkalot, emanuele, @rjen.
 <br><br>
 <h4>TP Team</h4>
 Agridoc, Crip, Freddy, Ken, Lesmond, Renegd98, WillyP, wildenborch and ZarPrime.
