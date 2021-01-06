@@ -170,8 +170,21 @@ function getBlocks() {{{
             foreach($categories as $row) {
                 if(empty($row['author'])) {
                     global $memberContext;
-				    loadMemberData($row['author_id'], false, 'minimal');
-                    loadMemberContext($row['author_id']);
+                    // Load their context data.
+                    if(!array_key_exists('admin_features', $context)) {
+                        $context['admin_features']  = array();
+                        $adminFeatures              = true;
+                    }
+                    else {
+                        $adminFeatures              = false;
+                    }
+
+                    \loadMemberData($row['author_id'], false, 'normal');
+                    \loadMemberContext($row['author_id']);
+
+                    if($adminFeatures == true) {
+                        unset($context['admin_features']);
+                    }
                     $row['real_name'] = $memberContext[$row['author_id']]['username'];
                 }
                 else {
