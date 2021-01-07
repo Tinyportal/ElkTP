@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0
+ * @version 1.0.0 RC1
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -498,21 +498,21 @@ class Article extends Base
                     $adminFeatures              = false;
                 }
 				
-                \loadMemberData($row['author_id']);
+                \loadMemberData($row['author_id'], false, 'normal');
 				\loadMemberContext($row['author_id']);
                 
                 if($adminFeatures == true) {
                     unset($context['admin_features']);
                 }
 
-				// Store this member's information.
-				if(!is_null($memberContext) && array_key_exists($row['author_id'], $memberContext)) {
-					$avatar         = $memberContext[$row['author_id']];
-					$row['avatar']  = $avatar['avatar']['image'];
-				}
-				else {
-					$row['avatar']  = '';
-				}
+                // Store this member's information.
+                $row['avatar']	= '';
+                if(!is_null($memberContext) && array_key_exists($row['author_id'], $memberContext)) {
+                    $avatar             = $memberContext[$row['author_id']];
+                    if(array_key_exists('avatar', $avatar)) {
+                        $row['avatar']  = $avatar['avatar']['image'];
+                    }
+                }
 
 				if(Util::shortenString($row['body'], $context['TPortal']['frontpage_limit_len'])) {
 					$row['readmore'] = '... <p class="tp_readmore"><strong><a href="'. $scripturl. '?topic='. $row['id']. '">'. $txt['tp-readmore']. '</a></strong></p>';

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0
+ * @version 1.0.0 RC1
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -10,6 +10,7 @@
  */
 use \TinyPortal\Article as TPArticle;
 use \TinyPortal\Block as TPBlock;
+use \TinyPortal\Category as TPCategory;
 use \TinyPortal\Database as TPDatabase;
 use \TinyPortal\Util as TPUtil;
 
@@ -169,8 +170,21 @@ function getBlocks() {{{
             foreach($categories as $row) {
                 if(empty($row['author'])) {
                     global $memberContext;
-				    loadMemberData($row['author_id'], false, 'minimal');
-                    loadMemberContext($row['author_id']);
+                    // Load their context data.
+                    if(!array_key_exists('admin_features', $context)) {
+                        $context['admin_features']  = array();
+                        $adminFeatures              = true;
+                    }
+                    else {
+                        $adminFeatures              = false;
+                    }
+
+                    \loadMemberData($row['author_id'], false, 'normal');
+                    \loadMemberContext($row['author_id']);
+
+                    if($adminFeatures == true) {
+                        unset($context['admin_features']);
+                    }
                     $row['real_name'] = $memberContext[$row['author_id']]['username'];
                 }
                 else {
@@ -517,27 +531,22 @@ function editBlock( $block_id = 0 ) {{{
 		}
 		// collect all available PHP block snippets
 		$context['TPortal']['blockcodes'] = TPcollectSnippets();
-        get_catnames();
+
+        // Get the category names
+        $categories = TPCategory::getInstance()->getCategoryData(array('id', 'display_name'), array('item_type' => 'category'));
+        if(is_array($categories)) {
+            foreach($categories as $k => $v) {
+                $context['TPortal']['catnames'][$v['id']] = $v['display_name'];
+				$context['TPortal']['article_categories'][] = array( 'id' => $v['id'], 'name' => $v['display_name'] );
+            }
+        }
+
 		get_grps();
 		get_langfiles();
 		get_boards();
 		get_articles();
 		$context['TPortal']['edit_categories'] = array();
-		$request = $db->query('', '
-			SELECT id, display_name as name
-			FROM {db_prefix}tp_categories
-			WHERE item_type = {string:type}
-			ORDER BY display_name',
-			array(
-				'type' => 'category'
-			)
-		);
 
-		if($db->num_rows($request) > 0) {
-			while($row = $db->fetch_assoc($request))
-				$context['TPortal']['article_categories'][] = $row;
-			$db->free_result($request);
-		}
 		// get all themes for selection
 		$context['TPthemes'] = array();
 		$request = $db->query('', '
