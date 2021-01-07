@@ -2,9 +2,9 @@
 <!DOCTYPE package-info SYSTEM "http://www.elkarte.net/site/package-info">
 <package-info xmlns="http://www.elkarte.net/site/package-info" xmlns:smf="http://www.elkarte.net/">
 	<name>TinyPortal</name>
-	<id>bloc:tinyportal</id>
+	<id>tinyportal:tinyportal</id>
 	<type>modification</type>
-	<version>1.0.0</version>
+	<version>1.0.0 RC1</version>
 		<install for="1.1.* - 1.1.99">
 		<redirect url="">Installed!</redirect>
 		<require-dir name="themes" destination="BOARDDIR" />

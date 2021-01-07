@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0
+ * @version 1.0.0 RC1
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -204,7 +204,7 @@ class Integrate
         }
 
 
-        $string = '<a target="_blank" href="https://www.tinyportal.net" title="TinyPortal">TinyPortal 1.0.0</a> &copy; <a href="' . $scripturl . '?action=tportal;sa=credits" title="Credits">2005-2020</a>';
+        $string = '<a target="_blank" href="https://www.tinyportal.net" title="TinyPortal">TinyPortal 1.0.0 RC1</a> &copy; <a href="' . $scripturl . '?action=tportal;sa=credits" title="Credits">2005-2021</a>';
 
         if (ELK == 'SSI' || strpos($buffer, $string) !== false) {
             return $buffer;
