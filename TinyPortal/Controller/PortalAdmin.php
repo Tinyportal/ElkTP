@@ -10,11 +10,11 @@
  */
 namespace TinyPortal\Controller;
 
-use \TinyPortal\Article as TPArticle;
-use \TinyPortal\Block as TPBlock;
-use \TinyPortal\Integrate as TPIntegrate;
-use \TinyPortal\Mentions as TPMentions;
-use \TinyPortal\Util as TPUtil;
+use \TinyPortal\Model\Article as TPArticle;
+use \TinyPortal\Model\Block as TPBlock;
+use \TinyPortal\Model\Integrate as TPIntegrate;
+use \TinyPortal\Model\Mentions as TPMentions;
+use \TinyPortal\Model\Util as TPUtil;
 use ElkArte\Errors\Errors;
 
 if (!defined('ELK')) {
