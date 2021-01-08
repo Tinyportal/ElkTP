@@ -8,11 +8,11 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
-use \TinyPortal\Article as TPArticle;
-use \TinyPortal\Block as TPBlock;
-use \TinyPortal\Category as TPCategory;
-use \TinyPortal\Database as TPDatabase;
-use \TinyPortal\Util as TPUtil;
+use \TinyPortal\Model\Article as TPArticle;
+use \TinyPortal\Model\Block as TPBlock;
+use \TinyPortal\Model\Category as TPCategory;
+use \TinyPortal\Model\Database as TPDatabase;
+use \TinyPortal\Model\Util as TPUtil;
 
 if (!defined('ELK')) {
         die('Hacking attempt...');

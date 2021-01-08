@@ -8,16 +8,16 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
-use \TinyPortal\Admin as TPAdmin;
-use \TinyPortal\Article as TPArticle;
-use \TinyPortal\Block as TPBlock;
-use \TinyPortal\Category as TPCategory;
-use \TinyPortal\Database as TPDatabase;
-use \TinyPortal\Integrate as TPIntegrate;
-use \TinyPortal\Mentions as TPMentions;
-use \TinyPortal\Permissions as TPPermissions;
-use \TinyPortal\Util as TPUtil;
-use \TinyPortal\Upload as TPUpload;
+use \TinyPortal\Model\Admin as TPAdmin;
+use \TinyPortal\Model\Article as TPArticle;
+use \TinyPortal\Model\Block as TPBlock;
+use \TinyPortal\Model\Category as TPCategory;
+use \TinyPortal\Model\Database as TPDatabase;
+use \TinyPortal\Model\Integrate as TPIntegrate;
+use \TinyPortal\Model\Mentions as TPMentions;
+use \TinyPortal\Model\Permissions as TPPermissions;
+use \TinyPortal\Model\Util as TPUtil;
+use \TinyPortal\Model\Upload as TPUpload;
 
 define('TPVERSION', 100);
 
