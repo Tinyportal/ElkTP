@@ -45,12 +45,11 @@ class Integrate
             'tp_pre_subactions'                 => array ( 
                 'SOURCEDIR/TPArticle.php|TPArticleActions',
                 'SOURCEDIR/TPSearch.php|TPSearchActions',
-                'SOURCEDIR/TPBlock.php|TPBlockActions',
             ),
             'tp_post_subactions'                => array ( 
             ),           
             'tp_post_init'                      => array (
-                'SOURCEDIR/TPBlock.php|getBlocks',
+                'BOARDDIR/TinyPortal/Controller/Block.php|\TinyPortal\Controller\Block::loadBlocks',
             ),
             'tp_admin_areas'                    => array (
             ),
@@ -339,7 +338,7 @@ class Integrate
 				),
 				'tpblocks' => array (
 					'label'       => $txt['tp-adminpanels'],
-					'controller'  => '\TinyPortal\Controller\PortalAdmin',
+					'controller'  => '\TinyPortal\Controller\BlockAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_blocks' ),

@@ -8,13 +8,13 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
-use \TinyPortal\Admin as TPAdmin;
-use \TinyPortal\Article as TPArticle;
-use \TinyPortal\Block as TPBlock;
-use \TinyPortal\Category as TPCategory;
-use \TinyPortal\Database as TPDatabase;
-use \TinyPortal\Permissions as TPPermissions;
-use \TinyPortal\Util as TPUtil;
+use \TinyPortal\Model\Admin as TPAdmin;
+use \TinyPortal\Model\Article as TPArticle;
+use \TinyPortal\Model\Block as TPBlock;
+use \TinyPortal\Model\Category as TPCategory;
+use \TinyPortal\Model\Database as TPDatabase;
+use \TinyPortal\Model\Permissions as TPPermissions;
+use \TinyPortal\Model\Util as TPUtil;
 
 
 if (!defined('ELK')) {
@@ -102,7 +102,8 @@ function TPortalAdmin()
 	if(!empty($return)) {
 		redirectexit('action=admin;area=tpsettings;sa=' . $return);
     }
-	
+
+
     $tpsub = '';
 
 	$subAction  = TPUtil::filter('sa', 'get', 'string');
@@ -114,6 +115,7 @@ function TPortalAdmin()
     call_integration_hook('integrate_tp_pre_admin_subactions', array(&$subActions));
 
     $context['TPortal']['subaction'] = $subAction;
+
     // If it exists in our new subactions array load it
     if(!empty($subAction) && array_key_exists($subAction, $subActions)) {
         if (!empty($subActions[$subAction][0])) {
@@ -138,7 +140,14 @@ function TPortalAdmin()
                 TPwysiwyg_setup();
             }
 		}
-		do_subaction($tpsub);
+
+        if(!in_array($_GET['sa'], array( 'addblock', 'blockright', 'blockleft', 'blockcenter', 'blockfront', 'blockbottom', 'blocktop', 'blocklower' ))) {
+		    do_subaction($tpsub);
+        }
+        else {
+            $tpsub = 'blocks';
+            $context['TPortal']['subaction'] = 'blocks';
+        }
 	}
 	elseif(isset($_GET['blktype']) || isset($_GET['addblock']) || isset($_GET['blockon']) || isset($_GET['blockoff']) || isset($_GET['blockleft']) || isset($_GET['blockright']) || isset($_GET['blockcenter']) || isset($_GET['blocktop']) || isset($_GET['blockbottom']) || isset($_GET['blockfront']) || isset($_GET['blocklower']) || isset($_GET['blockdelete']) || isset($_GET['addpos']) || isset($_GET['subpos'])) {
         if(allowedTo('tp_blocks')) {		
@@ -162,6 +171,15 @@ function TPortalAdmin()
 		$context['TPortal']['subaction'] = $tpsub = 'overview';
 		do_admin($tpsub);
 	}
+
+    TPAdminMenu( $tpsub );
+
+    call_integration_hook('integrate_tp_post_admin_subactions');
+}
+
+function TPAdminMenu ( $tpsub ) {{{
+
+	global $scripturl, $context, $txt;
 
 	// done with all POST values, go to the correct screen
 	$context['TPortal']['subtabs'] = '';
@@ -250,7 +268,7 @@ function TPortalAdmin()
 				'addblock' => array(
                     'lang' => true,
                     'text' => 'tp-addblock',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;addblock;' . $context['session_var'] . '=' . $context['session_id'].'',
+                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=addblock;' . $context['session_var'] . '=' . $context['session_id'].'',
                     'active' => $tpsub == 'addblock',
                 ),
                 'blockoverview' => array(
@@ -270,9 +288,7 @@ function TPortalAdmin()
 	\loadTemplate('TPortalAdmin');
 	\loadTemplate('TPsubs');
 	TPadminIndex($tpsub);
-
-    call_integration_hook('integrate_tp_post_admin_subactions');
-}
+}}}
 
 /* ******************************************************************************************************************** */
 function do_subaction($tpsub) {
@@ -300,8 +316,10 @@ function do_subaction($tpsub) {
 }
 
 function do_blocks() {
-    require_once( SOURCEDIR . '/TPBlock.php' );
-    adminBlocks();
+    return;
+    require_once( BOARDDIR . '/TinyPortal/Controller/BlockAdmin.php' );
+    $blockAdmin = new \TinyPortal\Controller\BlockAdmin();
+    $blockAdmin->adminBlocks();
 }
 
 // articles

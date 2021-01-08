@@ -86,7 +86,7 @@ function TPblock($block, $theme, $side, $double=false)
 
             // can you edit the block?
             if($block['can_manage'] && !$context['TPortal']['blocks_edithide']) {
-                echo '<a href="',$scripturl,'?action=admin;area=tparticles&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
+                echo '<a href="',$scripturl,'?action=admin;area=tpblocks&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
             }
 			
 			echo $block['title'];
@@ -148,7 +148,7 @@ function TPblock($block, $theme, $side, $double=false)
 
 		// can you edit the block?
 		if($block['can_manage'] && !$context['TPortal']['blocks_edithide'])
-			echo '<a href="',$scripturl,'?action=admin;area=tparticles&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin-right: 4px;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
+			echo '<a href="',$scripturl,'?action=admin;area=tpblocks&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin-right: 4px;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
 
 		echo $block['title'];
 		echo $context['TPortal']['blocktheme'][$block['frame']]['title']['after'];
