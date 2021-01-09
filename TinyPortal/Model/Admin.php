@@ -298,7 +298,7 @@ class Admin extends Base {
 				'blockoverview' => array(
 					'title' => $txt['tp-blockoverview'],
 					'description' => '',
-					'href' => $scripturl . '?action=admin;area=tpblocks;sa=blocks;overview',
+					'href' => $scripturl . '?action=admin;area=tpblocks;sa=blockoverview',
 					'is_selected' => ($area == 'blocks' && isset($_GET['overview'])) || substr($area,0,9) == 'editblock',
 				),
 			);

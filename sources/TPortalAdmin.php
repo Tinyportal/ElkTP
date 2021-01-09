@@ -184,9 +184,6 @@ function do_subaction($tpsub) {
 	if(in_array($tpsub, array('articles', 'strays', 'categories', 'addcategory', 'submission', 'artsettings', 'articons', 'clist')) && (allowedTo(array('tp_articles', 'tp_editownarticle'))) )  {
 		do_articles();
     }
-	elseif(in_array($tpsub, array('blocks', 'panels')) && (allowedTo('tp_blocks')) ) {
-		do_blocks();
-	}
     elseif(in_array($tpsub, array('frontpage', 'overview', 'credits', 'permissions')) && (allowedTo('tp_settings')) ) {
 		do_admin($tpsub);
 	}
@@ -1095,49 +1092,7 @@ function do_postchecks()
 		// get it
 		$from = $_POST['tpadmin_form'];
 		// block permissions overview
-		if($from == 'blockoverview')
-		{
-			checkSession('post');
-			isAllowedTo('tp_blocks');
-
-			$block = array();
-			foreach($_POST as $what => $value)
-			{
-				if(substr($what, 5, 7) == 'tpblock')
-				{
-					// get the id
-					$bid = substr($what, 12);
-					if(!isset($block[$bid]))
-						$block[$bid] = array();
-
-					if($value != 'control' && !in_array($value, $block[$bid]))
-						$block[$bid][] = $value;
-				}
-			}
-			foreach($block as $bl => $blo)
-			{
-				$request = $db->query('', '
-					SELECT access FROM {db_prefix}tp_blocks
-					WHERE id = {int:blockid}',
-					array('blockid' => $bl)
-				);
-				if($db->num_rows($request) > 0)
-				{
-					$row = $db->fetch_assoc($request);
-					$db->free_result($request);
-					$request = $db->query('', '
-						UPDATE {db_prefix}tp_blocks
-						SET access = {string:access} WHERE id = {int:blockid}',
-						array(
-							'access' => implode(',', $blo),
-							'blockid' => $bl,
-						)
-					);
-				}
-			}
-			return 'blocks;overview';
-		}
-		elseif(in_array($from, array('settings', 'frontpage', 'artsettings', 'panels')))
+		if(in_array($from, array('settings', 'frontpage', 'artsettings')))
 		{
 			checkSession('post');
 			isAllowedTo('tp_settings');
@@ -1184,20 +1139,6 @@ function do_postchecks()
                         unset($_POST['tp_'.$v]);
                     }
                     break;
-				case 'panels':
-                    $checkboxes = array('hidebars_admin_only', 'hidebars_profile', 'hidebars_pm', 'hidebars_memberlist', 'hidebars_search', 'hidebars_calendar');
-                    foreach($checkboxes as $v) {
-                        if(TPUtil::checkboxChecked('tp_'.$v)) {
-                            $updateArray[$v] = "1";
-                        }
-                        else {
-                            $updateArray[$v] = "";
-                        }
-                        // remove the variable so we don't process it twice before the old logic is removed
-                        unset($_POST['tp_'.$v]);
-                    }
-                    break;
-
                 default:
                     break;
             }
