@@ -8,7 +8,7 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
-use \TinyPortal\Article as TPArticle;
+use \TinyPortal\Model\Article as TPArticle;
 
 function ssi_TPIntegrate() {{{
 

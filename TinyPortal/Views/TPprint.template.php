@@ -71,8 +71,8 @@ function template_tp_print_above()
 		</style>';
 
 	echo '
-		<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/tp-style.css?fin160" />
-		<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-style.css?fin160" />';
+		<link rel="stylesheet" type="text/css" href="TinyPortal/Views/css/tp-style.css?"'.TPVERSION.' />
+		<link rel="stylesheet" type="text/css" href="TinyPortal/Views/css/tp-style.css?"'.TPVERSION.' />';
 
 	echo '
 	</head>

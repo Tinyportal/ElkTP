@@ -25,7 +25,7 @@ class Integrate
             self::setup_db_backwards_compat();
             spl_autoload_register('\TinyPortal\Integrate::TPortalAutoLoadClass');
         }
-
+            
         $hooks = array (
             'SSI'                               => 'SOURCEDIR/TPSSI.php|ssi_TPIntegrate',
             'current_action'                    => '\TinyPortal\Integrate::hookCurrentAction',
@@ -45,12 +45,11 @@ class Integrate
             'tp_pre_subactions'                 => array ( 
                 'SOURCEDIR/TPArticle.php|TPArticleActions',
                 'SOURCEDIR/TPSearch.php|TPSearchActions',
-                'SOURCEDIR/TPBlock.php|TPBlockActions',
             ),
             'tp_post_subactions'                => array ( 
             ),           
             'tp_post_init'                      => array (
-                'SOURCEDIR/TPBlock.php|getBlocks',
+                'BOARDDIR/TinyPortal/Controller/Block.php|\TinyPortal\Controller\Block::loadBlocks',
             ),
             'tp_admin_areas'                    => array (
             ),
@@ -93,7 +92,7 @@ class Integrate
         global $modSettings;
 
         // Should check TinyPortal is enabled..
-        $modSettings['front_page']  = 'TPortal_Controller';
+        $modSettings['front_page']  = '\TinyPortal\Controller\Portal';
 
         return;
     }}}
@@ -107,8 +106,8 @@ class Integrate
         }
 
         $className  = str_replace('\\', '/', $className);
+        $className  = str_replace('_', '.', $className);
         $classFile  = BOARDDIR . '/' . $className . '.php';
-
         if ( file_exists( $classFile ) ) {
             require_once($classFile);
         }
@@ -317,8 +316,7 @@ class Integrate
 			'areas' => array (
 				'tpsettings' => array (
 					'label'       => $txt['tp-adminheader1'],
-					'file'        => 'TPortalAdmin.controller.php',
-					'controller'  => 'TPortalAdmin_Controller',
+					'controller'  => '\TinyPortal\Controller\PortalAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_settings' ),
@@ -329,8 +327,7 @@ class Integrate
 				),
 				'tparticles' => array (
 					'label'       => $txt['tp-articles'],
-					'file'        => 'TPortalAdmin.controller.php',
-					'controller'  => 'TPortalAdmin_Controller',
+					'controller'  => '\TinyPortal\Controller\PortalAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_articles' ),
@@ -341,8 +338,7 @@ class Integrate
 				),
 				'tpblocks' => array (
 					'label'       => $txt['tp-adminpanels'],
-					'file'        => 'TPortalAdmin.controller.php',
-					'controller'  => 'TPortalAdmin_Controller',
+					'controller'  => '\TinyPortal\Controller\BlockAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_blocks' ),
@@ -412,10 +408,13 @@ class Integrate
         $actionArray = array_merge(
             array (
                 'forum'     => array('BoardIndex.php',                  'BoardIndex'),
-                'tportal'   => array('TPortal.controller.php',          'action_index'),
+                'tportal'   => array('\TinyPortal\Controller\Portal.php',          'action_index'),
             ),
             $actionArray
         );
+
+        //var_dump($actionArray);
+        //die;
 
     }}}
 
@@ -513,6 +512,11 @@ class Integrate
 
     public static function hookInitTheme($id_theme, &$settings) {{{
 
+        // Add our custom theme directory 
+        require_once(SOURCEDIR . '/Templates.class.php');
+        \Templates::instance()->addDirectory(BOARDDIR . '/TinyPortal/Views/');
+
+        // Now initialise the portal
         require_once(SUBSDIR . '/TPortal.subs.php');        
         \TPortalInit();
 
@@ -564,7 +568,7 @@ class Integrate
         if(isset($_GET['page']) && !isset($_GET['action'])) {
             if (($theme = cache_get_data('tpArticleTheme', 120)) == null) {
                 // fetch the custom theme if any
-                $pag = Util::filter('page', 'get', 'string');
+                $pag = Model\Util::filter('page', 'get', 'string');
                 if (is_numeric($pag)) {
                     $request = $dB->db_query('', '
                         SELECT id_theme FROM {db_prefix}tp_articles

@@ -8,21 +8,23 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
-use \TinyPortal\Article as TPArticle;
-use \TinyPortal\Block as TPBlock;
-use \TinyPortal\Database as TPDatabase;
-use \TinyPortal\Integrate as TPIntegrate;
-use \TinyPortal\Mentions as TPMentions;
-use \TinyPortal\Permissions as TPPermissions;
-use \TinyPortal\Util as TPUtil;
-use ElkArte\Errors\Errors;
-use ElkArte\sources\Frontpage_Interface;
+namespace TinyPortal\Controller;
+
+use \TinyPortal\Model\Article as TPArticle;
+use \TinyPortal\Model\Block as TPBlock;
+use \TinyPortal\Model\Database as TPDatabase;
+use \TinyPortal\Model\Integrate as TPIntegrate;
+use \TinyPortal\Model\Mentions as TPMentions;
+use \TinyPortal\Model\Permissions as TPPermissions;
+use \TinyPortal\Model\Util as TPUtil;
+use \ElkArte\Errors\Errors;
+use \ElkArte\sources\Frontpage_Interface;
 
 if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class TPortal_Controller extends Action_Controller implements Frontpage_Interface
+class Portal extends \Action_Controller implements Frontpage_Interface
 {
 
     public static function canFrontPage() {{{
@@ -37,7 +39,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
 
         // View the portal front page
         $file       = __FILE__;
-        $controller = 'TPortal_Controller';
+        $controller = '\TinyPortal\Controller\Portal';
         $function   = 'action_index';
         // Something article-ish, then set the new action
         if (isset($file, $function)) {
@@ -367,7 +369,7 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
                     }
                     else {
                         // we need the categories for the linktree
-                        $allcats    = TinyPortal\Category::getInstance()->getCategoryData(array('*') , array('item_type' => 'category'));
+                        $allcats    = \TinyPortal\Model\Category::getInstance()->getCategoryData(array('*') , array('item_type' => 'category'));
 
                         // setup the linkree
                         TPstrip_linktree();
@@ -448,10 +450,10 @@ class TPortal_Controller extends Action_Controller implements Frontpage_Interfac
             $cat            = TPUtil::filter('cat', 'get', 'string');
             // get the category first
             if(is_numeric($cat)) {
-                $category   = TinyPortal\Category::getInstance()->getCategoryData(array('*') , array('id' => $cat));
+                $category   = \TinyPortal\Model\Category::getInstance()->getCategoryData(array('*') , array('id' => $cat));
             }
             else {
-                $category   = TinyPortal\Category::getInstance()->getCategoryData(array('*') , array('short_name' => $cat));
+                $category   = \TinyPortal\Model\Category::getInstance()->getCategoryData(array('*') , array('short_name' => $cat));
             }
             if(is_array($category) && (count($category) > 0)) {
                 $category = $category[0];

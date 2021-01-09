@@ -8,16 +8,16 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
-use \TinyPortal\Admin as TPAdmin;
-use \TinyPortal\Article as TPArticle;
-use \TinyPortal\Block as TPBlock;
-use \TinyPortal\Category as TPCategory;
-use \TinyPortal\Database as TPDatabase;
-use \TinyPortal\Integrate as TPIntegrate;
-use \TinyPortal\Mentions as TPMentions;
-use \TinyPortal\Permissions as TPPermissions;
-use \TinyPortal\Util as TPUtil;
-use \TinyPortal\Upload as TPUpload;
+use \TinyPortal\Model\Admin as TPAdmin;
+use \TinyPortal\Model\Article as TPArticle;
+use \TinyPortal\Model\Block as TPBlock;
+use \TinyPortal\Model\Category as TPCategory;
+use \TinyPortal\Model\Database as TPDatabase;
+use \TinyPortal\Model\Integrate as TPIntegrate;
+use \TinyPortal\Model\Mentions as TPMentions;
+use \TinyPortal\Model\Permissions as TPPermissions;
+use \TinyPortal\Model\Util as TPUtil;
+use \TinyPortal\Model\Upload as TPUpload;
 
 define('TPVERSION', 100);
 
@@ -110,21 +110,21 @@ function tpLoadCSS() {{{
 		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-style.css?'.TPVERSION.'" />';
     }
 	else {
-		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/tp-style.css?'.TPVERSION.'" />';
+		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="TinyPortal/Views/css/tp-style.css?'.TPVERSION.'" />';
     }
 
 	if(!empty($settings['default_theme_url']) && !empty($settings['theme_url']) && file_exists($settings['theme_dir'].'/css/tp-responsive.css')) {
 		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-responsive.css?'.TPVERSION.'" />';
     }
 	else {
-		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/tp-responsive.css?'.TPVERSION.'" />';
+		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="TinyPortal/Views/css/tp-responsive.css?'.TPVERSION.'" />';
     }
 
 	if(!empty($settings['default_theme_url']) && !empty($settings['theme_url']) && file_exists($settings['theme_dir'].'/css/tp-custom.css')) {
 		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-custom.css?'.TPVERSION.'" />';
     }
 	else {
-		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/tp-custom.css?'.TPVERSION.'" />';
+		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="TinyPortal/Views/css/tp-custom.css?'.TPVERSION.'" />';
     }
 	
 	if(!empty($context['TPortal']['padding'])) {
@@ -1947,108 +1947,6 @@ function TPparseRSS($override = '', $encoding = 0) {{{
 				break;
 		}
 	}
-
-}}}
-
-// Set up the administration sections.
-function TPadminIndex($tpsub = '', $module_admin = false) {{{
-	global $txt, $context, $scripturl;
-
-	if(loadLanguage('TPortalAdmin') == false)
-		loadLanguage('TPortalAdmin', 'english');
-
-	if($module_admin) {
-		// make sure tpadmin is still active
-		$_GET['action'] = 'tpadmin';
-	}
-
-	$context['admin_tabs'] = array();
-	$context['admin_header']['tp_settings'] = $txt['tp-adminheader1'];
-	$context['admin_header']['tp_articles'] = $txt['tp-articles'];
-	$context['admin_header']['tp_blocks']   = $txt['tp-adminpanels'];
-
-	if (allowedTo('tp_settings')) {
-		$context['admin_tabs']['tp_settings'] = array(
-			'settings' => array(
-				'title' => $txt['tp-settings'],
-				'description' => $txt['tp-settingdesc1'],
-				'href' => $scripturl . '?action=admin;area=tpsettings;sa=settings',
-				'is_selected' => $tpsub == 'settings',
-			),
-			'frontpage' => array(
-				'title' => $txt['tp-frontpage'],
-				'description' => $txt['tp-frontpagedesc1'],
-				'href' => $scripturl . '?action=admin;area=tpsettings;sa=frontpage',
-				'is_selected' => $tpsub == 'frontpage',
-			),
-		);
-	}
-	if (allowedTo('tp_editownarticle')) {
-		$context['admin_tabs']['tp_articles'] = array(
-			'myarticles' => array(
-				'title' => $txt['tp-myarticles'],
-				'description' => $txt['tp-articledesc1'],
-				'href' => $scripturl . '?action=tportal;sa=myarticles',
-				'is_selected' => $tpsub == 'myarticles',
-			),
-		);
-	}
-	
-	if (allowedTo('tp_articles')) {
-		$context['admin_tabs']['tp_articles'] = array(
-			'articles' => array(
-				'title' => $txt['tp-articles'],
-				'description' => $txt['tp-articledesc1'],
-				'href' => $scripturl . '?action=admin;area=tparticles;sa=articles',
-				'is_selected' => (substr($tpsub,0,11)=='editarticle' || in_array($tpsub, array('articles','addarticle','addarticle_php', 'addarticle_bbc', 'addarticle_import','strays','submission'))),
-			),
-			'categories' => array(
-				'title' => $txt['tp-tabs5'],
-				'description' => $txt['tp-articledesc2'],
-				'href' => $scripturl . '?action=admin;area=tparticles;sa=categories',
-				'is_selected' => in_array($tpsub, array('categories', 'addcategory','clist')) ,
-			),
-			'artsettings' => array(
-				'title' => $txt['tp-settings'],
-				'description' => $txt['tp-articledesc3'],
-				'href' => $scripturl . '?action=admin;area=tparticles;sa=artsettings',
-				'is_selected' => $tpsub == 'artsettings',
-			),
-			'icons' => array(
-				'title' => $txt['tp-adminicons'],
-				'description' => $txt['tp-articledesc5'],
-				'href' => $scripturl . '?action=admin;area=tparticles;sa=articons',
-				'is_selected' => $tpsub == 'articons',
-			),
-		);
-	}
-
-	if (allowedTo('tp_blocks')) {
-		$context['admin_tabs']['tp_blocks'] = array(
-			'panelsettings' => array(
-				'title' => $txt['tp-allpanels'],
-				'description' => $txt['tp-paneldesc1'],
-				'href' => $scripturl . '?action=admin;area=tpblocks;sa=panels',
-				'is_selected' => $tpsub == 'panels',
-			),
-			'blocks' => array(
-				'title' => $txt['tp-allblocks'],
-				'description' => $txt['tp-blocksdesc1'],
-				'href' => $scripturl . '?action=admin;area=tpblocks;sa=blocks',
-				'is_selected' => $tpsub == 'blocks' && !isset($_GET['latest']) && !isset($_GET['overview']),
-			),
-			'blockoverview' => array(
-				'title' => $txt['tp-blockoverview'],
-				'description' => '',
-				'href' => $scripturl . '?action=admin;area=tpblocks;sa=blocks;overview',
-				'is_selected' => ($tpsub == 'blocks' && isset($_GET['overview'])) || substr($tpsub,0,9) == 'editblock',
-			),
-		);
-	}
-
-    call_integration_hook('integrate_tp_admin_areas');
-
-	validateSession();
 
 }}}
 

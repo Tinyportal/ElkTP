@@ -152,7 +152,7 @@ function template_editblock()
 	}
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=admin;area=tpblocks" method="post" onsubmit="submitonce(this);">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=admin;area=tpblocks;sa=updateblock;id='.$context['TPortal']['blockedit']['id'].'" method="post" onsubmit="submitonce(this);">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="blockedit">
 		<input type="hidden" name="tpadmin_form_id" value="' . $context['TPortal']['blockedit']['id'] . '">

@@ -8,7 +8,7 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
-namespace TinyPortal;
+namespace TinyPortal\Model;
 
 if (!defined('ELK')) {
 	die('Hacking attempt...');

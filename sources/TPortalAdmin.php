@@ -8,13 +8,13 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
-use \TinyPortal\Admin as TPAdmin;
-use \TinyPortal\Article as TPArticle;
-use \TinyPortal\Block as TPBlock;
-use \TinyPortal\Category as TPCategory;
-use \TinyPortal\Database as TPDatabase;
-use \TinyPortal\Permissions as TPPermissions;
-use \TinyPortal\Util as TPUtil;
+use \TinyPortal\Model\Admin as TPAdmin;
+use \TinyPortal\Model\Article as TPArticle;
+use \TinyPortal\Model\Block as TPBlock;
+use \TinyPortal\Model\Category as TPCategory;
+use \TinyPortal\Model\Database as TPDatabase;
+use \TinyPortal\Model\Permissions as TPPermissions;
+use \TinyPortal\Model\Util as TPUtil;
 
 
 if (!defined('ELK')) {
@@ -102,7 +102,8 @@ function TPortalAdmin()
 	if(!empty($return)) {
 		redirectexit('action=admin;area=tpsettings;sa=' . $return);
     }
-	
+
+
     $tpsub = '';
 
 	$subAction  = TPUtil::filter('sa', 'get', 'string');
@@ -114,6 +115,7 @@ function TPortalAdmin()
     call_integration_hook('integrate_tp_pre_admin_subactions', array(&$subActions));
 
     $context['TPortal']['subaction'] = $subAction;
+
     // If it exists in our new subactions array load it
     if(!empty($subAction) && array_key_exists($subAction, $subActions)) {
         if (!empty($subActions[$subAction][0])) {
@@ -138,7 +140,8 @@ function TPortalAdmin()
                 TPwysiwyg_setup();
             }
 		}
-		do_subaction($tpsub);
+
+	    do_subaction($tpsub);
 	}
 	elseif(isset($_GET['blktype']) || isset($_GET['addblock']) || isset($_GET['blockon']) || isset($_GET['blockoff']) || isset($_GET['blockleft']) || isset($_GET['blockright']) || isset($_GET['blockcenter']) || isset($_GET['blocktop']) || isset($_GET['blockbottom']) || isset($_GET['blockfront']) || isset($_GET['blocklower']) || isset($_GET['blockdelete']) || isset($_GET['addpos']) || isset($_GET['subpos'])) {
         if(allowedTo('tp_blocks')) {		
@@ -163,113 +166,13 @@ function TPortalAdmin()
 		do_admin($tpsub);
 	}
 
-	// done with all POST values, go to the correct screen
-	$context['TPortal']['subtabs'] = '';
-    if(in_array($tpsub,array('articles', 'addarticle_php', 'addarticle_html', 'addarticle_bbc', 'addarticle_import', 'strays', 'submission')) && allowedTo('tp_articles')) {
-        $context['TPortal']['subtabs'] = array(
-				'articles' => array(
-					'lang' => true,
-					'text' => 'tp-articles',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=articles',
-					'active' => ($context['TPortal']['subaction'] == 'articles' || $context['TPortal']['subaction'] == 'editarticle') && $context['TPortal']['subaction'] != 'strays',
-					),
-				'articles_nocat' => array(
-					'lang' => true,
-					'text' => 'tp-uncategorised' ,
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=strays',
-					'active' => $context['TPortal']['subaction'] == 'strays',
-					),
-				'submissions' => array(
-					'lang' => true,
-					'text' => 'tp-tabs4' ,
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=submission',
-					'active' => $context['TPortal']['subaction'] == 'submission',
-					),
-				'addarticle' => array(
-					'lang' => true,
-					'text' => 'tp-tabs2',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_html' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
-					'active' => $context['TPortal']['subaction'] == 'addarticle_html',
-					),
-				'addarticle_php' => array(
-					'lang' => true,
-					'text' => 'tp-tabs3',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_php' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
-					'active' => $context['TPortal']['subaction'] == 'addarticle_php',
-					),
-				'addarticle_bbc' => array(
-					'lang' => true,
-					'text' => 'tp-addbbc',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_bbc' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
-					'active' => $context['TPortal']['subaction'] == 'addarticle_bbc',
-					),
-				'article_import' => array(
-					'lang' => true,
-					'text' => 'tp-addimport',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_import' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
-					'active' => $context['TPortal']['subaction'] == 'addarticle_import',
-					),
-				);
-    }
-    elseif(in_array($tpsub,array('addcategory','categories','clist')) && allowedTo('tp_articles')) {
-        $context['TPortal']['subtabs'] = array(
-                'categories' => array(
-                    'lang' => true,
-                    'text' => 'tp-tabs5',
-                    'url' => $scripturl . '?action=admin;area=tparticles;sa=categories',
-                    'active' => $tpsub == 'categories',
-                    ),
-                'addcategory' => array(
-                    'lang' => true,
-                    'text' => 'tp-tabs6',
-                    'url' => $scripturl . '?action=admin;area=tparticles;sa=addcategory',
-                    'active' => $tpsub == 'addcategory',
-                    ),
-                'clist' => array(
-                    'lang' => true,
-                    'text' => 'tp-tabs11',
-                    'url' => $scripturl . '?action=admin;area=tparticles;sa=clist',
-                    'active' => $tpsub == 'clist',
-                    ),
-                );
-    }
-    elseif(in_array($tpsub,array('blocks','panels','menubox','addmenu')) && allowedTo('tp_blocks')) {
-        $context['TPortal']['subtabs'] = array(
-                'panels' => array(
-                    'lang' => true,
-                    'text' => 'tp-panels',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=panels',
-                    'active' => $tpsub == 'panels',
-                ),
-				'blocks' => array(
-                    'lang' => true,
-                    'text' => 'tp-blocks',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=blocks',
-                    'active' => $tpsub == 'blocks' && !isset($_GET['overview']),
-                ),
-				'addblock' => array(
-                    'lang' => true,
-                    'text' => 'tp-addblock',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;addblock;' . $context['session_var'] . '=' . $context['session_id'].'',
-                    'active' => $tpsub == 'addblock',
-                ),
-                'blockoverview' => array(
-                    'lang' => true,
-                    'text' => 'tp-blockoverview',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=blocks;overview',
-                    'active' => $tpsub == 'blocks' && isset($_GET['overview']),
-                ),
-            );
-    }
-
-    if(!in_array('tpadm', Template_Layers::getInstance()->getLayers())) {
-        Template_Layers::getInstance()->add('tpadm');
-        Template_Layers::getInstance()->add('subtab');
-    }
+    TPAdmin::getInstance()->topMenu($tpsub);
+    TPAdmin::getInstance()->sideMenu($tpsub);
 
 	\loadTemplate('TPortalAdmin');
 	\loadTemplate('TPsubs');
-	TPadminIndex($tpsub);
+
+    \validateSession();
 
     call_integration_hook('integrate_tp_post_admin_subactions');
 }
@@ -281,9 +184,6 @@ function do_subaction($tpsub) {
 	if(in_array($tpsub, array('articles', 'strays', 'categories', 'addcategory', 'submission', 'artsettings', 'articons', 'clist')) && (allowedTo(array('tp_articles', 'tp_editownarticle'))) )  {
 		do_articles();
     }
-	elseif(in_array($tpsub, array('blocks', 'panels')) && (allowedTo('tp_blocks')) ) {
-		do_blocks();
-	}
     elseif(in_array($tpsub, array('frontpage', 'overview', 'credits', 'permissions')) && (allowedTo('tp_settings')) ) {
 		do_admin($tpsub);
 	}
@@ -300,8 +200,10 @@ function do_subaction($tpsub) {
 }
 
 function do_blocks() {
-    require_once( SOURCEDIR . '/TPBlock.php' );
-    adminBlocks();
+    return;
+    require_once( BOARDDIR . '/TinyPortal/Controller/BlockAdmin.php' );
+    $blockAdmin = new \TinyPortal\Controller\BlockAdmin();
+    $blockAdmin->adminBlocks();
 }
 
 // articles
@@ -1190,49 +1092,7 @@ function do_postchecks()
 		// get it
 		$from = $_POST['tpadmin_form'];
 		// block permissions overview
-		if($from == 'blockoverview')
-		{
-			checkSession('post');
-			isAllowedTo('tp_blocks');
-
-			$block = array();
-			foreach($_POST as $what => $value)
-			{
-				if(substr($what, 5, 7) == 'tpblock')
-				{
-					// get the id
-					$bid = substr($what, 12);
-					if(!isset($block[$bid]))
-						$block[$bid] = array();
-
-					if($value != 'control' && !in_array($value, $block[$bid]))
-						$block[$bid][] = $value;
-				}
-			}
-			foreach($block as $bl => $blo)
-			{
-				$request = $db->query('', '
-					SELECT access FROM {db_prefix}tp_blocks
-					WHERE id = {int:blockid}',
-					array('blockid' => $bl)
-				);
-				if($db->num_rows($request) > 0)
-				{
-					$row = $db->fetch_assoc($request);
-					$db->free_result($request);
-					$request = $db->query('', '
-						UPDATE {db_prefix}tp_blocks
-						SET access = {string:access} WHERE id = {int:blockid}',
-						array(
-							'access' => implode(',', $blo),
-							'blockid' => $bl,
-						)
-					);
-				}
-			}
-			return 'blocks;overview';
-		}
-		elseif(in_array($from, array('settings', 'frontpage', 'artsettings', 'panels')))
+		if(in_array($from, array('settings', 'frontpage', 'artsettings')))
 		{
 			checkSession('post');
 			isAllowedTo('tp_settings');
@@ -1279,20 +1139,6 @@ function do_postchecks()
                         unset($_POST['tp_'.$v]);
                     }
                     break;
-				case 'panels':
-                    $checkboxes = array('hidebars_admin_only', 'hidebars_profile', 'hidebars_pm', 'hidebars_memberlist', 'hidebars_search', 'hidebars_calendar');
-                    foreach($checkboxes as $v) {
-                        if(TPUtil::checkboxChecked('tp_'.$v)) {
-                            $updateArray[$v] = "1";
-                        }
-                        else {
-                            $updateArray[$v] = "";
-                        }
-                        // remove the variable so we don't process it twice before the old logic is removed
-                        unset($_POST['tp_'.$v]);
-                    }
-                    break;
-
                 default:
                     break;
             }
@@ -1714,422 +1560,6 @@ function do_postchecks()
 				);
 			}
 			return $from;
-		}
-		// from blocks screen
-		elseif($from == 'blocks')
-		{
-			checkSession('post');
-			isAllowedTo('tp_blocks');
-
-			foreach($_POST as $what => $value)
-			{
-				if(substr($what, 0, 3) == 'pos')
-				{
-					$where = substr($what, 3);
-					if(is_numeric($where))
-						$db->query('', '
-							UPDATE {db_prefix}tp_blocks
-							SET pos = {int:pos}
-							WHERE id = {int:blockid}',
-							array(
-								'pos' => $value,
-								'blockid' => $where
-							)
-						);
-				}
-				elseif(substr($what, 0, 6) == 'addpos')
-				{
-					$where = substr($what, 6);
-					if(is_numeric($where))
-						$db->query('', '
-							UPDATE {db_prefix}tp_blocks
-							SET pos = (pos + 11)
-							WHERE id = {int:blockid}',
-							array(
-								'blockid' => $where
-							)
-						);
-				}
-				elseif(substr($what, 0, 6) == 'subpos')
-				{
-					$where = substr($what, 6);
-					if(is_numeric($where))
-						$db->query('', '
-							UPDATE {db_prefix}tp_blocks SET pos = (pos - 11)
-							WHERE id = {int:blockid}',
-							array(
-								'blockid' => $where
-							)
-						);
-				}
-				elseif(substr($what, 0, 4) == 'type')
-				{
-					$where = substr($what, 4);
-					$db->query('', '
-						UPDATE {db_prefix}tp_blocks
-						SET type = {int:type}
-						WHERE id = {int:blockid}',
-						array(
-							'type' => $value,
-							'blockid' => $where,
-						)
-					);
-				}
-				elseif(substr($what, 0, 5) == 'title')
-				{
-					$where = strip_tags(substr($what, 5));
-					$db->query('', '
-						UPDATE {db_prefix}tp_blocks
-						SET title = {string:title}
-						WHERE id = {int:blockid}',
-						array(
-							'title' => $value,
-							'blockid' => $where,
-						)
-					);
-				}
-				elseif(substr($what, 0, 9) == 'blockbody')
-				{
-					$where = substr($what, 9);
-					$db->query('', '
-						UPDATE {db_prefix}tp_blocks
-						SET body = {string:body}
-						WHERE id = {int:blockid}',
-						array(
-							'body' => $value,
-							'blockid' => $where,
-						)
-					);
-				}
-			}
-			redirectexit('action=admin;area=tpblocks;sa=blocks');
-		}
-		// from editing block
-		elseif($from == 'addblock')
-		{
-			checkSession('post');
-			isAllowedTo('tp_blocks');
-
-			$title = empty($_POST['tp_addblocktitle']) ? $txt['tp-no_title'] : ($_POST['tp_addblocktitle']);
-			$panel = $_POST['tp_addblockpanel'];
-			$type = $_POST['tp_addblock'];
-			if(!is_numeric($type))
-			{
-				if(substr($type, 0, 3) == 'mb_')
-				{
-					$request = $db->query('', '
-						SELECT * FROM {db_prefix}tp_blocks
-						WHERE id = {int:blockid}',
-						array(
-							'blockid' => substr($type, 3)
-						)
-					);
-					if($db->num_rows($request) > 0)
-					{
-						$cp = $db->fetch_assoc($request);
-						$db->free_result($request);
-					}
-				}
-				else
-					$od = TPparseModfile(file_get_contents($context['TPortal']['blockcode_upload_path'] . $type.'.blockcode') , array('code'));
-			}
-			if(isset($od['code']))
-			{
-				$body = tp_convertphp($od['code']);
-				$type = 10;
-			}
-			$defblocks = array("18", "19");
-			if(in_array($type , $defblocks))
-			{
-				$body = '0';
-			}
-			else
-				$body = '';
-
-            $request = $db->query('', '
-                SELECT pos FROM {db_prefix}tp_blocks
-                WHERE bar = {int:bar}
-                ORDER BY pos DESC LIMIT 1',
-                array(
-                    'bar' => $panel
-                )
-            );
-            if($db->num_rows($request) > 0) {
-                $pos = $db->fetch_assoc($request);
-                $pos = $pos['pos'] + 1;
-                $db->free_result($request);
-            }
-            else {
-                $pos = 0;
-            }
-
-			if(isset($cp))
-				$db->insert('INSERT',
-					'{db_prefix}tp_blocks',
-					array(
-						'type' => 'int',
-						'frame' => 'string',
-						'title' => 'string',
-						'body' => 'string',
-						'access' => 'string',
-						'bar' => 'int',
-						'pos' => 'int',
-						'off' => 'int',
-						'visible' => 'string',
-						'lang' => 'string',
-						'display' => 'string',
-						'editgroups' => 'string',
-                        'settings' => 'string',
-					),
-					array(
-						$cp['type'],
-						$cp['frame'],
-						$title,
-						$cp['body'],
-						$cp['access'],
-						$panel,
-						$pos,
-						1,
-						1,
-						$cp['lang'],
-						$cp['display'],
-						$cp['editgroups'],
-                        json_encode(array(
-                            'var1' => json_decode($cp['settings'], true)['var1'],
-                            'var2' => json_decode($cp['settings'], true)['var2'],
-                            'var3' => 0,
-                            'var4' => 0,
-                            'var5' => 0
-                            )
-                        ),
-					),
-					array('id')
-				);
-			else
-				$db->insert('INSERT',
-					'{db_prefix}tp_blocks',
-					array(
-						'type' => 'int',
-						'frame' => 'string',
-						'title' => 'string',
-						'body' => 'string',
-						'access' => 'string',
-						'bar' => 'int',
-						'pos' => 'int',
-						'off' => 'int',
-						'visible' => 'string',
-						'lang' => 'string',
-						'display' => 'string',
-						'editgroups' => 'string',
-                        'settings' => 'string',
-					),
-					array(
-                        $type, 'theme', $title, $body, '-1,0,1', $panel, $pos, 1, 1, '', 'allpages', '', 
-                        json_encode(array('var1' => 0, 'var2' => 0, 'var3' => 0, 'var4' => 0, 'var5' => 0 )),
-					),
-					array('id')
-				);
-
-			$where = $db->insert_id('{db_prefix}tp_blocks', 'id');
-			if(!empty($where))
-				redirectexit('action=admin;area=tpblocks;sa=editblock&id='.$where.';sesc='. $context['session_id']);
-			else
-				redirectexit('action=admin;area=tpblocks;sa=blocks');
-		}
-		// from editing block
-		elseif($from == 'blockedit') {
-			checkSession('post');
-			isAllowedTo('tp_blocks');
-
-			$where = is_numeric($_POST['tpadmin_form_id']) ? $_POST['tpadmin_form_id'] : 0;
-			$tpgroups = array();
-			$editgroups = array();
-			$access = array();
-			$lang = array();
-			foreach($_POST as $what => $value)
-			{
-
-				// We have a empty post value just skip it
-				if(empty($value) && $value == '') {
-					continue;
-				}
-
-				if(substr($what, 0, 9) == 'tp_block_')
-				{
-					$setting = substr($what, 9);
-
-					if($setting == 'body')
-					{
-						// If we came from WYSIWYG then turn it back into BBC regardless.
-						if (!empty($_REQUEST['tp_block_body_mode']) && isset($_REQUEST['tp_block_body']))
-						{
-							require_once(SOURCEDIR . '/Editor.subs.php');
-							$_REQUEST['tp_block_body'] = html_to_bbc($_REQUEST['tp_block_body']);
-							// We need to unhtml it now as it gets done shortly.
-							$_REQUEST['tp_block_body'] = un_htmlspecialchars($_REQUEST['tp_block_body']);
-							// We need this for everything else.
-							$value = $_POST['tp_block_body'] = $_REQUEST['tp_block_body'];
-						}
-
-						// PHP block?
-						if($_POST['tp_block_type'] == 10)
-							$value = tp_convertphp($value);
-
-						$db->query('', '
-							UPDATE {db_prefix}tp_blocks
-							SET '. $setting .' = {string:value}
-							WHERE id = {int:blockid}',
-							array('value' => $value, 'blockid' => $where)
-						);
-					}
-					elseif($setting == 'title')
-					{
-						$db->query('', '
-							UPDATE {db_prefix}tp_blocks
-							SET title = {string:title}
-							WHERE id = {int:blockid}',
-							array('title' => $value, 'blockid' => $where)
-						);
-					}
-					elseif($setting == 'body_mode' || $setting == 'body_choice' || $setting == 'body_pure')
-						$go = '';
-					elseif($setting == 'frame')
-						$db->query('', '
-							UPDATE {db_prefix}tp_blocks
-							SET frame = {string:val}
-							WHERE id = {int:blockid}',
-							array('val' => $value, 'blockid' => $where)
-						);
-                    elseif(in_array($setting, array( 'var1', 'var2', 'var3', 'var4', 'var5')) ) {
-                        // Check for blocks in table, if none insert default blocks.
-						$request = $db->query('', '
-                            SELECT settings FROM {db_prefix}tp_blocks
-                            WHERE id = {int:varid} LIMIT 1',
-                            array('varid' => $where)
-                        );
-                            
-                        $data = array();
-                        if($db->num_rows($request) > 0) {
-                            $row    = $db->fetch_assoc($request);
-                            $data   = json_decode($row['settings'], true);
-                            $db->free_result($request);
-                        }
-                        $data[$setting] = $value;
-						$db->query('', '
-                            UPDATE {db_prefix}tp_blocks 
-                            SET settings = {string:data}
-                            WHERE id = {int:blockid}',
-                            array('data' => json_encode($data), 'blockid' => $where)
-                        );
-                    }
-					else {
-						$db->query('', '
-							UPDATE {db_prefix}tp_blocks
-							SET '. $setting .' = {raw:val}
-							WHERE id = {int:blockid}',
-							array('val' => $value, 'blockid' => $where)
-						);
-                    }
-				}
-				elseif(substr($what, 0, 8) == 'tp_group')
-					$tpgroups[] = substr($what, 8);
-				elseif(substr($what, 0, 12) == 'tp_editgroup')
-					$editgroups[] = substr($what, 12);
-				elseif(substr($what, 0, 10) == 'actiontype')
-					$access[] = '' . $value;
-				elseif(substr($what, 0, 9) == 'boardtype')
-					$access[] = 'board=' . $value;
-				elseif(substr($what, 0, 11) == 'articletype')
-					$access[] = 'tpage=' . $value;
-				elseif(substr($what, 0, 12) == 'categorytype')
-					$access[] = 'tpcat=' . $value;
-				elseif(substr($what, 0, 8) == 'langtype')
-					$access[] = 'tlang=' . $value;
-				elseif(substr($what, 0, 9) == 'dlcattype')
-					$access[] = 'dlcat=' . $value;
-				elseif(substr($what, 0, 9) == 'tpmodtype')
-					$access[] = 'tpmod=' . $value;
-				elseif(substr($what, 0, 9) == 'custotype' && !empty($value))
-				{
-					$items = explode(',', $value);
-					foreach($items as $iti => $it)
-						$access[] = '' . $it;
-				}
-				elseif(substr($what, 0, 8) == 'tp_lang_')
-				{
-					if(substr($what, 8) != '' )
-						$lang[] = substr($what, 8). '|' . $value;
-				}
-				elseif(substr($what, 0, 18) == 'tp_userbox_options')
-				{
-					if(!isset($userbox))
-						$userbox = array();
-					$userbox[] = $value;
-				}
-				elseif(substr($what, 0, 8) == 'tp_theme')
-				{
-					$theme = substr($what, 8);
-					if(!isset($themebox))
-						$themebox = array();
-					// get the path too
-					if(isset($_POST['tp_path'.$theme]))
-						$tpath = $_POST['tp_path'.$theme];
-					else
-						$tpath = '';
-
-					$themebox[] = $theme . '|' . $value . '|' . $tpath;
-				}
-			}
-			// construct the access++
-			$db->query('', '
-				UPDATE {db_prefix}tp_blocks
-				SET	display = {string:acc2},
-					access = {string:acc},
-					lang = {string:lang},
-					editgroups = {string:editgrp}
-				WHERE id = {int:blockid}',
-				array(
-					'acc2' => implode(',', $access),
-					'acc' => implode(',', $tpgroups),
-					'lang' => implode('|', $lang),
-					'editgrp' => implode(',', $editgroups),
-					'blockid' => $where,
-				)
-			);
-
-			if(isset($userbox))
-				$updateArray['userbox_options'] = implode(',', $userbox);
-
-			if(isset($themebox))
-				$db->query('', '
-					UPDATE {db_prefix}tp_blocks
-					SET body = {string:body}
-					WHERE id = {int:blockid}',
-					array('body' => implode(',', $themebox), 'blockid' => $where,)
-				);
-
-			// anything from PHP block?
-			if(isset($_POST['blockcode_overwrite']))
-			{
-				// get the blockcode
-				$newval = TPparseModfile(file_get_contents($context['TPortal']['blockcode_upload_path'] . $_POST['tp_blockcode'].'.blockcode') , array('code'));
-				$db->query('', '
-					UPDATE {db_prefix}tp_blocks
-					SET body = {string:body}
-					WHERE id = {int:blockid}',
-					array('body' => $newval['code'], 'blockid' => $where)
-				);
-			}
-
-			// check if uploaded picture
-			if(isset($_FILES['qup_blockbody']) && file_exists($_FILES['qup_blockbody']['tmp_name']))
-			{
-                $name = TPuploadpicture( 'qup_blockbody', $context['user']['id'].'uid', null, null, $context['TPortal']['image_upload_path']);
-				tp_createthumb($context['TPortal']['image_upload_path'] . $name, 50, 50, $context['TPortal']['image_upload_path'] . 'thumbs/thumb_'. $name);
-			}
-			updateTPSettings($updateArray);
-
-			redirectexit('action=admin;area=tpblocks;sa=editblock&id='.$where.';' . $context['session_var'] . '=' . $context['session_id']);
 		}
 		// Editing an article?
 		elseif(substr($from, 0, 11) == 'editarticle') {

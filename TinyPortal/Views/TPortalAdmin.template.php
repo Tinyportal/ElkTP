@@ -68,7 +68,7 @@ function template_main()
 		$go = 'template_blockoverview';
 		$param = '';
 	}
-	elseif($go == 'template_blocks' && isset($_GET['addblock'])) {
+	elseif($go == 'template_blocks' && isset($_GET['sa']) && $_GET['sa'] == 'addblock') {
 		$go = 'template_addblock';
 		$param = '';
 	}
@@ -1504,7 +1504,7 @@ function template_panels()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tpblocks;sa=updatepanels" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'] ,'" />
 		<input type="hidden" name="tpadmin_form" value="panels">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-panelsettings'] . '</h3></div>
@@ -1736,7 +1736,7 @@ function template_blocks()
 			echo '
 				<div class="font_strong">
 					<b>'.$txt['tp-'.$side[$i].'sideblocks'].'</b>
-					<a href="'.$scripturl.'?action=admin;area=tpblocks;addblock=' . $side[$i] . ';' . $context['session_var'] . '=' . $context['session_id'].'">
+					<a href="'.$scripturl.'?action=admin;area=tpblocks;sa=addblock;side=' . $side[$i] . ';' . $context['session_var'] . '=' . $context['session_id'].'">
 					<span style="float: right;"><strong>[' , $txt['tp-addblock'] , ']</strong></span></a>
 				</div>';
 			if(isset($context['TPortal']['admin' . $side[$i].'panel']) && $context['TPortal']['admin' . $side[$i].'panel']==0 && $side[$i]!='front')
@@ -1844,84 +1844,22 @@ function template_blocks()
 						<div style="width:20%;" class="smalltext fullwidth-on-res-layout float-items tpcenter">
 							<div class="show-on-responsive"><strong>'.$txt['tp-move'].'</strong></div>';
 
-					switch($side[$i]){
-						case 'left':
- 							echo '
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blocktop=' .$lblock['id']. '"><img title="'.$txt['tp-moveup'].'" src="' .$settings['tp_images_url']. '/TPselect_top.png" alt="'.$txt['tp-moveup'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockcenter=' .$lblock['id']. '"><img title="'.$txt['tp-movecenter'].'" src="' .$settings['tp_images_url']. '/TPselect_upper.png" alt="'.$txt['tp-movecenter'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockfront=' .$lblock['id']. '"><img title="'.$txt['tp-movefront'].'" src="' .$settings['tp_images_url']. '/TPselect_front.png" alt="'.$txt['tp-movefront'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blocklower=' .$lblock['id']. '"><img title="'.$txt['tp-movelower'].'" src="' .$settings['tp_images_url']. '/TPselect_lower.png" alt="'.$txt['tp-movelower'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockbottom=' .$lblock['id']. '"><img title="'.$txt['tp-movedown'].'" src="' .$settings['tp_images_url']. '/TPselect_bottom.png" alt="'.$txt['tp-movedown'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockright=' .$lblock['id']. '"><img title="'.$txt['tp-moveright'].'" src="' .$settings['tp_images_url']. '/TPselect_right.png" alt="'.$txt['tp-moveright'].'" /></a>';
-							break;
-						case 'right':
- 							echo '
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockleft=' .$lblock['id']. '"><img title="'.$txt['tp-moveleft'].'" src="' .$settings['tp_images_url']. '/TPselect_left.png" alt="'.$txt['tp-moveleft'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blocktop=' .$lblock['id']. '"><img title="'.$txt['tp-moveup'].'" src="' .$settings['tp_images_url']. '/TPselect_top.png" alt="'.$txt['tp-moveup'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockcenter=' .$lblock['id']. '"><img title="'.$txt['tp-movecenter'].'" src="' .$settings['tp_images_url']. '/TPselect_upper.png" alt="'.$txt['tp-movecenter'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockfront=' .$lblock['id']. '"><img title="'.$txt['tp-movefront'].'" src="' .$settings['tp_images_url']. '/TPselect_front.png" alt="'.$txt['tp-movefront'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blocklower=' .$lblock['id']. '"><img title="'.$txt['tp-movelower'].'" src="' .$settings['tp_images_url']. '/TPselect_lower.png" alt="'.$txt['tp-movelower'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockbottom=' .$lblock['id']. '"><img title="'.$txt['tp-movedown'].'" src="' .$settings['tp_images_url']. '/TPselect_bottom.png" alt="'.$txt['tp-movedown'].'" /></a>';
-							break;
-						case 'center':
-							echo '
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockleft=' .$lblock['id']. '"><img title="'.$txt['tp-moveleft'].'" src="' .$settings['tp_images_url']. '/TPselect_left.png" alt="'.$txt['tp-moveleft'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blocktop=' .$lblock['id']. '"><img title="'.$txt['tp-moveup'].'" src="' .$settings['tp_images_url']. '/TPselect_top.png" alt="'.$txt['tp-moveup'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockfront=' .$lblock['id']. '"><img title="'.$txt['tp-movefront'].'" src="' .$settings['tp_images_url']. '/TPselect_front.png" alt="'.$txt['tp-movefront'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blocklower=' .$lblock['id']. '"><img title="'.$txt['tp-movelower'].'" src="' .$settings['tp_images_url']. '/TPselect_lower.png" alt="'.$txt['tp-movelower'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockbottom=' .$lblock['id']. '"><img title="'.$txt['tp-movedown'].'" src="' .$settings['tp_images_url']. '/TPselect_bottom.png" alt="'.$txt['tp-movedown'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockright=' .$lblock['id']. '"><img title="'.$txt['tp-moveright'].'" src="' .$settings['tp_images_url']. '/TPselect_right.png" alt="'.$txt['tp-moveright'].'" /></a>
-';
-							break;
-						case 'front':
-							echo '
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockleft=' .$lblock['id']. '"><img title="'.$txt['tp-moveleft'].'" src="' .$settings['tp_images_url']. '/TPselect_left.png" alt="'.$txt['tp-moveleft'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blocktop=' .$lblock['id']. '"><img title="'.$txt['tp-moveup'].'" src="' .$settings['tp_images_url']. '/TPselect_top.png" alt="'.$txt['tp-moveup'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockcenter=' .$lblock['id']. '"><img title="'.$txt['tp-movecenter'].'" src="' .$settings['tp_images_url']. '/TPselect_upper.png" alt="'.$txt['tp-movecenter'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blocklower=' .$lblock['id']. '"><img title="'.$txt['tp-movelower'].'" src="' .$settings['tp_images_url']. '/TPselect_lower.png" alt="'.$txt['tp-movelower'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockbottom=' .$lblock['id']. '"><img title="'.$txt['tp-movedown'].'" src="' .$settings['tp_images_url']. '/TPselect_bottom.png" alt="'.$txt['tp-movedown'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockright=' .$lblock['id']. '"><img title="'.$txt['tp-moveright'].'" src="' .$settings['tp_images_url']. '/TPselect_right.png" alt="'.$txt['tp-moveright'].'" /></a>
-';
-							break;
-						case 'bottom':
-							echo '
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockleft=' .$lblock['id']. '"><img title="'.$txt['tp-moveleft'].'" src="' .$settings['tp_images_url']. '/TPselect_left.png" alt="'.$txt['tp-moveleft'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blocktop=' .$lblock['id']. '"><img title="'.$txt['tp-moveup'].'" src="' .$settings['tp_images_url']. '/TPselect_top.png" alt="'.$txt['tp-moveup'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockcenter=' .$lblock['id']. '"><img title="'.$txt['tp-movecenter'].'" src="' .$settings['tp_images_url']. '/TPselect_upper.png" alt="'.$txt['tp-movecenter'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockfront=' .$lblock['id']. '"><img title="'.$txt['tp-movefront'].'" src="' .$settings['tp_images_url']. '/TPselect_front.png" alt="'.$txt['tp-movefront'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blocklower=' .$lblock['id']. '"><img title="'.$txt['tp-movelower'].'" src="' .$settings['tp_images_url']. '/TPselect_lower.png" alt="'.$txt['tp-movelower'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockright=' .$lblock['id']. '"><img title="'.$txt['tp-moveright'].'" src="' .$settings['tp_images_url']. '/TPselect_right.png" alt="'.$txt['tp-moveright'].'" /></a>
-';
-							break;
-						case 'top':
-							echo '
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockleft=' .$lblock['id']. '"><img title="'.$txt['tp-moveleft'].'" src="' .$settings['tp_images_url']. '/TPselect_left.png" alt="'.$txt['tp-moveleft'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockcenter=' .$lblock['id']. '"><img title="'.$txt['tp-movecenter'].'" src="' .$settings['tp_images_url']. '/TPselect_upper.png" alt="'.$txt['tp-movecenter'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockfront=' .$lblock['id']. '"><img title="'.$txt['tp-movefront'].'" src="' .$settings['tp_images_url']. '/TPselect_front.png" alt="'.$txt['tp-movefront'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blocklower=' .$lblock['id']. '"><img title="'.$txt['tp-movelower'].'" src="' .$settings['tp_images_url']. '/TPselect_lower.png" alt="'.$txt['tp-movelower'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockbottom=' .$lblock['id']. '"><img title="'.$txt['tp-movedown'].'" src="' .$settings['tp_images_url']. '/TPselect_bottom.png" alt="'.$txt['tp-movedown'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockright=' .$lblock['id']. '"><img title="'.$txt['tp-moveright'].'" src="' .$settings['tp_images_url']. '/TPselect_right.png" alt="'.$txt['tp-moveright'].'" /></a>';
-							break;
-						case 'lower':
- 							echo '
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockleft=' .$lblock['id']. '"><img title="'.$txt['tp-moveleft'].'" src="' .$settings['tp_images_url']. '/TPselect_left.png" alt="'.$txt['tp-moveleft'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blocktop=' .$lblock['id']. '"><img title="'.$txt['tp-moveup'].'" src="' .$settings['tp_images_url']. '/TPselect_top.png" alt="'.$txt['tp-moveup'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockcenter=' .$lblock['id']. '"><img title="'.$txt['tp-movecenter'].'" src="' .$settings['tp_images_url']. '/TPselect_upper.png" alt="'.$txt['tp-movecenter'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockfront=' .$lblock['id']. '"><img title="'.$txt['tp-movefront'].'" src="' .$settings['tp_images_url']. '/TPselect_front.png" alt="'.$txt['tp-movefront'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockbottom=' .$lblock['id']. '"><img title="'.$txt['tp-movedown'].'" src="' .$settings['tp_images_url']. '/TPselect_bottom.png" alt="'.$txt['tp-movedown'].'" /></a>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockright=' .$lblock['id']. '"><img title="'.$txt['tp-moveright'].'" src="' .$settings['tp_images_url']. '/TPselect_right.png" alt="'.$txt['tp-moveright'].'" /></a>';
-							break;
-					}
+                    foreach( array ( 'blockright', 'blockleft', 'blockcenter', 'blockfront', 'blockbottom', 'blocktop', 'blocklower') as $block_location ) {
+                        if($side[$i] != str_replace('block', '', $block_location)) {
+							echo '<a href="' . $scripturl . '?action=admin;area=tpblocks;' . $context['session_var'] . '=' . $context['session_id'].';sa='.$block_location.';id=' .$lblock['id']. '"><img title="'.$txt['tp-move'.$block_location].'" src="' .$settings['tp_images_url']. '/TPselect_'.str_replace('block', '', $block_location).'.png" alt="'.$txt['tp-move'.$block_location].'" /></a>';
+                        }
+                    }
+					
 					echo '
 						</div>
 						<div  style="width:10%;" class="smalltext fullwidth-on-res-layout float-items tpcenter">
 						    <div class="show-on-responsive"><strong>'.$txt['tp-editsave'].'</strong></div>
-							<a href="' . $scripturl . '?action=admin;area=tparticles&sa=editblock&id=' .$lblock['id']. ';' . $context['session_var'] . '=' . $context['session_id'].'"><img title="'.$txt['tp-edit'].'" src="' .$settings['tp_images_url']. '/TPconfig_sm.png" alt="'.$txt['tp-edit'].'"  /></a>&nbsp;
+							<a href="' . $scripturl . '?action=admin;area=tpblocks&sa=editblock&id=' .$lblock['id']. ';' . $context['session_var'] . '=' . $context['session_id'].'"><img title="'.$txt['tp-edit'].'" src="' .$settings['tp_images_url']. '/TPconfig_sm.png" alt="'.$txt['tp-edit'].'"  /></a>&nbsp;
 							<input type="image" class="tpbut" style="height:16px; vertical-align:top;" src="' .$settings['tp_images_url']. '/TPsave.png" title="'.$txt['tp-send'].'" value="�" onClick="javascript: submit();">
 						</div>
 	                    <div style="width:10%;" class="smalltext fullwidth-on-res-layout float-items tpcenter">
 						    <div class="show-on-responsive"><strong>'.$txt['tp-delete'].'</strong></div>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockdelete=' .$lblock['id']. '" onclick="javascript:return confirm(\''.$txt['tp-blockconfirmdelete'].'\')"><img title="'.$txt['tp-delete'].'"  src="' .$settings['tp_images_url']. '/TPdelete2.png" alt="'.$txt['tp-delete'].'"  /></a>
+							<a href="' . $scripturl . '?action=admin;area=tpblocks;' . $context['session_var'] . '=' . $context['session_id'].';sa=blockdelete;id=' .$lblock['id']. '" onclick="javascript:return confirm(\''.$txt['tp-blockconfirmdelete'].'\')"><img title="'.$txt['tp-delete'].'"  src="' .$settings['tp_images_url']. '/TPdelete2.png" alt="'.$txt['tp-delete'].'"  /></a>
 						</div>
 						<p class="clearthefloat"></p>
 					</div>
@@ -2075,11 +2013,11 @@ function template_addblock()
 {
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
-	$side = $_GET['addblock'];
+	$side = $_GET['side'];
 	$panels = array('','left','right','top','center','front','lower','bottom');
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=admin;area=tpblocks;sa=saveblock" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="addblock">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-addblock'] . '</h3></div>
@@ -2172,7 +2110,7 @@ function template_blockoverview()
 	global $context, $settings, $txt, $boardurl, $scripturl;
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tpblocks;sa=updateoverview" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="blockoverview">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-blockoverview'] . '</h3></div><div></div>
@@ -2190,7 +2128,7 @@ function template_blockoverview()
 				{
 					echo '
 				<div class="tp_twocolumn">
-					<p><a href="' . $scripturl . '?action=admin;area=tparticles&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'" title="'.$txt['tp-edit'].'"><b>' . $block['title'] . '</b></a> ( ' . $txt['tp-blocktype' . $block['type']] . ' | ' . $txt['tp-' .$side[$block['bar']]] . ')</p>
+					<p><a href="' . $scripturl . '?action=admin;area=tpblocks&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'" title="'.$txt['tp-edit'].'"><b>' . $block['title'] . '</b></a> ( ' . $txt['tp-blocktype' . $block['type']] . ' | ' . $txt['tp-' .$side[$block['bar']]] . ')</p>
 					<hr>
 					<div id="tp'.$block['id'].'" style="overflow: hidden;">
 						<input type="hidden" name="' . rand(10000,19999) .'tpblock'.$block['id'].'" value="control" />';
