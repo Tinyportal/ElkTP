@@ -5,6 +5,7 @@
 [![Latest Version](https://img.shields.io/github/release/TinyPortal/ElkTP.svg)](https://github.com/TinyPortal/ElkTP/releases)
 [![Total Downloads](https://img.shields.io/github/downloads/TinyPortal/ElkTP/total.svg)](https://github.com/TinyPortal/ElkTP/releases)
 [![GitHub issues](https://img.shields.io/github/issues/TinyPortal/ElkTP.svg)](https://github.com/TinyPortal/ElkTP/issues)
+![GitHub](https://img.shields.io/github/license/TinyPortal/ElkTP)
 
 
 What is TinyPortal?
