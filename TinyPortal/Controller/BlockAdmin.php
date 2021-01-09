@@ -62,6 +62,7 @@ class BlockAdmin extends \Action_Controller
             if(array_key_exists($sa, $subActions)) {
                 require_once(SOURCEDIR . '/TPortalAdmin.php');
 
+
                 $context['TPortal']['subaction'] = $sa;
 
                 if(\loadLanguage('TPortalAdmin') == false) {
@@ -106,65 +107,7 @@ class BlockAdmin extends \Action_Controller
             $context['TPortal']['copyblocks']   = $tpBlock->getBlocks();
         }
 
-        // Move the block up or down in the panel list of blocks
-        if(isset($_GET['addpos']) || isset($_GET['subpos'])) {
-            \checksession('get');
-            if(isset($_GET['addpos'])) {
-                $id         = is_numeric($_GET['addpos']) ? $_GET['addpos'] : 0;
-                $current    = $tpBlock->getBlockData(array( 'pos', 'bar'), array( 'id' => $id) );
-                $new        = $current[0]['pos'] + 1;
-                $existing   = $tpBlock->getBlockData('id', array( 'bar' => $current[0]['bar'], 'pos' => $new ) );
-                if(is_array($existing)) {
-                    $tpBlock->updateBlock($existing[0]['id'], array( 'pos' => $current[0]['pos']));
-                }
-            } 
-            else {
-                $id         = is_numeric($_GET['subpos']) ? $_GET['subpos'] : 0;
-                $current    = $tpBlock->getBlockData(array( 'pos', 'bar'), array( 'id' => $id) );
-                $new        = $current[0]['pos'] - 1;
-                $existing   = $tpBlock->getBlockData('id', array( 'bar' => $current[0]['bar'], 'pos' => $new ) );
-                if(is_array($existing)) {
-                    $tpBlock->updateBlock($existing[0]['id'], array( 'pos' => $current[0]['pos']));
-                }
-            }
-            $tpBlock->updateBlock($id, array( 'pos' => $new));
-            \redirectexit('action=admin;area=tpblocks;sa=blocks');
-        }
-
-        // change the on/off
-        if(isset($_GET['blockon'])) {
-            checksession('get');
-            $id         = is_numeric($_GET['blockon']) ? $_GET['blockon'] : 0;
-            $current    = $tpBlock->getBlockData(array( 'off' ), array( 'id' => $id) );
-            if(is_array($current)) {
-                if($current[0]['off'] == 1) {
-                    $tpBlock->updateBlock($id, array( 'off' => '0' ));
-                }
-                else {
-                    $tpBlock->updateBlock($id, array( 'off' => '1' ));
-                }
-            }
-            redirectexit('action=admin;area=tpblocks;sa=blocks');
-        }
-
-        // remove it?
-        if(isset($_GET['blockdelete'])) {
-            checksession('get');
-            $id         = is_numeric($_GET['blockdelete']) ? $_GET['blockdelete'] : 0;
-            $tpBlock->deleteBlock($id);
-            redirectexit('action=admin;area=tpblocks;sa=blocks');
-        }
-       
-        foreach( array ( 'blockright', 'blockleft', 'blockcenter', 'blockfront', 'blockbottom', 'blocktop', 'blocklower') as $block_location ) {
-            if(array_key_exists($block_location, $_GET)) {
-                checksession('get');
-                $id     = is_numeric($_GET[$block_location]) ? $_GET[$block_location] : 0;
-                $loc    = $tpBlock->getBlockBarId(str_replace('block', '', $block_location));
-                $tpBlock->updateBlock($id, array( 'bar' => $loc ));
-                redirectexit('action=admin;area=tpblocks;sa=blocks');
-            }
-        }
-
+        
         // are we on overview screen?
         if(isset($_GET['overview'])) {
             TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=blocks;overview', $txt['tp-blockoverview']);
@@ -266,7 +209,7 @@ class BlockAdmin extends \Action_Controller
                       target = target.parentNode;
                 var id = target.id.replace("blockonbutton", "");
                 var Ajax = getXMLHttpRequest();
-                Ajax.open("POST", "?action=admin;area=tpblocks;blockon=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+                Ajax.open("POST", "?action=admin;area=tpblocks;sa=blockon;id=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
                 Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
                 var source = target.src;
                 target.src = "' . $settings['tp_images_url'] . '/ajax.gif"
@@ -277,7 +220,7 @@ class BlockAdmin extends \Action_Controller
                         target.src = source == "' . $settings['tp_images_url'] . '/TPactive1.png" ? "' . $settings['tp_images_url'] . '/TPactive2.png" : "' . $settings['tp_images_url'] . '/TPactive1.png";
                     }
                 }
-                var params = "?action=admin;area=tpblocks;blockon=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+                var params = "?action=admin;area=tpblocks;sa=blockon;id=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
                 Ajax.send(params);
             }
         // ]]></script>';
@@ -516,11 +459,59 @@ class BlockAdmin extends \Action_Controller
 
     public function ajaxBlock() {{{
 
+        checksession('get');
+
         $id = TPUtil::filter('id', 'get', 'int');
         if($id != false) {
-            $subAction = TPUtil::filter('sa', 'get', 'string');
+            $tpBlock    = TPBlock::getInstance();
+            $subAction  = TPUtil::filter('sa', 'get', 'string');
             switch($subAction) {
-
+                case 'blockdelete':
+                    $tpBlock->deleteBlock($id);
+                    redirectexit('action=admin;area=tpblocks;sa=blocks');
+                    break;
+                case 'blockright':
+                case 'blockleft':
+                case 'blockcenter':
+                case 'blockfront':
+                case 'blockbottom':
+                case 'blocktop':
+                case 'blocklower':
+                    $loc    = $tpBlock->getBlockBarId(str_replace('block', '', $subAction));
+                    $tpBlock->updateBlock($id, array( 'bar' => $loc ));
+                    redirectexit('action=admin;area=tpblocks;sa=blocks');
+                    break;
+                case 'addpos':
+                    $current    = $tpBlock->getBlockData(array( 'pos', 'bar'), array( 'id' => $id) );
+                    $new        = $current[0]['pos'] + 1;
+                    $existing   = $tpBlock->getBlockData('id', array( 'bar' => $current[0]['bar'], 'pos' => $new ) );
+                    if(is_array($existing)) {
+                        $tpBlock->updateBlock($existing[0]['id'], array( 'pos' => $current[0]['pos']));
+                    }
+                    $tpBlock->updateBlock($id, array( 'pos' => $new));
+                    \redirectexit('action=admin;area=tpblocks;sa=blocks');
+                    break;
+                case 'subpos':
+                    $current    = $tpBlock->getBlockData(array( 'pos', 'bar'), array( 'id' => $id) );
+                    $new        = $current[0]['pos'] - 1;
+                    $existing   = $tpBlock->getBlockData('id', array( 'bar' => $current[0]['bar'], 'pos' => $new ) );
+                    if(is_array($existing)) {
+                        $tpBlock->updateBlock($existing[0]['id'], array( 'pos' => $current[0]['pos']));
+                    }
+                    $tpBlock->updateBlock($id, array( 'pos' => $new));
+                    \redirectexit('action=admin;area=tpblocks;sa=blocks');
+                    break;
+                case 'blockon':
+                    $current    = $tpBlock->getBlockData(array( 'off' ), array( 'id' => $id) );
+                    if(is_array($current)) {
+                        if($current[0]['off'] == 1) {
+                            $tpBlock->updateBlock($id, array( 'off' => '0' ));
+                        }
+                        else {
+                            $tpBlock->updateBlock($id, array( 'off' => '1' ));
+                        }
+                    }
+                    break;
                 default:
                     break;
             }
