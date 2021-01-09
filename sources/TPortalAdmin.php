@@ -141,13 +141,7 @@ function TPortalAdmin()
             }
 		}
 
-        if(!in_array($_GET['sa'], array( 'addblock', 'blockright', 'blockleft', 'blockcenter', 'blockfront', 'blockbottom', 'blocktop', 'blocklower' ))) {
-		    do_subaction($tpsub);
-        }
-        else {
-            $tpsub = 'blocks';
-            $context['TPortal']['subaction'] = 'blocks';
-        }
+	    do_subaction($tpsub);
 	}
 	elseif(isset($_GET['blktype']) || isset($_GET['addblock']) || isset($_GET['blockon']) || isset($_GET['blockoff']) || isset($_GET['blockleft']) || isset($_GET['blockright']) || isset($_GET['blockcenter']) || isset($_GET['blocktop']) || isset($_GET['blockbottom']) || isset($_GET['blockfront']) || isset($_GET['blocklower']) || isset($_GET['blockdelete']) || isset($_GET['addpos']) || isset($_GET['subpos'])) {
         if(allowedTo('tp_blocks')) {		
@@ -172,123 +166,16 @@ function TPortalAdmin()
 		do_admin($tpsub);
 	}
 
-    TPAdminMenu( $tpsub );
-
-    call_integration_hook('integrate_tp_post_admin_subactions');
-}
-
-function TPAdminMenu ( $tpsub ) {{{
-
-	global $scripturl, $context, $txt;
-
-	// done with all POST values, go to the correct screen
-	$context['TPortal']['subtabs'] = '';
-    if(in_array($tpsub,array('articles', 'addarticle_php', 'addarticle_html', 'addarticle_bbc', 'addarticle_import', 'strays', 'submission')) && allowedTo('tp_articles')) {
-        $context['TPortal']['subtabs'] = array(
-				'articles' => array(
-					'lang' => true,
-					'text' => 'tp-articles',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=articles',
-					'active' => ($context['TPortal']['subaction'] == 'articles' || $context['TPortal']['subaction'] == 'editarticle') && $context['TPortal']['subaction'] != 'strays',
-					),
-				'articles_nocat' => array(
-					'lang' => true,
-					'text' => 'tp-uncategorised' ,
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=strays',
-					'active' => $context['TPortal']['subaction'] == 'strays',
-					),
-				'submissions' => array(
-					'lang' => true,
-					'text' => 'tp-tabs4' ,
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=submission',
-					'active' => $context['TPortal']['subaction'] == 'submission',
-					),
-				'addarticle' => array(
-					'lang' => true,
-					'text' => 'tp-tabs2',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_html' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
-					'active' => $context['TPortal']['subaction'] == 'addarticle_html',
-					),
-				'addarticle_php' => array(
-					'lang' => true,
-					'text' => 'tp-tabs3',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_php' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
-					'active' => $context['TPortal']['subaction'] == 'addarticle_php',
-					),
-				'addarticle_bbc' => array(
-					'lang' => true,
-					'text' => 'tp-addbbc',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_bbc' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
-					'active' => $context['TPortal']['subaction'] == 'addarticle_bbc',
-					),
-				'article_import' => array(
-					'lang' => true,
-					'text' => 'tp-addimport',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_import' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
-					'active' => $context['TPortal']['subaction'] == 'addarticle_import',
-					),
-				);
-    }
-    elseif(in_array($tpsub,array('addcategory','categories','clist')) && allowedTo('tp_articles')) {
-        $context['TPortal']['subtabs'] = array(
-                'categories' => array(
-                    'lang' => true,
-                    'text' => 'tp-tabs5',
-                    'url' => $scripturl . '?action=admin;area=tparticles;sa=categories',
-                    'active' => $tpsub == 'categories',
-                    ),
-                'addcategory' => array(
-                    'lang' => true,
-                    'text' => 'tp-tabs6',
-                    'url' => $scripturl . '?action=admin;area=tparticles;sa=addcategory',
-                    'active' => $tpsub == 'addcategory',
-                    ),
-                'clist' => array(
-                    'lang' => true,
-                    'text' => 'tp-tabs11',
-                    'url' => $scripturl . '?action=admin;area=tparticles;sa=clist',
-                    'active' => $tpsub == 'clist',
-                    ),
-                );
-    }
-    elseif(in_array($tpsub,array('blocks','panels','menubox','addmenu')) && allowedTo('tp_blocks')) {
-        $context['TPortal']['subtabs'] = array(
-                'panels' => array(
-                    'lang' => true,
-                    'text' => 'tp-panels',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=panels',
-                    'active' => $tpsub == 'panels',
-                ),
-				'blocks' => array(
-                    'lang' => true,
-                    'text' => 'tp-blocks',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=blocks',
-                    'active' => $tpsub == 'blocks' && !isset($_GET['overview']),
-                ),
-				'addblock' => array(
-                    'lang' => true,
-                    'text' => 'tp-addblock',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=addblock;' . $context['session_var'] . '=' . $context['session_id'].'',
-                    'active' => $tpsub == 'addblock',
-                ),
-                'blockoverview' => array(
-                    'lang' => true,
-                    'text' => 'tp-blockoverview',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=blocks;overview',
-                    'active' => $tpsub == 'blocks' && isset($_GET['overview']),
-                ),
-            );
-    }
-
-    if(!in_array('tpadm', Template_Layers::getInstance()->getLayers())) {
-        Template_Layers::getInstance()->add('tpadm');
-        Template_Layers::getInstance()->add('subtab');
-    }
+    TPAdmin::getInstance()->topMenu($tpsub);
+    TPAdmin::getInstance()->sideMenu($tpsub);
 
 	\loadTemplate('TPortalAdmin');
 	\loadTemplate('TPsubs');
-	TPadminIndex($tpsub);
-}}}
+
+    \validateSession();
+
+    call_integration_hook('integrate_tp_post_admin_subactions');
+}
 
 /* ******************************************************************************************************************** */
 function do_subaction($tpsub) {

@@ -10,8 +10,10 @@
  */
 namespace TinyPortal\Controller;
 
+use \TinyPortal\Model\Admin as TPAdmin;
 use \TinyPortal\Model\Article as TPArticle;
 use \TinyPortal\Model\Block as TPBlock;
+use \TinyPortal\Model\Category as TPCategory;
 use \TinyPortal\Model\Database as TPDatabase;
 use \TinyPortal\Model\Integrate as TPIntegrate;
 use \TinyPortal\Model\Mentions as TPMentions;
@@ -28,6 +30,7 @@ class BlockAdmin extends \Action_Controller
 
     // Admin Actions
     public function action_index() {{{
+        global $context, $txt;
         
         $area = TPUtil::filter('area', 'get', 'string');
         if($area == 'tpblocks') {
@@ -58,12 +61,28 @@ class BlockAdmin extends \Action_Controller
             );
             if(array_key_exists($sa, $subActions)) {
                 require_once(SOURCEDIR . '/TPortalAdmin.php');
-                \TPortalAdmin();
+
+                $context['TPortal']['subaction'] = $sa;
+
+                if(\loadLanguage('TPortalAdmin') == false) {
+                    \loadLanguage('TPortalAdmin', 'english');
+                }
+                if(\loadLanguage('TPortal') == false) {
+                    \loadLanguage('TPortal', 'english');
+                }
+
+                TPAdmin::getInstance()->topMenu($sa);
+                TPAdmin::getInstance()->sideMenu($sa);
 
                 $action     = new \Action();
                 $subAction  = $action->initialize($subActions, $sa);
 
                 $action->dispatch($subAction);
+
+
+                \loadTemplate('TPortalAdmin');
+                \loadTemplate('TPsubs');
+
             }
         }
 
