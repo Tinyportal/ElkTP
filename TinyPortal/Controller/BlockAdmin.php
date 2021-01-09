@@ -44,6 +44,7 @@ class BlockAdmin extends \Action_Controller
                 'blocks'        => array($this, 'showBlock', array()),
                 'addblock'      => array($this, 'showBlock', array()),
                 'editblock'     => array($this, 'editBlock', array()),
+                'updateblock'   => array($this, 'updateBlock', array()),
                 'saveblock'     => array($this, 'saveBlock', array()),
                 'blockon'       => array($this, 'ajaxBlock', array()),
                 'blockoff'      => array($this, 'ajaxBlock', array()),
@@ -70,6 +71,9 @@ class BlockAdmin extends \Action_Controller
                 }
                 if(\loadLanguage('TPortal') == false) {
                     \loadLanguage('TPortal', 'english');
+                }
+                if(\loadLanguage('TPmodules') == false) {
+                    \loadLanguage('TPmodules', 'english');
                 }
 
                 TPAdmin::getInstance()->topMenu($sa);
@@ -239,7 +243,7 @@ class BlockAdmin extends \Action_Controller
         }
 
         if(!is_numeric($block_id)) {
-            fatal_error($txt['tp-notablock'], false);
+            Errors::instance()->log_error($txt['tp-notablock'], 'general');
         }
 
         if(loadLanguage('TPortalAdmin') == false) {
@@ -358,18 +362,23 @@ class BlockAdmin extends \Action_Controller
         }
         // if not throw an error
         else {
-            fatal_error($txt['tp-blockfailure'], false);
+            Errors::instance()->log_error($txt['tp-blockfailure'], 'general');
         }
 
         $context['sub_template'] = 'editblock';
 
 
-        loadtemplate('TPBlockLayout');
+        loadTemplate('TPBlockLayout');
 
     }}}
 
-    public function saveBlock( $block_id = 0 ) {{{
+    public function updateBlock( $block_id = 0 ) {{{
         global $settings, $context, $scripturl, $txt;
+
+        \checkSession('post');
+        \isAllowedTo('tp_blocks');
+
+        $tpBlock = TPBlock::getInstance();
 
         if(empty($block_id)) {
             $block_id  = TPUtil::filter('id', 'get', 'int');
@@ -377,82 +386,188 @@ class BlockAdmin extends \Action_Controller
 
         // save a block?
         if(!is_numeric($block_id)) {
-            fatal_error($txt['tp-notablock'], false);
+            Errors::instance()->log_error($txt['tp-notablock'], 'general');
         }
-        $request =  $db->query('', '
-            SELECT editgroups FROM {db_prefix}tp_blocks
-            WHERE id = {int:blockid} LIMIT 1',
-            array('blockid' => $block_id)
-        );
 
-        if($db->num_rows($request) > 0) {
-            $row = $db->fetch_assoc($request);
-            // check permission
-            if(allowedTo('tp_blocks') || get_perm($row['editgroups'])) {
-                $ok = true;
+		$access 	= array();
+		$tpgroups 	= array();
+		$editgroups = array();
+		$lang 		= array();
+
+        foreach($_POST as $k => $v) {
+            // We have a empty post value just skip it
+            if(empty($v) && $v == '') {
+                continue;
+            }
+
+            if(substr($k, 0, 9) == 'tp_block_') {
+                $setting = substr($k, 9);
+                switch($setting) {
+                    case 'body':
+                        if(TPUtil::filter('tp_block_body_mode', 'request', 'string')) {
+                            if($body    = TPUtil::filter('tp_block_body', 'request', 'string')) {
+                                require_once(SOURCEDIR . '/Editor.subs.php');
+                                $body   = \html_to_bbc($body);
+                                $body   = \un_htmlspecialchars($body);
+                                $updateArray[$setting] = $body;
+                            }
+                        }
+                        if(TPUtil::filter('tp_block_mode', 'post', 'string') == 10) {
+                            $updateArray[$setting] = tp_convertphp($v);
+                        }
+                        break;
+                    case 'body_mode':
+                    case 'body_pure':
+                    case 'body_choice':
+                        // Do nothing
+                        break;
+                    case 'var1':
+                    case 'var2':
+                    case 'var3':
+                    case 'var4':
+                    case 'var5':
+                        $existing = $tpBlock->getBlockData(array('settings'), array('id' => $block_id));
+                        if(is_array($existing)) {
+                            $data   = json_decode($existing[0]['settings'], true);
+                        }
+                        $data[$setting] = $v;
+                        $updateArray['settings'] = json_encode($data);
+                        break; 
+                    default:
+                        $updateArray[$setting] = $v;
+                        break;
+                }
+            }
+			elseif(substr($k, 0, 8) == 'tp_group') {
+					$tpgroups[] = substr($k, 8);
+			}
+			elseif(substr($k, 0, 12) == 'tp_editgroup') {
+				$editgroups[] = substr($k, 12);
+			}
+			elseif(substr($k, 0, 10) == 'actiontype') {
+				$access[] = '' . $v;
+			}
+			elseif(substr($k, 0, 9) == 'boardtype') {
+				$access[] = 'board=' . $v;
+			}
+			elseif(substr($k, 0, 11) == 'articletype') {
+				$access[] = 'tpage=' . $v;
+			}
+			elseif(substr($k, 0, 12) == 'categorytype') {
+				$access[] = 'tpcat=' . $v;
+			}
+			elseif(substr($k, 0, 8) == 'langtype') {
+				$access[] = 'tlang=' . $k;
+			}
+			elseif(substr($k, 0, 9) == 'custotype' && !empty($v)) {
+				$items = explode(',', $v);
+				foreach($items as $iti => $it)
+					$access[] = '' . $it;
+			}
+			elseif(substr($k, 0, 8) == 'tp_lang_') {
+				if(substr($k, 8) != '' )
+					$lang[] = substr($k, 8). '|' . $v;
+			}
+			elseif(substr($k, 0, 18) == 'tp_userbox_options') {
+				if(!isset($userbox)) {
+					$userbox = array();
+				}
+				$userbox[] = $value;
+			}
+			elseif(substr($k, 0, 8) == 'tp_theme') {
+				$theme = substr($k, 8);
+				if(!isset($themebox)) {
+					$themebox = array();
+				}
+				// get the path too
+				if(isset($_POST['tp_path'.$theme]))
+					$tpath = $_POST['tp_path'.$theme];
+				else
+					$tpath = '';
+
+				$themebox[] = $theme . '|' . $value . '|' . $tpath;
+			}
+
+			$updateArray['display'] 	= implode(',', $access);
+			$updateArray['access'] 		= implode(',', $tpgroups);
+			$updateArray['lang'] 		= implode('|', $lang);
+			$updateArray['editgroups'] 	= implode('|', $editgroups);
+        }
+
+		if(isset($userbox)) {
+			//$updateArray['userbox_options'] = implode(',', $userbox);
+		}
+
+		if(isset($themebox)) {
+			$updateArray['themebox'] = implode(',', $themebox);
+		}
+
+        $tpBlock->updateBlock($block_id, $updateArray);
+        
+        redirectexit('action=admin;area=tpblocks;sa=editblock&id='.$block_id.';' . $context['session_var'] . '=' . $context['session_id']);
+
+    }}}
+
+    public function saveBlock( ) {{{
+        global $settings, $context, $scripturl, $txt;
+
+        checkSession('post');
+        isAllowedTo('tp_blocks');
+
+        $title  = TPUtil::filter('tp_addblocktitle', 'post', 'string');
+        if($title == false) {
+            $title = $txt['tp-no_title'];
+        }
+
+        $panel  = TPUtil::filter('tp_addblockpanel', 'post', 'string');
+        $type   = TPUtil::filter('tp_addblock', 'post', 'string');
+        if(!is_numeric($type)) {
+            if(substr($type, 0, 3) == 'mb_') {
+                $cp = TPBlock::getInstance()->getBlockData(array('*'), array('id' => substr($type, 3)));
+                if(is_array($cp)) {
+                    $cp = $cp[0];
+                }
             }
             else {
-                fatal_error($txt['tp-blocknotallowed'], false);
+                $od     = TPparseModfile(file_get_contents($context['TPortal']['blockcode_upload_path'] . $type.'.blockcode') , array('code'));
+                $body   = tp_convertphp($od['code']);
+				$type   = 10;
             }
-            $db->free_result($request);
+        }
 
-            // loop through the values and save them
-            foreach ($_POST as $what => $value) {
-                if(substr($what, 0, 10) == 'blocktitle') {
-                    // make sure special charachters can't be done
-                    $value = strip_tags($value);
-                    $value = preg_replace('~&#\d+$~', '', $value);
-                    $val = substr($what,10);
-                    $db->query('', '
-                            UPDATE {db_prefix}tp_blocks
-                            SET title = {string:title}
-                            WHERE id = {int:blockid}',
-                            array('title' => $value, 'blockid' => $val)
-                            );
-                }
-                elseif(substr($what, 0, 9) == 'blockbody' && substr($what, -4) != 'mode') {
-                    // If we came from WYSIWYG then turn it back into BBC regardless.
-                    if (!empty($_REQUEST[$what.'_mode']) && isset($_REQUEST[$what])) {
-                        require_once(SUBSDIR . '/Editor.subs.php');
-                        $_REQUEST[$what] = html_to_bbc($_REQUEST[$what]);
-                        // We need to unhtml it now as it gets done shortly.
-                        $_REQUEST[$what] = un_htmlspecialchars($_REQUEST[$what]);
-                        // We need this for everything else.
-                        $value = $_POST[$what] = $_REQUEST[$what];
-                    }
+        $body = '';
+        if(in_array($type , array('18', '19'))) {
+            $body = '0';
+        }
 
-                    $val = (int) substr($what, 9);
-
-                    $db->query('', '
-                            UPDATE {db_prefix}tp_blocks
-                            SET body = {string:body}
-                            WHERE id = {int:blockid}',
-                            array('body' => $value, 'blockid' => $val)
-                            );
-                }
-                elseif(substr($what, 0, 10) == 'blockframe') {
-                    $val = substr($what, 10);
-                    $db->query('', '
-                            UPDATE {db_prefix}tp_blocks
-                            SET frame = {string:frame}
-                            WHERE id = {int:blockid}',
-                            array('frame' => $value, 'blockid' => $val)
-                            );
-                }
-                elseif(substr($what, 0, 12) == 'blockvisible') {
-                    $val = substr($what, 12);
-                    $db->query('', '
-                            UPDATE {db_prefix}tp_blocks
-                            SET visible = {string:vis}
-                            WHERE id = {int:blockid}',
-                            array('vis' => $value, 'blockid' => $val)
-                            );
-                }
+        // Find the last position
+        $position   = 0; 
+        $pos        = TPBlock::getInstance()->getBlockData(array('pos'), array('bar' => $panel));
+        foreach($pos as $k => $v) {
+            if($position <= $v['pos']) {
+                $position = $v['pos'] + 1;
             }
-            redirectexit('action=tportal;sa=editblock'.$whatID);
+        }
+
+        if(isset($cp)) {
+            $block = array ( 'type' => $cp['type'], 'frame' => $cp['frame'], 'title' => $title, 'body' => $cp['body'], 'access' => $cp['access'], 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => $cp['lang'], 'display' => $cp['display'], 'editgroups' => $cp['editgroups'], 'settings' => json_encode(array( 
+                'var1' => json_decode($cp['settings'], true)['var1'],
+                'var2' => json_decode($cp['settings'], true)['var2'],
+                'var3' => 0, 
+                'var4' => 0,
+                'var5' => 0)
+            ));
         }
         else {
-            fatal_error($txt['tp-notablock'], false);
+            $block = array ( 'type' => $type, 'frame' => 'frame', 'title' => $title, 'body' => $body, 'access' => '-1,0,1', 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => '', 'display' => 'allpages', 'editgroups' => '', 'settings' => json_encode(array('var1' => 0, 'var2' => 0, 'var3' => 0, 'var4' => 0, 'var5' => 0 )));
+        }
+
+        $id = TPBlock::getInstance()->insertBlock($block);
+        if(!empty($id)) {
+		    redirectexit('action=admin;area=tpblocks;sa=editblock&id='.$id.';sesc='. $context['session_id']);
+        }
+		else {
+			redirectexit('action=admin;area=tpblocks;sa=blocks');
         }
 
     }}}
@@ -460,6 +575,7 @@ class BlockAdmin extends \Action_Controller
     public function ajaxBlock() {{{
 
         checksession('get');
+        isAllowedTo('tp_blocks');
 
         $id = TPUtil::filter('id', 'get', 'int');
         if($id != false) {

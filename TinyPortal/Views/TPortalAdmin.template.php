@@ -1845,8 +1845,8 @@ function template_blocks()
 							<div class="show-on-responsive"><strong>'.$txt['tp-move'].'</strong></div>';
 
                     foreach( array ( 'blockright', 'blockleft', 'blockcenter', 'blockfront', 'blockbottom', 'blocktop', 'blocklower') as $block_location ) {
-                        if($side[$i] != $block_location) {
-							echo '<a href="' . $scripturl . '?action=admin;area=tpblocks;' . $context['session_var'] . '=' . $context['session_id'].';sa='.$block_location.';id=' .$lblock['id']. '"><img title="'.$txt['tp-moveup'].'" src="' .$settings['tp_images_url']. '/TPselect_'.str_replace('block', '', $block_location).'.png" alt="'.$txt['tp-moveup'].'" /></a>';
+                        if($side[$i] != str_replace('block', '', $block_location)) {
+							echo '<a href="' . $scripturl . '?action=admin;area=tpblocks;' . $context['session_var'] . '=' . $context['session_id'].';sa='.$block_location.';id=' .$lblock['id']. '"><img title="'.$txt['tp-move'.$block_location].'" src="' .$settings['tp_images_url']. '/TPselect_'.str_replace('block', '', $block_location).'.png" alt="'.$txt['tp-move'.$block_location].'" /></a>';
                         }
                     }
 					
@@ -1859,7 +1859,7 @@ function template_blocks()
 						</div>
 	                    <div style="width:10%;" class="smalltext fullwidth-on-res-layout float-items tpcenter">
 						    <div class="show-on-responsive"><strong>'.$txt['tp-delete'].'</strong></div>
-							<a href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';blockdelete=' .$lblock['id']. '" onclick="javascript:return confirm(\''.$txt['tp-blockconfirmdelete'].'\')"><img title="'.$txt['tp-delete'].'"  src="' .$settings['tp_images_url']. '/TPdelete2.png" alt="'.$txt['tp-delete'].'"  /></a>
+							<a href="' . $scripturl . '?action=admin;area=tpblocks;' . $context['session_var'] . '=' . $context['session_id'].';sa=blockdelete;id=' .$lblock['id']. '" onclick="javascript:return confirm(\''.$txt['tp-blockconfirmdelete'].'\')"><img title="'.$txt['tp-delete'].'"  src="' .$settings['tp_images_url']. '/TPdelete2.png" alt="'.$txt['tp-delete'].'"  /></a>
 						</div>
 						<p class="clearthefloat"></p>
 					</div>
@@ -2017,7 +2017,7 @@ function template_addblock()
 	$panels = array('','left','right','top','center','front','lower','bottom');
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=admin;area=tpblocks" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=admin;area=tpblocks;sa=saveblock" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="addblock">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-addblock'] . '</h3></div>
