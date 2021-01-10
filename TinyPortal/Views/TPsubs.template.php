@@ -1008,7 +1008,7 @@ function template_TPsearch_above()
 		<div class="content">
 			<span class="topslice"><span></span></span>
 			<p style="margin: 0; padding: 0 1em;">
-				<a href="' . $scripturl. '?action=tportal;sa=searcharticle">' . $txt['tp-searcharticles2'] . '</a>';
+				<a href="' . $scripturl. '?action=tpsearch;sa=searcharticle">' . $txt['tp-searcharticles2'] . '</a>';
 
 	// any others?
 	if(!empty($context['TPortal']['searcharray']) && count($context['TPortal']['searcharray']) > 0) {
