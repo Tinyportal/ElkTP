@@ -27,7 +27,6 @@ class Integrate
         }
             
         $hooks = array (
-            'SSI'                               => 'SOURCEDIR/TPSSI.php|ssi_TPIntegrate',
             'current_action'                    => '\TinyPortal\Integrate::hookCurrentAction',
             'load_permissions'                  => '\TinyPortal\Integrate::hookPermissions',
             'load_illegal_guest_permissions'    => '\TinyPortal\Integrate::hookIllegalPermissions',
@@ -57,7 +56,6 @@ class Integrate
             'tp_block'                          => array (
             ),
             'tp_pre_admin_subactions'           => array ( 
-                'SOURCEDIR/TPBlock.php|TPBlockAdminActions',
                 'SOURCEDIR/TPArticle.php|TPArticleAdminActions',
             ),
         );

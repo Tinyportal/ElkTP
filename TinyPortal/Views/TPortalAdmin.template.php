@@ -115,7 +115,7 @@ function template_settings()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 	echo '
-	<form accept-charset="UTF-8" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
+	<form accept-charset="UTF-8" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tpsettings;sa=updatesettings" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="settings">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-generalsettings'] . '</h3></div>
@@ -290,7 +290,7 @@ function template_frontpage()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 		echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tpsettings;sa=updatefrontpage" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="frontpage">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-frontpage_settings'] . '</h3></div>
