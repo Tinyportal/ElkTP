@@ -34,44 +34,6 @@ function TPortalAdmin()
 	require_once(SUBSDIR . '/Post.subs.php');
 	require_once(SUBSDIR . '/TPortal.subs.php');
 
-	$context['TPortal']['frontpage_visualopts_admin'] = array(
-		'left' => 0,
-		'right' => 0,
-		'center' => 0,
-		'top' => 0,
-		'bottom' => 0,
-		'lower' => 0,
-		'nolayer' => 0,
-		'sort' => 'date',
-		'sortorder' => 'desc'
-	);
-
-	$w = explode(',', $context['TPortal']['frontpage_visual']);
-
-	if(in_array('left',$w))
-		$context['TPortal']['frontpage_visualopts_admin']['left'] = 1;
-	if(in_array('right',$w))
-		$context['TPortal']['frontpage_visualopts_admin']['right'] = 1;
-	if(in_array('center',$w))
-		$context['TPortal']['frontpage_visualopts_admin']['center'] = 1;
-	if(in_array('top',$w))
-		$context['TPortal']['frontpage_visualopts_admin']['top'] = 1;
-	if(in_array('bottom',$w))
-		$context['TPortal']['frontpage_visualopts_admin']['bottom'] = 1;
-	if(in_array('lower',$w))
-		$context['TPortal']['frontpage_visualopts_admin']['lower'] = 1;
-	if(in_array('nolayer',$w))
-		$context['TPortal']['frontpage_visualopts_admin']['nolayer'] = 1;
-	foreach($w as $r)
-	{
-		if(substr($r, 0, 5) == 'sort_')
-			$context['TPortal']['frontpage_visualopts_admin']['sort'] = substr($r, 5);
-		elseif(substr($r ,0, 10) == 'sortorder_')
-			$context['TPortal']['frontpage_visualopts_admin']['sortorder'] = substr($r, 10);
-	}
-
-	TPadd_linktree($scripturl.'?action=admin;area=tpsettings', $txt['tp-admin']);
-
 	// some GET values set up
 	$context['TPortal']['tpstart'] = isset($_GET['tpstart']) ? $_GET['tpstart'] : 0;
 
@@ -143,15 +105,6 @@ function TPortalAdmin()
 
 	    do_subaction($tpsub);
 	}
-	elseif(isset($_GET['blktype']) || isset($_GET['addblock']) || isset($_GET['blockon']) || isset($_GET['blockoff']) || isset($_GET['blockleft']) || isset($_GET['blockright']) || isset($_GET['blockcenter']) || isset($_GET['blocktop']) || isset($_GET['blockbottom']) || isset($_GET['blockfront']) || isset($_GET['blocklower']) || isset($_GET['blockdelete']) || isset($_GET['addpos']) || isset($_GET['subpos'])) {
-        if(allowedTo('tp_blocks')) {		
-            $context['TPortal']['subaction'] = $tpsub = 'blocks';
-		    do_blocks($tpsub);
-        }
-        else {
-            fatal_error($txt['tp-noadmin'], false);
-        }
-	}
 	elseif(isset($_GET['catdelete']) || isset($_GET['artfeat']) || isset($_GET['artfront']) || isset($_GET['artdelete']) || isset($_GET['arton']) || isset($_GET['artoff']) || isset($_GET['artsticky']) || isset($_GET['artlock']) || isset($_GET['catcollapse'])) {
         if(allowedTo('tp_articles')) {
 		    $context['TPortal']['subaction'] = $tpsub = 'articles';
@@ -184,12 +137,9 @@ function do_subaction($tpsub) {
 	if(in_array($tpsub, array('articles', 'strays', 'categories', 'addcategory', 'submission', 'artsettings', 'articons', 'clist')) && (allowedTo(array('tp_articles', 'tp_editownarticle'))) )  {
 		do_articles();
     }
-    elseif(in_array($tpsub, array('frontpage', 'overview', 'credits', 'permissions')) && (allowedTo('tp_settings')) ) {
+    elseif(in_array($tpsub, array('overview', 'credits', 'permissions')) && (allowedTo('tp_settings')) ) {
 		do_admin($tpsub);
 	}
-    elseif($tpsub == 'settings' && (allowedTo('tp_settings')) ) {
-		do_admin('settings');
-    }
     elseif(!$context['user']['is_admin']) {
 		fatal_error($txt['tp-noadmin'], false);
     }
@@ -197,13 +147,6 @@ function do_subaction($tpsub) {
 		redirectexit('action=admin;area=tpsettings');
     }
 
-}
-
-function do_blocks() {
-    return;
-    require_once( BOARDDIR . '/TinyPortal/Controller/BlockAdmin.php' );
-    $blockAdmin = new \TinyPortal\Controller\BlockAdmin();
-    $blockAdmin->adminBlocks();
 }
 
 // articles
@@ -1041,11 +984,6 @@ function do_admin($tpsub = 'overview')
 		$context['TPortal']['perm_groups'] = tp_fetchpermissions($context['TPortal']['modulepermissions']);
 	}
 	else {
-		if($tpsub == 'settings')
-			TPadd_linktree($scripturl.'?action=admin;area=tpsettings;sa=settings', $txt['tp-settings']);
-		elseif($tpsub == 'frontpage')
-			TPadd_linktree($scripturl.'?action=admin;area=tpsettings;sa=frontpage', $txt['tp-frontpage']);
-
 		isAllowedTo('tp_settings');
 	}
 }
@@ -1058,41 +996,13 @@ function do_postchecks()
 
 	// If we have any setting changes add them to this array
 	$updateArray = array();
-	if($context['TPortal']['action'] && (isset($_GET['sa']) && $_GET['sa'] == 'settings')) {
-		    // get all the themes
-            $context['TPallthem'] = array();
-			$request = $db->query('', '
-				SELECT th.value AS name, th.id_theme as id_theme, tb.value AS path
-				FROM {db_prefix}themes AS th
-				LEFT JOIN {db_prefix}themes AS tb ON th.id_theme = tb.id_theme
-				WHERE th.variable = {string:thvar}
-				AND tb.variable = {string:tbvar}
-				AND th.id_member = {int:id_member}
-				ORDER BY th.value ASC',
-				array(
-					'thvar' => 'name', 'tbvar' => 'images_url', 'id_member' => 0,
-				)
-			);
-			if($db->num_rows($request) > 0)
-			{
-				while ($row = $db->fetch_assoc($request))
-				{
-					$context['TPallthem'][] = array(
-						'id' => $row['id_theme'],
-						'path' => $row['path'],
-						'name' => $row['name']
-					);
-				}
-				$db->free_result($request);
-			}
-	}
 	// which screen do we come from?
 	if(!empty($_POST['tpadmin_form']))
 	{
 		// get it
 		$from = $_POST['tpadmin_form'];
 		// block permissions overview
-		if(in_array($from, array('settings', 'frontpage', 'artsettings')))
+		if(in_array($from, array('artsettings')))
 		{
 			checkSession('post');
 			isAllowedTo('tp_settings');
@@ -1100,32 +1010,6 @@ function do_postchecks()
 			$ssi = array();
 
             switch($from) {
-                case 'settings':
-                    $checkboxes = array('imageproxycheck', 'admin_showblocks', 'oldsidebar', 'disable_template_eval', 'fulltextsearch', 'hideadminmenu', 'useroundframepanels', 'showcollapse', 'blocks_edithide', 'uselangoption', 'use_groupcolor', 'showstars');
-                    foreach($checkboxes as $v) {
-                        if(TPUtil::checkboxChecked('tp_'.$v)) {
-                            $updateArray[$v] = "1";
-                        }
-                        else {
-                            $updateArray[$v] = "";
-                        }
-                        // remove the variable so we don't process it twice before the old logic is removed
-                        unset($_POST['tp_'.$v]);
-                    }
-                    break;
-				case 'frontpage':
-                    $checkboxes = array('allow_guestnews', 'forumposts_avatar', 'use_attachment');
-                    foreach($checkboxes as $v) {
-                        if(TPUtil::checkboxChecked('tp_'.$v)) {
-                            $updateArray[$v] = "1";
-                        }
-                        else {
-                            $updateArray[$v] = "";
-                        }
-                        // remove the variable so we don't process it twice before the old logic is removed
-                        unset($_POST['tp_'.$v]);
-                    }
-                    break;
 				case 'artsettings':
                     $checkboxes = array('use_wysiwyg', 'use_dragdrop', 'hide_editarticle_link', 'print_articles', 'allow_links_article_comments', 'hide_article_facebook', 'hide_article_twitter', 'hide_article_reddit', 'hide_article_digg', 'hide_article_delicious', 'hide_article_stumbleupon');
                     foreach($checkboxes as $v) {
@@ -1143,92 +1027,16 @@ function do_postchecks()
                     break;
             }
 
-			foreach($_POST as $what => $value)
-			{
-				if(substr($what, 0, 3) == 'tp_')
-				{
+			foreach($_POST as $what => $value) {
+				if(substr($what, 0, 3) == 'tp_') {
 					$where = substr($what, 3);
 					$clean = $value;
-					// for frontpage, do some extra
-					if($from == 'frontpage')
-					{
-						if(substr($what, 0, 20) == 'tp_frontpage_visual_')
-						{
-							$w[] = substr($what, 20);
-							unset($clean);
-						}
-						elseif(substr($what, 0, 21) == 'tp_frontpage_usorting')
-						{
-							$w[] = 'sort_'.$value;
-							unset($clean);
-						}
-						elseif(substr($what, 0, 26) == 'tp_frontpage_sorting_order')
-						{
-							$w[] = 'sortorder_'.$value;
-							unset($clean);
-						}
-						// SSI boards
-						elseif(substr($what, 0, 11) == 'tp_ssiboard') {
-                            $data   = file_get_contents("php://input");
-                            $output = TPUtil::http_parse_query($data)['tp_ssiboard'];
-                            if(is_string($output)) {
-                                $ssi[] = $output;
-                            } 
-                            else if(is_array($output)) {
-                                $ssi = $output;
-                            }
-                            else {
-                                $ssi = array();
-                            }
-						}
-					}
-					if($from == 'settings' && $what == 'tp_frontpage_title') {
-						$updateArray['frontpage_title'] = $clean;
+					if(isset($clean)) {
+						$updateArray[$where] = $clean;
                     }
-					else {
-						if(isset($clean))
-							$updateArray[$where] = $clean;
-					}
-					// START non responsive themes form
-					if($from == 'settings') {
-						if(substr($what, 0, 7) == 'tp_resp') {
-
-							$postname = substr($what, 7);
-							if(!isset($themeschecked)) {
-								$themeschecked = array();
-							}
-							$themeschecked[] = $postname;
-							if(isset($themeschecked)) {
-                                $id = TPAdmin::getInstance()->getSettingData('id', array( 'name' => 'resp' ));
-                                TPAdmin::getInstance()->updateSettingData($id[0]['id'], array ('value' => implode(',', $themeschecked)));
-							}
-						}
-					}
-					// END  non responsive themes form
-                    if($what == 'tp_image_upload_path') {
-                        unset($updateArray['image_upload_path']);
-                        if(strcmp($context['TPortal']['image_upload_path'],$value) != 0) {
-                            // Only allow if part of the boarddir
-                            if(strncmp($value, BOARDDIR, strlen(BOARDDIR)) == 0) {
-                                // It cann't be part of the existing path
-                                if(strncmp($value, $context['TPortal']['image_upload_path'], strlen($context['TPortal']['image_upload_path'])) != 0) {
-                                    if(tp_create_dir($value)) {
-                                        tp_recursive_copy($context['TPortal']['image_upload_path'], $value);
-                                        tp_delete_dir($context['TPortal']['image_upload_path']);
-                                        $updateArray['image_upload_path'] = $value;
-                                    }
-                                }
-                            }
-                        }
-                    }
-				}
+                }
 			}
 
-			// check the frontpage visual setting..
-			if($from == 'frontpage') {
-				$updateArray['frontpage_visual'] = implode(',', $w);
-				$updateArray['SSI_board'] = implode(',', $ssi);
-			}
 			updateTPSettings($updateArray);
 			return $from;
 		}
@@ -1242,7 +1050,6 @@ function do_postchecks()
 			{
 				if(substr($what, 0, 3) == 'tp_')
 				{
-					// for frontpage, do some extra
 					if($from == 'categories')
 					{
 						if(substr($what, 0, 19) == 'tp_category_parent_')
