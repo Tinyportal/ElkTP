@@ -44,7 +44,6 @@ class Integrate
             'search'                            => '\TinyPortal\Integrate::hookSearchLayers',
             'tp_pre_subactions'                 => array ( 
                 'SOURCEDIR/TPArticle.php|TPArticleActions',
-                'SOURCEDIR/TPSearch.php|TPSearchActions',
             ),
             'tp_post_subactions'                => array ( 
             ),           
@@ -407,14 +406,12 @@ class Integrate
 
         $actionArray = array_merge(
             array (
-                'forum'     => array('BoardIndex.php',                  'BoardIndex'),
-                'tportal'   => array('\TinyPortal\Controller\Portal.php',          'action_index'),
+                'forum'     => array('BoardIndex.controller.php', 'BoardIndex_Controller', 'action_boardindex'),
+                'tportal'   => array('\TinyPortal\Controller\Portal',   'action_index'),
+                'tpsearch'  => array('\TinyPortal\Controller\Search',   'action_index'),
             ),
             $actionArray
         );
-
-        //var_dump($actionArray);
-        //die;
 
     }}}
 
@@ -537,7 +534,7 @@ class Integrate
         // are we on search page? then add TP search options as well!
         if($context['TPortal']['action'] == 'search') {
             if(!in_array('TPsearch', \Template_Layers::getInstance()->getLayers())) {
-                \Template_Layers::getInstance()->add('TPsearch');
+                \Template_Layers::getInstance()->add('TPSearch');
             }
         }
 
