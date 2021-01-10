@@ -87,7 +87,9 @@ class BlockAdmin extends \Action_Controller
             TPAdmin::getInstance()->topMenu($sa);
             TPAdmin::getInstance()->sideMenu($sa);
 
-            \loadTemplate('TPortalAdmin');
+            $context['sub_template']         = $context['TPortal']['subaction'];
+
+            \loadTemplate('TPBlockAdmin');
             \loadTemplate('TPsubs');
 
         }
@@ -604,7 +606,7 @@ class BlockAdmin extends \Action_Controller
     }}}
 
     public function showOverview() {{{
-        global $context;
+        global $context, $txt, $scripturl;
 
         // are we on overview screen?
         if($context['TPortal']['subaction'] == 'blockoverview') {
