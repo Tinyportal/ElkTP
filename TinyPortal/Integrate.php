@@ -32,6 +32,7 @@ class Integrate
             'load_illegal_guest_permissions'    => '\TinyPortal\Integrate::hookIllegalPermissions',
             'buffer'                            => '\TinyPortal\Integrate::hookBuffer',
             'menu_buttons'                      => '\TinyPortal\Integrate::hookMenuButtons',
+            'display_buttons'                   => '\TinyPortal\Integrate::hookDisplayButtons',
             'admin_areas'                       => '\TinyPortal\Integrate::hookAdminAreas',
             'actions'                           => '\TinyPortal\Integrate::hookActions',
             'whos_online'                       => '\TinyPortal\Integrate::hookWhosOnline',
@@ -298,6 +299,21 @@ class Integrate
         // Change the home icon to something else and rewrite the standard action
         $buttons['home']['data-icon'] = 'i-users';
         $buttons['home']['href']      = $scripturl . '?action=forum';
+
+    }}}
+
+    public static function hookDisplayButtons() {{{
+
+        global $context, $scripturl, $txt;
+
+        if(allowedTo(array('tp_settings')) && (($context['TPortal']['front_type']=='forum_selected' || $context['TPortal']['front_type']=='forum_selected_articles'))) {
+            if(!in_array($context['current_topic'], explode(',', $context['TPortal']['frontpage_topics']))) {
+                $context['normal_buttons']['publish'] = array('active' => false, 'text' => 'tp-publish', 'lang' => true, 'url' => $scripturl . '?action=tportal;sa=publish;t=' . $context['current_topic']);
+            }
+            else {
+                $context['normal_buttons']['unpublish'] = array('active' => true, 'text' => 'tp-unpublish', 'lang' => true, 'url' => $scripturl . '?action=tportal;sa=publish;t=' . $context['current_topic']);
+            }
+        }
 
     }}}
 
