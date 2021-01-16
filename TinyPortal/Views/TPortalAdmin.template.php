@@ -68,19 +68,21 @@ function template_main()
 
 	echo '
 		<p class="clearthefloat"></p>
-<script>
-$(document).ready( function() {
-var $clickme = $(".clickme"),
-    $box = $(".box");
-
-$box.hide();
-
-$clickme.click( function(e) {
-    $(this).text(($(this).text() === "'.$txt['tp-hide'].'" ? "'.$txt['tp-more'].'" : "'.$txt['tp-hide'].'")).next(".box").slideToggle();
-    e.preventDefault();
-});
-});
-</script>
+        <script>
+			$(document).ready( function() {
+				var $clickme = $(".clickme"),
+					$box = $(".box");
+				if ($box) {
+					$box.hide();
+				}
+				if ($clickme) {
+					$clickme.click( function(e) {
+						$(this).text(($(this).text() === "'.$txt['tp-hide'].'" ? "'.$txt['tp-more'].'" : "'.$txt['tp-hide'].'")).next(".box").slideToggle();
+						e.preventDefault();
+					});
+				}
+			});
+		</script>
 	</div>';
 }
 
