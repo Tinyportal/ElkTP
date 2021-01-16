@@ -24,7 +24,7 @@ class PortalAdmin extends \Action_Controller
 
     public function action_index() {{{
         global $context, $txt;
-      
+
         return $this->action_admin();
 
     }}}
@@ -175,7 +175,7 @@ class PortalAdmin extends \Action_Controller
         }
 
         \updateTPSettings($updateArray);
-        \redirectExit('action=admin;area=tpsettings;sa=settings'); 
+        \redirectExit('action=admin;area=tpsettings;sa=settings');
 
 	}}}
 
@@ -258,7 +258,7 @@ class PortalAdmin extends \Action_Controller
                     $output = TPUtil::http_parse_query($data)['tp_ssiboard'];
                     if(is_string($output)) {
                         $ssi[] = $output;
-                    } 
+                    }
                     else if(is_array($output)) {
                         $ssi = $output;
                     }
@@ -281,7 +281,7 @@ class PortalAdmin extends \Action_Controller
         }
 
         \updateTPSettings($updateArray);
-        \redirectExit('action=admin;area=tpsettings;sa=frontpage'); 
+        \redirectExit('action=admin;area=tpsettings;sa=frontpage');
 	}}}
 
 }

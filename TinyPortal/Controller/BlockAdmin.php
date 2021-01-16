@@ -31,7 +31,7 @@ class BlockAdmin extends \Action_Controller
     // Admin Actions
     public function action_index() {{{
         global $context, $txt;
-        
+
         $area = TPUtil::filter('area', 'get', 'string');
 
         if($area == 'tpblocks') {
@@ -100,7 +100,7 @@ class BlockAdmin extends \Action_Controller
         global $context, $txt, $settings, $scripturl;
 
         \isAllowedTo('tp_blocks');
-        
+
         $tpBlock    = TPBlock::getInstance();
 
         if(($context['TPortal']['subaction'] == 'blocks')) {
@@ -272,7 +272,7 @@ class BlockAdmin extends \Action_Controller
             }
             elseif($row['type'] == 8) {
                 call_integration_hook('integrate_tp_shoutbox', array(&$row));
-            }        
+            }
             elseif($row['type'] == 20) {
                 call_integration_hook('integrate_tp_blocks', array(&$row));
             }
@@ -402,7 +402,7 @@ class BlockAdmin extends \Action_Controller
                         }
                         $data[$setting] = $v;
                         $updateArray['settings'] = json_encode($data);
-                        break; 
+                        break;
                     default:
                         $updateArray[$setting] = $v;
                         break;
@@ -473,7 +473,7 @@ class BlockAdmin extends \Action_Controller
 		}
 
         $tpBlock->updateBlock($block_id, $updateArray);
-        
+
         redirectexit('action=admin;area=tpblocks;sa=editblock&id='.$block_id.';' . $context['session_var'] . '=' . $context['session_id']);
 
     }}}
@@ -511,7 +511,7 @@ class BlockAdmin extends \Action_Controller
         }
 
         // Find the last position
-        $position   = 0; 
+        $position   = 0;
         $pos        = TPBlock::getInstance()->getBlockData(array('pos'), array('bar' => $panel));
         foreach($pos as $k => $v) {
             if($position <= $v['pos']) {
@@ -520,10 +520,10 @@ class BlockAdmin extends \Action_Controller
         }
 
         if(isset($cp)) {
-            $block = array ( 'type' => $cp['type'], 'frame' => $cp['frame'], 'title' => $title, 'body' => $cp['body'], 'access' => $cp['access'], 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => $cp['lang'], 'display' => $cp['display'], 'editgroups' => $cp['editgroups'], 'settings' => json_encode(array( 
+            $block = array ( 'type' => $cp['type'], 'frame' => $cp['frame'], 'title' => $title, 'body' => $cp['body'], 'access' => $cp['access'], 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => $cp['lang'], 'display' => $cp['display'], 'editgroups' => $cp['editgroups'], 'settings' => json_encode(array(
                 'var1' => json_decode($cp['settings'], true)['var1'],
                 'var2' => json_decode($cp['settings'], true)['var2'],
-                'var3' => 0, 
+                'var3' => 0,
                 'var4' => 0,
                 'var5' => 0)
             ));
@@ -611,7 +611,7 @@ class BlockAdmin extends \Action_Controller
         // are we on overview screen?
         if($context['TPortal']['subaction'] == 'blockoverview') {
             TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=blockoverview', $txt['tp-blockoverview']);
-            
+
             // fetch all blocks member group permissions
             $data   = TPBlock::getInstance()->getBlockData(array('id', 'title', 'bar', 'access', 'type'), array( 'off' => 0 ) );
             if(is_array($data)) {
@@ -660,7 +660,7 @@ class BlockAdmin extends \Action_Controller
 		}
 
         redirectexit('action=admin;area=tpblocks;sa=blockoverview;' . $context['session_var'] . '=' . $context['session_id']);
-		
+
     }}}
 
     public function updatePanels() {{{
@@ -693,7 +693,7 @@ class BlockAdmin extends \Action_Controller
         }
 
         \updateTPSettings($updateArray);
-        
+
         redirectexit('action=admin;area=tpblocks;sa=panels;' . $context['session_var'] . '=' . $context['session_id']);
     }}}
 

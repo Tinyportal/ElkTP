@@ -88,7 +88,7 @@ function TPblock($block, $theme, $side, $double=false)
             if($block['can_manage'] && !$context['TPortal']['blocks_edithide']) {
                 echo '<a href="',$scripturl,'?action=admin;area=tpblocks&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
             }
-			
+
 			echo $block['title'];
 			echo $types[$block['var5']]['code_title_right'];
 		}
@@ -432,9 +432,9 @@ function TPortal_themebox()
 			<input type="button" class="button_submit" value="'.$txt['tp-changetheme'].'" onclick="jumpit()" /><br><br>
 			<input type="hidden" value="'.Util::htmlspecialchars($scripturl . '?'.$tp_where.'theme='.$settings['theme_id']).'" name="jumpurl3" />
 			<div style="text-align: center; width: 95%; overflow: hidden;">';
-			
+
 			echo ' <img src="'.$settings['images_url'].'/thumbnail.png" alt="" id="chosen" name="chosen" style="max-width: 100%;" />';
-			
+
 		echo '
 			</div>
 		</form>
@@ -599,7 +599,7 @@ function TPortal_recentbox()
 		$bb = array($modSettings['recycle_board']);
 		$exclude_boards = $bb;
 	}
-	
+
 	// include boards
 	if (isset($context['TPortal']['recentboards']) && !$context['TPortal']['boardmode'] == 0)
 		$include_boards = $context['TPortal']['recentboards'];
@@ -617,7 +617,7 @@ function TPortal_recentbox()
 		{
 			echo '
 			<li' , $coun<count($what) ? '' : ' style="border: none; margin-bottom: 0;padding-bottom: 0;"'  , '>';
-				echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen#new" rel="nofollow" class="new_posts" style="margin:0px;">' . $txt['new'] . '</a> '; 
+				echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen#new" rel="nofollow" class="new_posts" style="margin:0px;">' . $txt['new'] . '</a> ';
 			echo '
 				<a href="' . $w['href'] . '" title="' . $w['subject'] . '">' . $w['short_subject'] . '</a>
 				 ', $txt['by'], ' <b>', $w['poster']['link'],'</b> ';
@@ -649,7 +649,7 @@ function TPortal_recentbox()
 		{
 			echo '
 			<li' , $coun<count($what) ? '' : ' style="border: none; margin-bottom: 0;padding-bottom: 0;"'  , '>';
-				echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen#new" rel="nofollow" class="new_posts" style="margin:0px;">' . $txt['new'] . '</a> '; 
+				echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen#new" rel="nofollow" class="new_posts" style="margin:0px;">' . $txt['new'] . '</a> ';
 			echo '
 					<span class="tpavatar"><a href="' . $scripturl. '?action=profile;u=' . $w['poster']['id'] . '">' , empty($avatars[$w['poster']['id']]) ? '<img src="' . $settings['tp_images_url'] . '/TPguest.png" alt="" />' : $avatars[$w['poster']['id']] , '</a></span><a href="'.$w['href'].'">' . $w['short_subject'].'</a>
 				 ', $txt['by'], ' <b>', $w['poster']['link'],'</b> ';
@@ -862,7 +862,7 @@ function TPortal_sitemap()
 	</div>';
 }
 
-// blocktype 18: Single Article 
+// blocktype 18: Single Article
 function TPortal_articlebox()
 {
 	global $context;
@@ -957,7 +957,7 @@ function progetAvatars($ids)
 	if($db->num_rows($request) > 0)
 	{
 		while ($row = $db->fetch_assoc($request)) {
-            $avy[$row['id_member']] = determineAvatar( array(      
+            $avy[$row['id_member']] = determineAvatar( array(
                     'avatar'            => $row['avatar'],
                     'email_address'     => $row['email_address'],
                     'filename'          => !empty($row['filename']) ? $row['filename'] : '',
@@ -1129,7 +1129,7 @@ function article_renders($type = 1, $single = false, $first = false)
 				{article_category}
 				{article_date}
 				{article_author}
-				{article_views}	
+				{article_views}
 				{article_rating}
 			' . ($single ? '{article_print}' : '') . '
 			</div>
@@ -1513,7 +1513,7 @@ function article_renders($type = 1, $single = false, $first = false)
 	</div>';
 		else
 			$code = '
-	<div class="render9">	
+	<div class="render9">
 		<div class="content" style="padding: 0;">
 			<span class="topslice"><span></span></span>
 			<div class="article_padding align_right">
@@ -1701,12 +1701,12 @@ function article_comments_total($render = true)
 		$data = '
 		<div class="article_boardnews">
 		<a href="' . $scripturl . '?page=' . (!empty($context['TPortal']['article']['shortname']) ? $context['TPortal']['article']['shortname'] : $context['TPortal']['article']['id']) . '#tp-comment">' .$context['TPortal']['article']['comments']. ' ' . ($context['TPortal']['article']['comments'] == 1 ? $txt['tp-comment'] : $txt['tp-comments']) . '</a>';
-	
+
 	if(in_array('commentallow', $context['TPortal']['article']['visual_options']) && isset($context['TPortal']['can_artcomment']) == 1) {
 		$data .= '
 			&nbsp;|&nbsp;' . '<a href="' . $scripturl . '?page=' . (!empty($context['TPortal']['article']['shortname']) ? $context['TPortal']['article']['shortname'] : $context['TPortal']['article']['id']) . '#tp-comment">' . $txt['tp-writecomment']. '</a>';
 	}
-	
+
 		$data .= '
 			</div>';
 	}
@@ -1990,7 +1990,7 @@ function article_comments($render = true)
 	}
 
 	if(in_array('comments', $context['TPortal']['article']['visual_options']) && !$context['TPortal']['article_comments_count'] == 0) {
-		$data .= '	
+		$data .= '
 	<div id="articlecomments" class="tp_commentsbox"' . (in_array('articlecomments',$context['tp_panels']) ? ' style="display: none;"' : '') . '>';
 
 		$counter = 1;
@@ -2005,21 +2005,21 @@ function article_comments($render = true)
                 }
 				// not a guest
 				if ($comment['poster_id'] > 0) {
-					$data .= '	
+					$data .= '
 					<span class="tp_comment_author">' . (!empty($comment['avatar']['image']) ? $comment['avatar']['image'] : '') . '</span>';
                 }
 				$data .= '
 					<strong>' . $counter++ .') ' . $comment['subject'] . '</strong>
 					' . (($comment['is_new'] && $context['user']['is_logged']) ? '<a href="" id="newicon" class="new_posts" >' . $txt['new'] . '</a>' : '') . '';
 				if ($comment['poster_id'] > 0) {
-					$data .= '					
+					$data .= '
 						<div class="middletext" style="padding-top: 0.5em;"> '.$txt['tp-bycom'].' <a href="'.$scripturl.'?action=profile;u='.$comment['poster_id'].'">'.$comment['poster'].'</a>&nbsp;' . $txt['on'] . ' ' . $comment['date'] . '</div>';
 				}
                 else {
 					$data .= '
 						<div class="middletext" style="padding-top: 0.5em;"> '.$txt['tp-bycom'].' '.$txt['guest_title'].'&nbsp;'. $txt['on'] . ' ' . $comment['date'] . '</div>';
                 }
-				$data .= '	
+				$data .= '
 					<p class="clearthefloat"></p>
 					<div class="textcomment"><div class="body">' . $comment['text'] . '</div></div>';
 				$data .= '
@@ -2035,12 +2035,12 @@ function article_comments($render = true)
 			<div class="tp_pad">
 				<form accept-charset="' . 'UTF-8' . '"  name="tp_article_comment" action="' . $scripturl . '?action=tportal;sa=comment" method="post" style="margin: 0; padding: 0;">
 						<input type="text" name="tp_article_comment_title" style="width: 99%;" value="Re: ' . strip_tags($context['TPortal']['article']['subject']) . '">
-						<textarea style="width: 99%; height: 8em;" name="tp_article_bodytext"></textarea><br>'; 
-	
+						<textarea style="width: 99%; height: 8em;" name="tp_article_bodytext"></textarea><br>';
+
 	if (!empty($context['TPortal']['allow_links_article_comments'])==0) {
 		$data .= '<em>'. $txt['tp-nolinkcomments'] . '<em>';
 		}
-	
+
 		$data .= '
 						<div class="tp_pad"><input type="submit" id="tp_article_comment_submit" class="button button_submit" value="' . $txt['tp-submit'] . '"></div>
 						<input type="hidden" name="tp_article_type" value="article_comment">
@@ -2400,7 +2400,7 @@ function template_tpadm_above()
 			if($context['TPortal']['oldsidebar'] == 0) {
 				echo '<div class="normaltext">' , implode(', ', $tbas) , '</div>
 				</li>';
-			} 
+			}
             else {
 				echo '<div class="middletext" style="margin: 0; line-height: 1.3em;">' , implode('<br>', $tbas) , '</div>
 				</li>';

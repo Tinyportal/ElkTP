@@ -353,7 +353,7 @@ function template_editblock()
 				</div>
 				<div><hr>
 					<div><a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-blockstylehelpdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a>'.$txt['tp-blockstylehelp'].'<br>
-					</div>				
+					</div>
 					<br><input type="radio" id="tp_block_var5" name="tp_block_var5" value="99" ' , $context['TPortal']['blockedit']['var5']=='99' ? 'checked' : '' , '><span' , $context['TPortal']['blockedit']['var5']=='99' ? ' style="color: red;">' : '><label for="tp_block_var5">' , $txt['tp-blocksusepaneltyle'] , '</label></span>
 				<div>
 				<div class="panels-optionsbg">';
@@ -455,7 +455,7 @@ function template_editblock()
 				if(empty($context['TPortal']['uselangoption'])) {
 					echo '
 					<br><span class="error">', $txt['tp-uselangoption2'] , ' ' , allowedTo('tp_settings') ? '<a href="'.$scripturl.'?action=admin;area=tpblocks;sa=settings#uselangoption">&nbsp;['. $txt['tp-settings'] .']&nbsp;</a>' : '' , '</span>';
-				}						
+				}
 				echo '
 					</dt>
 					<dd>';
@@ -937,7 +937,7 @@ function template_blocks()
 							echo '<a href="' . $scripturl . '?action=admin;area=tpblocks;' . $context['session_var'] . '=' . $context['session_id'].';sa='.$block_location.';id=' .$lblock['id']. '"><img title="'.$txt['tp-move'.$block_location].'" src="' .$settings['tp_images_url']. '/TPselect_'.str_replace('block', '', $block_location).'.png" alt="'.$txt['tp-move'.$block_location].'" /></a>';
                         }
                     }
-					
+
 					echo '
 						</div>
 						<div  style="width:10%;" class="smalltext fullwidth-on-res-layout float-items tpcenter">

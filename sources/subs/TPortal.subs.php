@@ -54,7 +54,7 @@ function TPortalInit() {{{
 	setupTPsettings();
     // Setup querystring
 	$context['TPortal']['querystring'] = $_SERVER['QUERY_STRING'];
-    
+
 	// go back on showing attachments..
 	if(isset($_GET['action']) && $_GET['action'] == 'dlattach') {
 		return;
@@ -104,7 +104,7 @@ function tpLoadCSS() {{{
 	global $context, $settings;
 
 	$context['html_headers'] .=  "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>";
-	
+
     // load both stylesheets to be sure all is in, but not if things aren't setup!
 	if(!empty($settings['default_theme_url']) && !empty($settings['theme_url']) && file_exists($settings['theme_dir'].'/css/tp-style.css')) {
 		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-style.css?'.TPVERSION.'" />';
@@ -126,7 +126,7 @@ function tpLoadCSS() {{{
 	else {
 		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="TinyPortal/Views/css/tp-custom.css?'.TPVERSION.'" />';
     }
-	
+
 	if(!empty($context['TPortal']['padding'])) {
 		$context['html_headers'] .= '
             <style type="text/css">
@@ -1485,8 +1485,8 @@ function tp_hidepanel2($id, $id2, $alt) {{{
 }}}
 
 
-function get_perm($perm, $moderate = '') {{{   
-    return TPPermissions::getInstance()->getPermissions($perm, $moderate);	
+function get_perm($perm, $moderate = '') {{{
+    return TPPermissions::getInstance()->getPermissions($perm, $moderate);
 }}}
 
 function tpsort($a, $b) {{{
@@ -1621,7 +1621,7 @@ function tp_renderarticle($intro = '') {{{
 		elseif($context['TPortal']['article']['rendertype'] == 'bbc' || $context['TPortal']['article']['rendertype'] == 'import') {
             if(TPUtil::isHTML($context['TPortal']['article']['intro']) || isset($context['TPortal']['article']['parsed_bbc'])) {
 			    $data .= $context['TPortal']['article']['intro'];
-            } 
+            }
             else {
                 $data .= parse_bbc($context['TPortal']['article']['intro']);
             }
@@ -1640,7 +1640,7 @@ function tp_renderarticle($intro = '') {{{
 		elseif($context['TPortal']['article']['rendertype'] == 'bbc') {
             if(TPUtil::isHTML($context['TPortal']['article']['body']) || isset($context['TPortal']['article']['parsed_bbc'])) {
 			    $data .= $context['TPortal']['article']['body'];
-            } 
+            }
             else {
 			    $data .= parse_bbc($context['TPortal']['article']['body']);
             }
@@ -1715,7 +1715,7 @@ function tp_renderblockarticle() {{{
 function render_template($code, $render = true) {{{
     global $context;
 
-    if(!empty($context['TPortal']['disable_template_eval']) && $render == true) { 
+    if(!empty($context['TPortal']['disable_template_eval']) && $render == true) {
         if(preg_match_all('~(?<={)([A-Za-z_]+)(?=})~', $code, $match) !== false) {
             foreach($match[0] as $func) {
                 if(function_exists($func)) {
@@ -1725,7 +1725,7 @@ function render_template($code, $render = true) {{{
             }
             echo $code;
         }
-    } 
+    }
     else {
 	    $ncode = 'echo \'' . str_replace(array('{','}'),array("', ","(), '"),$code).'\';';
 	    if($render) {
@@ -1740,7 +1740,7 @@ function render_template($code, $render = true) {{{
 function render_template_layout($code, $prefix = '') {{{
     global $context;
 
-    if(!empty($context['TPortal']['disable_template_eval'])) { 
+    if(!empty($context['TPortal']['disable_template_eval'])) {
         if(preg_match_all('~(?<={)([A-Za-z0-9]+)(?=})~', $code, $match) !== false) {
             foreach($match[0] as $suffix) {
                 $func = (string)"$prefix$suffix";
@@ -1753,7 +1753,7 @@ function render_template_layout($code, $prefix = '') {{{
             }
             echo $code;
         }
-    } 
+    }
     else {
 	    $ncode = 'echo \'' . str_replace(array('{','}'),array("', " . $prefix , "(), '"),$code).'\';';
 	    eval($ncode);
@@ -1870,7 +1870,7 @@ function TPparseRSS($override = '', $encoding = 0) {{{
   		curl_close($curl);
 		$xml = simplexml_load_string($ret);
 	}
-	
+
 	if($xml !== false) {
 		switch (strtolower($xml->getName())) {
 			case 'rss':
@@ -2559,18 +2559,18 @@ function tp_profile_articles($member_id) {{{
     $tpArticle  = TPArticle::getInstance();
 	$start      = 0;
 	$sorting    = 'date';
-	
+
     if(isset($context['TPortal']['mystart'])) {
 		$start = is_numeric($context['TPortal']['mystart']) ? $context['TPortal']['mystart'] : 0;
     }
-	
+
     if($context['TPortal']['tpsort'] != '') {
         $sorting = $context['TPortal']['tpsort'];
         if(!in_array($sorting, array('date', 'subject', 'views', 'category', 'comments'))) {
             $sorting = 'date';
         }
     }
-	
+
 	// get all articles written by member
     $max        = $tpArticle->getTotalAuthorArticles($member_id, false, true);
 
@@ -2590,8 +2590,8 @@ function tp_profile_articles($member_id) {{{
 		FROM {db_prefix}tp_articles AS art
 		WHERE art.author_id = {int:auth}
 		ORDER BY art.{raw:sort} {raw:sorter} LIMIT 15 OFFSET {int:start}',
-		array('auth' => $member_id, 
-		'sort' => $sorting, 
+		array('auth' => $member_id,
+		'sort' => $sorting,
 		'sorter' => in_array($sorting, array('date', 'views', 'comments')) ? 'DESC' : 'ASC',
 		'start' => $start
 		)
@@ -2644,7 +2644,7 @@ function tp_profile_articles($member_id) {{{
 		}
 		$db->free_result($request);
 	}
-	
+
     // construct pageindexes
 	$context['TPortal']['pageindex'] = '';
 	if($max > 0) {
@@ -2656,7 +2656,7 @@ function tp_profile_articles($member_id) {{{
 	if(isset($_GET['sa']) && $_GET['sa'] == 'settings') {
 		$context['TPortal']['profile_action'] = 'settings';
     }
-	
+
 	// Create the tabs for the template.
 	$context[$context['profile_menu_name']]['tab_data'] = array(
 		'title' => $txt['articlesprofile'],
@@ -2691,7 +2691,7 @@ function tp_articles($member_id = null) {{{
 
     if(is_null($member_id)) {
         $member_id = TPUtil::filter('u', 'get', 'int');
-    }	
+    }
 
     TPArticleCategories();
 	loadtemplate('TPprofile');
@@ -2786,7 +2786,7 @@ function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png
     if(is_dir($destdir)) {
         $dstPath = $destdir . '/' . $sname;
     }
-    else { 
+    else {
         $dstPath = BOARDDIR . '/'. $destdir .'/' . $sname;
     }
 

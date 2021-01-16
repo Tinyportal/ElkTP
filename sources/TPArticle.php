@@ -102,7 +102,7 @@ function articleInsertComment() {{{
         $mention_data['text']           = 'Article';
 
         $tpMention = TPMentions::getInstance();
-        $tpMention->addMention($mention_data); 
+        $tpMention->addMention($mention_data);
 
     }
 
@@ -334,8 +334,8 @@ function articleEdit() {{{
 				else {
 					$options[] = substr($setting, 8);
 				}
-			} 
-			else { 
+			}
+			else {
 				switch($setting) {
 					case 'body_mode':
 					case 'intro_mode':
@@ -519,7 +519,7 @@ function articleShow() {{{
         SELECT id, subject, date, locked, approved, off FROM {db_prefix}tp_articles
         WHERE author_id = {int:author}
         ORDER BY {raw:sort} {raw:sorter} LIMIT {int:start}, 15',
-        array('author' => $context['user']['id'], 
+        array('author' => $context['user']['id'],
         'sort' => $sort,
         'sorter' => in_array($sort, array('subject')) ? ' ASC ' : ' DESC ',
         'start' => $mystart
@@ -537,7 +537,7 @@ function articleShow() {{{
     if(loadLanguage('TPortalAdmin') == false) {
         loadLanguage('TPortalAdmin', 'english');
     }
-    
+
     loadTemplate('TParticle');
     $context['sub_template'] = 'showarticle';
 
@@ -596,7 +596,7 @@ function articleSubmitSuccess() {{{
 
 function articlePublish() {{{
     global $context;
-    
+
     // promoting topics
     if(!isset($_GET['t']))
         redirectexit('action=forum');

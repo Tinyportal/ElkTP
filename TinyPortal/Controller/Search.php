@@ -66,7 +66,7 @@ class Search extends \Action_Controller
         else {
             $start = TPUtil::filter('start', 'request', 'int');
         }
-        
+
         if(!empty($_REQUEST['params'])) {
             $params = TPUtil::filter('params', 'request', 'string');
             if(!empty($params)) {
@@ -118,7 +118,7 @@ class Search extends \Action_Controller
                 foreach($splitWords as $word) {
                     $word       = trim($word);
                     $operator   = substr($word, 0, 1);
-                    // First Character 
+                    // First Character
                     switch($operator) {
                         // Allowed operators
                         case '-':
@@ -130,7 +130,7 @@ class Search extends \Action_Controller
                             break;
                         default:
                             // Last Character of a word
-                            $operator   = substr($word, -1); 
+                            $operator   = substr($word, -1);
                             switch($operator) {
                                 // Allowed operators
                                 case '-':
@@ -158,7 +158,7 @@ class Search extends \Action_Controller
                 $select     = ', MATCH (body) AGAINST (\''.$what.'\') AS score';
                 $query      = 'MATCH (body) AGAINST (\''.$what.'\' IN BOOLEAN MODE) > 0';
             }
-            elseif($usetitle && $usebody) { 
+            elseif($usetitle && $usebody) {
                 $select     = ', MATCH (subject, body) AGAINST (\''.$what.'\') AS score';
                 $query      = 'MATCH (subject, body) AGAINST (\''.$what.'\' IN BOOLEAN MODE) > 0';
             }
@@ -240,11 +240,11 @@ class Search extends \Action_Controller
         $db->free_result($request);
 
         $params = base64_encode(json_encode(array( 'search' => $what, 'title' => $usetitle, 'body' => $usebody)));
-        
+
         // Now that we know how many results to expect we can start calculating the page numbers.
         $context['page_index']  = constructPageIndex($scripturl . '?action=tpsearch;sa=searchresults;params=' . $params, $start, $num_results, $max_results, false);
 
-        
+
         $context['sub_template'] = 'article_search_results';
         \loadTemplate('TPSearch');
 

@@ -60,7 +60,7 @@ function TPortalAdmin()
 
 	// check POST values
 	$return = do_postchecks();
- 
+
 	if(!empty($return)) {
 		redirectexit('action=admin;area=tpsettings;sa=' . $return);
     }
@@ -73,7 +73,7 @@ function TPortalAdmin()
         $subAction  = TPUtil::filter('area', 'get', 'string');
     }
     $subActions = array();
-   
+
     call_integration_hook('integrate_tp_pre_admin_subactions', array(&$subActions));
 
     $context['TPortal']['subaction'] = $subAction;
@@ -109,7 +109,7 @@ function TPortalAdmin()
         if(allowedTo('tp_articles')) {
 		    $context['TPortal']['subaction'] = $tpsub = 'articles';
 		    do_articles($tpsub);
-        }    
+        }
         else {
             fatal_error($txt['tp-noadmin'], false);
         }
@@ -163,12 +163,12 @@ function do_articles()
 		        SELECT id FROM {db_prefix}tp_articles
 		        WHERE id = {int:article_id}
                 AND author_id = {int:member_id}',
-		        array(  
+		        array(
                     'article_id'    => $article,
                     'member_id'     => $context['user']['id']
                 )
 	        );
-	        if($db->num_rows($request) == 0) {           
+	        if($db->num_rows($request) == 0) {
                 fatal_error($txt['tp-noadmin'], false);
             }
             $db->free_result($request);
@@ -383,7 +383,7 @@ function do_articles()
 		// fetch all categories and subcategories
 		$request = $db->query('', '
 			SELECT id, display_name as name, parent as parent, access, dt_log,
-				page, settings, short_name 
+				page, settings, short_name
 			FROM {db_prefix}tp_categories
 			WHERE item_type = {string:type}',
 			array('type' => 'category')
@@ -515,7 +515,7 @@ function do_articles()
 		$request = $db->query('', '
 			SELECT DISTINCT var.id AS id, var.display_name AS name, var.parent AS parent
 			FROM {db_prefix}tp_categories AS var
-			WHERE var.item_type = {string:type} 
+			WHERE var.item_type = {string:type}
 			' . (isset($where) ? 'AND var.parent'.((TP_PGSQL == true) ? '::Integer' : ' ' ).' = {int:whereval}' : '') . '
 			ORDER BY parent, id DESC',
 			array('type' => 'category', 'whereval' => isset($where) ? $where : 0)
@@ -1437,7 +1437,7 @@ function get_articles()
 {
 
 	global $context;
-    
+
     $db = TPDatabase::getInstance();
 
 	$context['TPortal']['edit_articles'] = array();

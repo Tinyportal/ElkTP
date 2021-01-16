@@ -16,7 +16,7 @@ if (!defined('ELK')) {
 
 define('ARTICLE_COMMENT', 1);
 
-class Base 
+class Base
 {
 	protected $dB = null;
     protected $modSettings = null;
@@ -43,8 +43,8 @@ class Base
             AND type = {int:type}
             AND value = {int:val} LIMIT 1',
             array (
-                'id_mem'    => $user_id, 
-                'type'      => $type, 
+                'id_mem'    => $user_id,
+                'type'      => $type,
                 'val'       => $item_id
             )
         );
@@ -75,7 +75,7 @@ class Base
                     'value'     => 'int',
                     'item'      => 'int'
                 ),
-                array ( 
+                array (
                     $type,
                     $user_id,
                     $item_id,
@@ -153,12 +153,12 @@ class Base
         $this->dB->db_insert('INSERT',
             '{db_prefix}tp_comments',
             array (
-                'subject'   => 'string', 
-                'comment'   => 'string', 
-                'member_id' => 'int', 
-                'item_type' => 'string', 
+                'subject'   => 'string',
+                'comment'   => 'string',
+                'member_id' => 'int',
+                'item_type' => 'string',
                 'datetime'  => 'int',
-                'item_id'   => 'int', 
+                'item_id'   => 'int',
             ),
             array(
                 $title,
@@ -176,7 +176,7 @@ class Base
     }}}
 
     protected function deleteComment($id, $type) {{{
-        
+
         $this->dB->db_query('', '
 			DELETE FROM {db_prefix}tp_comments
 			WHERE id = {int:id}
@@ -188,7 +188,7 @@ class Base
 		);
 
     }}}
-    
+
     protected function getSQLData( $columns, $where, $dBStructure, $table ) {{{
 
         $values = null;
@@ -220,7 +220,7 @@ class Base
                     $where_data[] = $key.' = \''.$value.'\'';
                 }
                 elseif(strpos($key, '!') === 0) {
-                    $where_data[] = substr($key, strpos($key, '!') + 1).' != \''.$value.'\''; 
+                    $where_data[] = substr($key, strpos($key, '!') + 1).' != \''.$value.'\'';
                 }
             }
             $where = implode(' AND ', array_values($where_data));
@@ -250,7 +250,7 @@ class Base
 
    protected function insertSQL(array $data, array $dBStructure, string $table) {{{
         $insert_data = array();
-        
+
         foreach(array_keys($data) as $key) {
             $insert_data[$key] = $dBStructure[$key];
         }
@@ -261,7 +261,7 @@ class Base
             array_values($data),
             array ('id')
         );
-			
+
         return $this->dB->db_insert_id('{db_prefix}'.$table, 'id');
 
     }}}

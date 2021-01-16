@@ -54,7 +54,7 @@ class Block
 
         $now = time();
         // setup the containers
-        $blocks = $tpBlock->getBlockType(); 
+        $blocks = $tpBlock->getBlockType();
 
 
         $context['TPortal']['hide_frontbar_forum'] = 0;
@@ -67,10 +67,10 @@ class Block
             $count[$k] = 0;
         }
 
-        $panels             = $tpBlock->getBlockBar(); 
+        $panels             = $tpBlock->getBlockBar();
         $availableBlocks    = $tpBlock->getBlockPermissions();
         if (is_array($availableBlocks) && count($availableBlocks)) {
-            foreach($availableBlocks as $row) { 
+            foreach($availableBlocks as $row) {
                 // some tests to minimize sql calls
                 if($row['type'] == TP_BLOCK_THEMEBOX) {
                     $test_themebox = true;
@@ -138,7 +138,7 @@ class Block
                         $avatar_width = '';
                         $avatar_height = '';
                     }
-                    $context['TPortal']['blockarticles'][$article['id']]['avatar'] = determineAvatar( array(      
+                    $context['TPortal']['blockarticles'][$article['id']]['avatar'] = determineAvatar( array(
                                 'avatar'            => $article['avatar'],
                                 'email_address'     => $article['email_address'],
                                 'filename'          => !empty($article['filename']) ? $article['filename'] : '',

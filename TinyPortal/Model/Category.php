@@ -20,13 +20,13 @@ class Category extends Base {
     private static $_instance   = null;
 
     public static function getInstance() {{{
-	
+
     	if(self::$_instance == null) {
 			self::$_instance = new self();
 		}
-	
+
     	return self::$_instance;
-	
+
     }}}
 
     // Empty Clone method
@@ -43,7 +43,7 @@ class Category extends Base {
             'display_name'      => 'text',
             'short_name'        => 'text',
             'settings'          => 'text',
-            'custom_template'   => 'int',  
+            'custom_template'   => 'int',
         );
 
     }}}

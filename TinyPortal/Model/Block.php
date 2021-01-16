@@ -23,13 +23,13 @@ class Block extends Base {
     private static $_instance   = null;
 
     public static function getInstance() {{{
-	
+
     	if(self::$_instance == null) {
 			self::$_instance = new self();
 		}
-	
+
     	return self::$_instance;
-	
+
     }}}
 
     // Empty Clone method
@@ -110,15 +110,15 @@ class Block extends Base {
 
     public function getBlockPermissions( ) {{{
         global $context;
-        
+
         $blocks = array();
 
         $activeBlocks = $this->getActiveBlocks();
         foreach($activeBlocks as $block) {
-            // Check group access      
+            // Check group access
             if(allowedTo('tp_blocks') && (!empty($context['TPortal']['admin_showblocks']) || !isset($context['TPortal']['admin_showblocks']))) {
-                
-            } 
+
+            }
             else if(Permissions::getInstance()->getPermissions($block['access']) == false) {
                 continue;
             }

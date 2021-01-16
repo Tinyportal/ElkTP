@@ -21,13 +21,13 @@ class Admin extends Base {
     private static $_instance   = null;
 
     public static function getInstance() {{{
-	
+
     	if(self::$_instance == null) {
 			self::$_instance = new self();
 		}
-	
+
     	return self::$_instance;
-	
+
     }}}
 
     // Empty Clone method
@@ -42,7 +42,7 @@ class Admin extends Base {
             'name'      => 'text',
             'value'     => 'text',
         );
-        
+
         $this->tpSettings = $this->getSetting();
 
     }}}
@@ -63,7 +63,7 @@ class Admin extends Base {
 
         if(empty($setting_name)) {
             $request =  $this->dB->db_query('', '
-                SELECT name, value 
+                SELECT name, value
                 FROM {db_prefix}tp_settings
                 WHERE 1=1'
             );
@@ -251,7 +251,7 @@ class Admin extends Base {
 				),
 			);
 		}
-		
+
 		if (allowedTo('tp_articles')) {
 			$context['admin_tabs']['tp_articles'] = array(
 				'articles' => array(
