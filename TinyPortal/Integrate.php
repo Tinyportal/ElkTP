@@ -43,7 +43,6 @@ class Integrate
             'init_theme'                        => '\TinyPortal\Integrate::hookInitTheme',
             'search'                            => '\TinyPortal\Integrate::hookSearchLayers',
             'tp_pre_subactions'                 => array (
-                'SOURCEDIR/TPArticle.php|TPArticleActions',
             ),
             'tp_post_subactions'                => array (
             ),
@@ -57,7 +56,6 @@ class Integrate
             'tp_block'                          => array (
             ),
             'tp_pre_admin_subactions'           => array (
-                'SOURCEDIR/TPArticle.php|TPArticleAdminActions',
             ),
         );
 
