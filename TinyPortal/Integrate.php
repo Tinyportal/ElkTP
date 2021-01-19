@@ -421,6 +421,7 @@ class Integrate
         $actionArray = array_merge(
             array (
                 'forum'     => array('BoardIndex.controller.php', 'BoardIndex_Controller', 'action_boardindex'),
+                'tparticle' => array('\TinyPortal\Controller\Article',  'action_index'),
                 'tportal'   => array('\TinyPortal\Controller\Portal',   'action_index'),
                 'tpsearch'  => array('\TinyPortal\Controller\Search',   'action_index'),
             ),

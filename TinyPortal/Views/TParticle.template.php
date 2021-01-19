@@ -614,7 +614,7 @@ function template_editcomment()
 
     if(isset($context['TPortal']['comment_edit'])){
         echo '
-            <form accept-charset="', 'UTF-8', '"  name="tp_edit_comment" action="'.$scripturl.'?action=tportal;sa=editcomment" method="post" style="margin: 1ex;">
+            <form accept-charset="', 'UTF-8', '"  name="tp_edit_comment" action="'.$scripturl.'?action=tparticle;sa=editcomment" method="post" style="margin: 1ex;">
                 <input type="text" name="tp_editcomment_title" value="'.$context['TPortal']['comment_edit']['title'].'"> <br>
                 <textarea name="tp_editcomment_body" rows="6" cols="20" style="width: 90%;" wrap="on">'.$context['TPortal']['comment_edit']['body'].'</textarea>
                 <br>
@@ -675,7 +675,7 @@ function template_showcomments()
 			echo '
 			<tr class="content">
 			    <td class="shouts">
-				    <div class="padding-div tpright"><a href="' . $scripturl . '?action=tportal;sa=showcomments">' . $txt['tp-showcomments'] . '</a></div>
+				    <div class="padding-div tpright"><a href="' . $scripturl . '?action=tparticle;sa=showcomments">' . $txt['tp-showcomments'] . '</a></div>
 			    </td>
 			</tr>';
 
@@ -767,7 +767,7 @@ function template_showarticle()
 			<tr class="title_bar category_header">
 			<th scope="col" class="myarticles">
 				<div class="font-strong" style="padding:0px;">
-					<div align="center" class="float-items">', $context['TPortal']['tpsort']=='subject' ? '<img src="' .$settings['tp_images_url']. '/TPsort_up.png" alt="" /> ' : '' ,'<a href="'.$scripturl.'?action=tportal;sa=myarticles;tpsort=subject">'.$txt['tp-arttitle'].'</a></div>
+					<div align="center" class="float-items">', $context['TPortal']['tpsort']=='subject' ? '<img src="' .$settings['tp_images_url']. '/TPsort_up.png" alt="" /> ' : '' ,'<a href="'.$scripturl.'?action=tparticle;sa=myarticles;tpsort=subject">'.$txt['tp-arttitle'].'</a></div>
 				</div>
 			</th>
 			</tr>

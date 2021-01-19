@@ -216,7 +216,7 @@ function TPortal_userbox()
 			<li><hr><a href="', $scripturl, '?action=unread">' .$bullet.$txt['tp-unread'].'</a></li>
 			<li><a href="', $scripturl, '?action=unreadreplies">'.$bullet.$txt['tp-replies'].'</a></li>
 			<li><a href="', $scripturl, '?action=profile;u='.$context['user']['id'].';area=showposts">'.$bullet.$txt['tp-showownposts'].'</a></li>
-			<li><a href="', $scripturl, '?action=tportal;sa=showcomments">'.$bullet.$txt['tp-showcomments'].'</a><hr></li>
+			<li><a href="', $scripturl, '?action=tparticle;sa=showcomments">'.$bullet.$txt['tp-showcomments'].'</a><hr></li>
 			';
 
 		// Is the forum in maintenance mode?
@@ -243,14 +243,14 @@ function TPortal_userbox()
 		// can we submit an article?
        	if(allowedTo('tp_submithtml'))
 			echo '
-		<li><a href="', $scripturl, '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tportal') . ';sa=addarticle_html">' . $bullet3.$txt['tp-submitarticle']. '</a></li>';
+		<li><a href="', $scripturl, '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tparticle') . ';sa=addarticle_html">' . $bullet3.$txt['tp-submitarticle']. '</a></li>';
        	if(allowedTo('tp_submitbbc'))
 					echo '
-		<li><a href="', $scripturl, '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tportal') . ';sa=addarticle_bbc">' . $bullet3.$txt['tp-submitarticlebbc']. '</a></li>';
+		<li><a href="', $scripturl, '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tparticle') . ';sa=addarticle_bbc">' . $bullet3.$txt['tp-submitarticlebbc']. '</a></li>';
 
 		if(allowedTo('tp_editownarticle'))
 					echo '
-		<li><a href="', $scripturl, '?action=tportal;sa=myarticles">' . $bullet3.$txt['tp-myarticles']. '</a></li>';
+		<li><a href="', $scripturl, '?action=tparticle;sa=myarticles">' . $bullet3.$txt['tp-myarticles']. '</a></li>';
 
 		// tpadmin checks
 		if (allowedTo('tp_settings'))
@@ -2001,7 +2001,7 @@ function article_comments($render = true)
 					<a id="comment'.$comment['id'].'"></a>';
 				// can we edit the comment or are the owner of it?
 				if(allowedTo('tp_articles') || $comment['poster_id'] == $context['user']['id'] && !$context['user']['is_guest']) {
-					$data .= '<div class="floatright"><i><a class="active" href="' . $scripturl . '?action=tportal;sa=killcomment;comment=' . $comment['id'] . '" onclick="javascript:return confirm(\'' . $txt['tp-confirmcommentdelete'] . '\')"><span>' . $txt['tp-delete'] . '</span></a></i></div>';
+					$data .= '<div class="floatright"><i><a class="active" href="' . $scripturl . '?action=tparticle;sa=killcomment;comment=' . $comment['id'] . '" onclick="javascript:return confirm(\'' . $txt['tp-confirmcommentdelete'] . '\')"><span>' . $txt['tp-delete'] . '</span></a></i></div>';
                 }
 				// not a guest
 				if ($comment['poster_id'] > 0) {
@@ -2033,7 +2033,7 @@ function article_comments($render = true)
 	if(in_array('commentallow', $context['TPortal']['article']['visual_options']) && isset($context['TPortal']['can_artcomment'])==1) {
 		$data .= '
 			<div class="tp_pad">
-				<form accept-charset="' . 'UTF-8' . '"  name="tp_article_comment" action="' . $scripturl . '?action=tportal;sa=comment" method="post" style="margin: 0; padding: 0;">
+				<form accept-charset="' . 'UTF-8' . '"  name="tp_article_comment" action="' . $scripturl . '?action=tparticle;sa=comment" method="post" style="margin: 0; padding: 0;">
 						<input type="text" name="tp_article_comment_title" style="width: 99%;" value="Re: ' . strip_tags($context['TPortal']['article']['subject']) . '">
 						<textarea style="width: 99%; height: 8em;" name="tp_article_bodytext"></textarea><br>';
 
@@ -2121,7 +2121,7 @@ function render_rating($total, $votes, $id, $can_rate = false, $render = true)
 	if($context['TPortal']['single_article']) {
 		if($context['user']['is_logged'] && $can_rate) {
 				$data .= '
-			<form action="' . $scripturl . '?action=tportal;sa=rate_article" style="margin: 0; padding: 0; display: inline;" method="post">
+			<form action="' . $scripturl . '?action=tparticle;sa=rate_article" style="margin: 0; padding: 0; display: inline;" method="post">
 				<select name="tp_article_rating" size="1" style="width: 4em;">';
 
 				for($u=$context['TPortal']['maxstars'] ; $u>0 ; $u--) {
