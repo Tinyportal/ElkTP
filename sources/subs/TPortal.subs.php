@@ -2803,6 +2803,155 @@ function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png
     return basename($dstPath);
 }}}
 
+function get_langfiles() {{{
+	global $context, $settings;
+
+	// get all languages for blocktitles
+	$language_dir = $settings['default_theme_dir'] . '/languages';
+	$context['TPortal']['langfiles'] = array();
+	$dir = dir($language_dir);
+	while ($entry = $dir->read())
+		if (substr($entry, 0, 6) == 'index.' && substr($entry,(strlen($entry) - 4) ,4) == '.php' && strlen($entry) > 9)
+	$context['TPortal']['langfiles'][] = substr(substr($entry, 6), 0, -4);
+	$dir->close();
+}}}
+
+function get_catlayouts() {{{
+	global $context, $txt;
+
+	// setup the layoutboxes
+	$context['TPortal']['admin_layoutboxes'] = array(
+		array('value' => '1', 'label' => $txt['tp-catlayout1']),
+		array('value' => '2', 'label' => $txt['tp-catlayout2']),
+		array('value' => '4', 'label' => $txt['tp-catlayout4']),
+		array('value' => '8', 'label' => $txt['tp-catlayout8']),
+		array('value' => '6', 'label' => $txt['tp-catlayout6']),
+		array('value' => '5', 'label' => $txt['tp-catlayout5']),
+		array('value' => '3', 'label' => $txt['tp-catlayout3']),
+		array('value' => '9', 'label' => $txt['tp-catlayout9']),
+		array('value' => '7', 'label' => $txt['tp-catlayout7']),
+	);
+}}}
+
+function get_boards() {{{
+	global $context;
+
+    $db = TPDatabase::getInstance();
+
+	$context['TPortal']['boards'] = array();
+	$request = $db->query('', '
+		SELECT b.id_board as id, b.name, b.board_order
+		FROM {db_prefix}boards as b
+		WHERE 1=1
+		ORDER BY b.board_order ASC',
+		array()
+	);
+	if($db->num_rows($request) > 0) {
+		while($row = $db->fetch_assoc($request)) {
+			$context['TPortal']['boards'][] = $row;
+        }
+		$db->free_result($request);
+	}
+}}}
+
+function get_articles() {{{
+
+	global $context;
+
+    $db = TPDatabase::getInstance();
+
+	$context['TPortal']['edit_articles'] = array();
+
+	$request = $db->query('', '
+		SELECT id, subject, shortname FROM {db_prefix}tp_articles
+		WHERE approved = 1 AND off = 0
+		ORDER BY subject ASC');
+
+	if($db->num_rows($request) > 0) {
+		while($row=$db->fetch_assoc($request)) {
+			$context['TPortal']['edit_articles'][] = $row;
+        }
+
+		$db->free_result($request);
+	}
+}}}
+
+function tp_create_dir($path) {{{
+
+    require_once(SOURCEDIR . '/Package.subs.php');
+
+    // Load up the package FTP information?
+    create_chmod_control();
+
+    if (!mktree($path, 0755)) {
+        deltree($path, true);
+        fatal_error($txt['tp-failedcreatedir'], false);
+    }
+
+    return TRUE;
+}}}
+
+function tp_delete_dir($path) {{{
+
+    require_once(SOURCEDIR . '/Package.subs.php');
+
+    // Load up the package FTP information?
+    create_chmod_control();
+
+    deltree($path, true);
+
+    return TRUE;
+}}}
+
+function tp_recursive_copy($src, $dst) {{{
+
+    $dir = opendir($src);
+    tp_create_dir($dst);
+    while(false !== ($file = readdir($dir)) ) {
+        if(($file != '.') && ($file != '..')) {
+            if(is_dir($src . '/' . $file)) {
+                tp_recursive_copy($src . '/' . $file,$dst . '/' . $file);
+            }
+            else {
+                copy($src . '/' . $file,$dst . '/' . $file);
+            }
+        }
+    }
+    closedir($dir);
+
+}}}
+
+function tp_groups() {{{
+	global $txt;
+
+    $db = TPDatabase::getInstance();
+	// get all membergroups for permissions
+	$grp    = array();
+	$grp[]  = array(
+		'id' => '-1',
+		'name' => $txt['tp-guests'],
+		'posts' => '-1'
+	);
+	$grp[]  = array(
+		'id' => '0',
+		'name' => $txt['tp-ungroupedmembers'],
+		'posts' => '-1'
+	);
+
+	$request =  $db->query('', '
+		SELECT * FROM {db_prefix}membergroups
+		WHERE 1=1 ORDER BY id_group'
+	);
+	while ($row = $db->fetch_assoc($request)) {
+		$grp[] = array(
+			'id' => $row['id_group'],
+			'name' => $row['group_name'],
+			'posts' => $row['min_posts']
+		);
+	}
+	return $grp;
+}}}
+
 if (!function_exists('is_countable')) {
     function is_countable($var) {
         return ( is_array($var) || $var instanceof Countable || $var instanceof \SimpleXMLElement || $var instanceof \ResourceBundle );

@@ -77,7 +77,7 @@ class BlockAdmin extends \Action_Controller
                 \loadLanguage('TPmodules', 'english');
             }
 
-            require_once(SOURCEDIR . '/TPortalAdmin.php');
+            require_once(SUBSDIR . '/TPortal.subs.php');
             $context['TPortal']['subaction'] = $sa;
 
             $action     = new \Action();
@@ -222,7 +222,7 @@ class BlockAdmin extends \Action_Controller
 
         checksession('get');
 
-        require_once(SOURCEDIR.'/TPortalAdmin.php');
+        require_once(SUBSDIR . '/TPortal.subs.php');
 
         TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=blocks', $txt['tp-blocks']);
         TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=editblock;id='.$block_id . ';'.$context['session_var'].'='.$context['session_id'], $txt['tp-editblock']);

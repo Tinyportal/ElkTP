@@ -61,7 +61,7 @@ class PortalAdmin extends \Action_Controller
 				\loadLanguage('TPmodules', 'english');
 			}
 
-			require_once(SOURCEDIR . '/TPortalAdmin.php');
+            require_once(SUBSDIR . '/TPortal.subs.php');
 			$context['TPortal']['subaction'] = $sa;
 
 			$action     = new \Action();
@@ -78,8 +78,8 @@ class PortalAdmin extends \Action_Controller
 		}
 		else {
 			// Wrap around the old TinyPortal logic for now
-			require_once(SOURCEDIR . '/TPortalAdmin.php');
-			TPortalAdmin();
+            $tpArticleAdmin = new ArticleAdmin();
+            $tpArticleAdmin->TPortalAdmin();
 		}
 
     }}}
@@ -217,7 +217,6 @@ class PortalAdmin extends \Action_Controller
 
 
     }}}
-
 
 	public function update_frontpage() {{{
         global $context;
