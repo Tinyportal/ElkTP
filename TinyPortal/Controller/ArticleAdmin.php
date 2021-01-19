@@ -59,8 +59,6 @@ class ArticleAdmin extends \Action_Controller
             'savearticle'       => array($this, 'articleEdit', array()),
             'uploadimage'       => array($this, 'articleUploadImage', array()),
             'submitsuccess'     => array($this, 'articleSubmitSuccess', array()),
-            'searcharticle' => array($this, 'action_search', array()),
-            'searchresults' => array($this, 'action_results', array()),
         );
 
         $sa = TPUtil::filter('sa', 'get', 'string');
@@ -494,7 +492,7 @@ class ArticleAdmin extends \Action_Controller
         $return = $this->do_postchecks();
 
         if(!empty($return)) {
-            redirectexit('action=admin;area=tpsettings;sa=' . $return);
+            redirectexit('action=admin;area=tparticles;sa=' . $return);
         }
 
         $tpsub = '';
@@ -1770,7 +1768,7 @@ class ArticleAdmin extends \Action_Controller
             }
             // Editing an article?
             elseif(substr($from, 0, 11) == 'editarticle') {
-                return articleEdit();
+                return $this->articleEdit();
             }
         }
         else {

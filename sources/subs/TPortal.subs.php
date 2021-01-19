@@ -2638,7 +2638,7 @@ function tp_profile_articles($member_id) {{{
 					'locked' => $row['locked'],
 					'catID' => $row['category'],
 					'category' => '<a href="'.$scripturl.'?mycat='.$row['category'].'">' . (isset($context['TPortal']['catnames'][$row['category']]) ? $context['TPortal']['catnames'][$row['category']] : '') .'</a>',
-					'editlink' => allowedTo('tp_articles') ? $scripturl.'?action=admin;area=tpadmin;sa=editarticle'.$row['id'] : $scripturl.'?action=tportal;sa=editarticle'.$row['id'],
+					'editlink' => allowedTo('tp_articles') ? $scripturl.'?action=admin;area=tparticles;sa=editarticle'.$row['id'] : $scripturl.'?action=tportal;sa=editarticle'.$row['id'],
 				);
             }
 		}

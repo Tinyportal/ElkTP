@@ -32,7 +32,8 @@ class PortalAdmin extends \Action_Controller
     public function action_admin() {{{
 		global $context, $txt;
 
-		$area = TPUtil::filter('area', 'get', 'string');
+        $articleAdmin   = new ArticleAdmin();
+		$area           = TPUtil::filter('area', 'get', 'string');
 		if($area == 'tpsettings') {
 
 		    \isAllowedTo('tp_settings');
@@ -44,11 +45,22 @@ class PortalAdmin extends \Action_Controller
 				$sa = 'settings';
 			}
 
+
 			$subActions = array (
 				'settings'			=> array($this, 'action_settings', array()),
 				'updatesettings'	=> array($this, 'update_settings', array()),
 				'frontpage'			=> array($this, 'action_frontpage', array()),
 				'updatefrontpage'	=> array($this, 'update_frontpage', array()),
+                // Old Article logic needs  to be ported across
+                'editarticle'       => array($articleAdmin, 'articleEdit', array()),
+                'tpattach'          => array($articleAdmin, 'articleAttachment', array()),
+                'submitarticle'     => array($articleAdmin, 'articleNew', array()),
+                'addarticle_html'   => array($articleAdmin, 'articleNew', array()),
+                'addarticle_bbc'    => array($articleAdmin, 'articleNew', array()),
+                'publish'           => array($articleAdmin, 'articlePublish', array()),
+                'savearticle'       => array($articleAdmin, 'articleEdit', array()),
+                'uploadimage'       => array($articleAdmin, 'articleUploadImage', array()),
+                'submitsuccess'     => array($articleAdmin, 'articleSubmitSuccess', array()),
 			);
 
 			if(\loadLanguage('TPortalAdmin') == false) {
@@ -78,8 +90,7 @@ class PortalAdmin extends \Action_Controller
 		}
 		else {
 			// Wrap around the old TinyPortal logic for now
-            $tpArticleAdmin = new ArticleAdmin();
-            $tpArticleAdmin->TPortalAdmin();
+            $articleAdmin->TPortalAdmin();
 		}
 
     }}}
