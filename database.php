@@ -199,7 +199,7 @@ $settingsArray = array(
     'frontpage_visual' => 'left,right,center,top,bottom,lower,header',
     'frontpage_layout' => '1',
     'frontpage_catlayout' => '1',
-    'frontpage_template' => '',	
+    'frontpage_template' => '',
     'allow_guestnews' => '1',
     'SSI_board' => '1',
     'frontpage_limit' => '5',
@@ -288,7 +288,7 @@ $settingsArray = array(
     'panelstyle_front' => '0',
     'panelstyle_lower' => '0',
     'panelstyle_bottom' => '0',
-    // Other	
+    // Other
     'bottombar' => '1',
     'cat_list' => '1,2',
     'featured_article' => '0',
@@ -420,7 +420,7 @@ function addDefaults() {{{
                 'settings' => json_encode( array ('var1' => 1, 'var2' => '0', 'var3' => 0, 'var4' => 0, 'var5' => 0) ),
             ),
         );
-        
+
         $db->insert('ignore',
             '{db_prefix}tp_blocks',
             array(

@@ -63,7 +63,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 
     public function action_index() {{{
         global $context, $txt;
-      
+
 		\loadLanguage('TPortal');
 
         $action = TPUtil::filter('action', 'get', 'string');
@@ -152,12 +152,12 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     TP_error($txt['tp-nocategory']);
                     $shown = true;
                 }
-        
+
                 // likewise for off.
                 if($article['off'] == 1 && $shown == false) {
                     TP_error($txt['tp-noton']);
                     $shown = true;
-                }	
+                }
 
                 if($shown == true && !allowedTo('tp_articles')) {
                     $valid = false;
@@ -176,7 +176,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     // allowed and all is well, go on with it.
                     $context['TPortal']['article'] = $article;
 
-                    $context['TPortal']['article']['avatar'] = determineAvatar( array(      
+                    $context['TPortal']['article']['avatar'] = determineAvatar( array(
                             'avatar'            => $article['avatar'],
                             'email_address'     => $article['email_address'],
                             'filename'          => !empty($article['filename']) ? $article['filename'] : '',
@@ -207,10 +207,10 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                         unset($comments['last']);
                         unset($comments['new_count']);
                         unset($comments['comment_count']);
-                        
+
                         foreach($comments as $row) {
 
-                            $avatar = determineAvatar( array(      
+                            $avatar = determineAvatar( array(
                                         'avatar'            => $row['avatar'],
                                         'email_address'     => $row['email_address'],
                                         'filename'          => !empty($row['filename']) ? $row['filename'] : '',
@@ -546,7 +546,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                             // expand the vislaoptions
                             $row['visual_options'] = explode(',', $row['options']);
 
-                            $row['avatar'] = determineAvatar( array(      
+                            $row['avatar'] = determineAvatar( array(
                                         'avatar'            => $row['avatar'],
                                         'emai_addressl'     => $row['email_address'],
                                         'filename'          => !empty($row['filename']) ? $row['filename'] : '',
@@ -610,7 +610,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     else {
                         $all_articles                                   = 0;
                     }
-                
+
                     if($all_articles == 0) {
                         $context['TPortal']['category']['no_articles']  = true;
                     }
@@ -741,7 +741,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
         // fetch the articles, sorted
         switch($context['TPortal']['front_type']) {
             // Only articles
-            case 'articles_only': 
+            case 'articles_only':
                 // first, get all available
                 $artgroups = '';
                 if(!$context['user']['is_admin']) {
@@ -799,7 +799,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                         // expand the vislaoptions
                         $row['visual_options'] = explode(',', $row['options']);
 
-                        $row['avatar'] = determineAvatar( array(      
+                        $row['avatar'] = determineAvatar( array(
                                     'avatar'            => $row['avatar'],
                                     'email_address'     => $row['email_address'],
                                     'filename'          => !empty($row['filename']) ? $row['filename'] : '',
@@ -858,8 +858,8 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                 $row = $db->fetch_assoc($request);
                 // expand the vislaoptions
                 $row['visual_options'] = explode(',', $row['options']);
-                
-                $row['avatar'] = determineAvatar( array(      
+
+                $row['avatar'] = determineAvatar( array(
                             'avatar'            => $row['avatar'],
                             'email_address'     => $row['email_address'],
                             'filename'          => !empty($row['filename']) ? $row['filename'] : '',
@@ -872,7 +872,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                 $db->free_result($request);
             }
             break;
-        // Only forum-topics 
+        // Only forum-topics
         case 'forum_only':
         // Promoted topics only
         case 'forum_selected':
@@ -896,7 +896,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                         'max'       => $totalmax,
                         'offset'    => $start,
                     )
-                );				
+                );
             }
             else {
                 $request =  $db->query('', '
@@ -1118,7 +1118,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     $row['visual_options'] = explode(',', $row['options']);
                     $row['visual_options']['layout'] = $context['TPortal']['frontpage_layout'];
                     $row['rating'] = array_sum(explode(',', $row['rating']));
-                    $row['avatar'] = determineAvatar( array(      
+                    $row['avatar'] = determineAvatar( array(
                                 'avatar'            => $row['avatar'],
                                 'email_address'     => $row['email_address'],
                                 'filename'          => !empty($row['filename']) ? $row['filename'] : '',
@@ -1173,7 +1173,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
         }
 
         $display = '';
-        if(!empty($context['TPortal']['uselangoption'])) { 
+        if(!empty($context['TPortal']['uselangoption'])) {
             $display = TPUtil::find_in_set(array('tlang='.$user_info['language']), 'display');
             if(isset($display)) {
                 $display = ' AND '. $display;
@@ -1290,7 +1290,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                 while($article = $db->fetch_assoc($request)) {
                     // allowed and all is well, go on with it.
                     $context['TPortal']['blockarticles'][$article['id']] = $article;
-                    $context['TPortal']['blockarticles'][$article['id']]['avatar'] = determineAvatar( array(      
+                    $context['TPortal']['blockarticles'][$article['id']]['avatar'] = determineAvatar( array(
                                 'avatar'            => isset($row['avatar']) ? $row['avatar'] : '',
                                 'email_address'     => isset($row['email_address']) ? $row['email_address'] : '',
                                 'filename'          => !empty($row['filename']) ? $row['filename'] : '',
@@ -1376,33 +1376,33 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 
     function action_upshrink() {{{
         global $settings;
-        
+
         if(isset($_GET['id']) && isset($_GET['state'])) {
             $blockid    = TPUtil::filter('id', 'get', 'string');
             $state      = TPUtil::filter('state', 'get', 'string');
-            if(isset($_COOKIE['tp-upshrinks'])) { 
+            if(isset($_COOKIE['tp-upshrinks'])) {
                 $shrinks = explode(',', $_COOKIE['tp-upshrinks']);
                 if($state == 0 && !in_array($blockid, $shrinks)) {
                     $shrinks[] = $blockid;
-                }   
+                }
                 elseif($state == 1 && in_array($blockid, $shrinks)) {
                     $spos = array_search($blockid, $shrinks);
                     if($spos > -1) {
                         unset($shrinks[$spos]);
-                    }   
-                }   
+                    }
+                }
                 $newshrink = implode(',', $shrinks);
                 setcookie ('tp-upshrinks', $newshrink , time()+7776000);
-            }   
+            }
             else {
                 if($state == 0) {
                     setcookie ('tp-upshrinks', $blockid, (time()+7776000));
-                }   
-            }   
+                }
+            }
             // Don't output anything...
             $tid = time();
             redirectexit($settings['images_url'] . '/blank.png?ti='.$tid);
-        }   
+        }
         else {
             redirectexit();
         }

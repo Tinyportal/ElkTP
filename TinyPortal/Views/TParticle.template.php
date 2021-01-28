@@ -14,7 +14,7 @@
 // My Articles
 
 // Submit Article
-function template_submitarticle() 
+function template_submitarticle()
 {
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language, $user_info;
 
@@ -147,7 +147,7 @@ function template_submitarticle()
 					<div class="padding-div"><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'" ></div>';
 
                 echo '<input type="hidden" name="tp_article_timestamp" value="'.$mg['date'].'">';
- 
+
 			if(allowedTo('admin_forum') || allowedTo('tp_articles')) {
 					echo '
 				<hr>
@@ -163,7 +163,7 @@ function template_submitarticle()
 						', $txt['tp-created'], '
 					</dt>
 					<dd>';
-				
+
                 // day
 				$day = date("j",$mg['date']);
 				$month = date("n",$mg['date']);
@@ -614,7 +614,7 @@ function template_editcomment()
 
     if(isset($context['TPortal']['comment_edit'])){
         echo '
-            <form accept-charset="', 'UTF-8', '"  name="tp_edit_comment" action="'.$scripturl.'?action=tportal;sa=editcomment" method="post" style="margin: 1ex;">
+            <form accept-charset="', 'UTF-8', '"  name="tp_edit_comment" action="'.$scripturl.'?action=tparticle;sa=editcomment" method="post" style="margin: 1ex;">
                 <input type="text" name="tp_editcomment_title" value="'.$context['TPortal']['comment_edit']['title'].'"> <br>
                 <textarea name="tp_editcomment_body" rows="6" cols="20" style="width: 90%;" wrap="on">'.$context['TPortal']['comment_edit']['body'].'</textarea>
                 <br>
@@ -675,7 +675,7 @@ function template_showcomments()
 			echo '
 			<tr class="content">
 			    <td class="shouts">
-				    <div class="padding-div tpright"><a href="' . $scripturl . '?action=tportal;sa=showcomments">' . $txt['tp-showcomments'] . '</a></div>
+				    <div class="padding-div tpright"><a href="' . $scripturl . '?action=tparticle;sa=showcomments">' . $txt['tp-showcomments'] . '</a></div>
 			    </td>
 			</tr>';
 
@@ -737,7 +737,7 @@ function template_showcomments()
 		</table>
 		<div class="tp_pad">'.$context['TPortal']['pageindex'].'</div>
 		</div>';
-            }	
+            }
 		}
 }
 
@@ -767,7 +767,7 @@ function template_showarticle()
 			<tr class="title_bar category_header">
 			<th scope="col" class="myarticles">
 				<div class="font-strong" style="padding:0px;">
-					<div align="center" class="float-items">', $context['TPortal']['tpsort']=='subject' ? '<img src="' .$settings['tp_images_url']. '/TPsort_up.png" alt="" /> ' : '' ,'<a href="'.$scripturl.'?action=tportal;sa=myarticles;tpsort=subject">'.$txt['tp-arttitle'].'</a></div>
+					<div align="center" class="float-items">', $context['TPortal']['tpsort']=='subject' ? '<img src="' .$settings['tp_images_url']. '/TPsort_up.png" alt="" /> ' : '' ,'<a href="'.$scripturl.'?action=tparticle;sa=myarticles;tpsort=subject">'.$txt['tp-arttitle'].'</a></div>
 				</div>
 			</th>
 			</tr>
@@ -786,8 +786,8 @@ function template_showarticle()
 					if((allowedTo('tp_editownarticle') || allowedTo('tp_articles')) && $art['locked']==0) {
 						echo '
 						<a href="' . $scripturl . '?action=admin;area=tparticles;sa=editarticle;article='.$art['id'].'" title="'. $txt['tp-editarticle'] .'"><img src="' . $settings['tp_images_url'] . '/TPmodify.png" alt="*" /></a>&nbsp; ';
-					} 
-					if($art['off']==0) { 
+					}
+					if($art['off']==0) {
 							echo '<img src="' . $settings['tp_images_url'] . '/TPactive2.png" title="" alt="*" />&nbsp; ';
 					}
 					else {
@@ -795,15 +795,15 @@ function template_showarticle()
 					}
                     echo '
                         </div>';
-					
-					if($art['locked']==1) { 
+
+					if($art['locked']==1) {
 						echo '
 						<img title="'.$txt['tp-islocked'].'" src="' .$settings['tp_images_url']. '/TPlock1.png" alt="'.$txt['tp-islocked'].'"  />&nbsp';
 					}
-				
+
                     if($art['off'] == 0 && $art['approved'] == 1) {
                         echo '
-                        <a href="' . $scripturl . '?page='.$art['id'].'" title="'. $txt['tp-viewarticle'] .'">' . html_entity_decode($art['subject']) . '</a>'; 
+                        <a href="' . $scripturl . '?page='.$art['id'].'" title="'. $txt['tp-viewarticle'] .'">' . html_entity_decode($art['subject']) . '</a>';
                     }
                     else {
                         echo '
@@ -818,7 +818,7 @@ function template_showarticle()
 			else {
 				echo '
 					<tr class="content">
-					<td class="articles"> 
+					<td class="articles">
 					'. $txt['tp-noarticlesfound'] .'
 					</td>
 					</tr>';

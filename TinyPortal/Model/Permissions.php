@@ -14,18 +14,18 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class Permissions 
+class Permissions
 {
     private static $_instance   = null;
 
     public static function getInstance() {{{
-	
+
     	if(self::$_instance == null) {
 			self::$_instance = new self();
 		}
-	
+
     	return self::$_instance;
-	
+
     }}}
 
     // Empty Clone method
@@ -90,21 +90,21 @@ class Permissions
     public function addPermsissions() {{{
 
         $admperms = array(
-            'admin_forum', 
-            'manage_permissions', 
-            'moderate_forum', 
+            'admin_forum',
+            'manage_permissions',
+            'moderate_forum',
             'manage_membergroups',
-            'manage_bans', 
-            'send_mail', 
-            'edit_news', 
-            'manage_boards', 
+            'manage_bans',
+            'send_mail',
+            'edit_news',
+            'manage_boards',
             'manage_smileys',
-            'manage_attachments', 
-            'tp_articles', 
-            'tp_blocks', 
+            'manage_attachments',
+            'tp_articles',
+            'tp_blocks',
             'tp_settings'
         );
-        
+
         call_integration_hook('integrate_tp_admin_permissions', array(&$admperms));
 
         return $admperms;

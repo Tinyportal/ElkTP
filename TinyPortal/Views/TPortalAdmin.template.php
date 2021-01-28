@@ -68,19 +68,21 @@ function template_main()
 
 	echo '
 		<p class="clearthefloat"></p>
-<script>
-$(document).ready( function() {
-var $clickme = $(".clickme"),
-    $box = $(".box");
-
-$box.hide();
-
-$clickme.click( function(e) {
-    $(this).text(($(this).text() === "'.$txt['tp-hide'].'" ? "'.$txt['tp-more'].'" : "'.$txt['tp-hide'].'")).next(".box").slideToggle();
-    e.preventDefault();
-});
-});
-</script>
+        <script>
+			$(document).ready( function() {
+				var $clickme = $(".clickme"),
+					$box = $(".box");
+				if ($box) {
+					$box.hide();
+				}
+				if ($clickme) {
+					$clickme.click( function(e) {
+						$(this).text(($(this).text() === "'.$txt['tp-hide'].'" ? "'.$txt['tp-more'].'" : "'.$txt['tp-hide'].'")).next(".box").slideToggle();
+						e.preventDefault();
+					});
+				}
+			});
+		</script>
 	</div>';
 }
 
@@ -450,7 +452,7 @@ function template_frontpage()
                 echo '
 								<option value="'.$context['TPortal']['boards'][$n]['id'].'"' , is_array($context['TPortal']['SSI_boards']) && in_array($context['TPortal']['boards'][$n]['id'] , $context['TPortal']['SSI_boards']) ? ' selected="selected"' : '' , '>'.$context['TPortal']['boards'][$n]['name'].'</option>';
             }
-		
+
 		echo '
 							</select><br><br>
 						</dd>
@@ -463,7 +465,7 @@ function template_frontpage()
 						<dt>
 							<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-forumposts_avatardesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_forumposts_avatar">', $txt['tp-forumposts_avatar'], '</label>
 						</dt>
-						<dd>	
+						<dd>
 							<input type="checkbox" id="tp_forumposts_avatar" name="tp_forumposts_avatar" value="1" ' , $context['TPortal']['forumposts_avatar']=='1' ? 'checked' : '' , '>
 						</dd>
 						<dt>
@@ -1277,7 +1279,7 @@ function template_submission()
 			echo '
 					</tbody>
 				</table>';
-			
+
 			if( !empty($context['TPortal']['pageindex']))
 				echo '
 				<div class="middletext padding-div">
@@ -1286,7 +1288,7 @@ function template_submission()
 
 		if(isset($context['TPortal']['allcats']))
 		{
-			echo '	
+			echo '
 				<br><div class="padding-div">
 					<select name="tp_article_cat">
 						<option value="0">' . $txt['tp-createnew2'] . '</option>';
@@ -1456,7 +1458,7 @@ function template_articons()
 					</dl>
 					<div class="padding-div"><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
 					<hr><br>';
-					
+
 				$alt=true;
 		if(count($context['TPortal']['articons']['illustrations'])>0)
 		{

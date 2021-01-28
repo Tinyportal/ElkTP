@@ -35,7 +35,7 @@ function template_article_search_form()
                     <input type="hidden" name="sc" value="' , $context['session_id'] , '" /><br>
                     <input type="submit" class="button button_submit" value="'.$txt['tp-search'].'">
                 </div>';
-                
+
             if ($context['TPortal']['fulltextsearch']==1) {
             echo '
                 <div class="tp_pad">'.$txt['tp-searcharticleshelp2'].'</div>';
@@ -73,7 +73,7 @@ function template_article_search_results()
                     <input type="hidden" name="sc" value="' , $context['session_id'] , '" /><br>
                     <input type="submit" class="button button_submit" value="'.$txt['tp-search'].'">
                 </div>';
-                
+
             if ($context['TPortal']['fulltextsearch']==1) {
             echo '
                 <div class="tp_pad">'.$txt['tp-searcharticleshelp2'].'</div>';

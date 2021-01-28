@@ -37,16 +37,16 @@ function template_tp_above()
     $sideclass = '';
 	if (isset($context['TPortal']) && ($context['TPortal']['leftpanel']==0 && $context['TPortal']['rightpanel']==1)) {
 		$sideclass =  "lrs rightpanelOn";
-	} 
+	}
 	elseif (isset($context['TPortal']) && ($context['TPortal']['leftpanel']==1 && $context['TPortal']['rightpanel']==0)) {
 		$sideclass =  "lrs leftpanelOn";
-	} 
+	}
 	elseif (isset($context['TPortal']) && ($context['TPortal']['leftpanel']==1 && $context['TPortal']['rightpanel']==1)) {
 		$sideclass =  "lrs lrON";
-	} 
+	}
 	elseif (isset($context['TPortal']) && ($context['TPortal']['leftpanel']==0 && $context['TPortal']['rightpanel']==0)) {
 		$sideclass =  "nosides";
-	} 
+	}
 	else {
 		$bclass =  "nosides";
 	}

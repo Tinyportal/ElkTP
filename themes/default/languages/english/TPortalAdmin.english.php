@@ -9,7 +9,7 @@ $txt['tp-frontpage'] = 'Frontpage';
 $txt['tp-articles'] = 'Articles';
 $txt['tp-tabs4'] = 'Submissions';
 $txt['tp-adminpanels'] = 'Panels and Blocks';
- 
+
 // Settings page
 $txt['tp-generalsettings'] = 'General settings';
 $txt['tp-helpsettings'] = 'Here you can tweak various general settings for the portal.';

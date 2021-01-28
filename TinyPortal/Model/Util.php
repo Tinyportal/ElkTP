@@ -41,7 +41,7 @@ class Util
         if(TP_PGSQL == false) {
             if($arg == 'OR') {
                 $str = '(FIND_IN_SET(' . implode(', '.$field.') '.$arg.' FIND_IN_SET(', $data) . ', '.$field.'))';
-            } 
+            }
             else {
                 $str = 'AND (FIND_IN_SET(' . implode(', '.$field.') OR FIND_IN_SET(', $data) . ', '.$field.'))';
             }
@@ -99,17 +99,17 @@ class Util
                         if (is_array($target)) {
                             $intKeys    = array_filter(array_keys($target), 'is_int');
                             $index      = count($intKeys) ? max($intKeys)+1 : 0;
-                        } 
+                        }
                         else {
                             $target     = array($target);
                             $index      = 1;
                         }
-                    } 
+                    }
                     else {
                         $target         = array();
                         $index          = 0;
                     }
-                } 
+                }
                 elseif (isset($target[$index]) && !is_array($target[$index])) {
                     $target[$index] = array($target[$index]);
                 }
@@ -142,7 +142,7 @@ class Util
         if(!empty($length)) {
             // Remove all the entities and change them to a space..
             $string     = preg_replace('/&nbsp;|&zwnj;|&raquo;|&laquo;|&gt;/', ' ', $string);
- 
+
             if( self::strlen($string) > $length ) {
                 $shorten    = TRUE;
                 // Now we can find the closest space character
@@ -152,7 +152,7 @@ class Util
 
                     // Find all the bbc tags then loop through finding the closing one
                     if(preg_match_all('/\[([a-zA-Z0-9_\-]+?)\]/', $tmpString, $matches) > 0 ) {
-                        foreach($matches[1] as $key) { 
+                        foreach($matches[1] as $key) {
                             // check we haven't cut any bbcode off
                             if(preg_match_all('/\[(['.$key.']+?)\](.+?)\[\/\1\]/', $tmpString, $match, PREG_SET_ORDER) == 0 ) {
                                 // Search from the old cut off position to the next similar tag
@@ -203,7 +203,7 @@ class Util
                             $tmpString = mb_substr($tmpString, 0, $pos);
                         }
                     }
-                    
+
                     // Assign it back to the string
                     $string = $tmpString;
                 }
@@ -218,7 +218,7 @@ class Util
 
         if($reachedLimit == true) {
             $toRemove[] = $node;
-        } 
+        }
         else {
             if($node instanceof \DomText) {
                 $nodeLen    = mb_strlen($node->nodeValue);
@@ -248,7 +248,7 @@ class Util
 
         return false;
 
-    }}} 
+    }}}
 
     public static function isHTML( $string ) {{{
 
@@ -314,7 +314,7 @@ class Util
     }}}
 
     public static function filter($key, $type, $filterType = 'string', $options = array()) {{{
-        
+
         switch($type) {
             case 'get':
                 $data = $_GET;
