@@ -186,16 +186,17 @@ function TPortal_userbox()
 
 	if ($context['user']['is_logged']) {
 
-		if (!empty($context['user']['avatar']) &&  isset($context['TPortal']['userbox']['avatar']))
+		if (!empty($context['user']['avatar']) &&  isset($context['TPortal']['userbox']['avatar'])) {
 			echo '
 				<span class="tpavatar">', $context['user']['avatar']['image'], '</span>';
+        }
+
 		echo '
 		<strong><a class="subject"  href="'.$scripturl.'?action=profile;u='.$context['user']['id'].'">', $context['user']['name'], '</a></strong>
 		<ul class="reset">';
 
 		// Only tell them about their messages if they can read their messages!
-		if ($context['allow_pm'])
-		{
+		if ($context['allow_pm']) {
 			echo '
 			<li><a href="', $scripturl, '?action=pm">' .$bullet.$txt['tp-pm'].' ',  $context['user']['messages'], '</a></li>';
 			if($context['user']['unread_messages'] > 0)
@@ -203,36 +204,34 @@ function TPortal_userbox()
 			<li style="font-weight: bold; "><a href="', $scripturl, '?action=pm">' . $bullet. $txt['tp-pm2'].' ',$context['user']['unread_messages'] , '</a></li>';
 		}
 		// Are there any members waiting for approval?
-		if (!empty($context['unapproved_members']))
-			echo '
-				<li><a href="', $scripturl, '?action=admin;area=viewmembers;sa=browse;type=approve;' . $context['session_var'] . '=' . $context['session_id'].'">'. $bullet. $txt['tp_unapproved_members'].' '. $context['unapproved_members']  . '</a></li>';
+		if (!empty($context['unapproved_members'])) {
+			echo '<li><a href="', $scripturl, '?action=admin;area=viewmembers;sa=browse;type=approve;' . $context['session_var'] . '=' . $context['session_id'].'">'. $bullet. $txt['tp_unapproved_members'].' '. $context['unapproved_members']  . '</a></li>';
+        }
 		// Are there any moderation reports?
 		if (!empty($context['open_mod_reports']) && $context['show_open_reports']) {
 			echo '
 				<li><a href="', $scripturl, '?action=moderate;area=reports">'.$bullet.$txt['tp_modreports'].' ' . $context['open_mod_reports']. '</a></li>';
 		}
-		if(isset($context['TPortal']['userbox']['unread']))
-			echo '
-			<li><hr><a href="', $scripturl, '?action=unread">' .$bullet.$txt['tp-unread'].'</a></li>
+
+		if(isset($context['TPortal']['userbox']['unread'])) {
+			echo '<li><hr><a href="', $scripturl, '?action=unread">' .$bullet.$txt['tp-unread'].'</a></li>
 			<li><a href="', $scripturl, '?action=unreadreplies">'.$bullet.$txt['tp-replies'].'</a></li>
 			<li><a href="', $scripturl, '?action=profile;u='.$context['user']['id'].';area=showposts">'.$bullet.$txt['tp-showownposts'].'</a></li>
 			<li><a href="', $scripturl, '?action=tparticle;sa=showcomments">'.$bullet.$txt['tp-showcomments'].'</a><hr></li>
 			';
+        }
 
 		// Is the forum in maintenance mode?
 		if ($maintenance && $context['user']['is_admin']) {
-			echo '
-			<li>' .$bullet2.$txt['tp_maintenace']. '</li>';
+			echo '<li>' .$bullet2.$txt['tp_maintenace']. '</li>';
         }
 		// Show the total time logged in?
 		if (!empty($context['user']['total_time_logged_in']) && isset($context['TPortal']['userbox']['logged'])) {
-			echo '
-			<li>' .$bullet2.$txt['tp-loggedintime'] . '</li>
+			echo '<li>' .$bullet2.$txt['tp-loggedintime'] . '</li>
 			<li>'.$bullet2.$context['user']['total_time_logged_in']['days'] . $txt['tp-acronymdays']. $context['user']['total_time_logged_in']['hours'] . $txt['tp-acronymhours']. $context['user']['total_time_logged_in']['minutes'] .$txt['tp-acronymminutes'].'</li>';
 		}
 		if (isset($context['TPortal']['userbox']['time'])) {
-    		echo '
-	    		<li>' . $bullet2.$context['current_time'].' <hr></li>';
+    		echo '<li>' . $bullet2.$context['current_time'].' <hr></li>';
         }
 
 		// admin parts etc.
@@ -240,28 +239,30 @@ function TPortal_userbox()
             $context['TPortal']['can_submit_article']=0;
         }
 
-		// can we submit an article?
-       	if(allowedTo('tp_submithtml'))
-			echo '
-		<li><a href="', $scripturl, '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tparticle') . ';sa=addarticle_html">' . $bullet3.$txt['tp-submitarticle']. '</a></li>';
-       	if(allowedTo('tp_submitbbc'))
-					echo '
-		<li><a href="', $scripturl, '?action=' . (allowedTo('tp_articles') ? 'tpadmin' : 'tparticle') . ';sa=addarticle_bbc">' . $bullet3.$txt['tp-submitarticlebbc']. '</a></li>';
+         // can we submit an article?
+         if(allowedTo('tp_submithtml')) {
+             echo '<li><a href="', $scripturl, '?action=admin;area=tparticles;sa=addarticle_html">' . $bullet3.$txt['tp-submitarticle']. '</a></li>';
+         }
 
-		if(allowedTo('tp_editownarticle'))
-					echo '
-		<li><a href="', $scripturl, '?action=tparticle;sa=myarticles">' . $bullet3.$txt['tp-myarticles']. '</a></li>';
+       	if(allowedTo('tp_submitbbc')) {
+			echo '<li><a href="', $scripturl, '?action=admin;area=tparticles;sa=addarticle_bbc">' . $bullet3.$txt['tp-submitarticlebbc']. '</a></li>';
+        }
+
+		if(allowedTo('tp_editownarticle')) {
+			echo '<li><a href="', $scripturl, '?action=admin;area=tparticles;sa=myarticles">' . $bullet3.$txt['tp-myarticles']. '</a></li>';
+        }
 
 		// tpadmin checks
-		if (allowedTo('tp_settings'))
-			echo '
-			<li><hr><a href="' . $scripturl . '?action=admin;area=tparticles;sa=settings">' . $bullet4.$txt['permissionname_tp_settings'] . '</a></li>';
-		if (allowedTo('tp_blocks'))
-					echo '
-			<li><a href="' . $scripturl . '?action=admin;area=tparticles;sa=blocks">' . $bullet4.$txt['permissionname_tp_blocks'] . '</a></li>';
+		if (allowedTo('tp_settings')) {
+			echo '<li><hr><a href="' . $scripturl . '?action=admin;area=tparticles;sa=settings">' . $bullet4.$txt['permissionname_tp_settings'] . '</a></li>';
+        }
+		
+        if (allowedTo('tp_blocks')) {
+			echo '<li><a href="' . $scripturl . '?action=admin;area=tparticles;sa=blocks">' . $bullet4.$txt['permissionname_tp_blocks'] . '</a></li>';
+        }
+
 		if (allowedTo('tp_articles')) {
-					echo '
-			<li><a href="' . $scripturl . '?action=admin;area=tparticles;sa=articles">' . $bullet4.$txt['permissionname_tp_articles'] . '</a></li>';
+			echo '<li><a href="' . $scripturl . '?action=admin;area=tparticles;sa=articles">' . $bullet4.$txt['permissionname_tp_articles'] . '</a></li>';
 		}
 				echo '
 		</ul>';

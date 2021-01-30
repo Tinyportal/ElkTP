@@ -338,7 +338,7 @@ class Integrate
 				),
 				'tparticles' => array (
 					'label'       => $txt['tp-articles'],
-					'controller'  => '\TinyPortal\Controller\PortalAdmin',
+					'controller'  => '\TinyPortal\Controller\ArticleAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_articles' ),
