@@ -53,27 +53,29 @@ class ArticleAdmin extends \Action_Controller
             'editarticle'       => array($this, 'articleEdit', array()),
             'tpattach'          => array($this, 'articleAttachment', array()),
             'submitarticle'     => array($this, 'articleNew', array()),
-            'addarticle_html'   => array($this, 'articleNew', array()),
-            'addarticle_bbc'    => array($this, 'articleNew', array()),
             'publish'           => array($this, 'articlePublish', array()),
             'savearticle'       => array($this, 'articleEdit', array()),
             'uploadimage'       => array($this, 'articleUploadImage', array()),
             'submitsuccess'     => array($this, 'articleSubmitSuccess', array()),
+            'myarticles'        => array(new Article, 'articleShow', array()),
             // FIXME split these out into the correct functions rather than calling the old method
+            'addarticle_bbc'    => array($this, 'TPortalAdmin', array()),
+            'addarticle_html'   => array($this, 'TPortalAdmin', array()),
+            'addarticle_php'    => array($this, 'TPortalAdmin', array()),
+            'addarticle_import' => array($this, 'TPortalAdmin', array()),
             'articles'          => array($this, 'TPortalAdmin', array()),
             'strays'            => array($this, 'TPortalAdmin', array()),
             'submission'        => array($this, 'TPortalAdmin', array()),
-            'addarticle_php'    => array($this, 'TPortalAdmin', array()),
-            'addarticle_import' => array($this, 'TPortalAdmin', array()),
             'categories'        => array($this, 'TPortalAdmin', array()),
             'addcategory'       => array($this, 'TPortalAdmin', array()),
             'clist'             => array($this, 'TPortalAdmin', array()),
             'artsettings'       => array($this, 'TPortalAdmin', array()),
             'articons'          => array($this, 'TPortalAdmin', array()),
-            'myarticles'        => array(new Article, 'articleShow', array()),
         );
 
         $sa = TPUtil::filter('sa', 'get', 'string');
+
+        $context['TPortal']['subaction'] = $sa;
 
         TPAdmin::getInstance()->topMenu($sa);
         TPAdmin::getInstance()->sideMenu($sa);
