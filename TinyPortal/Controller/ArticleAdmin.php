@@ -77,6 +77,9 @@ class ArticleAdmin extends \Action_Controller
         );
 
         $sa = TPUtil::filter('sa', 'get', 'string');
+        if($sa == false) {
+            $sa = 'articles';
+        }
 
         $context['TPortal']['subaction'] = $sa;
 

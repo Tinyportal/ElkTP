@@ -298,6 +298,27 @@ class Integrate
         $buttons['home']['data-icon'] = 'i-users';
         $buttons['home']['href']      = $scripturl . '?action=forum';
 
+        if($context['TPortal']['hideadminmenu'] != '1' ) {
+            $subButtons = array();
+            Model\Admin::getInstance()->sideMenu();
+            foreach($context['admin_tabs'] as $k => $v) {
+                $subButtons[$k]['show']     = true;
+                $subButtons[$k]['href']     = $scripturl.'?action=admin;area='.str_replace('_', '', $k);
+                $subButtons[$k]['title']    = $txt[str_replace('_', '-', $k)];
+            }
+
+            $buttons = \elk_array_insert($buttons, 'unreadreplies', array (
+                    'tpadmin' => array(
+                        'title' 	    => $txt['tp-tphelp'],
+                        'href' 		    => $scripturl.'?action=admin;area=tpsettings',
+                        'show'          => true,
+                        'action_hook' 	=> true,
+                        'sub_buttons'   => $subButtons,
+                    ),
+                ), 'after',
+            );
+        }
+
     }}}
 
     public static function hookDisplayButtons() {{{
