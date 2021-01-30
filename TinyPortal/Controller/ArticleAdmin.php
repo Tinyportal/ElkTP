@@ -59,9 +59,24 @@ class ArticleAdmin extends \Action_Controller
             'savearticle'       => array($this, 'articleEdit', array()),
             'uploadimage'       => array($this, 'articleUploadImage', array()),
             'submitsuccess'     => array($this, 'articleSubmitSuccess', array()),
+            // FIXME split these out into the correct functions rather than calling the old method
+            'articles'          => array($this, 'TPortalAdmin', array()),
+            'strays'            => array($this, 'TPortalAdmin', array()),
+            'submission'        => array($this, 'TPortalAdmin', array()),
+            'addarticle_php'    => array($this, 'TPortalAdmin', array()),
+            'addarticle_import' => array($this, 'TPortalAdmin', array()),
+            'categories'        => array($this, 'TPortalAdmin', array()),
+            'addcategory'       => array($this, 'TPortalAdmin', array()),
+            'clist'             => array($this, 'TPortalAdmin', array()),
+            'artsettings'       => array($this, 'TPortalAdmin', array()),
+            'articons'          => array($this, 'TPortalAdmin', array()),
+            'myarticles'        => array(new Article, 'articleShow', array()),
         );
 
         $sa = TPUtil::filter('sa', 'get', 'string');
+
+        TPAdmin::getInstance()->topMenu($sa);
+        TPAdmin::getInstance()->sideMenu($sa);
 
         $action     = new \Action();
         $subAction  = $action->initialize($subActions, $sa);
