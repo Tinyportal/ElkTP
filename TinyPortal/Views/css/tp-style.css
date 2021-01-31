@@ -653,19 +653,6 @@ div.tpcenter {
 div.tpright {
 	text-align: right;
 }
-.tptooltip::before {
-	background: url(../images/tinyportal/TPquestion.png) no-repeat;
-	content: '';
-	display: inline-block;
-	height: 16px;
-	padding-right: .3em;
-	vertical-align: middle;
-	width: 16px;
-}
-.tptooltip {
-	display: inline-block;
-	position: relative;
-}
 .tpresults {
 	margin: 0;
 	padding: 0 10px 15px 10px;
@@ -955,7 +942,7 @@ input,select {
 }
 dl.tptitle dt {
 	float: left;
-	width: 40%;
+	width: 39%;
 }
 dl.tptitle dd {
 	float: right;

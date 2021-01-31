@@ -44,6 +44,9 @@ class Category extends Base {
             'short_name'        => 'text',
             'settings'          => 'text',
             'custom_template'   => 'int',
+            'dt_log'            => 'string',
+            'page'              => 'int',
+            'parent'            => 'string',
         );
 
     }}}

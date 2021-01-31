@@ -31,6 +31,8 @@ class ArticleAdmin extends \Action_Controller
 
         global $settings, $context, $txt;
 
+        allowedTo(array('tp_articles', 'tp_editownarticle'));
+
         if(loadLanguage('TParticle') == false) {
             loadLanguage('TParticle', 'english');
         }
@@ -50,14 +52,18 @@ class ArticleAdmin extends \Action_Controller
 
         require_once(SUBSDIR . '/Action.class.php');
         $subActions = array (
-            'editarticle'       => array($this, 'articleEdit', array()),
-            'tpattach'          => array($this, 'articleAttachment', array()),
-            'submitarticle'     => array($this, 'articleNew', array()),
-            'publish'           => array($this, 'articlePublish', array()),
-            'savearticle'       => array($this, 'articleEdit', array()),
-            'uploadimage'       => array($this, 'articleUploadImage', array()),
-            'submitsuccess'     => array($this, 'articleSubmitSuccess', array()),
+            'editarticle'       => array($this, 'action_edit', array()),
+            'tpattach'          => array($this, 'action_attachment', array()),
+            'submitarticle'     => array($this, 'action_new', array()),
+            'publish'           => array($this, 'action_publish', array()),
+            'savearticle'       => array($this, 'action_edit', array()),
+            'uploadimage'       => array($this, 'action_upload_image', array()),
+            'submitsuccess'     => array($this, 'action_submit_success', array()),
             'myarticles'        => array(new Article, 'articleShow', array()),
+            'clist'             => array($this, 'action_categories', array()),
+            'categories'        => array($this, 'action_categories', array()),
+            'addcategory'       => array($this, 'action_categories', array()),
+            'delcategory'       => array($this, 'action_delete_category', array()),
             // FIXME split these out into the correct functions rather than calling the old method
             'addarticle_bbc'    => array($this, 'TPortalAdmin', array()),
             'addarticle_html'   => array($this, 'TPortalAdmin', array()),
@@ -66,14 +72,14 @@ class ArticleAdmin extends \Action_Controller
             'articles'          => array($this, 'TPortalAdmin', array()),
             'strays'            => array($this, 'TPortalAdmin', array()),
             'submission'        => array($this, 'TPortalAdmin', array()),
-            'categories'        => array($this, 'TPortalAdmin', array()),
-            'addcategory'       => array($this, 'TPortalAdmin', array()),
-            'clist'             => array($this, 'TPortalAdmin', array()),
             'artsettings'       => array($this, 'TPortalAdmin', array()),
             'articons'          => array($this, 'TPortalAdmin', array()),
         );
 
         $sa = TPUtil::filter('sa', 'get', 'string');
+        if($sa == false) {
+            $sa = 'articles';
+        }
 
         $context['TPortal']['subaction'] = $sa;
 
@@ -86,11 +92,11 @@ class ArticleAdmin extends \Action_Controller
 
     }}}
 
-    public function articleAttachment() {{{
+    public function action_attachment() {{{
         tpattach();
     }}}
 
-    public function articleEdit() {{{
+    public function action_edit() {{{
         global $context;
 
         $db = TPDatabase::getInstance();
@@ -269,7 +275,7 @@ class ArticleAdmin extends \Action_Controller
 
     }}}
 
-    public function articleNew() {{{
+    public function action_new() {{{
         global $context, $settings;
 
         $db = TPDatabase::getInstance();
@@ -308,7 +314,7 @@ class ArticleAdmin extends \Action_Controller
 
     }}}
 
-    public function articleSubmitSuccess() {{{
+    public function action_submit_success() {{{
         global $context;
 
         $context['TPortal']['subaction'] = 'submitsuccess';
@@ -320,7 +326,7 @@ class ArticleAdmin extends \Action_Controller
 
     }}}
 
-    public function articlePublish() {{{
+    public function action_publish() {{{
         global $context;
 
         // promoting topics
@@ -349,7 +355,7 @@ class ArticleAdmin extends \Action_Controller
 
     }}}
 
-    public function articleUploadImage() {{{
+    public function action_upload_image() {{{
         global $context, $boardurl;
 
         require_once(SUBSDIR . '/TPortal.subs.php');
@@ -365,7 +371,7 @@ class ArticleAdmin extends \Action_Controller
 
     }}}
 
-    public function articleAjax() {{{
+    public function action_ajax() {{{
         global $context, $boardurl;
 
         $db         = TPDatabase::getInstance();
@@ -401,47 +407,6 @@ class ArticleAdmin extends \Action_Controller
             $id     = is_numeric($_GET['artfeat']) ? $_GET['artfeat'] : '0';
             $col    = 'featured';
             $tpArticle->toggleColumnArticle($id, $col);
-        }
-        elseif(isset($_GET['catdelete'])) {
-            checksession('get');
-            $what = is_numeric($_GET['catdelete']) ? $_GET['catdelete'] : '0';
-            if($what > 0) {
-                // first get info
-                $request = $db->query('', '
-                    SELECT id, parent FROM {db_prefix}tp_categories
-                    WHERE id = {int:varid} LIMIT 1',
-                    array('varid' => $what)
-                );
-                $row = $db->fetch_assoc($request);
-                $db->free_result($request);
-
-                $newcat = !empty($row['parent']) ? $row['parent'] : 0;
-
-                $db->query('', '
-                    UPDATE {db_prefix}tp_categories
-                    SET parent = {string:val2}
-                    WHERE parent = {string:varid}',
-                    array(
-                        'val2' => $newcat, 'varid' => $what
-                    )
-                );
-
-                $db->query('', '
-                    DELETE FROM {db_prefix}tp_categories
-                    WHERE id = {int:varid}',
-                    array('varid' => $what)
-                );
-                $db->query('', '
-                    UPDATE {db_prefix}tp_articles
-                    SET category = {int:cat}
-                    WHERE category = {int:catid}',
-                    array('cat' => $newcat, 'catid' => $what)
-                );
-                redirectexit('action=admin;area=tparticles;sa=categories');
-            }
-            else {
-                redirectexit('action=admin;area=tparticles;sa=categories');
-            }
         }
         elseif(isset($_GET['artdelete'])) {
             checksession('get');
@@ -492,7 +457,6 @@ class ArticleAdmin extends \Action_Controller
 
         // get the layout schemes
         get_catlayouts();
-
         // Get the category names
         $categories = TPCategory::getInstance()->getCategoryData(array('id', 'display_name'), array('item_type' => 'category'));
         if(is_array($categories)) {
@@ -551,7 +515,7 @@ class ArticleAdmin extends \Action_Controller
 
             $this->do_subaction($tpsub);
         }
-        elseif(isset($_GET['catdelete']) || isset($_GET['artfeat']) || isset($_GET['artfront']) || isset($_GET['artdelete']) || isset($_GET['arton']) || isset($_GET['artoff']) || isset($_GET['artsticky']) || isset($_GET['artlock']) || isset($_GET['catcollapse'])) {
+        elseif(isset($_GET['artfeat']) || isset($_GET['artfront']) || isset($_GET['artdelete']) || isset($_GET['arton']) || isset($_GET['artoff']) || isset($_GET['artsticky']) || isset($_GET['artlock']) || isset($_GET['catcollapse'])) {
             if(allowedTo('tp_articles')) {
                 $context['TPortal']['subaction'] = $tpsub = 'articles';
                 $this->do_articles($tpsub);
@@ -578,7 +542,7 @@ class ArticleAdmin extends \Action_Controller
     public function do_subaction($tpsub) {{{
         global $context, $txt;
 
-        if(in_array($tpsub, array('articles', 'strays', 'categories', 'addcategory', 'submission', 'artsettings', 'articons', 'clist')) && (allowedTo(array('tp_articles', 'tp_editownarticle'))) )  {
+        if(in_array($tpsub, array('articles', 'strays', 'submission', 'artsettings', 'articons')) && (allowedTo(array('tp_articles', 'tp_editownarticle'))) )  {
             $this->do_articles();
         }
         elseif(!$context['user']['is_admin']) {
@@ -648,7 +612,7 @@ class ArticleAdmin extends \Action_Controller
             );
         }
 
-        $this->articleAjax();
+        $this->action_ajax();
 
         // for the non-category articles, do a count.
         $request = $db->query('', '
@@ -672,205 +636,7 @@ class ArticleAdmin extends \Action_Controller
         $context['TPortal']['total_submissions'] = $row['total'];
         $db->free_result($request);
 
-        // we are on categories screen
-        if(in_array($context['TPortal']['subaction'], array('categories', 'addcategory', 'clist'))) {
-            TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=categories', $txt['tp-categories']);
-            // first check if we simply want to copy or set as child
-            if(isset($_GET['cu']) && is_numeric($_GET['cu'])) {
-                $ccat = $_GET['cu'];
-                if(isset($_GET['copy'])) {
-                    $request = $db->query('', '
-                        SELECT * FROM {db_prefix}tp_categories
-                        WHERE id = {int:varid}',
-                        array('varid' => $ccat)
-                    );
-                    if($db->num_rows($request) > 0) {
-                        $row = $db->fetch_assoc($request);
-                        $row['display_name'] .= '__copy';
-                        $db->free_result($request);
-                        $db->insert('insert',
-                            '{db_prefix}tp_categories',
-                            array(
-                                'display_name' => 'string',
-                                'parent' => 'string',
-                                'access' => 'string',
-                                'item_type' => 'string',
-                                'dt_log' => 'string',
-                                'page' => 'int',
-                                'settings' => 'string',
-                                'short_name' => 'string',
-                            ),
-                            array(
-                                $row['display_name'],
-                                $row['parent'],
-                                $row['access'],
-                                $row['type'],
-                                $row['dt_log'],
-                                $row['page'],
-                                $row['settings'],
-                                $row['short_name'],
-                            ),
-                            array('id')
-                        );
-                    }
-                    redirectexit('action=admin;area=tparticles;sa=categories');
-                }
-                elseif(isset($_GET['child'])) {
-                    $request = $db->query('', '
-                        SELECT * FROM {db_prefix}tp_categories
-                        WHERE id = {int:varid}',
-                        array('varid' => $ccat)
-                    );
-                    if($db->num_rows($request) > 0) {
-                        $row = $db->fetch_assoc($request);
-                        $row['display_name'] .= '__copy';
-                        $db->free_result($request);
-                        $db->insert('INSERT',
-                            '{db_prefix}tp_categories',
-                            array(
-                                'display_name' => 'string',
-                                'parent' => 'string',
-                                'access' => 'string',
-                                'item_type' => 'string',
-                                'dt_log' => 'string',
-                                'page' => 'int',
-                                'settings' => 'string',
-                                'short_name' => 'string',
-                            ),
-                            array(
-                                $row['display_name'],
-                                $row['id'],
-                                $row['access'],
-                                $row['type'],
-                                $row['dt_log'],
-                                $row['page'],
-                                $row['settings'],
-                                $row['short_name'],
-                            ),
-                            array('id')
-                        );
-                    }
-                    redirectexit('action=admin;area=tparticles;sa=categories');
-                }
-                // guess we only want the category then
-                else {
-                    // get membergroups
-                    get_grps();
-                $context['html_headers'] .= '
-                <script type="text/javascript"><!-- // --><![CDATA[
-                    function changeIllu(node,name)
-                    {
-                        node.src = \'' . $boardurl . '/tp-files/tp-articles/illustrations/\' + name;
-                    }
-                // ]]></script>';
-
-                    $request = $db->query('', '
-                        SELECT * FROM {db_prefix}tp_categories
-                        WHERE id = {int:varid} LIMIT 1',
-                        array('varid' => $ccat)
-                    );
-                    if($db->num_rows($request) > 0) {
-                        $row = $db->fetch_assoc($request);
-                        $o = explode('|', $row['settings']);
-                        foreach($o as $t => $opt) {
-                            $b = explode('=', $opt);
-                            if(isset($b[1])) {
-                                $row[$b[0]] = $b[1];
-                            }
-                        }
-                        $db->free_result($request);
-                        $check = array('layout', 'catlayout', 'toppanel', 'bottompanel', 'leftpanel', 'rightpanel', 'upperpanel', 'lowerpanel', 'showchild');
-                        foreach($check as $c => $ch) {
-                            if(!isset($row[$ch])) {
-                                $row[$ch] = 0;
-                            }
-                        }
-                        $context['TPortal']['editcategory'] = $row;
-                    }
-                    // fetch all categories and subcategories
-                    $request = $db->query('', '
-                        SELECT	id, display_name as name, parent as parent, access, dt_log,
-                            page, settings, short_name
-                        FROM {db_prefix}tp_categories
-                        WHERE item_type = {string:type}',
-                        array('type' => 'category')
-                    );
-
-                    $context['TPortal']['editcats'] = array();
-                    $allsorted = array();
-                    $alcats = array();
-                    if($db->num_rows($request) > 0) {
-                        while ($row = $db->fetch_assoc($request)) {
-                            $row['indent'] = 0;
-                            $allsorted[$row['id']] = $row;
-                            $alcats[] = $row['id'];
-                        }
-                        $db->free_result($request);
-                        if(count($allsorted) > 1) {
-                            $context['TPortal']['editcats'] = chain('id', 'parent', 'name', $allsorted);
-                        }
-                        else {
-                            $context['TPortal']['editcats'] = $allsorted;
-                        }
-                    }
-                    TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=categories;cu='. $ccat, $txt['tp-editcategory']);
-                }
-                return;
-            }
-
-            // fetch all categories and subcategories
-            $request = $db->query('', '
-                SELECT id, display_name as name, parent as parent, access, dt_log,
-                    page, settings, short_name
-                FROM {db_prefix}tp_categories
-                WHERE item_type = {string:type}',
-                array('type' => 'category')
-            );
-
-            $context['TPortal']['editcats'] = array();
-            $allsorted = array();
-            $alcats = array();
-            if($db->num_rows($request) > 0) {
-                while ($row = $db->fetch_assoc($request)) {
-                    $row['indent'] = 0;
-                    $allsorted[$row['id']] = $row;
-                    $alcats[] = $row['id'];
-                }
-                $db->free_result($request);
-                if(count($allsorted) > 1) {
-                    $context['TPortal']['editcats'] = chain('id', 'parent', 'name', $allsorted);
-                }
-                else {
-                    $context['TPortal']['editcats'] = $allsorted;
-                }
-            }
-            // get the filecount as well
-            if(count($alcats) > 0) {
-                $request = $db->query('', '
-                    SELECT	art.category as id, COUNT(art.id) as files
-                    FROM {db_prefix}tp_articles as art
-                    WHERE art.category IN ({array_int:cats})
-                    GROUP BY art.category',
-                    array('cats' => $alcats)
-                );
-
-                if($db->num_rows($request) > 0) {
-                    $context['TPortal']['cats_count'] = array();
-                    while ($row = $db->fetch_assoc($request)) {
-                        $context['TPortal']['cats_count'][$row['id']] = $row['files'];
-                    }
-                    $db->free_result($request);
-                }
-            }
-            if($context['TPortal']['subaction'] == 'addcategory') {
-                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=addcategory', $txt['tp-addcategory']);
-            }
-            if($context['TPortal']['subaction'] == 'clist') {
-                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=clist', $txt['tp-tabs11']);
-            }
-
-            return;
-        }
+        
         TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=articles', $txt['tp-articles']);
         // are we inside a category?
         if(isset($_GET['cu']) && is_numeric($_GET['cu'])) {
@@ -1785,11 +1551,267 @@ class ArticleAdmin extends \Action_Controller
             }
             // Editing an article?
             elseif(substr($from, 0, 11) == 'editarticle') {
-                return $this->articleEdit();
+                return $this->action_edit();
             }
         }
         else {
             return;
+        }
+
+    }}}
+
+    public function action_categories() {{{ 
+        global $scripturl, $context, $txt, $boardurl;
+    
+        $db = TPDatabase::getInstance();
+
+        // Get the category names
+        $categories = TPCategory::getInstance()->getCategoryData(array('id', 'display_name'), array('item_type' => 'category'));
+        if(is_array($categories)) {
+            foreach($categories as $k => $v) {
+                $context['TPortal']['catnames'][$v['id']] = $v['display_name'];
+            }
+        }
+
+        // we are on categories screen
+        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=categories', $txt['tp-categories']);
+        // first check if we simply want to copy or set as child
+        if(isset($_GET['cu']) && is_numeric($_GET['cu'])) {
+            $ccat = $_GET['cu'];
+            if(isset($_GET['copy'])) {
+                $request = $db->query('', '
+                    SELECT * FROM {db_prefix}tp_categories
+                    WHERE id = {int:varid}',
+                    array('varid' => $ccat)
+                );
+                if($db->num_rows($request) > 0) {
+                    $row = $db->fetch_assoc($request);
+                    $row['display_name'] .= '__copy';
+                    $db->free_result($request);
+                    $db->insert('insert',
+                        '{db_prefix}tp_categories',
+                        array(
+                            'display_name' => 'string',
+                            'parent' => 'string',
+                            'access' => 'string',
+                            'item_type' => 'string',
+                            'dt_log' => 'string',
+                            'page' => 'int',
+                            'settings' => 'string',
+                            'short_name' => 'string',
+                        ),
+                        array(
+                            $row['display_name'],
+                            $row['parent'],
+                            $row['access'],
+                            $row['item_type'],
+                            $row['dt_log'],
+                            $row['page'],
+                            $row['settings'],
+                            $row['short_name'],
+                        ),
+                        array('id')
+                    );
+                }
+                redirectexit('action=admin;area=tparticles;sa=categories');
+            }
+            elseif(isset($_GET['child'])) {
+                $request = $db->query('', '
+                    SELECT * FROM {db_prefix}tp_categories
+                    WHERE id = {int:varid}',
+                    array('varid' => $ccat)
+                );
+                if($db->num_rows($request) > 0) {
+                    $row = $db->fetch_assoc($request);
+                    $row['display_name'] .= '__copy';
+                    $db->free_result($request);
+                    $db->insert('INSERT',
+                        '{db_prefix}tp_categories',
+                        array(
+                            'display_name' => 'string',
+                            'parent' => 'string',
+                            'access' => 'string',
+                            'item_type' => 'string',
+                            'dt_log' => 'string',
+                            'page' => 'int',
+                            'settings' => 'string',
+                            'short_name' => 'string',
+                        ),
+                        array(
+                            $row['display_name'],
+                            $row['id'],
+                            $row['access'],
+                            $row['item_type'],
+                            $row['dt_log'],
+                            $row['page'],
+                            $row['settings'],
+                            $row['short_name'],
+                        ),
+                        array('id')
+                    );
+                }
+                redirectexit('action=admin;area=tparticles;sa=categories');
+            }
+            // guess we only want the category then
+            else {
+                // get membergroups
+                get_grps();
+            $context['html_headers'] .= '
+            <script type="text/javascript"><!-- // --><![CDATA[
+                function changeIllu(node,name)
+                {
+                    node.src = \'' . $boardurl . '/tp-files/tp-articles/illustrations/\' + name;
+                }
+            // ]]></script>';
+
+                $request = $db->query('', '
+                    SELECT * FROM {db_prefix}tp_categories
+                    WHERE id = {int:varid} LIMIT 1',
+                    array('varid' => $ccat)
+                );
+                if($db->num_rows($request) > 0) {
+                    $row = $db->fetch_assoc($request);
+                    $o = explode('|', $row['settings']);
+                    foreach($o as $t => $opt) {
+                        $b = explode('=', $opt);
+                        if(isset($b[1])) {
+                            $row[$b[0]] = $b[1];
+                        }
+                    }
+                    $db->free_result($request);
+                    $check = array('layout', 'catlayout', 'toppanel', 'bottompanel', 'leftpanel', 'rightpanel', 'upperpanel', 'lowerpanel', 'showchild');
+                    foreach($check as $c => $ch) {
+                        if(!isset($row[$ch])) {
+                            $row[$ch] = 0;
+                        }
+                    }
+                    $context['TPortal']['editcategory'] = $row;
+                }
+                // fetch all categories and subcategories
+                $request = $db->query('', '
+                    SELECT	id, display_name as name, parent as parent, access, dt_log,
+                        page, settings, short_name
+                    FROM {db_prefix}tp_categories
+                    WHERE item_type = {string:type}',
+                    array('type' => 'category')
+                );
+
+                $context['TPortal']['editcats'] = array();
+                $allsorted = array();
+                $alcats = array();
+                if($db->num_rows($request) > 0) {
+                    while ($row = $db->fetch_assoc($request)) {
+                        $row['indent'] = 0;
+                        $allsorted[$row['id']] = $row;
+                        $alcats[] = $row['id'];
+                    }
+                    $db->free_result($request);
+                    if(count($allsorted) > 1) {
+                        $context['TPortal']['editcats'] = chain('id', 'parent', 'name', $allsorted);
+                    }
+                    else {
+                        $context['TPortal']['editcats'] = $allsorted;
+                    }
+                }
+                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=categories;cu='. $ccat, $txt['tp-editcategory']);
+            }
+        }
+        else {
+
+            // fetch all categories and subcategories
+            $request = $db->query('', '
+                SELECT id, display_name as name, parent as parent, access, dt_log,
+                page, settings, short_name
+                FROM {db_prefix}tp_categories
+                WHERE item_type = {string:type}',
+                array('type' => 'category')
+            );
+
+            $context['TPortal']['editcats'] = array();
+            $allsorted = array();
+            $alcats = array();
+            if($db->num_rows($request) > 0) {
+                while ($row = $db->fetch_assoc($request)) {
+                    $row['indent'] = 0;
+                    $allsorted[$row['id']] = $row;
+                    $alcats[] = $row['id'];
+                }
+                $db->free_result($request);
+                if(count($allsorted) > 1) {
+                    $context['TPortal']['editcats'] = chain('id', 'parent', 'name', $allsorted);
+                }
+                else {
+                    $context['TPortal']['editcats'] = $allsorted;
+                }
+            }
+            // get the filecount as well
+            if(count($alcats) > 0) {
+                $request = $db->query('', '
+                        SELECT	art.category as id, COUNT(art.id) as files
+                        FROM {db_prefix}tp_articles as art
+                        WHERE art.category IN ({array_int:cats})
+                        GROUP BY art.category',
+                        array('cats' => $alcats)
+                        );
+
+                if($db->num_rows($request) > 0) {
+                    $context['TPortal']['cats_count'] = array();
+                    while ($row = $db->fetch_assoc($request)) {
+                        $context['TPortal']['cats_count'][$row['id']] = $row['files'];
+                    }
+                    $db->free_result($request);
+                }
+            }
+
+            if($context['TPortal']['subaction'] == 'addcategory') {
+                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=addcategory', $txt['tp-addcategory']);
+            }
+            else if($context['TPortal']['subaction'] == 'clist') {
+                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=clist', $txt['tp-tabs11']);
+            }
+
+        }
+
+        \loadTemplate('TPortalAdmin');
+        \loadTemplate('TPsubs');
+    }}}
+
+
+    public function action_delete_category() {{{
+        global $scripturl, $context, $txt, $boardurl;
+
+        $db = TPDatabase::getInstance();
+
+        if($id  = TPUtil::filter('id', 'get', 'int')) {
+            checksession('get');
+            if($id > 0) {
+                // first get info
+                $newcat = TPCategory::getInstance()->getCategoryData(array('id', 'parent'), array('id' => $id));
+                if(is_array($newcat)) {
+                    $newcat = $newcat[0]['parent'];
+                    $db->query('', '
+                        UPDATE {db_prefix}tp_categories
+                        SET parent = {string:val2}
+                        WHERE parent = {string:varid}',
+                        array(
+                            'val2' => $newcat, 'varid' => $id
+                        )
+                    );
+
+                    $db->query('', '
+                        UPDATE {db_prefix}tp_articles
+                        SET category = {int:cat}
+                        WHERE category = {int:catid}',
+                        array('cat' => $newcat, 'catid' => $id)
+                    );
+                }
+
+                TPCategory::getInstance()->deleteCategory($id);
+                redirectexit('action=admin;area=tparticles;sa=categories');
+            }
+            else {
+                redirectexit('action=admin;area=tparticles;sa=categories');
+            }
         }
 
     }}}
