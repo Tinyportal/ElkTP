@@ -353,8 +353,8 @@ class Integrate
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_settings' ),
 					'subsections' => array (
-						'settings'	=> array ( $txt['tp-settings'] ),
-						'frontpage'	=> array ( $txt['tp-frontpage'] ),
+						'settings'	    => array ( $txt['tp-settings'] ),
+						'frontpage'	    => array ( $txt['tp-frontpage'] ),
 					),
 				),
 				'tparticles' => array (
@@ -364,8 +364,8 @@ class Integrate
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_articles' ),
 					'subsections' => array (
-						'articles'	=> array ( $txt['tp-articles'] ),
-						'category'	=> array ( $txt['tp-tabs5'] ),
+						'articles'	    => array ( $txt['tp-articles'] ),
+						'categories'    => array ( $txt['tp-tabs5'] ),
 					),
 				),
 				'tpblocks' => array (
@@ -375,8 +375,8 @@ class Integrate
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_blocks' ),
 					'subsections' => array (
-						'blocks'	=> array ( $txt['tp-blocks'] ),
-						'panels'	=> array ( $txt['tp-panels'] ),
+						'blocks'	    => array ( $txt['tp-blocks'] ),
+						'panels'	    => array ( $txt['tp-panels'] ),
 					),
 				),
             ),
