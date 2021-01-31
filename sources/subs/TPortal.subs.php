@@ -1217,9 +1217,7 @@ function TPwysiwyg_setup() {{{
 		<style>
 			.sceditor-button-floatleft div { background: url('.$boardurl.'/themes/default/images/tinyportal/floatleft.png); width:24px; height:24px; margin: -3px; }
 			.sceditor-button-floatright div { background: url('.$boardurl.'/themes/default/images/tinyportal/floatright.png); width:24px; height:24px; margin: -3px; }
-		</style>';
-
-	$context['html_headers'] .= '
+		</style>
 		<script type="text/javascript"><!-- // --><![CDATA[
 			sceditor.command.set(\'floatleft\', {
 				exec: function() {
@@ -1237,7 +1235,7 @@ function TPwysiwyg_setup() {{{
 				txtExec: [\'<div style="float:right;">\', \'</div>\'],
 				tooltip: \''.$txt['editor_tp_floatright'].'\'
 			});
-			// Taken from ELK2.1 https://github.com/SimpleMachines/ELK2.1/blob/24a10ca4fcac45f0bd73b6185618217aaa531cd2/themes/default/scripts/jquery.sceditor.smf.js#L289
+
 			sceditor.command.set( \'youtube\', {
 				exec: function (caller) {
 					var editor = this;
@@ -1253,6 +1251,7 @@ function TPwysiwyg_setup() {{{
 				},
 			});
 		// ]]></script>';
+
 	if($context['TPortal']['use_dragdrop']) {
 		$context['html_headers'] .= '<script src="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/plugins/dragdrop.js"></script>';
 	}
@@ -1271,7 +1270,7 @@ function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $sho
 			function tpImageUpload(file) {
 				var form = new FormData();
 				form.append(\'image\', file);
-				return fetch(\''.$scripturl.'?action=tportal;sa=uploadimage\', {
+				return fetch(\''.$scripturl.'?action=admin;area=tparticles;sa=uploadimage\', {
 					method: \'post\',
 					credentials: \'same-origin\',
 					body: form,
