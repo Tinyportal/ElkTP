@@ -940,11 +940,11 @@ function template_blocks()
 								<input type="number" name="pos' .$lblock['id']. '" value="' .$lblock['pos']. '" style="width: 3em" maxlength="3">
 								<a name="block' .$lblock['id']. '"></a>';
 					echo '
-								<a class="tpbut" title="'.$txt['tp-sortdown'].'" href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';addpos=' .$lblock['id']. '"><img src="' .$settings['tp_images_url']. '/TPsort_down.png" value="' .(($n*10)+11). '" /></a>';
+								<a class="tpbut" title="'.$txt['tp-sortdown'].'" href="' . $scripturl . '?action=admin;area=tpblocks;' . $context['session_var'] . '=' . $context['session_id'].';sa=addpos;id=' .$lblock['id']. '"><img src="' .$settings['tp_images_url']. '/TPsort_down.png" value="' .(($n*10)+11). '" /></a>';
 
 					if($n>0)
 						echo '
-								<a class="tpbut" title="'.$txt['tp-sortup'].'"  href="' . $scripturl . '?action=admin;area=tparticles;' . $context['session_var'] . '=' . $context['session_id'].';subpos=' .$lblock['id']. '"><img src="' .$settings['tp_images_url']. '/TPsort_up.png" value="' .(($n*10)-11). '" /></a>';
+								<a class="tpbut" title="'.$txt['tp-sortup'].'"  href="' . $scripturl . '?action=admin;area=tpblocks;' . $context['session_var'] . '=' . $context['session_id'].';sa=subpos;id=' .$lblock['id']. '"><img src="' .$settings['tp_images_url']. '/TPsort_up.png" value="' .(($n*10)-11). '" /></a>';
 
 					echo '
 							</div>
