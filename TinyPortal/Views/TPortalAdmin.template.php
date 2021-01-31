@@ -272,13 +272,15 @@ function template_settings()
 					</dd>';
 /*
                     <dt>
-						<a href="', $scripturl, '?action=helpadmin;help=', $txt['tp-downloaduploadpathdesc'], '" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_download_upload_path">', $txt['tp-downloaduploadpath'], '</label>
+						<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-downloaduploadpathdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+						<label for="tp_download_upload_path">', $txt['tp-downloaduploadpath'], '</label>
 					</dt>
 					<dd>
 						<input type="text" id="tp_download_upload_path" name="tp_download_upload_path" value="' , !empty($context['TPortal']['download_upload_path']) ? $context['TPortal']['download_upload_path'] : '' , '" size="50">
 					</dd>
                     <dt>
-						<a href="', $scripturl, '?action=helpadmin;help=', $txt['tp-blockcodeuploadpathdesc'], '" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_blockcode_upload_path">', $txt['tp-blockcodeuploadpath'], '</label>
+						<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-blockcodeuploadpathdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+						<label for="tp_blockcode_upload_path">', $txt['tp-blockcodeuploadpath'], '</label>
 					</dt>
 					<dd>
 						<input type="text" id="tp_blockcode_upload_path" name="tp_blockcode_upload_path" value="' , !empty($context['TPortal']['blockcode_upload_path']) ? $context['TPortal']['blockcode_upload_path'] : '' , '" size="50" >
@@ -621,9 +623,10 @@ function template_editcategory()
 						</dt>
 						<dd>
 							<input type="text" id="tp_category_display_name" style="max-width:97%;" name="tp_category_display_name" value="' ,html_entity_decode($mg['display_name']), '" size="50" required>
-						<dd>
+						</dd>
 						<dt>
-							<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-shortnamedesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_category_short_name"><b>', $txt['tp-shortname'], '</b></label>
+							<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-shortnamedesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+							<label for="tp_category_short_name"><b>', $txt['tp-shortname'], '</b></label>
 						</dt>
 						<dd>
 							<input type="text" id="tp_category_short_name" name="tp_category_short_name" value="' , isset($mg['short_name']) ? $mg['short_name'] : '' , '" size="20"><br><br>
@@ -641,7 +644,7 @@ function template_editcategory()
 				}
 					echo '
 							</select>
-						<dd>
+						</dd>
 						<dt>
 							<label for="tp_category_sort">', $txt['tp-sorting'], '</label>
 						</dt>
@@ -656,13 +659,13 @@ function template_editcategory()
 								<option value="desc"' , isset($mg['sortorder']) && $mg['sortorder']=='desc' ? ' selected="selected"' : '' , '>' , $txt['tp-sortdirection1'] , '</option>
 								<option value="asc"' , isset($mg['sortorder']) && $mg['sortorder']=='asc' ? ' selected="selected"' : '' , '>' , $txt['tp-sortdirection2'] , '</option>
 							</select>
-						<dd>
+						</dd>
 						<dt>
 							<label for="tp_category_articlecount">', $txt['tp-articlecount'], '</label>
 						</dt>
 						<dd>
 							<input type="number" id="tp_category_articlecount" name="tp_category_articlecount" value="' , empty($mg['articlecount']) ? $context['TPortal']['frontpage_limit'] : $mg['articlecount']  , '" style="width: 6em">
-						<dd>
+						</dd>
 					</dl>
 					<div class="padding-div"><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'" ></div>
 					<hr>
@@ -735,18 +738,19 @@ function template_editcategory()
 </div>';
 				echo '	</div>
 						<br style="clear: both;" />
-						<h4><a href="', $scripturl, '?action=helpadmin;help=',$txt['reset_custom_template_layoutdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a>', $txt['reset_custom_template_layout'] ,'</h4>
+						<h4><a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['reset_custom_template_layoutdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+						', $txt['reset_custom_template_layout'] ,'</h4>
 						<textarea class="tp_customlayout" name="tp_category_custom_template">' . $mg['custom_template'] . '</textarea><br><br>
 					</div>
 					<hr>
 					<dl class="tptitle settings">
 						<dt>
-							', $txt['tp-showchilds'], '
+							<label for="field_name">', $txt['tp-showchilds'], '</label>
 						</dt>
 						<dd>
 							<input type="radio" name="tp_category_showchild" value="1"' , (isset($mg['showchild']) && $mg['showchild']==1) ? ' checked="checked"' : '' , '> ' , $txt['tp-yes'] , '
 							<input type="radio" name="tp_category_showchild" value="0"' , ((isset($mg['showchild']) && $mg['showchild']==0) || !isset($mg['showchild'])) ? ' checked="checked"' : '' , '> ' , $txt['tp-no'] , '<br><br>
-						<dd>
+						</dd>
 						<dt>
 							<strong>', $txt['tp-allpanels'], '</strong>
 						</dt>
@@ -755,37 +759,37 @@ function template_editcategory()
 						</dt>
 						<dd>
 							<input type="checkbox" id="tp_category_leftpanel" name="tp_category_leftpanel" value="1"' , !empty($mg['leftpanel']) ? ' checked="checked"' : '' ,' />
-						<dd>
+						</dd>
 						<dt>
 							<label for="tp_category_rightpanel">', $txt['tp-displayrightpanel'], '</label>
 						</dt>
 						<dd>
 							<input type="checkbox" id="tp_category_rightpanel" name="tp_category_rightpanel" value="1"' , !empty($mg['rightpanel']) ? ' checked="checked"' : '' ,' />
-						<dd>
+						</dd>
 						<dt>
 							<label for="tp_category_toppanel">', $txt['tp-displaytoppanel'], '</label>
 						</dt>
 						<dd>
 							<input type="checkbox" id="tp_category_toppanel" name="tp_category_toppanel" value="1"' , !empty($mg['toppanel']) ? ' checked="checked"' : '' ,' />
-						<dd>
+						</dd>
 						<dt>
 							<label for="tp_category_centerpanel">', $txt['tp-displaycenterpanel'], '</label>
 						</dt>
 						<dd>
 							<input type="checkbox" id="tp_category_centerpanel" name="tp_category_centerpanel" value="1"' , !empty($mg['centerpanel']) ? ' checked="checked"' : '' ,' />
-						<dd>
+						</dd>
 						<dt>
 							<label for="tp_category_lowerpanel">', $txt['tp-displaylowerpanel'], '</label>
 						</dt>
 						<dd>
 							<input type="checkbox" id="tp_category_lowerpanel" name="tp_category_lowerpanel" value="1"' , !empty($mg['lowerpanel']) ? ' checked="checked"' : '' ,' />
-						<dd>
+						</dd>
 						<dt>
 							<label for="tp_category_bottompanel">', $txt['tp-displaybottompanel'], '</label>
 						</dt>
 						<dd>
 							<input type="checkbox" id="tp_category_bottompanel" name="tp_category_bottompanel" value="1"' , !empty($mg['bottompanel']) ? ' checked="checked"' : '' ,' />
-						<dd>
+						</dd>
 					</dl>
 					<dl class="tptitle settings">
 						<dt>
@@ -842,7 +846,8 @@ function template_addcategory()
 							<input type="text" id="tp_cat_name" style="max-width:97%;" name="tp_cat_name" value="" size="50" required>
 						</dd>
 						<dt>
-							<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-shortnamedesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><b><label for="tp_cat_shortname">', $txt['tp-shortname'], '</label></b>
+							<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-shortnamedesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+							<b><label for="tp_cat_shortname">', $txt['tp-shortname'], '</label></b>
 						</dt>
 						<dd>
 							<input type="text" id="tp_cat_shortname" name="tp_cat_shortname" value="" size="20"><br><br>
@@ -1432,10 +1437,10 @@ function template_artsettings()
 					<hr>
 					<dl class="settings">
 						<dt>
-							'.$txt['tp-iconsize'].'
+							<label for="tp_icon_width">'.$txt['tp-iconsize'].'</label>
 						</dt>
 						<dd>
-							<input type="number" name="tp_icon_width" value="'.$context['TPortal']['icon_width'].'" style="width: 6em" maxlength="3"> x <input type="number" name="tp_icon_height"value="'.$context['TPortal']['icon_height'].'" style="width: 6em" maxlength="3" > px
+							<input type="number" name="tp_icon_width" id="tp_icon_width" value="'.$context['TPortal']['icon_width'].'" style="width: 6em" maxlength="3"> x <input type="number" name="tp_icon_height"value="'.$context['TPortal']['icon_height'].'" style="width: 6em" maxlength="3" > px
 						</dd>
 						<dt>
 							<label for="tp_iconmaxsize">'.$txt['tp-iconmaxsize'].'</label>
@@ -1469,10 +1474,10 @@ function template_articons()
 				<div class="formtable"><br>
 					<dl class="tptitle settings">
 						<dt>
-							', $txt['tp-adminicons6'], '<br>
+							<label for="tp_article_newillustration">', $txt['tp-adminicons6'], '</label>
 						</dt>
 						<dd>
-							<input type="file" name="tp_article_newillustration" />
+							<input type="file" name="tp_article_newillustration" id="tp_article_newillustration" />
 						</dd>
 					</dl>
 					<div class="padding-div"><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
