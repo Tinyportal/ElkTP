@@ -126,10 +126,12 @@ function template_settings()
 				<div class="content">
 					<div class="formtable padding-div">
 						<!-- START non responsive themes form -->
-							<div>
-						       <div class="font-strong">'.$txt['tp-formres'].'</div>';
+					<dl class="settings">
+						<dt>
+					       <label for="tp_resp">'.$txt['tp-formres'].'</label>
+						</dt>
+						<dd>';
 						       $tm=explode(",",$context['TPortal']['resp']);
-						   echo '<input type="checkbox" name="tp_resp" id="tp_resp" value="0"><label for="tp_resp">'.$txt['tp-deselectthemes'].'</label><br><br> ';
 							foreach($context['TPallthem'] as $them) {
 									echo '
 										  <img class="theme_icon" alt="*" src="'.$them['path'].'/thumbnail.png" />
@@ -139,20 +141,24 @@ function template_settings()
 					              }
 					              echo '><label for="tp_resp'.$them['id'].'">'.$them['name'].'</label><br>';
 						       }
-						       echo'<br><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'">
-					        </div>
-						<!-- END non responsive themes form -->
+						   echo '
+							<br><input type="checkbox" name="tp_resp" id="tp_resp" value="0"><label for="tp_resp">'.$txt['tp-deselectthemes'].'</label>
+						</dd>
+					</dl>
+					<br><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'">
+					<!-- END non responsive themes form -->
 							<br><hr>
 
 				<dl class="settings">
 					<dt>
-						<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-frontpagetitle2'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_frontpage_title">', $txt['tp-frontpagetitle'], '</label>
+						<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-frontpagetitle2'],'" onclick="return reqOverlayDiv(this.href);"></a>
+						<label for="tp_frontpage_title">', $txt['tp-frontpagetitle'], '</label>
 					</dt>
 					<dd>
 						<input type="text" name="tp_frontpage_title" id="tp_frontpage_title" value="' , !empty($context['TPortal']['frontpage_title']) ? $context['TPortal']['frontpage_title'] : '' , '" size="50">
 					</dd>
 					<dt>
-						', $txt['tp-redirectforum'], '
+						<label for="field_name">', $txt['tp-redirectforum'], '</label>
 					</dt>
 					<dd>
 						<input type="radio" name="tp_redirectforum" id="tp_redirectforum1" value="1" ' , $context['TPortal']['redirectforum']=='1' ? 'checked' : '' , '><label for="tp_redirectforum1"> '.$txt['tp-redirectforum1'].'</label>
@@ -161,7 +167,8 @@ function template_settings()
 						<input type="radio" name="tp_redirectforum" id="tp_redirectforum2" value="0" ' , $context['TPortal']['redirectforum']=='0' ? 'checked' : '' , '><label for="tp_redirectforum2"> '.$txt['tp-redirectforum2'].'</label>
 					</dd>
 					<dt>
-						<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-hideadminmenudesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_hideadminmenu">', $txt['tp-hideadminmenu'], '</label>
+						<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-hideadminmenudesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+						<label for="tp_hideadminmenu">', $txt['tp-hideadminmenu'], '</label>
 					</dt>
 					<dd>
 						<input type="checkbox" id="tp_hideadminmenu" name="tp_hideadminmenu" value="1" ' , $context['TPortal']['hideadminmenu']=='1' ? 'checked' : '' , '>
@@ -194,7 +201,8 @@ function template_settings()
 						<input type="checkbox" id="tp_uselangoption" name="tp_uselangoption" value="1" ' , $context['TPortal']['uselangoption']=='1' ? 'checked' : '' , '>
 					</dd>
 					<dt>
-						<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-use_groupcolordesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_use_groupcolor">', $txt['tp-use_groupcolor'], '</label>
+						<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-use_groupcolordesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+						<label for="tp_use_groupcolor">', $txt['tp-use_groupcolor'], '</label>
 					</dt>
 					<dd>
 						<input type="checkbox" id="tp_use_groupcolor" name="tp_use_groupcolor" value="1" ' , $context['TPortal']['use_groupcolor']=='1' ? 'checked' : '' , '>
@@ -230,7 +238,8 @@ function template_settings()
 						<input type="checkbox" id="tp_admin_showblocks" name="tp_admin_showblocks" value="1" ' , $context['TPortal']['admin_showblocks']=='1' ? 'checked' : '' , '>
 					</dd>
 					<dt>
-						<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-imageproxycheckdesc'], '" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_imageproxycheck">', $txt['tp-imageproxycheck'], '</label>
+						<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-imageproxycheckdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+						<label for="tp_imageproxycheck">', $txt['tp-imageproxycheck'], '</label>
 					</dt>
 					<dd>
 						<input type="checkbox" id="tp_imageproxycheck" name="tp_imageproxycheck" value="1" ' , $context['TPortal']['imageproxycheck'] == '1' ? 'checked' : '' , '>
@@ -239,7 +248,8 @@ function template_settings()
                     if(version_compare($db->db_server_version(), '5.6', '>=')) {
                         echo '
                         <dt>
-                            <a href="', $scripturl, '?action=helpadmin;help=', $txt['tp-fulltextsearchdesc'], '" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_fulltextsearch">', $txt['tp-fulltextsearch'], '</label>
+							<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-fulltextsearchdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+							<label for="tp_fulltextsearch">', $txt['tp-fulltextsearch'], '</label>
                         </dt>
                         <dd>
                             <input type="checkbox" id="tp_fulltextsearch" name="tp_fulltextsearch" value="1" ' , $context['TPortal']['fulltextsearch']=='1' ? 'checked' : '' , '>
@@ -247,13 +257,15 @@ function template_settings()
                     }
 					echo '
 					<dt>
-						<a href="', $scripturl, '?action=helpadmin;help=', $txt['tp-disabletemplateevaldesc'], '" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_disable_template_eval">', $txt['tp-disabletemplateeval'], '</label>
+						<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-disabletemplateevaldesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+						<label for="tp_disable_template_eval">', $txt['tp-disabletemplateeval'], '</label>
 					</dt>
 					<dd>
                         <input type="checkbox" id="tp_disable_template_eval" name="tp_disable_template_eval" value="1" ' , $context['TPortal']['disable_template_eval']=='1' ? 'checked' : '' , '>
 					</dd>
                     <dt>
-						<a href="', $scripturl, '?action=helpadmin;help=', $txt['tp-imageuploadpathdesc'], '" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_image_upload_path">', $txt['tp-imageuploadpath'], '</label>
+						<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-imageuploadpathdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+						<label for="tp_image_upload_path">', $txt['tp-imageuploadpath'], '</label>
 					</dt>
 					<dd>
 						<input type="text" id="tp_image_upload_path" name="tp_image_upload_path" value="' , !empty($context['TPortal']['image_upload_path']) ? $context['TPortal']['image_upload_path'] : '' , '" size="50">
@@ -273,7 +285,8 @@ function template_settings()
 					</dd>
 */
                     echo '<dt>
-						<a href="', $scripturl, '?action=helpadmin;help=', $txt['tp-copyrightremovaldesc'], '" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_copyrightremoval">', $txt['tp-copyrightremoval'], '</label>
+						<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-copyrightremovaldesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+						<label for="tp_copyrightremoval">', $txt['tp-copyrightremoval'], '</label>
 					</dt>
 					<dd>
 						<input type="text" name="tp_copyrightremoval" id="tp_copyrightremoval" value="' , !empty($context['TPortal']['copyrightremoval']) ? $context['TPortal']['copyrightremoval'] : '' , '" size="50">
@@ -302,7 +315,7 @@ function template_frontpage()
 				<div class="formtable padding-div">
 					<dl class="settings">
 						<dt>
-							', $txt['tp-whattoshow'], '
+							<label for="field_name">', $txt['tp-whattoshow'], '</label>
 						</dt>
 						<dd>
 							<input type="radio" id="tp_front_type1" name="tp_front_type" value="forum_selected" ' , $context['TPortal']['front_type']=='forum_selected' ? 'checked' : '' , '><label for="tp_front_type1"> '.$txt['tp-selectedforum'].'</label><br>
@@ -315,7 +328,7 @@ function template_frontpage()
 							<input type="radio" id="tp_front_type8" name="tp_front_type" value="boardindex"  ' , $context['TPortal']['front_type']=='boardindex' ? 'checked' : '' , '><label for="tp_front_type8"> '.$txt['tp-boardindex'].'</label><br><br>
 						</dd>
 						<dt>
-							', $txt['tp-frontblockoption'], '
+							<label for="field_name">', $txt['tp-frontblockoption'], '</label>
 						</dt>
 						<dd>
 							<input type="radio" id="tp_frontblock_type1" name="tp_frontblock_type" value="single"  ' , $context['TPortal']['frontblock_type']=='single' ? 'checked' : '' , '><label for="tp_frontblock_type1"> '.$txt['tp-frontblocksingle'].'</label><br>
@@ -323,7 +336,8 @@ function template_frontpage()
 							<input type="radio" id="tp_frontblock_type3" name="tp_frontblock_type" value="last"  ' , $context['TPortal']['frontblock_type']=='last' ? 'checked' : '' , '><label for="tp_frontblock_type3"> '.$txt['tp-frontblocklast'].'</label><br><br>
 						</dd>
 						<dt>
-							<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-frontpageoptionsdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp-frontpageoptions">',$txt['tp-frontpageoptions'],'</label>
+							<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-frontpageoptionsdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+							<label for="tp-frontpageoptions">',$txt['tp-frontpageoptions'],'</label>
 						</dt>
 						<dd>
 							<input type="checkbox" id="tp_frontpage_visual_left" name="tp_frontpage_visual_left" value="1" ' , $context['TPortal']['frontpage_visualopts_admin']['left']>0 ? 'checked' : '' , '><label for="tp_frontpage_visual_left"> ',$txt['tp-displayleftpanel'],'</label><br>
@@ -399,7 +413,8 @@ function template_frontpage()
 							echo '<br style="clear: both;" />
 				</div>
 				<div>
-					<h4><a href="', $scripturl, '?action=helpadmin;help=',$txt['reset_custom_template_layoutdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a>', $txt['reset_custom_template_layout'] ,'</h4>
+					<strong><a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['reset_custom_template_layoutdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+					', $txt['reset_custom_template_layout'] ,'</strong>
 					<textarea class="tp_customlayout" name="tp_frontpage_template">' . $context['TPortal']['frontpage_template'] . '</textarea><br><br>
 				</div>
 				<hr>
@@ -411,7 +426,8 @@ function template_frontpage()
 						  <input type="number" id="tp_frontpage_limit" name="tp_frontpage_limit" value="' ,$context['TPortal']['frontpage_limit'], '" style="width: 6em" min="1" maxlength="5"><br><br>
 						</dd>
 						<dt>
-							<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-sortingoptionsdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_frontpage_usorting">',$txt['tp-sortingoptions'],'</label>
+							<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-sortingoptionsdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+							<label for="tp_frontpage_usorting">',$txt['tp-sortingoptions'],'</label>
 						</dt>
 						<dd>
 							<select name="tp_frontpage_usorting" id="tp_frontpage_usorting">
@@ -429,7 +445,8 @@ function template_frontpage()
 					<hr>
 					<dl class="settings">
 						<dt>
-							<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-allowguestsdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_allow_guestnews">', $txt['tp-allowguests'], '
+							<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-allowguestsdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+							<label for="tp_allow_guestnews">', $txt['tp-allowguests'], '
 						</dt>
 						<dd>
 							<input type="checkbox" id="tp_allow_guestnews" name="tp_allow_guestnews" value="1" ' , $context['TPortal']['allow_guestnews']=='1' ? 'checked' : '' , '>
@@ -463,13 +480,15 @@ function template_frontpage()
 						  <input type="number" id="tp_frontpage_limit_len" name="tp_frontpage_limit_len"value="' ,$context['TPortal']['frontpage_limit_len'], '" style="width: 6em" maxlength="5" ><br><br>
 						</dd>
 						<dt>
-							<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-forumposts_avatardesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_forumposts_avatar">', $txt['tp-forumposts_avatar'], '</label>
+							<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-forumposts_avatardesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+							<label for="tp_forumposts_avatar">', $txt['tp-forumposts_avatar'], '</label>
 						</dt>
 						<dd>
 							<input type="checkbox" id="tp_forumposts_avatar" name="tp_forumposts_avatar" value="1" ' , $context['TPortal']['forumposts_avatar']=='1' ? 'checked' : '' , '>
 						</dd>
 						<dt>
-							<a href="', $scripturl, '?action=helpadmin;help=',$txt['tp-useattachmentdesc'],'" onclick="return reqWin(this.href);"><span class="tptooltip" title="', $txt['help'], '"></span></a><label for="tp_use_attachment">', $txt['tp-useattachment'], '</label>
+							<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-useattachmentdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
+							<label for="tp_use_attachment">', $txt['tp-useattachment'], '</label>
 						</dt>
 						<dd>
 							<input type="checkbox" id="tp_use_attachment" name="tp_use_attachment" value="1" ' , $context['TPortal']['use_attachment']=='1' ? 'checked' : '' , '><br><br>
