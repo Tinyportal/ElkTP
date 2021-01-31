@@ -457,13 +457,6 @@ class ArticleAdmin extends \Action_Controller
 
         // get the layout schemes
         get_catlayouts();
-        // Get the category names
-        $categories = TPCategory::getInstance()->getCategoryData(array('id', 'display_name'), array('item_type' => 'category'));
-        if(is_array($categories)) {
-            foreach($categories as $k => $v) {
-                $context['TPortal']['catnames'][$v['id']] = $v['display_name'];
-            }
-        }
 
         if(isset($_GET['id'])) {
             $context['TPortal']['subaction_id'] = $_GET['id'];
@@ -1775,7 +1768,6 @@ class ArticleAdmin extends \Action_Controller
         \loadTemplate('TPortalAdmin');
         \loadTemplate('TPsubs');
     }}}
-
 
     public function action_delete_category() {{{
         global $scripturl, $context, $txt, $boardurl;
