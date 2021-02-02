@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC1
+ * @version 1.0.0 RC2
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -382,8 +382,11 @@ class BlockAdmin extends \Action_Controller
                                 $updateArray[$setting] = $body;
                             }
                         }
-                        if(TPUtil::filter('tp_block_mode', 'post', 'string') == 10) {
+                        else if(TPUtil::filter('tp_block_mode', 'post', 'string') == 10) {
                             $updateArray[$setting] = tp_convertphp($v);
+                        }
+                        else {
+                            $updateArray[$setting] = $v;
                         }
                         break;
                     case 'body_mode':
@@ -513,10 +516,15 @@ class BlockAdmin extends \Action_Controller
         // Find the last position
         $position   = 0;
         $pos        = TPBlock::getInstance()->getBlockData(array('pos'), array('bar' => $panel));
-        foreach($pos as $k => $v) {
-            if($position <= $v['pos']) {
-                $position = $v['pos'] + 1;
+        if(is_array($pos)) {
+            foreach($pos as $k => $v) {
+                if($position <= $v['pos']) {
+                    $position = $v['pos'] + 1;
+                }
             }
+        }
+        else {
+            $position = 0;
         }
 
         if(isset($cp)) {

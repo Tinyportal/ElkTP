@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC1
+ * @version 1.0.0 RC2
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -454,7 +454,7 @@ class Integrate
 
         loadLanguage('TPortal');
 
-        $dB = Database::getInstance();
+        $dB = Model\Database::getInstance();
 
         if(isset($actions['page'])) {
             if(is_numeric($actions['page'])) {
@@ -593,7 +593,7 @@ class Integrate
         require_once(SUBSDIR . '/TPortal.subs.php');
 
         $theme  = 0;
-        $dB     = Database::getInstance();
+        $dB     = Model\Database::getInstance();
 
         // are we on a article? check it for custom theme
         if(isset($_GET['page']) && !isset($_GET['action'])) {

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC1
+ * @version 1.0.0 RC2
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -46,12 +46,12 @@ class Article extends \Action_Controller
 
         require_once(SUBSDIR . '/Action.class.php');
         $subActions = array (
-            'showcomments'      => array($this, 'articleShowComments', array()),
-            'comment'           => array($this, 'articleInsertComment', array()),
-            'killcomment'       => array($this, 'articleDeleteComment', array()),
-            'editcomment'       => array($this, 'articleEditComment', array()),
-            'rate_article'      => array($this, 'articleRate', array()),
-            'myarticles'        => array($this, 'articleShow', array()),
+            'showcomments'      => array($this, 'action_show_comments', array()),
+            'comment'           => array($this, 'action_insert_comment', array()),
+            'killcomment'       => array($this, 'action_delete_comment', array()),
+            'editcomment'       => array($this, 'action_edit_comment', array()),
+            'rate_article'      => array($this, 'action_rate', array()),
+            'myarticles'        => array($this, 'action_show', array()),
         );
 
         $sa = TPUtil::filter('sa', 'get', 'string');
@@ -62,7 +62,7 @@ class Article extends \Action_Controller
 
     }}}
 
-	function articleInsertComment() {{{
+	function action_insert_comment() {{{
 
 		global $user_info, $context, $txt;
 
@@ -106,7 +106,7 @@ class Article extends \Action_Controller
 
 	}}}
 
-	function articleShowComments() {{{
+	function action_show_comments() {{{
 		global $scripturl, $user_info, $txt, $context;
 
 		$db = TPDatabase::getInstance();
@@ -185,7 +185,7 @@ class Article extends \Action_Controller
 
 	}}}
 
-	function articleDeleteComment() {{{
+	function action_delete_comment() {{{
 
 		global $context, $txt;
 
@@ -211,7 +211,7 @@ class Article extends \Action_Controller
 
 	}}}
 
-	function articleEditComment() {{{
+	function action_edit_comment() {{{
 		global $context, $txt;
 
 	   if (!allowedTo('tp_artcomment')) {
@@ -246,7 +246,7 @@ class Article extends \Action_Controller
 
 	}}}
 
-	function articleRate() {{{
+	function action_rate() {{{
 		global $context;
 
 		$db = TPDatabase::getInstance();
@@ -301,7 +301,7 @@ class Article extends \Action_Controller
 
 	}}}
 
-    function articleShow() {{{
+    function action_show() {{{
         global $context, $scripturl, $txt;
 
         $db = TPDatabase::getInstance();
