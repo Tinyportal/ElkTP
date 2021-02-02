@@ -100,7 +100,7 @@ class ArticleAdmin extends \Action_Controller
         global $context;
 
         // FIXME this shouldn't be here
-        if(TPUtil::filter('article', 'get', 'int')) {
+        if(TPUtil::filter('article', 'get', 'int') && $context['TPortal']['subaction'] != 'savearticle') {
             $context['sub_template'] = 'submitarticle';
             \loadTemplate('TParticle');
             return $this->do_articles();
@@ -1574,6 +1574,8 @@ class ArticleAdmin extends \Action_Controller
                 $context['TPortal']['catnames'][$v['id']] = $v['display_name'];
             }
         }
+
+        \get_catlayouts();
 
         // we are on categories screen
         TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=categories', $txt['tp-categories']);
