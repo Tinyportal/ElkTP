@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC1
+ * @version 1.0.0 RC2
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -14,12 +14,12 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class Integrate 
+class Integrate
 {
 
     public static function hookPreLoad() {{{
 
-        // We need to load our autoloader outside of the main function    
+        // We need to load our autoloader outside of the main function
         if(!defined('ELK_BACKWARDS_COMPAT')) {
             define('ELK_BACKWARDS_COMPAT', true);
             self::setup_db_backwards_compat();
@@ -27,12 +27,12 @@ class Integrate
         }
 
         $hooks = array (
-            'SSI'                               => 'SOURCEDIR/TPSSI.php|ssi_TPIntegrate',
             'current_action'                    => '\TinyPortal\Integrate::hookCurrentAction',
             'load_permissions'                  => '\TinyPortal\Integrate::hookPermissions',
             'load_illegal_guest_permissions'    => '\TinyPortal\Integrate::hookIllegalPermissions',
             'buffer'                            => '\TinyPortal\Integrate::hookBuffer',
             'menu_buttons'                      => '\TinyPortal\Integrate::hookMenuButtons',
+            'display_buttons'                   => '\TinyPortal\Integrate::hookDisplayButtons',
             'admin_areas'                       => '\TinyPortal\Integrate::hookAdminAreas',
             'actions'                           => '\TinyPortal\Integrate::hookActions',
             'whos_online'                       => '\TinyPortal\Integrate::hookWhosOnline',
@@ -42,15 +42,12 @@ class Integrate
             'action_frontpage'                  => '\TinyPortal\Integrate::hookFrontPage',
             'init_theme'                        => '\TinyPortal\Integrate::hookInitTheme',
             'search'                            => '\TinyPortal\Integrate::hookSearchLayers',
-            'tp_pre_subactions'                 => array ( 
-                'SOURCEDIR/TPArticle.php|TPArticleActions',
-                'SOURCEDIR/TPSearch.php|TPSearchActions',
-                'SOURCEDIR/TPBlock.php|TPBlockActions',
+            'tp_pre_subactions'                 => array (
             ),
-            'tp_post_subactions'                => array ( 
-            ),           
+            'tp_post_subactions'                => array (
+            ),
             'tp_post_init'                      => array (
-                'SOURCEDIR/TPBlock.php|getBlocks',
+                'BOARDDIR/TinyPortal/Controller/Block.php|\TinyPortal\Controller\Block::loadBlocks',
             ),
             'tp_admin_areas'                    => array (
             ),
@@ -58,9 +55,7 @@ class Integrate
             ),
             'tp_block'                          => array (
             ),
-            'tp_pre_admin_subactions'           => array ( 
-                'SOURCEDIR/TPBlock.php|TPBlockAdminActions',
-                'SOURCEDIR/TPArticle.php|TPArticleAdminActions',
+            'tp_pre_admin_subactions'           => array (
             ),
         );
 
@@ -93,7 +88,7 @@ class Integrate
         global $modSettings;
 
         // Should check TinyPortal is enabled..
-        $modSettings['front_page']  = 'TPortal_Controller';
+        $modSettings['front_page']  = '\TinyPortal\Controller\Portal';
 
         return;
     }}}
@@ -107,8 +102,8 @@ class Integrate
         }
 
         $className  = str_replace('\\', '/', $className);
+        $className  = str_replace('_', '.', $className);
         $classFile  = BOARDDIR . '/' . $className . '.php';
-
         if ( file_exists( $classFile ) ) {
             require_once($classFile);
         }
@@ -137,7 +132,7 @@ class Integrate
     }}}
 
     public static function hookPermissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions) {{{
-    
+
         $permissionList['membergroup'] = array_merge(
             array(
                 'tp_settings' => array(false, 'tp', 'tp'),
@@ -157,12 +152,12 @@ class Integrate
     // Adds TP copyright in the buffer so we don't have to edit an ELK file
     public static function hookBuffer($buffer) {{{
         global $context, $scripturl, $txt, $boardurl;
-       
+
         // add upshrink buttons
         if( array_key_exists('TPortal', $context) && !empty($context['TPortal']['upshrinkpanel']) ) {
             $buffer = preg_replace('~<ul class="navigate_section">~', '<ul class="navigate_section"><li class="tp_upshrink21">'.$context['TPortal']['upshrinkpanel'].'</li>', $buffer, 1);
         }
- 
+
         // Dynamic body ID
         if (isset($context['TPortal']) && $context['TPortal']['action'] == 'profile') {
             $bodyid = "profilepage";
@@ -230,7 +225,7 @@ class Integrate
         $find   = '<a href="'.$scripturl.'?action=help">'.$txt['help'].'</a>';
         $replace= '<a href="https://www.tinyportal.net/docs/" target=_blank>'.$tmp.'</a>';
         $buffer = str_replace($find, $replace.' | '.$find, $buffer);
- 
+
         $tmpurl = parse_url($boardurl, PHP_URL_HOST);
         if(!empty($context['TPortal']['copyrightremoval']) && (sha1('TinyPortal'.$tmpurl) == $context['TPortal']['copyrightremoval'])) {
             return $buffer;
@@ -274,7 +269,7 @@ class Integrate
         // Rewrite the current action for the home page
         if( ($currentAction == 'home') && (empty($_REQUEST['action'])) ) {
             $currentAction = 'base';
-        } 
+        }
 
     }}}
 
@@ -303,11 +298,47 @@ class Integrate
         $buttons['home']['data-icon'] = 'i-users';
         $buttons['home']['href']      = $scripturl . '?action=forum';
 
+        if($context['TPortal']['hideadminmenu'] != '1' ) {
+            $subButtons = array();
+            Model\Admin::getInstance()->sideMenu();
+            foreach($context['admin_tabs'] as $k => $v) {
+                $subButtons[$k]['show']     = true;
+                $subButtons[$k]['href']     = $scripturl.'?action=admin;area='.str_replace('_', '', $k);
+                $subButtons[$k]['title']    = $txt[str_replace('_', '-', $k)];
+            }
+
+            $buttons = \elk_array_insert($buttons, 'unreadreplies', array (
+                    'tpadmin' => array(
+                        'title' 	    => $txt['tp-tphelp'],
+                        'href' 		    => $scripturl.'?action=admin;area=tpsettings',
+                        'show'          => true,
+                        'action_hook' 	=> true,
+                        'sub_buttons'   => $subButtons,
+                    ),
+                ), 'after',
+            );
+        }
+
+    }}}
+
+    public static function hookDisplayButtons() {{{
+
+        global $context, $scripturl, $txt;
+
+        if(allowedTo(array('tp_settings')) && (($context['TPortal']['front_type']=='forum_selected' || $context['TPortal']['front_type']=='forum_selected_articles'))) {
+            if(!in_array($context['current_topic'], explode(',', $context['TPortal']['frontpage_topics']))) {
+                $context['normal_buttons']['publish'] = array('active' => false, 'text' => 'tp-publish', 'lang' => true, 'url' => $scripturl . '?action=tportal;sa=publish;t=' . $context['current_topic']);
+            }
+            else {
+                $context['normal_buttons']['unpublish'] = array('active' => true, 'text' => 'tp-unpublish', 'lang' => true, 'url' => $scripturl . '?action=tportal;sa=publish;t=' . $context['current_topic']);
+            }
+        }
+
     }}}
 
     public static function hookAdminAreas(&$adminAreas) {{{
         global $txt;
-        
+
         \loadLanguage('TPortal');
         \loadLanguage('TPortalAdmin');
 
@@ -317,38 +348,35 @@ class Integrate
 			'areas' => array (
 				'tpsettings' => array (
 					'label'       => $txt['tp-adminheader1'],
-					'file'        => 'TPortalAdmin.controller.php',
-					'controller'  => 'TPortalAdmin_Controller',
+					'controller'  => '\TinyPortal\Controller\PortalAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_settings' ),
 					'subsections' => array (
-						'settings'	=> array ( $txt['tp-settings'] ),
-						'frontpage'	=> array ( $txt['tp-frontpage'] ),
+						'settings'	    => array ( $txt['tp-settings'] ),
+						'frontpage'	    => array ( $txt['tp-frontpage'] ),
 					),
 				),
 				'tparticles' => array (
 					'label'       => $txt['tp-articles'],
-					'file'        => 'TPortalAdmin.controller.php',
-					'controller'  => 'TPortalAdmin_Controller',
+					'controller'  => '\TinyPortal\Controller\ArticleAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_articles' ),
 					'subsections' => array (
-						'articles'	=> array ( $txt['tp-articles'] ),
-						'category'	=> array ( $txt['tp-tabs5'] ),
+						'articles'	    => array ( $txt['tp-articles'] ),
+						'categories'    => array ( $txt['tp-tabs5'] ),
 					),
 				),
 				'tpblocks' => array (
 					'label'       => $txt['tp-adminpanels'],
-					'file'        => 'TPortalAdmin.controller.php',
-					'controller'  => 'TPortalAdmin_Controller',
+					'controller'  => '\TinyPortal\Controller\BlockAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_blocks' ),
 					'subsections' => array (
-						'blocks'	=> array ( $txt['tp-blocks'] ),
-						'panels'	=> array ( $txt['tp-panels'] ),
+						'blocks'	    => array ( $txt['tp-blocks'] ),
+						'panels'	    => array ( $txt['tp-panels'] ),
 					),
 				),
             ),
@@ -358,12 +386,12 @@ class Integrate
 
     public static function hookProfileArea(&$profile_areas) {{{
         global $txt, $context;
-        
+
         $profile_areas['tp'] = array(
             'title' => 'Tinyportal',
             'areas' => array(),
         );
-        
+
         // Profile area for 1.0
         $profile_areas['tp']['areas']['tpsummary'] = array(
             'label' => $txt['tpsummary'],
@@ -411,8 +439,10 @@ class Integrate
 
         $actionArray = array_merge(
             array (
-                'forum'     => array('BoardIndex.php',                  'BoardIndex'),
-                'tportal'   => array('TPortal.controller.php',          'action_index'),
+                'forum'     => array('BoardIndex.controller.php', 'BoardIndex_Controller', 'action_boardindex'),
+                'tparticle' => array('\TinyPortal\Controller\Article',  'action_index'),
+                'tportal'   => array('\TinyPortal\Controller\Portal',   'action_index'),
+                'tpsearch'  => array('\TinyPortal\Controller\Search',   'action_index'),
             ),
             $actionArray
         );
@@ -424,7 +454,7 @@ class Integrate
 
         loadLanguage('TPortal');
 
-        $dB = Database::getInstance();
+        $dB = Model\Database::getInstance();
 
         if(isset($actions['page'])) {
             if(is_numeric($actions['page'])) {
@@ -496,7 +526,7 @@ class Integrate
                 return $txt['tp-who-categories'];
             }
         }
-        
+
         if(isset($actions['action']) && $actions['action'] == 'tportal' && isset($actions['dl'])) {
             return $txt['tp-who-downloads'];
         }
@@ -513,7 +543,12 @@ class Integrate
 
     public static function hookInitTheme($id_theme, &$settings) {{{
 
-        require_once(SUBSDIR . '/TPortal.subs.php');        
+        // Add our custom theme directory
+        require_once(SOURCEDIR . '/Templates.class.php');
+        \Templates::instance()->addDirectory(BOARDDIR . '/TinyPortal/Views/');
+
+        // Now initialise the portal
+        require_once(SUBSDIR . '/TPortal.subs.php');
         \TPortalInit();
 
     }}}
@@ -533,7 +568,7 @@ class Integrate
         // are we on search page? then add TP search options as well!
         if($context['TPortal']['action'] == 'search') {
             if(!in_array('TPsearch', \Template_Layers::getInstance()->getLayers())) {
-                \Template_Layers::getInstance()->add('TPsearch');
+                \Template_Layers::getInstance()->add('TPSearch');
             }
         }
 
@@ -558,13 +593,13 @@ class Integrate
         require_once(SUBSDIR . '/TPortal.subs.php');
 
         $theme  = 0;
-        $dB     = Database::getInstance();
+        $dB     = Model\Database::getInstance();
 
         // are we on a article? check it for custom theme
         if(isset($_GET['page']) && !isset($_GET['action'])) {
             if (($theme = cache_get_data('tpArticleTheme', 120)) == null) {
                 // fetch the custom theme if any
-                $pag = Util::filter('page', 'get', 'string');
+                $pag = Model\Util::filter('page', 'get', 'string');
                 if (is_numeric($pag)) {
                     $request = $dB->db_query('', '
                         SELECT id_theme FROM {db_prefix}tp_articles
@@ -604,7 +639,7 @@ class Integrate
                     $request = $dB->db_query('', '
                         SELECT art.id_theme
                         FROM {db_prefix}tp_articles AS art
-                        WHERE featured = 1' 
+                        WHERE featured = 1'
                     );
                     if($dB->db_num_rows($request) > 0) {
                         $theme = $dB->db_fetch_row($request)[0];

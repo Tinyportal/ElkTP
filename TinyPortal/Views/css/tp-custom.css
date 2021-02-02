@@ -1,0 +1,15 @@
+/**
+ * @package TinyPortal
+ * @version 1.0.0 RC2
+ * @author TinyPortal - http://www.tinyportal.net
+ * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
+ *
+ * Copyright (C) 2020 - The TinyPortal Team
+ *
+ */
+
+/**
+ * Stylesheet for custom styling 
+ * This stylesheet is NOT deleted upon uninstalling TinyPortal, 
+ * but it will be overwritten with an empty file when installing a new version.
+ */

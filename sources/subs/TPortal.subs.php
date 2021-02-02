@@ -1,23 +1,23 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC1
+ * @version 1.0.0 RC2
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
-use \TinyPortal\Admin as TPAdmin;
-use \TinyPortal\Article as TPArticle;
-use \TinyPortal\Block as TPBlock;
-use \TinyPortal\Category as TPCategory;
-use \TinyPortal\Database as TPDatabase;
-use \TinyPortal\Integrate as TPIntegrate;
-use \TinyPortal\Mentions as TPMentions;
-use \TinyPortal\Permissions as TPPermissions;
-use \TinyPortal\Util as TPUtil;
-use \TinyPortal\Upload as TPUpload;
+use \TinyPortal\Model\Admin as TPAdmin;
+use \TinyPortal\Model\Article as TPArticle;
+use \TinyPortal\Model\Block as TPBlock;
+use \TinyPortal\Model\Category as TPCategory;
+use \TinyPortal\Model\Database as TPDatabase;
+use \TinyPortal\Model\Integrate as TPIntegrate;
+use \TinyPortal\Model\Mentions as TPMentions;
+use \TinyPortal\Model\Permissions as TPPermissions;
+use \TinyPortal\Model\Util as TPUtil;
+use \TinyPortal\Model\Upload as TPUpload;
 
 define('TPVERSION', 100);
 
@@ -54,7 +54,7 @@ function TPortalInit() {{{
 	setupTPsettings();
     // Setup querystring
 	$context['TPortal']['querystring'] = $_SERVER['QUERY_STRING'];
-    
+
 	// go back on showing attachments..
 	if(isset($_GET['action']) && $_GET['action'] == 'dlattach') {
 		return;
@@ -104,29 +104,29 @@ function tpLoadCSS() {{{
 	global $context, $settings;
 
 	$context['html_headers'] .=  "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>";
-	
+
     // load both stylesheets to be sure all is in, but not if things aren't setup!
 	if(!empty($settings['default_theme_url']) && !empty($settings['theme_url']) && file_exists($settings['theme_dir'].'/css/tp-style.css')) {
 		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-style.css?'.TPVERSION.'" />';
     }
 	else {
-		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/tp-style.css?'.TPVERSION.'" />';
+		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="TinyPortal/Views/css/tp-style.css?'.TPVERSION.'" />';
     }
 
 	if(!empty($settings['default_theme_url']) && !empty($settings['theme_url']) && file_exists($settings['theme_dir'].'/css/tp-responsive.css')) {
 		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-responsive.css?'.TPVERSION.'" />';
     }
 	else {
-		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/tp-responsive.css?'.TPVERSION.'" />';
+		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="TinyPortal/Views/css/tp-responsive.css?'.TPVERSION.'" />';
     }
 
 	if(!empty($settings['default_theme_url']) && !empty($settings['theme_url']) && file_exists($settings['theme_dir'].'/css/tp-custom.css')) {
 		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-custom.css?'.TPVERSION.'" />';
     }
 	else {
-		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['default_theme_url'] . '/css/tp-custom.css?'.TPVERSION.'" />';
+		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="TinyPortal/Views/css/tp-custom.css?'.TPVERSION.'" />';
     }
-	
+
 	if(!empty($context['TPortal']['padding'])) {
 		$context['html_headers'] .= '
             <style type="text/css">
@@ -1217,9 +1217,7 @@ function TPwysiwyg_setup() {{{
 		<style>
 			.sceditor-button-floatleft div { background: url('.$boardurl.'/themes/default/images/tinyportal/floatleft.png); width:24px; height:24px; margin: -3px; }
 			.sceditor-button-floatright div { background: url('.$boardurl.'/themes/default/images/tinyportal/floatright.png); width:24px; height:24px; margin: -3px; }
-		</style>';
-
-	$context['html_headers'] .= '
+		</style>
 		<script type="text/javascript"><!-- // --><![CDATA[
 			sceditor.command.set(\'floatleft\', {
 				exec: function() {
@@ -1237,7 +1235,7 @@ function TPwysiwyg_setup() {{{
 				txtExec: [\'<div style="float:right;">\', \'</div>\'],
 				tooltip: \''.$txt['editor_tp_floatright'].'\'
 			});
-			// Taken from ELK2.1 https://github.com/SimpleMachines/ELK2.1/blob/24a10ca4fcac45f0bd73b6185618217aaa531cd2/themes/default/scripts/jquery.sceditor.smf.js#L289
+
 			sceditor.command.set( \'youtube\', {
 				exec: function (caller) {
 					var editor = this;
@@ -1253,60 +1251,11 @@ function TPwysiwyg_setup() {{{
 				},
 			});
 		// ]]></script>';
+
 	if($context['TPortal']['use_dragdrop']) {
-		$context['html_headers'] .= '
-			<script src="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/plugins/dragdrop.js"></script>
-			<script type="text/javascript"><!-- // --><![CDATA[
-			function detectIE() {
-				var ua = window.navigator.userAgent;
-
-				// Test values; Uncomment to check result
-
-				// IE 10
-				// ua = \'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)\';
-
-				// IE 11
-				// ua = \'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko\';
-
-				// Edge 12 (Spartan)
-				// ua = \'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0\';
-
-				// Edge 13
-				// ua = \'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586\';
-
-				var msie = ua.indexOf(\'MSIE \');
-				if (msie > 0) {
-					// IE 10 or older => return version number
-					return parseInt(ua.substring(msie + 5, ua.indexOf(\'.\', msie)), 10);
-				}
-
-				var trident = ua.indexOf(\'Trident/\');
-				if (trident > 0) {
-					// IE 11 => return version number
-					var rv = ua.indexOf(\'rv:\');
-					return parseInt(ua.substring(rv + 3, ua.indexOf(\'.\', rv)), 10);
-				}
-
-				var edge = ua.indexOf(\'Edge/\');
-				if (edge > 0) {
-					// Edge (IE 12+) => return version number
-					return parseInt(ua.substring(edge + 5, ua.indexOf(\'.\', edge)), 10);
-				}
-
-				// other browser
-				return false;
-			}
-			// Get IE or Edge browser version
-			var version = detectIE();
-
-			if (version === false) {
-				// Do nothing
-			} else {
-				document.write(\'<script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.5/bluebird.min.js"><\/script>\');
-				document.write(\'<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"><\/script>\');
-			}
-			// ]]></script>';
+		$context['html_headers'] .= '<script src="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/plugins/dragdrop.js"></script>';
 	}
+
 }}}
 
 function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $showchoice = true) {{{
@@ -1321,7 +1270,7 @@ function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $sho
 			function tpImageUpload(file) {
 				var form = new FormData();
 				form.append(\'image\', file);
-				return fetch(\''.$scripturl.'?action=tportal;sa=uploadimage\', {
+				return fetch(\''.$scripturl.'?action=admin;area=tparticles;sa=uploadimage\', {
 					method: \'post\',
 					credentials: \'same-origin\',
 					body: form,
@@ -1535,8 +1484,8 @@ function tp_hidepanel2($id, $id2, $alt) {{{
 }}}
 
 
-function get_perm($perm, $moderate = '') {{{   
-    return TPPermissions::getInstance()->getPermissions($perm, $moderate);	
+function get_perm($perm, $moderate = '') {{{
+    return TPPermissions::getInstance()->getPermissions($perm, $moderate);
 }}}
 
 function tpsort($a, $b) {{{
@@ -1671,7 +1620,7 @@ function tp_renderarticle($intro = '') {{{
 		elseif($context['TPortal']['article']['rendertype'] == 'bbc' || $context['TPortal']['article']['rendertype'] == 'import') {
             if(TPUtil::isHTML($context['TPortal']['article']['intro']) || isset($context['TPortal']['article']['parsed_bbc'])) {
 			    $data .= $context['TPortal']['article']['intro'];
-            } 
+            }
             else {
                 $data .= parse_bbc($context['TPortal']['article']['intro']);
             }
@@ -1690,7 +1639,7 @@ function tp_renderarticle($intro = '') {{{
 		elseif($context['TPortal']['article']['rendertype'] == 'bbc') {
             if(TPUtil::isHTML($context['TPortal']['article']['body']) || isset($context['TPortal']['article']['parsed_bbc'])) {
 			    $data .= $context['TPortal']['article']['body'];
-            } 
+            }
             else {
 			    $data .= parse_bbc($context['TPortal']['article']['body']);
             }
@@ -1765,7 +1714,7 @@ function tp_renderblockarticle() {{{
 function render_template($code, $render = true) {{{
     global $context;
 
-    if(!empty($context['TPortal']['disable_template_eval']) && $render == true) { 
+    if(!empty($context['TPortal']['disable_template_eval']) && $render == true) {
         if(preg_match_all('~(?<={)([A-Za-z_]+)(?=})~', $code, $match) !== false) {
             foreach($match[0] as $func) {
                 if(function_exists($func)) {
@@ -1775,7 +1724,7 @@ function render_template($code, $render = true) {{{
             }
             echo $code;
         }
-    } 
+    }
     else {
 	    $ncode = 'echo \'' . str_replace(array('{','}'),array("', ","(), '"),$code).'\';';
 	    if($render) {
@@ -1790,7 +1739,7 @@ function render_template($code, $render = true) {{{
 function render_template_layout($code, $prefix = '') {{{
     global $context;
 
-    if(!empty($context['TPortal']['disable_template_eval'])) { 
+    if(!empty($context['TPortal']['disable_template_eval'])) {
         if(preg_match_all('~(?<={)([A-Za-z0-9]+)(?=})~', $code, $match) !== false) {
             foreach($match[0] as $suffix) {
                 $func = (string)"$prefix$suffix";
@@ -1803,7 +1752,7 @@ function render_template_layout($code, $prefix = '') {{{
             }
             echo $code;
         }
-    } 
+    }
     else {
 	    $ncode = 'echo \'' . str_replace(array('{','}'),array("', " . $prefix , "(), '"),$code).'\';';
 	    eval($ncode);
@@ -1920,7 +1869,7 @@ function TPparseRSS($override = '', $encoding = 0) {{{
   		curl_close($curl);
 		$xml = simplexml_load_string($ret);
 	}
-	
+
 	if($xml !== false) {
 		switch (strtolower($xml->getName())) {
 			case 'rss':
@@ -1947,108 +1896,6 @@ function TPparseRSS($override = '', $encoding = 0) {{{
 				break;
 		}
 	}
-
-}}}
-
-// Set up the administration sections.
-function TPadminIndex($tpsub = '', $module_admin = false) {{{
-	global $txt, $context, $scripturl;
-
-	if(loadLanguage('TPortalAdmin') == false)
-		loadLanguage('TPortalAdmin', 'english');
-
-	if($module_admin) {
-		// make sure tpadmin is still active
-		$_GET['action'] = 'tpadmin';
-	}
-
-	$context['admin_tabs'] = array();
-	$context['admin_header']['tp_settings'] = $txt['tp-adminheader1'];
-	$context['admin_header']['tp_articles'] = $txt['tp-articles'];
-	$context['admin_header']['tp_blocks']   = $txt['tp-adminpanels'];
-
-	if (allowedTo('tp_settings')) {
-		$context['admin_tabs']['tp_settings'] = array(
-			'settings' => array(
-				'title' => $txt['tp-settings'],
-				'description' => $txt['tp-settingdesc1'],
-				'href' => $scripturl . '?action=admin;area=tpsettings;sa=settings',
-				'is_selected' => $tpsub == 'settings',
-			),
-			'frontpage' => array(
-				'title' => $txt['tp-frontpage'],
-				'description' => $txt['tp-frontpagedesc1'],
-				'href' => $scripturl . '?action=admin;area=tpsettings;sa=frontpage',
-				'is_selected' => $tpsub == 'frontpage',
-			),
-		);
-	}
-	if (allowedTo('tp_editownarticle')) {
-		$context['admin_tabs']['tp_articles'] = array(
-			'myarticles' => array(
-				'title' => $txt['tp-myarticles'],
-				'description' => $txt['tp-articledesc1'],
-				'href' => $scripturl . '?action=tportal;sa=myarticles',
-				'is_selected' => $tpsub == 'myarticles',
-			),
-		);
-	}
-	
-	if (allowedTo('tp_articles')) {
-		$context['admin_tabs']['tp_articles'] = array(
-			'articles' => array(
-				'title' => $txt['tp-articles'],
-				'description' => $txt['tp-articledesc1'],
-				'href' => $scripturl . '?action=admin;area=tparticles;sa=articles',
-				'is_selected' => (substr($tpsub,0,11)=='editarticle' || in_array($tpsub, array('articles','addarticle','addarticle_php', 'addarticle_bbc', 'addarticle_import','strays','submission'))),
-			),
-			'categories' => array(
-				'title' => $txt['tp-tabs5'],
-				'description' => $txt['tp-articledesc2'],
-				'href' => $scripturl . '?action=admin;area=tparticles;sa=categories',
-				'is_selected' => in_array($tpsub, array('categories', 'addcategory','clist')) ,
-			),
-			'artsettings' => array(
-				'title' => $txt['tp-settings'],
-				'description' => $txt['tp-articledesc3'],
-				'href' => $scripturl . '?action=admin;area=tparticles;sa=artsettings',
-				'is_selected' => $tpsub == 'artsettings',
-			),
-			'icons' => array(
-				'title' => $txt['tp-adminicons'],
-				'description' => $txt['tp-articledesc5'],
-				'href' => $scripturl . '?action=admin;area=tparticles;sa=articons',
-				'is_selected' => $tpsub == 'articons',
-			),
-		);
-	}
-
-	if (allowedTo('tp_blocks')) {
-		$context['admin_tabs']['tp_blocks'] = array(
-			'panelsettings' => array(
-				'title' => $txt['tp-allpanels'],
-				'description' => $txt['tp-paneldesc1'],
-				'href' => $scripturl . '?action=admin;area=tpblocks;sa=panels',
-				'is_selected' => $tpsub == 'panels',
-			),
-			'blocks' => array(
-				'title' => $txt['tp-allblocks'],
-				'description' => $txt['tp-blocksdesc1'],
-				'href' => $scripturl . '?action=admin;area=tpblocks;sa=blocks',
-				'is_selected' => $tpsub == 'blocks' && !isset($_GET['latest']) && !isset($_GET['overview']),
-			),
-			'blockoverview' => array(
-				'title' => $txt['tp-blockoverview'],
-				'description' => '',
-				'href' => $scripturl . '?action=admin;area=tpblocks;sa=blocks;overview',
-				'is_selected' => ($tpsub == 'blocks' && isset($_GET['overview'])) || substr($tpsub,0,9) == 'editblock',
-			),
-		);
-	}
-
-    call_integration_hook('integrate_tp_admin_areas');
-
-	validateSession();
 
 }}}
 
@@ -2711,18 +2558,18 @@ function tp_profile_articles($member_id) {{{
     $tpArticle  = TPArticle::getInstance();
 	$start      = 0;
 	$sorting    = 'date';
-	
+
     if(isset($context['TPortal']['mystart'])) {
 		$start = is_numeric($context['TPortal']['mystart']) ? $context['TPortal']['mystart'] : 0;
     }
-	
+
     if($context['TPortal']['tpsort'] != '') {
         $sorting = $context['TPortal']['tpsort'];
         if(!in_array($sorting, array('date', 'subject', 'views', 'category', 'comments'))) {
             $sorting = 'date';
         }
     }
-	
+
 	// get all articles written by member
     $max        = $tpArticle->getTotalAuthorArticles($member_id, false, true);
 
@@ -2742,8 +2589,8 @@ function tp_profile_articles($member_id) {{{
 		FROM {db_prefix}tp_articles AS art
 		WHERE art.author_id = {int:auth}
 		ORDER BY art.{raw:sort} {raw:sorter} LIMIT 15 OFFSET {int:start}',
-		array('auth' => $member_id, 
-		'sort' => $sorting, 
+		array('auth' => $member_id,
+		'sort' => $sorting,
 		'sorter' => in_array($sorting, array('date', 'views', 'comments')) ? 'DESC' : 'ASC',
 		'start' => $start
 		)
@@ -2790,13 +2637,13 @@ function tp_profile_articles($member_id) {{{
 					'locked' => $row['locked'],
 					'catID' => $row['category'],
 					'category' => '<a href="'.$scripturl.'?mycat='.$row['category'].'">' . (isset($context['TPortal']['catnames'][$row['category']]) ? $context['TPortal']['catnames'][$row['category']] : '') .'</a>',
-					'editlink' => allowedTo('tp_articles') ? $scripturl.'?action=admin;area=tpadmin;sa=editarticle'.$row['id'] : $scripturl.'?action=tportal;sa=editarticle'.$row['id'],
+					'editlink' => allowedTo('tp_articles') ? $scripturl.'?action=admin;area=tparticles;sa=editarticle'.$row['id'] : $scripturl.'?action=tportal;sa=editarticle'.$row['id'],
 				);
             }
 		}
 		$db->free_result($request);
 	}
-	
+
     // construct pageindexes
 	$context['TPortal']['pageindex'] = '';
 	if($max > 0) {
@@ -2808,7 +2655,7 @@ function tp_profile_articles($member_id) {{{
 	if(isset($_GET['sa']) && $_GET['sa'] == 'settings') {
 		$context['TPortal']['profile_action'] = 'settings';
     }
-	
+
 	// Create the tabs for the template.
 	$context[$context['profile_menu_name']]['tab_data'] = array(
 		'title' => $txt['articlesprofile'],
@@ -2843,7 +2690,7 @@ function tp_articles($member_id = null) {{{
 
     if(is_null($member_id)) {
         $member_id = TPUtil::filter('u', 'get', 'int');
-    }	
+    }
 
     TPArticleCategories();
 	loadtemplate('TPprofile');
@@ -2938,7 +2785,7 @@ function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png
     if(is_dir($destdir)) {
         $dstPath = $destdir . '/' . $sname;
     }
-    else { 
+    else {
         $dstPath = BOARDDIR . '/'. $destdir .'/' . $sname;
     }
 
@@ -2953,6 +2800,155 @@ function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png
     }
 
     return basename($dstPath);
+}}}
+
+function get_langfiles() {{{
+	global $context, $settings;
+
+	// get all languages for blocktitles
+	$language_dir = $settings['default_theme_dir'] . '/languages';
+	$context['TPortal']['langfiles'] = array();
+	$dir = dir($language_dir);
+	while ($entry = $dir->read())
+		if (substr($entry, 0, 6) == 'index.' && substr($entry,(strlen($entry) - 4) ,4) == '.php' && strlen($entry) > 9)
+	$context['TPortal']['langfiles'][] = substr(substr($entry, 6), 0, -4);
+	$dir->close();
+}}}
+
+function get_catlayouts() {{{
+	global $context, $txt;
+
+	// setup the layoutboxes
+	$context['TPortal']['admin_layoutboxes'] = array(
+		array('value' => '1', 'label' => $txt['tp-catlayout1']),
+		array('value' => '2', 'label' => $txt['tp-catlayout2']),
+		array('value' => '4', 'label' => $txt['tp-catlayout4']),
+		array('value' => '8', 'label' => $txt['tp-catlayout8']),
+		array('value' => '6', 'label' => $txt['tp-catlayout6']),
+		array('value' => '5', 'label' => $txt['tp-catlayout5']),
+		array('value' => '3', 'label' => $txt['tp-catlayout3']),
+		array('value' => '9', 'label' => $txt['tp-catlayout9']),
+		array('value' => '7', 'label' => $txt['tp-catlayout7']),
+	);
+}}}
+
+function get_boards() {{{
+	global $context;
+
+    $db = TPDatabase::getInstance();
+
+	$context['TPortal']['boards'] = array();
+	$request = $db->query('', '
+		SELECT b.id_board as id, b.name, b.board_order
+		FROM {db_prefix}boards as b
+		WHERE 1=1
+		ORDER BY b.board_order ASC',
+		array()
+	);
+	if($db->num_rows($request) > 0) {
+		while($row = $db->fetch_assoc($request)) {
+			$context['TPortal']['boards'][] = $row;
+        }
+		$db->free_result($request);
+	}
+}}}
+
+function get_articles() {{{
+
+	global $context;
+
+    $db = TPDatabase::getInstance();
+
+	$context['TPortal']['edit_articles'] = array();
+
+	$request = $db->query('', '
+		SELECT id, subject, shortname FROM {db_prefix}tp_articles
+		WHERE approved = 1 AND off = 0
+		ORDER BY subject ASC');
+
+	if($db->num_rows($request) > 0) {
+		while($row=$db->fetch_assoc($request)) {
+			$context['TPortal']['edit_articles'][] = $row;
+        }
+
+		$db->free_result($request);
+	}
+}}}
+
+function tp_create_dir($path) {{{
+
+    require_once(SOURCEDIR . '/Package.subs.php');
+
+    // Load up the package FTP information?
+    create_chmod_control();
+
+    if (!mktree($path, 0755)) {
+        deltree($path, true);
+        fatal_error($txt['tp-failedcreatedir'], false);
+    }
+
+    return TRUE;
+}}}
+
+function tp_delete_dir($path) {{{
+
+    require_once(SOURCEDIR . '/Package.subs.php');
+
+    // Load up the package FTP information?
+    create_chmod_control();
+
+    deltree($path, true);
+
+    return TRUE;
+}}}
+
+function tp_recursive_copy($src, $dst) {{{
+
+    $dir = opendir($src);
+    tp_create_dir($dst);
+    while(false !== ($file = readdir($dir)) ) {
+        if(($file != '.') && ($file != '..')) {
+            if(is_dir($src . '/' . $file)) {
+                tp_recursive_copy($src . '/' . $file,$dst . '/' . $file);
+            }
+            else {
+                copy($src . '/' . $file,$dst . '/' . $file);
+            }
+        }
+    }
+    closedir($dir);
+
+}}}
+
+function tp_groups() {{{
+	global $txt;
+
+    $db = TPDatabase::getInstance();
+	// get all membergroups for permissions
+	$grp    = array();
+	$grp[]  = array(
+		'id' => '-1',
+		'name' => $txt['tp-guests'],
+		'posts' => '-1'
+	);
+	$grp[]  = array(
+		'id' => '0',
+		'name' => $txt['tp-ungroupedmembers'],
+		'posts' => '-1'
+	);
+
+	$request =  $db->query('', '
+		SELECT * FROM {db_prefix}membergroups
+		WHERE 1=1 ORDER BY id_group'
+	);
+	while ($row = $db->fetch_assoc($request)) {
+		$grp[] = array(
+			'id' => $row['id_group'],
+			'name' => $row['group_name'],
+			'posts' => $row['min_posts']
+		);
+	}
+	return $grp;
 }}}
 
 if (!function_exists('is_countable')) {
