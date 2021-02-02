@@ -1461,10 +1461,8 @@ function template_articons()
 {
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
-		tp_collectArticleIcons();
-
 		echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=admin;area=tparticles;sa=articons" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="articons">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-adminicons7'] . '</h3></div>
@@ -1480,14 +1478,11 @@ function template_articons()
 							<input type="file" name="tp_article_newillustration" id="tp_article_newillustration" />
 						</dd>
 					</dl>
-					<div class="padding-div"><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
 					<hr><br>';
 
-				$alt=true;
-		if(count($context['TPortal']['articons']['illustrations'])>0)
-		{
-			foreach($context['TPortal']['articons']['illustrations'] as $icon)
-			{
+		$alt = true;
+		if(count($context['TPortal']['articons']['illustrations'])>0) {
+			foreach($context['TPortal']['articons']['illustrations'] as $icon) {
 				echo '
 					<div class="smalltext padding-div" style="float:left;">
 						<div style="width: 110px; height: 110px;text-align:center;">

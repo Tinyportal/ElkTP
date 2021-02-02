@@ -70,7 +70,7 @@ class Article extends \Action_Controller
 		checkSession('post');
 
 		if (!allowedTo('tp_artcomment')) {
-			fatal_error($txt['tp-nocomments'], false);
+			throw new Elk_Exception($txt['tp-nocomments'], 'general');
 		}
 
 		$commenter  = $context['user']['id'];
@@ -190,7 +190,7 @@ class Article extends \Action_Controller
 		global $context, $txt;
 
 		if (!allowedTo('tp_artcomment')) {
-			fatal_error($txt['tp-nocomments'], false);
+			throw new Elk_Exception($txt['tp-nocomments'], 'general');
 		}
 
 		// edit or deleting a comment?
@@ -198,7 +198,7 @@ class Article extends \Action_Controller
 			// check that you indeed can edit or delete
 			$comment = TPUtil::filter('comment', 'get', 'int');
 			if(!is_numeric($comment)) {
-				fatal_error($txt['tp-noadmincomments'], false);
+				throw new Elk_Exception($txt['tp-noadmincomments'], 'general');
 			}
 
 			$tpArticle  = TPArticle::getInstance();
@@ -215,14 +215,14 @@ class Article extends \Action_Controller
 		global $context, $txt;
 
 	   if (!allowedTo('tp_artcomment')) {
-			fatal_error($txt['tp-nocomments'], false);
+			throw new Elk_Exception($txt['tp-nocomments'], 'general');
 		}
 
 		if($context['user']['is_logged']) {
 			// check that you indeed can edit or delete
 			$comment = substr($_GET['sa'], 11);
 			if(!is_numeric($comment)) {
-				fatal_error($txt['tp-noadmincomments'], false);
+				throw new Elk_Exception($txt['tp-noadmincomments'], 'general');
 			}
 
 			$tpArticle  = TPArticle::getInstance();
@@ -240,7 +240,7 @@ class Article extends \Action_Controller
 						loadLanguage('TParticle', 'english');
 					};
 				}
-				fatal_error($txt['tp-notallowed'], false);
+				throw new Elk_Exception($txt['tp-notallowed'], 'general');
 			}
 		}
 
@@ -308,7 +308,7 @@ class Article extends \Action_Controller
         // show own articles?
         // not for guests
         if($context['user']['is_guest']) {
-            fatal_error($txt['tp-noarticlesfound'], false);
+            throw new Elk_Exception($txt['tp-noarticlesfound'], 'general');
         }
 
         // get all articles

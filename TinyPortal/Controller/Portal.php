@@ -70,7 +70,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
         if($action == 'tportal') {
             $subAction  = TPUtil::filter('sa', 'get', 'string');
             if($subAction == false) {
-                Errors::instance()->log_error($txt['tp-no-sa-url'], 'general');
+                throw new Elk_Exception($txt['tp-no-sa-url'], 'general');
             }
 
             $subActions = array(
@@ -81,7 +81,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
             call_integration_hook('integrate_tp_pre_subactions', array(&$subActions));
 
             if(!array_key_exists($subAction, $subActions)) {
-                Errors::instance()->log_error($txt['tp-no-sa-list'], 'general');
+                throw new Elk_Exception($txt['tp-no-sa-list'], 'general');
             }
 
             $context['TPortal']['subaction'] = $subAction;

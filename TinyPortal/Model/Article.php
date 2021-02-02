@@ -542,6 +542,35 @@ class Article extends Base
 
 	}}}
 
+    public function getArticleIcons() {{{
+        global $context, $boardurl;
+
+        $count = 1;
+        $context['TPortal']['articons'] = array();
+        $context['TPortal']['articons']['illustrations'] = array();
+
+        //illustrations/images
+        if ($handle = opendir(BOARDDIR.'/tp-files/tp-articles/illustrations')) {
+            while (false !== ($file = readdir($handle))) {
+                if($file != '.' && $file != '..' && $file != '.htaccess' && $file != 'TPno_illustration.png' && in_array(strtolower(substr($file, strlen($file) -4, 4)), array('.gif', '.jpg', '.png'))) {
+                    if(substr($file, 0, 2) == 's_') {
+                        $context['TPortal']['articons']['illustrations'][] = array(
+                                'id' => $count,
+                                'file' => $file,
+                                'image' => '<img src="'.$boardurl.'/tp-files/tp-articles/illustrations/'.$file.'" alt="'.$file.'" />',
+                                'background' => $boardurl.'/tp-files/tp-articles/illustrations/'.$file,
+                                );
+                    }
+                    $count++;
+                }
+            }
+            closedir($handle);
+        }
+
+        sort($context['TPortal']['articons']['illustrations']);
+
+    }}}
+
 }
 
 ?>
