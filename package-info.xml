@@ -4,7 +4,7 @@
 	<name>TinyPortal</name>
 	<id>tinyportal:tinyportal</id>
 	<type>modification</type>
-	<version>1.1.0 RC1</version>
+	<version>1.0.0 RC2</version>
 		<install for="1.1.* - 1.1.99">
 		<redirect url="">Installed!</redirect>
 		<require-dir name="themes" destination="BOARDDIR" />

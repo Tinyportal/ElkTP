@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC1
+ * @version 1.0.0 RC2
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -59,7 +59,7 @@ class ArticleAdmin extends \Action_Controller
             'savearticle'       => array($this, 'action_edit', array()),
             'uploadimage'       => array($this, 'action_upload_image', array()),
             'submitsuccess'     => array($this, 'action_submit_success', array()),
-            'myarticles'        => array(new Article, 'articleShow', array()),
+            'myarticles'        => array(new Article, 'action_show', array()),
             'clist'             => array($this, 'action_categories', array()),
             'categories'        => array($this, 'action_categories', array()),
             'addcategory'       => array($this, 'action_categories', array()),
@@ -99,16 +99,25 @@ class ArticleAdmin extends \Action_Controller
     public function action_edit() {{{
         global $context;
 
+        // FIXME this shouldn't be here
+        if(TPUtil::filter('article', 'get', 'int')) {
+            $context['sub_template'] = 'submitarticle';
+            \loadTemplate('TParticle');
+            return $this->do_articles();
+        }
+
         $db = TPDatabase::getInstance();
         checkSession('post');
         isAllowedTo(array('tp_articles', 'tp_editownarticle', 'tp_submitbbc', 'tp_submithtml'));
 
         $options        = array();
         $article_data   = array();
-        if(allowedTo('tp_alwaysapproved'))
+        if(allowedTo('tp_alwaysapproved')) {
             $article_data['approved'] = 1; // No approval needed
-        else
+        }
+        else {
             $article_data['approved'] = 0; // Preset to false
+        }
 
         foreach($_POST as $what => $value) {
             if(substr($what, 0, 11) == 'tp_article_') {
@@ -267,10 +276,10 @@ class ArticleAdmin extends \Action_Controller
         }
 
         if(array_key_exists('tpadmin_form', $_POST)) {
-            return $_POST['tpadmin_form'].';article='.$where;
+            redirectexit('action=admin;area=tparticles;sa='.$_POST['tpadmin_form'].';article='.$where);
         }
         else {
-            redirectexit('action=tportal;sa=submitsuccess');
+            redirectexit('action=admin;area=tparticles;sa=submitsuccess');
         }
 
     }}}

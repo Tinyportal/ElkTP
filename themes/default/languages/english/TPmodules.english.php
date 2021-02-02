@@ -1,5 +1,5 @@
 <?php
-// @version 1.0.0 RC1; TPmodules
+// @version 1.0.0 RC2; TPmodules
 
 global $scripturl;
 
