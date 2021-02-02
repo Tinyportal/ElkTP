@@ -73,7 +73,7 @@ class ArticleAdmin extends \Action_Controller
             'strays'            => array($this, 'TPortalAdmin', array()),
             'submission'        => array($this, 'TPortalAdmin', array()),
             'artsettings'       => array($this, 'TPortalAdmin', array()),
-            'articons'          => array($this, 'TPortalAdmin', array()),
+            'articons'          => array($this, 'action_articons', array()),
         );
 
         $sa = TPUtil::filter('sa', 'get', 'string');
@@ -523,7 +523,7 @@ class ArticleAdmin extends \Action_Controller
                 $this->do_articles($tpsub);
             }
             else {
-                fatal_error($txt['tp-noadmin'], false);
+                throw new Elk_Exception($txt['tp-noadmin'], 'general');
             }
         }
 
@@ -544,11 +544,11 @@ class ArticleAdmin extends \Action_Controller
     public function do_subaction($tpsub) {{{
         global $context, $txt;
 
-        if(in_array($tpsub, array('articles', 'strays', 'submission', 'artsettings', 'articons')) && (allowedTo(array('tp_articles', 'tp_editownarticle'))) )  {
+        if(in_array($tpsub, array('articles', 'strays', 'submission', 'artsettings')) && (allowedTo(array('tp_articles', 'tp_editownarticle'))) )  {
             $this->do_articles();
         }
         elseif(!$context['user']['is_admin']) {
-            fatal_error($txt['tp-noadmin'], false);
+            throw new Elk_Exception($txt['tp-noadmin'], 'general');
         }
         else {
             redirectexit('action=admin;area=tpsettings');
@@ -574,12 +574,12 @@ class ArticleAdmin extends \Action_Controller
                     )
                 );
                 if($db->num_rows($request) == 0) {
-                    fatal_error($txt['tp-noadmin'], false);
+                    throw new Elk_Exception($txt['tp-noadmin'], 'general');
                 }
                 $db->free_result($request);
             }
             else {
-                fatal_error($txt['tp-noadmin'], false);
+                throw new Elk_Exception($txt['tp-noadmin'], 'general');
             }
         }
 
@@ -867,6 +867,7 @@ class ArticleAdmin extends \Action_Controller
             }
         }
         // get the icons needed
+        TPArticle::getInstance()->getArticleIcons();
         tp_collectArticleIcons();
 
         // fetch all categories and subcategories
@@ -1166,12 +1167,9 @@ class ArticleAdmin extends \Action_Controller
         if($context['TPortal']['subaction'] == 'artsettings') {
             TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=artsettings', $txt['tp-settings']);
         }
-        elseif($context['TPortal']['subaction'] == 'articons') {
-            TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=articons', $txt['tp-adminicons']);
-        }
 
     }}}
-
+    
     public function do_postchecks() {{{
         global $context, $txt, $settings;
 
@@ -1478,26 +1476,6 @@ class ArticleAdmin extends \Action_Controller
                             'artid' => $ccats,
                         )
                     );
-                }
-                return $from;
-            }
-            // from articons...
-            elseif($from == 'articons')
-            {
-                checkSession('post');
-                isAllowedTo('tp_articles');
-
-                if(file_exists($_FILES['tp_article_newillustration']['tmp_name']))
-                {
-                    $name = TPuploadpicture('tp_article_newillustration', '', $context['TPortal']['icon_max_size'], 'jpg,gif,png', 'tp-files/tp-articles/illustrations');
-                    tp_createthumb('tp-files/tp-articles/illustrations/'. $name, $context['TPortal']['icon_width'], $context['TPortal']['icon_height'], 'tp-files/tp-articles/illustrations/s_'. $name);
-                    unlink('tp-files/tp-articles/illustrations/'. $name);
-                }
-                // how about deleted?
-                foreach($_POST as $what => $value)
-                {
-                    if(substr($what, 0, 15) == 'artillustration')
-                        unlink(BOARDDIR.'/tp-files/tp-articles/illustrations/'.$value);
                 }
                 return $from;
             }
@@ -1816,6 +1794,33 @@ class ArticleAdmin extends \Action_Controller
                 redirectexit('action=admin;area=tparticles;sa=categories');
             }
         }
+
+    }}}
+
+    public function action_articons() {{{
+        global $context;
+        isAllowedTo('tp_articles');
+
+        if(file_exists($_FILES['tp_article_newillustration']['tmp_name'])) {
+            checkSession('post');
+            $name = TPuploadpicture('tp_article_newillustration', '', $context['TPortal']['icon_max_size'], 'jpg,gif,png', 'tp-files/tp-articles/illustrations');
+            tp_createthumb('tp-files/tp-articles/illustrations/'. $name, $context['TPortal']['icon_width'], $context['TPortal']['icon_height'], 'tp-files/tp-articles/illustrations/s_'. $name);
+            unlink('tp-files/tp-articles/illustrations/'. $name);
+        }
+
+        // how about deleted?
+        foreach($_POST as $what => $value) {
+            if(substr($what, 0, 15) == 'artillustration') {
+                checkSession('post');
+                unlink(BOARDDIR.'/tp-files/tp-articles/illustrations/'.$value);
+            }
+        }
+
+        TPArticle::getInstance()->getArticleIcons();
+      
+        \loadTemplate('TPortalAdmin');
+        $context['sub_template'] = 'articons';
+        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=articons', $txt['tp-adminicons']);
 
     }}}
 

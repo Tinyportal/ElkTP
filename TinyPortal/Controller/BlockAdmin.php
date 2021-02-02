@@ -213,7 +213,7 @@ class BlockAdmin extends \Action_Controller
         }
 
         if(!is_numeric($block_id)) {
-            Errors::instance()->log_error($txt['tp-notablock'], 'general');
+            throw new Elk_Exception($txt['tp-notablock'], 'general');
         }
 
         if(loadLanguage('TPortalAdmin') == false) {
@@ -332,7 +332,7 @@ class BlockAdmin extends \Action_Controller
         }
         // if not throw an error
         else {
-            Errors::instance()->log_error($txt['tp-blockfailure'], 'general');
+            throw new Elk_Exception($txt['tp-blockfailure'], 'general');
         }
 
         $context['sub_template'] = 'editblock';
@@ -356,7 +356,7 @@ class BlockAdmin extends \Action_Controller
 
         // save a block?
         if(!is_numeric($block_id)) {
-            Errors::instance()->log_error($txt['tp-notablock'], 'general');
+            throw new Elk_Exception($txt['tp-notablock'], 'general');
         }
 
 		$access 	= array();

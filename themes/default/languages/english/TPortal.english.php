@@ -236,4 +236,6 @@ $txt['tp-bytes'] = ' bytes';
 $txt['tp-kb'] = ' Kb';
 $txt['tp-mb'] = ' Mb';
 $txt['tp-gb'] = ' Gb';
+
+$txt['tp-notuploaded'] = 'File was not uploaded. Error %s';
 ?>

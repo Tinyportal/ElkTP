@@ -18,6 +18,7 @@ use \TinyPortal\Model\Mentions as TPMentions;
 use \TinyPortal\Model\Permissions as TPPermissions;
 use \TinyPortal\Model\Util as TPUtil;
 use \TinyPortal\Model\Upload as TPUpload;
+use ElkArte\Errors\Errors;
 
 define('TPVERSION', 100);
 
@@ -86,11 +87,11 @@ function TPortalInit() {{{
 
 	// finally..any errors finding an article or category?
 	if(!empty($context['art_error'])) {
-		fatal_error($txt['tp-articlenotexist'], false);
+		throw new Elk_Exception($txt['tp-articlenotexist'], 'general');
     }
 
 	if(!empty($context['cat_error'])) {
-		fatal_error($txt['tp-categorynotexist'], false);
+		throw new Elk_Exception($txt['tp-categorynotexist'], 'general');
     }
 
     call_integration_hook('integrate_tp_post_init');
@@ -1931,31 +1932,7 @@ function tp_collectArticleIcons() {{{
 		$db->free_result($request);
 	}
 
-	$count = 1;
-	$context['TPortal']['articons'] = array();
-	$context['TPortal']['articons']['illustrations'] = array();
 
-	$sorted2 = array();
-	//illustrations/images
-	if ($handle = opendir(BOARDDIR.'/tp-files/tp-articles/illustrations'))
-	{
-		while (false !== ($file = readdir($handle)))
-		{
-			if($file != '.' && $file != '..' && $file != '.htaccess' && $file != 'TPno_illustration.png' && in_array(strtolower(substr($file, strlen($file) -4, 4)), array('.gif', '.jpg', '.png')))
-			{
-				if(substr($file, 0, 2) == 's_')
-					$context['TPortal']['articons']['illustrations'][] = array(
-						'id' => $count,
-						'file' => $file,
-						'image' => '<img src="'.$boardurl.'/tp-files/tp-articles/illustrations/'.$file.'" alt="'.$file.'" />',
-						'background' => $boardurl.'/tp-files/tp-articles/illustrations/'.$file,
-					);
-				$count++;
-			}
-		}
-		closedir($handle);
-	}
-	sort($context['TPortal']['articons']['illustrations']);
 }}}
 
 function tp_recordevent($date, $id_member, $textvariable, $link, $description, $allowed, $eventid) {{{
@@ -1976,13 +1953,6 @@ function tp_recordevent($date, $id_member, $textvariable, $link, $description, $
 		array($id_member, $date, $textvariable, $link, $description, $allowed, $eventid, 0),
 		array('id')
 	);
-}}}
-
-function tp_fatal_error($error) {{{
-	global $context;
-
-	$context['sub_template'] = 'tp_fatal_error';
-	$context['TPortal']['errormessage'] = $error;
 }}}
 
 // Recent topic list:   [board] Subject by Poster	Date
@@ -2761,7 +2731,7 @@ function tp_createthumb($picture, $width, $height, $thumb) {{{
 function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png', $destdir = 'tp-images') {{{
     global $txt;
 
-    loadLanguage('TPdlmanager');
+    loadLanguage('TPortal');
 
     $upload = TPUpload::getInstance();
 
@@ -2795,8 +2765,8 @@ function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png
 
     if($upload->upload_file($_FILES[$widthhat]['tmp_name'], $dstPath) === FALSE) {
         unlink($_FILES[$widthhat]['tmp_name']);
-        $error_string = sprintf($txt['tp-dlnotuploaded'], $upload->get_error(TRUE));
-        fatal_error($error_string, false);
+        $error_string = sprintf($txt['tp-notuploaded'], $upload->get_error(TRUE));
+        throw new Elk_Exception($error_string, 'general');
     }
 
     return basename($dstPath);
@@ -2884,7 +2854,7 @@ function tp_create_dir($path) {{{
 
     if (!mktree($path, 0755)) {
         deltree($path, true);
-        fatal_error($txt['tp-failedcreatedir'], false);
+        throw new Elk_Exception($txt['tp-failedcreatedir'], 'general');
     }
 
     return TRUE;
