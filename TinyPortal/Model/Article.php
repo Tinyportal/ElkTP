@@ -571,6 +571,37 @@ class Article extends Base
 
     }}}
 
+    public function getArticleCategories() {{{
+        global $context;
+
+        $db = Database::getInstance();
+
+        // fetch all categories and subcategories
+        $request = $db->query('', '
+            SELECT	id, display_name as name, parent as parent
+            FROM {db_prefix}tp_categories
+            WHERE item_type = {string:type}',
+            array('type' => 'category')
+        );
+
+        $context['TPortal']['allcats'] = array();
+        $allsorted = array();
+
+        if($db->num_rows($request) > 0) {
+            while ($row = $db->fetch_assoc($request)) {
+                $allsorted[$row['id']] = $row;
+            }
+
+            $db->free_result($request);
+            if(count($allsorted) > 1) {
+                $context['TPortal']['allcats'] = chain('id', 'parent', 'name', $allsorted);
+            }
+            else {
+                $context['TPortal']['allcats'] = $allsorted;
+            }
+        }
+
+    }}}
 }
 
 ?>
