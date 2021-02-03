@@ -64,16 +64,16 @@ class ArticleAdmin extends \Action_Controller
             'categories'        => array($this, 'action_categories', array()),
             'addcategory'       => array($this, 'action_categories', array()),
             'delcategory'       => array($this, 'action_delete_category', array()),
+            'strays'            => array($this, 'action_strays', array()),
+            'artsettings'       => array($this, 'action_settings', array()),
+            'articons'          => array($this, 'action_articons', array()),
             // FIXME split these out into the correct functions rather than calling the old method
             'addarticle_bbc'    => array($this, 'TPortalAdmin', array()),
             'addarticle_html'   => array($this, 'TPortalAdmin', array()),
             'addarticle_php'    => array($this, 'TPortalAdmin', array()),
             'addarticle_import' => array($this, 'TPortalAdmin', array()),
             'articles'          => array($this, 'TPortalAdmin', array()),
-            'strays'            => array($this, 'TPortalAdmin', array()),
             'submission'        => array($this, 'TPortalAdmin', array()),
-            'artsettings'       => array($this, 'TPortalAdmin', array()),
-            'articons'          => array($this, 'action_articons', array()),
         );
 
         $sa = TPUtil::filter('sa', 'get', 'string');
@@ -544,7 +544,7 @@ class ArticleAdmin extends \Action_Controller
     public function do_subaction($tpsub) {{{
         global $context, $txt;
 
-        if(in_array($tpsub, array('articles', 'strays', 'submission', 'artsettings')) && (allowedTo(array('tp_articles', 'tp_editownarticle'))) )  {
+        if(in_array($tpsub, array('articles', 'submission')) && (allowedTo(array('tp_articles', 'tp_editownarticle'))) )  {
             $this->do_articles();
         }
         elseif(!$context['user']['is_admin']) {
@@ -616,16 +616,6 @@ class ArticleAdmin extends \Action_Controller
 
         $this->action_ajax();
 
-        // for the non-category articles, do a count.
-        $request = $db->query('', '
-            SELECT COUNT(*) as total
-            FROM {db_prefix}tp_articles
-            WHERE category = 0 OR category = 9999'
-        );
-
-        $row = $db->fetch_assoc($request);
-        $context['TPortal']['total_nocategory'] = $row['total'];
-        $db->free_result($request);
 
         // for the submissions too
         $request = $db->query('', '
@@ -644,11 +634,7 @@ class ArticleAdmin extends \Action_Controller
         if(isset($_GET['cu']) && is_numeric($_GET['cu'])) {
             $where = $_GET['cu'];
         }
-        // show the no category articles?
-        if(isset($_GET['sa']) && $_GET['sa'] == 'strays') {
-            TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=strays', $txt['tp-strays']);
-            $show_nocategory = true;
-        }
+
 
         // submissions?
         if(isset($_GET['sa']) && $_GET['sa'] == 'submission') {
@@ -778,36 +764,6 @@ class ArticleAdmin extends \Action_Controller
             }
         }
 
-        if(isset($show_nocategory) && $context['TPortal']['total_nocategory'] > 0) {
-            // check if we have any start values
-            $start = (!empty($_GET['p']) && is_numeric($_GET['p'])) ? $_GET['p'] : 0;
-            // sorting?
-            $sort = $context['TPortal']['sort'] = (!empty($_GET['sort']) && in_array($_GET['sort'], array('off', 'date', 'id', 'author_id', 'locked', 'frontpage', 'sticky', 'featured', 'type', 'subject', 'parse'))) ? $_GET['sort'] : 'date';
-            $context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=admin;area=tparticles;sa=articles;sort=' . $sort , $start, $context['TPortal']['total_nocategory'], 15);
-            $request = $db->query('', '
-                SELECT	art.id, art.date, art.frontpage, art.category, art.author_id as author_id,
-                    COALESCE(mem.real_name, art.author) as author, art.subject, art.approved, art.sticky,
-                    art.type, art.featured,art.locked, art.off, art.parse as pos
-                FROM {db_prefix}tp_articles AS art
-                LEFT JOIN {db_prefix}members AS mem ON (art.author_id = mem.id_member)
-                WHERE (art.category = 0 OR art.category = 9999)
-                ORDER BY art.{raw:col} {raw:sort}
-                LIMIT {int:start}, 15',
-                array(
-                    'col' => $sort,
-                    'sort' => in_array($sort, array('sticky', 'locked', 'frontpage', 'date', 'active')) ? 'DESC' : 'ASC',
-                    'start' => $start,
-                )
-            );
-
-            if($db->num_rows($request) > 0) {
-                $context['TPortal']['arts_nocat'] = array();
-                while ($row = $db->fetch_assoc($request)) {
-                    $context['TPortal']['arts_nocat'][] = $row;
-                }
-                $db->free_result($request);
-            }
-        }
         // ok, fetch single article
         if(isset($whatarticle)) {
             $request = $db->query('', '
@@ -870,30 +826,8 @@ class ArticleAdmin extends \Action_Controller
         TPArticle::getInstance()->getArticleIcons();
         tp_collectArticleIcons();
 
-        // fetch all categories and subcategories
-        $request = $db->query('', '
-            SELECT	id, display_name as name, parent as parent
-            FROM {db_prefix}tp_categories
-            WHERE item_type = {string:type}',
-            array('type' => 'category')
-        );
+        TPArticle::getInstance()->getArticleCategories();
 
-        $context['TPortal']['allcats'] = array();
-        $allsorted = array();
-
-        if($db->num_rows($request) > 0) {
-            while ($row = $db->fetch_assoc($request)) {
-                $allsorted[$row['id']] = $row;
-            }
-
-            $db->free_result($request);
-            if(count($allsorted) > 1) {
-                $context['TPortal']['allcats'] = chain('id', 'parent', 'name', $allsorted);
-            }
-            else {
-                $context['TPortal']['allcats'] = $allsorted;
-            }
-        }
         // not quite done yet lol, now we need to sort out if articles are to be listed
         if(isset($where)) {
             // check if we have any start values
@@ -1164,10 +1098,6 @@ class ArticleAdmin extends \Action_Controller
             }
         // ]]></script>';
 
-        if($context['TPortal']['subaction'] == 'artsettings') {
-            TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=artsettings', $txt['tp-settings']);
-        }
-
     }}}
     
     public function do_postchecks() {{{
@@ -1178,52 +1108,13 @@ class ArticleAdmin extends \Action_Controller
         // If we have any setting changes add them to this array
         $updateArray = array();
         // which screen do we come from?
-        if(!empty($_POST['tpadmin_form']))
-        {
+        if(!empty($_POST['tpadmin_form'])) {
             // get it
             $from = $_POST['tpadmin_form'];
             // block permissions overview
-            if(in_array($from, array('artsettings')))
-            {
-                checkSession('post');
-                isAllowedTo('tp_settings');
-                $w = array();
-                $ssi = array();
-
-                switch($from) {
-                    case 'artsettings':
-                        $checkboxes = array('use_wysiwyg', 'use_dragdrop', 'hide_editarticle_link', 'print_articles', 'allow_links_article_comments', 'hide_article_facebook', 'hide_article_twitter', 'hide_article_reddit', 'hide_article_digg', 'hide_article_delicious', 'hide_article_stumbleupon');
-                        foreach($checkboxes as $v) {
-                            if(TPUtil::checkboxChecked('tp_'.$v)) {
-                                $updateArray[$v] = "1";
-                            }
-                            else {
-                                $updateArray[$v] = "";
-                            }
-                            // remove the variable so we don't process it twice before the old logic is removed
-                            unset($_POST['tp_'.$v]);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-
-                foreach($_POST as $what => $value) {
-                    if(substr($what, 0, 3) == 'tp_') {
-                        $where = substr($what, 3);
-                        $clean = $value;
-                        if(isset($clean)) {
-                            $updateArray[$where] = $clean;
-                        }
-                    }
-                }
-
-                updateTPSettings($updateArray);
-                return $from;
-            }
+            
             // categories
-            elseif($from == 'categories')
-            {
+            if($from == 'categories') {
                 checkSession('post');
                 isAllowedTo('tp_articles');
 
@@ -1434,51 +1325,7 @@ class ArticleAdmin extends \Action_Controller
                 $from = 'categories;cu=' . $where;
                 return $from;
             }
-            // stray articles
-            elseif($from == 'strays')
-            {
-                checkSession('post');
-                isAllowedTo('tp_articles');
 
-                $ccats = array();
-                // check if we have some values
-                foreach($_POST as $what => $value)
-                {
-                    if(substr($what, 0, 16) == 'tp_article_stray')
-                        $ccats[] = substr($what, 16);
-                    elseif($what == 'tp_article_cat')
-                        $straycat = $value;
-                    elseif($what == 'tp_article_new')
-                        $straynewcat = $value;
-                }
-                // update
-                if(isset($straycat) && sizeof($ccats) > 0)
-                {
-                    $category = $straycat;
-                    if($category == 0 && !empty($straynewcat))
-                    {
-                        $request = $db->insert('INSERT',
-                            '{db_prefix}tp_categories',
-                            array('display_name' => 'string', 'parent' => 'string', 'item_type' => 'string'),
-                            array(strip_tags($straynewcat), '0', 'category'),
-                            array('id')
-                        );
-
-                        $newcategory = $db->insert_id('{db_prefix}tp_categories', 'id');
-                        $db->free_result($request);
-                    }
-                    $db->query('', '
-                        UPDATE {db_prefix}tp_articles
-                        SET category = {int:cat}
-                        WHERE id IN ({array_int:artid})',
-                        array(
-                            'cat' => !empty($newcategory) ? $newcategory : $category,
-                            'artid' => $ccats,
-                        )
-                    );
-                }
-                return $from;
-            }
             // submitted ones
             elseif($from == 'submission')
             {
@@ -1798,10 +1645,10 @@ class ArticleAdmin extends \Action_Controller
     }}}
 
     public function action_articons() {{{
-        global $context;
+        global $context, $txt, $scripturl;
         isAllowedTo('tp_articles');
 
-        if(file_exists($_FILES['tp_article_newillustration']['tmp_name'])) {
+        if(isset($_FILES['tp_article_newillustration']) && file_exists($_FILES['tp_article_newillustration']['tmp_name'])) {
             checkSession('post');
             $name = TPuploadpicture('tp_article_newillustration', '', $context['TPortal']['icon_max_size'], 'jpg,gif,png', 'tp-files/tp-articles/illustrations');
             tp_createthumb('tp-files/tp-articles/illustrations/'. $name, $context['TPortal']['icon_width'], $context['TPortal']['icon_height'], 'tp-files/tp-articles/illustrations/s_'. $name);
@@ -1822,6 +1669,136 @@ class ArticleAdmin extends \Action_Controller
         $context['sub_template'] = 'articons';
         TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=articons', $txt['tp-adminicons']);
 
+    }}}
+
+    public function action_settings() {{{
+        global $context, $txt, $scripturl;
+
+        if(is_array($_POST) && count($_POST)) {
+            $updateArray = array();
+            checkSession('post');
+            isAllowedTo('tp_settings');
+
+            $checkboxes = array('use_wysiwyg', 'use_dragdrop', 'hide_editarticle_link', 'print_articles', 'allow_links_article_comments', 'hide_article_facebook', 'hide_article_twitter', 'hide_article_reddit', 'hide_article_digg', 'hide_article_delicious', 'hide_article_stumbleupon');
+            foreach($checkboxes as $v) {
+                if(TPUtil::checkboxChecked('tp_'.$v)) {
+                    $updateArray[$v] = "1";
+                }
+                else {
+                    $updateArray[$v] = "";
+                }
+                // remove the variable so we don't process it twice before the old logic is removed
+                unset($_POST['tp_'.$v]);
+            }
+
+            foreach( array('editorheight', 'icon_width', 'icon_height', 'icon_max_size') as $key ) {
+                $clean = TPUtil::filter('tp_'.$key, 'post', 'string');
+                if($clean !== false) {
+                    $updateArray[$key] = $clean;
+                }
+            }
+            updateTPSettings($updateArray);
+        }
+
+        \loadTemplate('TPortalAdmin');
+        $context['sub_template'] = 'artsettings';
+        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=artsettings', $txt['tp-settings']);
+
+    }}}
+
+    public function action_strays() {{{
+        global $context, $txt, $settings, $boardurl, $scripturl;
+
+        $db = TPDatabase::getInstance();
+        TPArticle::getInstance()->getArticleCategories();
+
+        if(is_array($_POST) && count($_POST)) {
+            // stray articles
+            checkSession('post');
+            isAllowedTo('tp_articles');
+
+            $ccats = array();
+            // check if we have some values
+            foreach($_POST as $what => $value) {
+                if(substr($what, 0, 16) == 'tp_article_stray') {
+                    $ccats[] = substr($what, 16);
+                }
+                elseif($what == 'tp_article_cat') {
+                    $straycat = $value;
+                }
+                elseif($what == 'tp_article_new') {
+                    $straynewcat = $value;
+                }
+            }
+            // update
+            if(isset($straycat) && sizeof($ccats) > 0) {
+                $category = $straycat;
+                if($category == 0 && !empty($straynewcat)) {
+                    $request = $db->insert('INSERT',
+                        '{db_prefix}tp_categories',
+                        array('display_name' => 'string', 'parent' => 'string', 'item_type' => 'string'),
+                        array(strip_tags($straynewcat), '0', 'category'),
+                        array('id')
+                    );
+                    $newcategory = $db->insert_id('{db_prefix}tp_categories', 'id');
+                    $db->free_result($request);
+                }
+                $db->query('', '
+                    UPDATE {db_prefix}tp_articles
+                    SET category = {int:cat}
+                    WHERE id IN ({array_int:artid})',
+                    array(
+                        'cat' => !empty($newcategory) ? $newcategory : $category,
+                        'artid' => $ccats,
+                    )
+                );
+            }
+        }
+        // for the non-category articles, do a count.
+        $request = $db->query('', '
+            SELECT COUNT(*) as total
+            FROM {db_prefix}tp_articles
+            WHERE category = 0 OR category = 9999'
+        );
+
+        $row = $db->fetch_assoc($request);
+        $context['TPortal']['total_nocategory'] = $row['total'];
+        $db->free_result($request);
+
+        if($context['TPortal']['total_nocategory'] > 0) {
+            // check if we have any start values
+            $start = (!empty($_GET['p']) && is_numeric($_GET['p'])) ? $_GET['p'] : 0;
+            // sorting?
+            $sort = $context['TPortal']['sort'] = (!empty($_GET['sort']) && in_array($_GET['sort'], array('off', 'date', 'id', 'author_id', 'locked', 'frontpage', 'sticky', 'featured', 'type', 'subject', 'parse'))) ? $_GET['sort'] : 'date';
+            $context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=admin;area=tparticles;sa=articles;sort=' . $sort , $start, $context['TPortal']['total_nocategory'], 15);
+            $request = $db->query('', '
+                SELECT	art.id, art.date, art.frontpage, art.category, art.author_id as author_id,
+                    COALESCE(mem.real_name, art.author) as author, art.subject, art.approved, art.sticky,
+                    art.type, art.featured,art.locked, art.off, art.parse as pos
+                FROM {db_prefix}tp_articles AS art
+                LEFT JOIN {db_prefix}members AS mem ON (art.author_id = mem.id_member)
+                WHERE (art.category = 0 OR art.category = 9999)
+                ORDER BY art.{raw:col} {raw:sort}
+                LIMIT {int:start}, 15',
+                array(
+                    'col' => $sort,
+                    'sort' => in_array($sort, array('sticky', 'locked', 'frontpage', 'date', 'active')) ? 'DESC' : 'ASC',
+                    'start' => $start,
+                )
+            );
+
+            if($db->num_rows($request) > 0) {
+                $context['TPortal']['arts_nocat'] = array();
+                while ($row = $db->fetch_assoc($request)) {
+                    $context['TPortal']['arts_nocat'][] = $row;
+                }
+                $db->free_result($request);
+            }
+        }
+
+        \loadTemplate('TPortalAdmin');
+        $context['sub_template'] = 'strays';
+        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=strays', $txt['tp-strays']);
     }}}
 
 }
