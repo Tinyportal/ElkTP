@@ -62,8 +62,11 @@ class ArticleAdmin extends \Action_Controller
             'myarticles'        => array(new Article, 'action_show', array()),
             'clist'             => array($this, 'action_categories', array()),
             'categories'        => array($this, 'action_categories', array()),
-            'addcategory'       => array($this, 'action_categories', array()),
+            'newcategory'       => array($this, 'action_categories', array()),
+            'addcategory'       => array($this, 'action_add_category', array()),
+            'editcategory'      => array($this, 'action_edit_category', array()),
             'delcategory'       => array($this, 'action_delete_category', array()),
+            'editclist'         => array($this, 'action_edit_category', array()),
             'strays'            => array($this, 'action_strays', array()),
             'artsettings'       => array($this, 'action_settings', array()),
             'articons'          => array($this, 'action_articons', array()),
@@ -1114,57 +1117,7 @@ class ArticleAdmin extends \Action_Controller
             // block permissions overview
             
             // categories
-            if($from == 'categories') {
-                checkSession('post');
-                isAllowedTo('tp_articles');
-
-                foreach($_POST as $what => $value)
-                {
-                    if(substr($what, 0, 3) == 'tp_')
-                    {
-                        if($from == 'categories')
-                        {
-                            if(substr($what, 0, 19) == 'tp_category_parent_')
-                            {
-                                $where = substr($what, 19);
-                                //make sure parent are not its own parent
-                                $request = $db->query('', '
-                                    SELECT parent FROM {db_prefix}tp_categories
-                                    WHERE id = {string:varid} LIMIT 1',
-                                    array(
-                                        'varid' => $value
-                                    )
-                                );
-                                $row = $db->fetch_assoc($request);
-                                $db->free_result($request);
-                                if($row['parent'] == $where)
-                                    $db->query('', '
-                                        UPDATE {db_prefix}tp_categories
-                                        SET parent = {string:val2}
-                                        WHERE id = {string:varid}',
-                                        array(
-                                            'val2' => '0',
-                                            'varid' => $value,
-                                        )
-                                    );
-
-                                $db->query('', '
-                                    UPDATE {db_prefix}tp_categories
-                                    SET parent = {string:val2}
-                                    WHERE id = {string:varid}',
-                                    array(
-                                        'val2' => $value,
-                                        'varid' => $where,
-                                    )
-                                );
-                            }
-                        }
-                    }
-                }
-                return $from;
-            }
-            // articles
-            elseif($from == 'articles')
+            if($from == 'articles')
             {
                 checkSession('post');
                 isAllowedTo('tp_articles');
@@ -1190,141 +1143,8 @@ class ArticleAdmin extends \Action_Controller
                 else
                     return $from;
             }
-            // add a category
-            elseif($from == 'addcategory')
-            {
-                checkSession('post');
-                isAllowedTo('tp_articles');
-                $name = !empty($_POST['tp_cat_name']) ? $_POST['tp_cat_name'] : $txt['tp-noname'];
-                $parent = !empty($_POST['tp_cat_parent']) ? $_POST['tp_cat_parent'] : '0';
-                $shortname = !empty($_POST['tp_cat_shortname']) ? $_POST['tp_cat_shortname'] : '';
+            
 
-                $db->insert('INSERT',
-                    '{db_prefix}tp_categories',
-                    array(
-                        'display_name' => 'string',
-                        'parent' => 'string',
-                        'access' => 'string',
-                        'item_type' => 'string',
-                        'dt_log' => 'string',
-                        'page' => 'int',
-                        'settings' => 'string',
-                        'short_name' => 'string',
-                    ),
-                    array(strip_tags($name), $parent, '', 'category', '', 0, 'sort=date|sortorder=desc|articlecount=5|layout=1|catlayout=1|showchild=0|leftpanel=1|rightpanel=1|toppanel=1|centerpanel=1|lowerpanel=1|bottompanel=1', $shortname),
-                    array('id')
-                );
-
-                $go = $db->insert_id('{db_prefix}tp_categories', 'id');
-                redirectexit('action=admin;area=tparticles;sa=categories;cu='.$go);
-            }
-            // the categort list
-            elseif($from == 'clist') {
-                checkSession('post');
-                isAllowedTo('tp_articles');
-
-                $cats = array();
-                foreach($_POST as $what => $value)
-                {
-                    if(substr($what, 0, 8) == 'tp_clist')
-                        $cats[] = $value;
-                }
-                if(sizeof($cats) > 0)
-                    $catnames = implode(',', $cats);
-                else
-                    $catnames = '';
-
-                $updateArray['cat_list'] = $catnames;
-
-                updateTPSettings($updateArray);
-
-                return $from;
-            }
-
-            // edit a category
-            elseif($from == 'editcategory')
-            {
-                checkSession('post');
-                isAllowedTo('tp_articles');
-
-                $options = array();
-                $groups = array();
-                $where = $_POST['tpadmin_form_id'];
-                foreach($_POST as $what => $value)
-                {
-                    if(substr($what, 0, 3) == 'tp_')
-                    {
-                        $clean = $value;
-                        $param = substr($what, 12);
-                        if(in_array($param, array('page', 'short_name')))
-                            $db->query('', '
-                                UPDATE {db_prefix}tp_categories
-                                SET '. $param .' = {string:val}
-                                WHERE id = {int:varid}',
-                                array('val' => $value, 'varid' => $where)
-                            );
-                        // parents needs some checking..
-                        elseif($param == 'parent')
-                        {
-                            //make sure parent are not its own parent
-                            $request = $db->query('', '
-                                SELECT parent FROM {db_prefix}tp_categories
-                                WHERE id = {int:varid} LIMIT 1',
-                                array('varid' => $value)
-                            );
-                            $row = $db->fetch_assoc($request);
-                            $db->free_result($request);
-                            if(isset($row['parent']) && ( $row['parent'] == $where ))
-                                $db->query('', '
-                                    UPDATE {db_prefix}tp_categories
-                                    SET parent = {string:val2}
-                                    WHERE id = {int:varid}',
-                                    array('val2' => '0', 'varid' => $value)
-                                );
-
-                            $db->query('', '
-                                UPDATE {db_prefix}tp_categories
-                                SET parent = {string:val2}
-                                WHERE id = {int:varid}',
-                                array('val2' => $value, 'varid' => $where)
-                            );
-                        }
-                        elseif($param == 'display_name')
-                            $db->query('', '
-                                UPDATE {db_prefix}tp_categories
-                                SET display_name = {string:val1}
-                                WHERE id = {int:varid}',
-                                array('val1' => strip_tags($value), 'varid' => $where)
-                            );
-                        elseif($param == 'dt_log')
-                            $db->query('', '
-                                UPDATE {db_prefix}tp_categories
-                                SET dt_log = {string:val4}
-                                WHERE id = {int:varid}',
-                                array('val4' => $value, 'varid' => $where)
-                            );
-                        elseif($param == 'custom_template')
-                            $db->query('', '
-                                UPDATE {db_prefix}tp_categories
-                                SET custom_template = {string:val9}
-                                WHERE id = {int:varid}',
-                                array('val9' => $value, 'varid' => $where)
-                            );
-                        elseif(substr($param, 0, 6) == 'group_')
-                            $groups[] = substr($param, 6);
-                        else
-                            $options[] = $param. '=' . $value;
-                    }
-                }
-                $db->query('', '
-                    UPDATE {db_prefix}tp_categories
-                    SET access = {string:val3}, settings = {string:val7}
-                    WHERE id = {int:varid}',
-                    array('val3' => implode(',', $groups), 'val7' => implode('|', $options), 'varid' => $where)
-                );
-                $from = 'categories;cu=' . $where;
-                return $from;
-            }
 
             // submitted ones
             elseif($from == 'submission')
@@ -1592,8 +1412,8 @@ class ArticleAdmin extends \Action_Controller
                 }
             }
 
-            if($context['TPortal']['subaction'] == 'addcategory') {
-                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=addcategory', $txt['tp-addcategory']);
+            if($context['TPortal']['subaction'] == 'newcategory') {
+                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=newcategory', $txt['tp-addcategory']);
             }
             else if($context['TPortal']['subaction'] == 'clist') {
                 TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=clist', $txt['tp-tabs11']);
@@ -1603,6 +1423,148 @@ class ArticleAdmin extends \Action_Controller
 
         \loadTemplate('TPortalAdmin');
         \loadTemplate('TPsubs');
+    }}}
+
+    public function action_edit_category() {{{
+
+        // the categort list
+        checkSession('post');
+        isAllowedTo('tp_articles');
+
+        if(TPUtil::filter('sa', 'get', 'string') == 'editclist') {
+            $updateArray = array();
+            $cats = array();
+            foreach($_POST as $what => $value) {
+                if(substr($what, 0, 8) == 'tp_clist') {
+                    $cats[] = $value;
+                }
+            }
+            if(sizeof($cats) > 0) {
+                $catnames = implode(',', $cats);
+            }
+            else {
+                $catnames = '';
+            }
+
+            $updateArray['cat_list'] = $catnames;
+
+            updateTPSettings($updateArray);
+            redirectexit('action=admin;area=tparticles;sa=clist;');
+        }
+        else {
+            $db = TPDatabase::getInstance();
+            $options = array();
+            $groups = array();
+            $where = $_POST['tpadmin_form_id'];
+            foreach($_POST as $what => $value) {
+                if(substr($what, 0, 3) == 'tp_') {
+                    $clean = $value;
+                    $param = substr($what, 12);
+                    if(in_array($param, array('page', 'short_name'))) {
+                        $db->query('', '
+                                UPDATE {db_prefix}tp_categories
+                                SET '. $param .' = {string:val}
+                                WHERE id = {int:varid}',
+                                array('val' => $value, 'varid' => $where)
+                                );
+                    }
+                    // parents needs some checking..
+                    elseif($param == 'parent') {
+                        //make sure parent are not its own parent
+                        $request = $db->query('', '
+                                SELECT parent FROM {db_prefix}tp_categories
+                                WHERE id = {int:varid} LIMIT 1',
+                                array('varid' => $value)
+                                );
+                        $row = $db->fetch_assoc($request);
+                        $db->free_result($request);
+                        if(isset($row['parent']) && ( $row['parent'] == $where )) {
+                            $db->query('', '
+                                    UPDATE {db_prefix}tp_categories
+                                    SET parent = {string:val2}
+                                    WHERE id = {int:varid}',
+                                    array('val2' => '0', 'varid' => $value)
+                                    );
+                        }
+                        $db->query('', '
+                                UPDATE {db_prefix}tp_categories
+                                SET parent = {string:val2}
+                                WHERE id = {int:varid}',
+                                array('val2' => $value, 'varid' => $where)
+                                );
+                    }
+                    elseif($param == 'display_name') {
+                        $db->query('', '
+                                UPDATE {db_prefix}tp_categories
+                                SET display_name = {string:val1}
+                                WHERE id = {int:varid}',
+                                array('val1' => strip_tags($value), 'varid' => $where)
+                                );
+                    }
+                    elseif($param == 'dt_log') {
+                        $db->query('', '
+                                UPDATE {db_prefix}tp_categories
+                                SET dt_log = {string:val4}
+                                WHERE id = {int:varid}',
+                                array('val4' => $value, 'varid' => $where)
+                                );
+                    }
+                    elseif($param == 'custom_template') {
+                        $db->query('', '
+                                UPDATE {db_prefix}tp_categories
+                                SET custom_template = {string:val9}
+                                WHERE id = {int:varid}',
+                                array('val9' => $value, 'varid' => $where)
+                                );
+                    }
+                    elseif(substr($param, 0, 6) == 'group_') {
+                        $groups[] = substr($param, 6);
+                    }
+                    else {
+                        $options[] = $param. '=' . $value;
+                    }
+                }
+            }
+            $db->query('', '
+                    UPDATE {db_prefix}tp_categories
+                    SET access = {string:val3}, settings = {string:val7}
+                    WHERE id = {int:varid}',
+                    array('val3' => implode(',', $groups), 'val7' => implode('|', $options), 'varid' => $where)
+                    );
+            redirectexit('action=admin;area=tparticles;sa=categories;cu='.$where);
+        }
+
+    }}}
+
+
+    public function action_add_category() {{{
+
+        $db = TPDatabase::getInstance();
+        checkSession('post');
+        isAllowedTo('tp_articles');
+        $name       = !empty($_POST['tp_cat_name']) ? $_POST['tp_cat_name'] : $txt['tp-noname'];
+        $parent     = !empty($_POST['tp_cat_parent']) ? $_POST['tp_cat_parent'] : '0';
+        $shortname  = !empty($_POST['tp_cat_shortname']) ? $_POST['tp_cat_shortname'] : '';
+
+        $db->insert('INSERT',
+                '{db_prefix}tp_categories',
+                array(
+                    'display_name' => 'string',
+                    'parent' => 'string',
+                    'access' => 'string',
+                    'item_type' => 'string',
+                    'dt_log' => 'string',
+                    'page' => 'int',
+                    'settings' => 'string',
+                    'short_name' => 'string',
+                    ),
+                array(strip_tags($name), $parent, '', 'category', '', 0, 'sort=date|sortorder=desc|articlecount=5|layout=1|catlayout=1|showchild=0|leftpanel=1|rightpanel=1|toppanel=1|centerpanel=1|lowerpanel=1|bottompanel=1', $shortname),
+                array('id')
+                );
+
+        $go = $db->insert_id('{db_prefix}tp_categories', 'id');
+        redirectexit('action=admin;area=tparticles;sa=categories;cu='.$go);
+
     }}}
 
     public function action_delete_category() {{{
