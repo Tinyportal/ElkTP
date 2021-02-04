@@ -20,8 +20,6 @@ use \TinyPortal\Model\Util as TPUtil;
 use \TinyPortal\Model\Upload as TPUpload;
 use ElkArte\Errors\Errors;
 
-define('TPVERSION', 100);
-
 if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
@@ -102,30 +100,30 @@ function TPortalInit() {{{
 }}}
 
 function tpLoadCSS() {{{
-	global $context, $settings;
+	global $context, $settings, $boardurl;
 
 	$context['html_headers'] .=  "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>";
 
     // load both stylesheets to be sure all is in, but not if things aren't setup!
 	if(!empty($settings['default_theme_url']) && !empty($settings['theme_url']) && file_exists($settings['theme_dir'].'/css/tp-style.css')) {
-		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-style.css?'.TPVERSION.'" />';
+		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-style.css?'.TP_SHORT_VERSION.'" />';
     }
 	else {
-		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="TinyPortal/Views/css/tp-style.css?'.TPVERSION.'" />';
+		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="'.$boardurl.'/TinyPortal/Views/css/tp-style.css?'.TP_SHORT_VERSION.'" />';
     }
 
 	if(!empty($settings['default_theme_url']) && !empty($settings['theme_url']) && file_exists($settings['theme_dir'].'/css/tp-responsive.css')) {
-		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-responsive.css?'.TPVERSION.'" />';
+		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-responsive.css?'.TP_SHORT_VERSION.'" />';
     }
 	else {
-		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="TinyPortal/Views/css/tp-responsive.css?'.TPVERSION.'" />';
+		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="'.$boardurl.'/TinyPortal/Views/css/tp-responsive.css?'.TP_SHORT_VERSION.'" />';
     }
 
 	if(!empty($settings['default_theme_url']) && !empty($settings['theme_url']) && file_exists($settings['theme_dir'].'/css/tp-custom.css')) {
-		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-custom.css?'.TPVERSION.'" />';
+		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="' . $settings['theme_url'] . '/css/tp-custom.css?'.TP_SHORT_VERSION.'" />';
     }
 	else {
-		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="TinyPortal/Views/css/tp-custom.css?'.TPVERSION.'" />';
+		$context['html_headers'] .= '<link rel="stylesheet" type="text/css" href="'.$boardurl.'/TinyPortal/Views/css/tp-custom.css?'.TP_SHORT_VERSION.'" />';
     }
 
 	if(!empty($context['TPortal']['padding'])) {
