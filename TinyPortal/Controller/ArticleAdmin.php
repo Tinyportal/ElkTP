@@ -299,7 +299,7 @@ class ArticleAdmin extends \Action_Controller
             isAllowedTo('tp_submitbbc');
             $context['TPortal']['articletype'] = 'bbc';
             $context['html_headers'] .= '
-                <script type="text/javascript" src="'. $settings['default_theme_url']. '/scripts/editor.js?'.TPVERSION.'"></script>';
+                <script type="text/javascript" src="'. $settings['default_theme_url']. '/scripts/editor.js?'.TP_SHORT_VERSION.'"></script>';
 
             // Add in BBC editor before we call in template so the headers are there
             $context['TPortal']['editor_id'] = 'tp_article_body';
