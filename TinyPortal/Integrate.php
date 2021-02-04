@@ -305,6 +305,13 @@ class Integrate
                 $subButtons[$k]['show']     = true;
                 $subButtons[$k]['href']     = $scripturl.'?action=admin;area='.str_replace('_', '', $k);
                 $subButtons[$k]['title']    = $txt[str_replace('_', '-', $k)];
+                if(is_array($v)) {
+                    foreach($v as $kk => $vv) {
+                        $subButtons[$k]['sub_buttons'][$vv['title']]['show']    = true;
+                        $subButtons[$k]['sub_buttons'][$vv['title']]['title']   = $vv['title'];
+                        $subButtons[$k]['sub_buttons'][$vv['title']]['href']    = $vv['href'];
+                    }
+                }
             }
 
             $buttons = \elk_array_insert($buttons, 'unreadreplies', array (
