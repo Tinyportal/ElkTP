@@ -164,7 +164,7 @@ class Admin extends Base {
 					),
 				);
     }
-    elseif(in_array($area, array('addcategory','categories','clist')) && allowedTo('tp_articles')) {
+    elseif(in_array($area, array('newcategory','categories','clist')) && allowedTo('tp_articles')) {
         $context['TPortal']['subtabs'] = array(
                 'categories' => array(
                     'lang' => true,
@@ -172,11 +172,11 @@ class Admin extends Base {
                     'url' => $scripturl . '?action=admin;area=tparticles;sa=categories',
                     'active' => $area == 'categories',
                     ),
-                'addcategory' => array(
+                'newcategory' => array(
                     'lang' => true,
                     'text' => 'tp-tabs6',
-                    'url' => $scripturl . '?action=admin;area=tparticles;sa=addcategory',
-                    'active' => $area == 'addcategory',
+                    'url' => $scripturl . '?action=admin;area=tparticles;sa=newcategory',
+                    'active' => $area == 'newcategory',
                     ),
                 'clist' => array(
                     'lang' => true,
@@ -264,7 +264,7 @@ class Admin extends Base {
 					'title' => $txt['tp-tabs5'],
 					'description' => $txt['tp-articledesc2'],
 					'href' => $scripturl . '?action=admin;area=tparticles;sa=categories',
-					'is_selected' => in_array($area, array('categories', 'addcategory','clist')) ,
+					'is_selected' => in_array($area, array('categories', 'newcategory','clist')) ,
 				),
 				'artsettings' => array(
 					'title' => $txt['tp-settings'],

@@ -2428,27 +2428,6 @@ function template_tpadm_below()
 	return;
 }
 
-function template_tp_fatal_error()
-{
-	global $context, $txt;
-
-	echo '
-	<div id="fatal_error">
-		<div class="cat_bar">
-			<h3 class="category_header">' , $txt['tp-error'], '</h3>
-		</div>
-		<div class="content">
-			<span class="topslice"><span></span></span>
-			<div class="padding">', $context['TPortal']['errormessage'] , '</div>
-			<span class="botslice"><span></span></span>
-		</div>
-	</div>';
-
-	// Show a back button (using javascript.)
-	echo '
-	<div class="centertext"><a href="javascript:history.go(-1)">', $txt['back'], '</a></div>';
-}
-
 // Format a time to make it look purdy.
 function tpstandardTime($log_time, $show_today = true, $format)
 {

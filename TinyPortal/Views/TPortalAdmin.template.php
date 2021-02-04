@@ -538,7 +538,7 @@ function template_categories()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles;sa=newcategory" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="categories">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-artcat'] . '</h3></div>
@@ -578,8 +578,8 @@ function template_categories()
 							<div class="float-items tpcenter" style="width:150px;float:right;">
 								<a href="' . $scripturl . '?cat=' . $cat['id'] . '" title="' . $txt['tp-viewcategory'] . '"><img src="' . $settings['tp_images_url'] . '/TPfilter.png" alt="" /></a>&nbsp;
 								<a href="' . $scripturl . '?action=admin;area=tparticles;sa=categories;cu='.$cat['id'].'" title="' .$txt['tp-editcategory']. '"><img src="' . $settings['tp_images_url'] . '/TPconfig_sm.png" alt="" /></a>&nbsp;
-								<a href="' . $scripturl . '?action=admin;area=tparticles;sa=addcategory;child;cu=' . $cat['id'] . '" title="' . $txt['tp-addsubcategory'] . '"><img src="' . $settings['tp_images_url'] . '/TPadd.png" alt="" /></a>&nbsp;
-								<a href="' . $scripturl . '?action=admin;area=tparticles;sa=addcategory;copy;cu=' . $cat['id'] . '" title="' . $txt['tp-copycategory'] . '"><img src="' . $settings['tp_images_url'] . '/TPcopy.png" alt="" /></a>&nbsp;
+								<a href="' . $scripturl . '?action=admin;area=tparticles;sa=newcategory;child;cu=' . $cat['id'] . '" title="' . $txt['tp-addsubcategory'] . '"><img src="' . $settings['tp_images_url'] . '/TPadd.png" alt="" /></a>&nbsp;
+								<a href="' . $scripturl . '?action=admin;area=tparticles;sa=newcategory;copy;cu=' . $cat['id'] . '" title="' . $txt['tp-copycategory'] . '"><img src="' . $settings['tp_images_url'] . '/TPcopy.png" alt="" /></a>&nbsp;
 								<a href="' . $scripturl . '?action=admin;area=tparticles;sa=delcategory;id='.$cat['id'].';' . $context['session_var'] . '=' . $context['session_id'] . '" onclick="javascript:return confirm(\''.$txt['tp-confirmcat1'].'  \n'.$txt['tp-confirmcat2'].'\')" title="' . $txt['tp-delete'] . '"><img src="' . $settings['tp_images_url'] . '/TPdelete2.png" alt="" /></a>
 							</div>
 							<p class="clearthefloat"></p>
@@ -594,9 +594,6 @@ function template_categories()
 				</table>';
 		echo '
 				<br>
-				<div class="padding-div;">
-					<input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'">
-				</div>
 			</div>
 		</div>
 	</form>';
@@ -609,7 +606,7 @@ function template_editcategory()
 
 		$mg = $context['TPortal']['editcategory'];
 		echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles;sa=editcategory" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="editcategory">
 		<input type="hidden" name="tpadmin_form_id" value="' . $mg['id'] . '">
@@ -822,7 +819,7 @@ function template_editcategory()
 }
 
 // Add category Page
-function template_addcategory()
+function template_newcategory()
 {
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
@@ -830,7 +827,7 @@ function template_addcategory()
 		$currcat = $_GET['cu'];
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles;sa=addcategory" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="addcategory">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-addcategory'] . '</h3></div>
@@ -881,7 +878,7 @@ function template_clist()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 		echo '
-	<form  accept-charset="', 'UTF-8', '" name="TPadmin" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
+	<form  accept-charset="', 'UTF-8', '" name="TPadmin" action="' . $scripturl . '?action=admin;area=tparticles;sa=editclist" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="clist">
 		<div class="cat_bar"><h3 class="category_header">'.$txt['tp-tabs11'].'</h3></div>
@@ -1081,7 +1078,7 @@ function template_strays()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles;sa=strays" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="strays">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-uncategorised2'] . '</h3></div>
@@ -1218,7 +1215,7 @@ function template_submission()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles;sa=submission" method="post" enctype="multipart/form-data" onsubmit="syncTextarea();">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="submission">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-submissionsettings']  . '</h3></div>
@@ -1346,7 +1343,7 @@ function template_artsettings()
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language, $date;
 
 		echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tparticles;sa=artsettings" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input  type="hidden"name="tpadmin_form" value="artsettings">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-articlesettings'] . '</h3></div>
@@ -1461,10 +1458,8 @@ function template_articons()
 {
 	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
 
-		tp_collectArticleIcons();
-
 		echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=admin;area=tparticles" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=admin;area=tparticles;sa=articons" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="articons">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-adminicons7'] . '</h3></div>
@@ -1480,14 +1475,11 @@ function template_articons()
 							<input type="file" name="tp_article_newillustration" id="tp_article_newillustration" />
 						</dd>
 					</dl>
-					<div class="padding-div"><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
 					<hr><br>';
 
-				$alt=true;
-		if(count($context['TPortal']['articons']['illustrations'])>0)
-		{
-			foreach($context['TPortal']['articons']['illustrations'] as $icon)
-			{
+		$alt = true;
+		if(count($context['TPortal']['articons']['illustrations'])>0) {
+			foreach($context['TPortal']['articons']['illustrations'] as $icon) {
 				echo '
 					<div class="smalltext padding-div" style="float:left;">
 						<div style="width: 110px; height: 110px;text-align:center;">
