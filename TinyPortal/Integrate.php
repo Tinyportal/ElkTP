@@ -120,6 +120,8 @@ class Integrate
             define('TP_PGSQL', false);
         }
 
+        define('TP_VERSION', '1.0.0 RC2');
+
         // Set this up for everything that TinyPortal needs
         $context['TPortal']                     = array();
         // Set default values
@@ -199,7 +201,7 @@ class Integrate
         }
 
 
-        $string = '<a target="_blank" href="https://www.tinyportal.net" title="TinyPortal">TinyPortal 1.0.0 RC1</a> &copy; <a href="' . $scripturl . '?action=tportal;sa=credits" title="Credits">2005-2021</a>';
+        $string = '<a target="_blank" href="https://www.tinyportal.net" title="TinyPortal">TinyPortal '.TP_VERSION.'</a> &copy; <a href="' . $scripturl . '?action=tportal;sa=credits" title="Credits">2005-2021</a>';
 
         if (ELK == 'SSI' || strpos($buffer, $string) !== false) {
             return $buffer;
@@ -322,7 +324,7 @@ class Integrate
                         'action_hook' 	=> true,
                         'sub_buttons'   => $subButtons,
                     ),
-                ), 'after',
+                ), 'after'
             );
         }
 
