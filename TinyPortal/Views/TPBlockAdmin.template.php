@@ -863,18 +863,17 @@ function template_blocks()
 	global $context, $settings, $txt, $scripturl;
 
 	echo '
-	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tpblocks" method="post">
+	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tpblocks;sa=updateblocks" method="post">
 		<input type="hidden" name="sc" value="', $context['session_id'], '" />
 		<input type="hidden" name="tpadmin_form" value="blocks">
 		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-blocksettings'] . '</h3></div>
 		<div id="all-the-blocks" class="admintable admin-area">
 			<div class="content padding-div">';
 
-		$side=array('left','right','top','center','front','lower','bottom');
-		$sd=array('lb','rb','tb','cb','fb','lob','bb');
+		$side   = array('left','right','top','center','front','lower','bottom');
+		$sd     = array('lb','rb','tb','cb','fb','lob','bb');
 
-		for($i=0 ; $i<7 ; $i++)
-		{
+		for($i=0 ; $i<7 ; $i++) {
 			echo '
 				<div class="font_strong">
 					<b>'.$txt['tp-'.$side[$i].'sideblocks'].'</b>
@@ -887,13 +886,14 @@ function template_blocks()
 					<div class="tborder error smalltext" style="padding: 2px;"><a style="color: red;" href="' . $scripturl.'?action=admin;area=tparticles;sa=panels">',$txt['tp-panelclosed'] , '</a></div>
 				</div>';
 
-			if(isset($context['TPortal']['admin_'.$side[$i].'block']['blocks']))
+			if(isset($context['TPortal']['admin_'.$side[$i].'block']['blocks'])) {
 				$tn=count($context['TPortal']['admin_'.$side[$i].'block']['blocks']);
-			else
+			}
+            else {
 				$tn=0;
+            }
 
-			if($tn>0)
-			{
+			if($tn>0) {
 				echo '
 				<table class="table_grid tp_grid" style="width:100%">
 					<thead>
@@ -914,22 +914,21 @@ function template_blocks()
 					</thead>
 					<tbody>';
 			}
-			else
-			{
+			else {
 				echo '<div class="tp_pad">' .$txt['tp-noblocks']. '</div><br>';
 			}
 			$n=0;
-			if($tn>0)
-			{
-				foreach($context['TPortal']['admin_'.$side[$i].'block']['blocks'] as $lblock)
-				{
+			if($tn>0) {
+				foreach($context['TPortal']['admin_'.$side[$i].'block']['blocks'] as $lblock) {
 					$newtitle = TPgetlangOption($lblock['lang'], $context['user']['language']);
-					if(empty($newtitle))
+					if(empty($newtitle)) {
 						$newtitle = $lblock['title'];
+                    }
 
-					if(!$lblock['loose'])
+					if(!$lblock['loose']) {
 						$class="content3";
-					else{
+					}
+                    else {
 						$class='content';
 					}
 					echo '

@@ -47,6 +47,7 @@ class BlockAdmin extends \Action_Controller
                 'addblock'      => array($this, 'showBlock', array()),
                 'editblock'     => array($this, 'editBlock', array()),
                 'updateblock'   => array($this, 'updateBlock', array()),
+                'updateblocks'  => array($this, 'updateBlocks', array()),
                 'saveblock'     => array($this, 'saveBlock', array()),
                 'blockon'       => array($this, 'ajaxBlock', array()),
                 'blockoff'      => array($this, 'ajaxBlock', array()),
@@ -339,6 +340,34 @@ class BlockAdmin extends \Action_Controller
 
 
         loadTemplate('TPBlockLayout');
+
+    }}}
+
+    public function updateBlocks() {{{
+        global $context;
+
+        $blocks = array();
+
+        if(is_array($_POST) && count($_POST)) {
+            foreach($_POST as $k => $v) {
+                foreach(array('pos', 'title', 'type', 'blockbody') as $type) {
+                    if(strstr($k, $type)) {
+                        $id = str_replace($type, '', $k);
+                        if($type == 'blockbody') {
+                            $type = 'body';
+                        }
+                        $blocks[$id][$type] = $v;
+                    }
+                }
+            }
+        }
+
+        foreach($blocks as $block_id => $updateArray) {
+            TPBlock::getInstance()->updateBlock($block_id, $updateArray);
+        }
+
+        $context['TPortal']['subaction'] = 'blocks';
+        self::showBlock();
 
     }}}
 
