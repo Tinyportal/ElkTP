@@ -16,6 +16,7 @@ use \TinyPortal\Model\Database as TPDatabase;
 use \TinyPortal\Model\Integrate as TPIntegrate;
 use \TinyPortal\Model\Mentions as TPMentions;
 use \TinyPortal\Model\Permissions as TPPermissions;
+use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 use \ElkArte\Errors\Errors;
 use \ElkArte\sources\Frontpage_Interface;
@@ -372,7 +373,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                         $allcats    = \TinyPortal\Model\Category::getInstance()->getCategoryData(array('*') , array('item_type' => 'category'));
 
                         // setup the linkree
-                        TPstrip_linktree();
+                        TPSubs::getInstance()->strip_linktree();
 
                         // do the category have any parents?
                         $parents = array();
@@ -616,10 +617,10 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     }
 
                     // make the pageindex!
-                    $context['TPortal']['pageindex'] = TPageIndex($scripturl . '?cat=' . $cat, $start, $all_articles, $max);
+                    $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl . '?cat=' . $cat, $start, $all_articles, $max);
 
                     // setup the linkree
-                    TPstrip_linktree();
+                    TPSubs::getInstance()->strip_linktree();
 
                     // do the category have any parents?
                     $parents = array();
@@ -752,7 +753,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                 $tpArticle          = TPArticle::getInstance();
                 $articles_total     = $tpArticle->getTotalArticles($artgroups);
                 // make the pageindex!
-                $context['TPortal']['pageindex'] = TPageIndex($scripturl .'?frontpage', $start, $articles_total, $max);
+                $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl .'?frontpage', $start, $articles_total, $max);
 
                 $request =  $db->query('', '
                     SELECT art.id, ( CASE WHEN art.useintro = 1 THEN art.intro ELSE  art.body END ) AS body,
@@ -930,7 +931,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
             $posts      = $tpArticle->getForumPosts($posts);
 
             // make the pageindex!
-            $context['TPortal']['pageindex'] = TPageIndex($scripturl .'?frontpage', $start, $start + count($posts), $max);
+            $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl .'?frontpage', $start, $start + count($posts), $max);
 
             if(count($posts) > 0) {
                 $total      = min(count($posts), $max);
@@ -1088,7 +1089,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                 }
             }
             // make the pageindex!
-            $context['TPortal']['pageindex'] = TPageIndex($scripturl .'?frontpage', $start, count($posts), $max);
+            $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl .'?frontpage', $start, count($posts), $max);
 
             // Clear request so that the check further down works correctly
             $request = false;

@@ -13,7 +13,7 @@
 // Frontpage template
 // Single article template
 // Article categories template
-
+use TinyPortal\Model\Subs as TPSubs;
 
 function template_main()
 {
@@ -54,13 +54,13 @@ function template_frontpage()
 	global $context;
 
 	if($context['TPortal']['frontblock_type'] == 'first' || $context['TPortal']['front_type'] == 'frontblock')
-		echo '<div id="tpfrontpanel_top">', TPortal_panel('front'), '<p class="clearthefloat"></p></div>';
+		echo '<div id="tpfrontpanel_top">', TPSubs::getInstance()->panel('front'), '<p class="clearthefloat"></p></div>';
 
 	if(!isset($context['TPortal']['category']))
 	{
 		// check the frontblocks first
 		if($context['TPortal']['frontblock_type'] == 'last' && $context['TPortal']['front_type'] != 'frontblock')
-			echo '<div id="tpfrontpanel_bottom">', TPortal_panel('front'), '<p class="clearthefloat"></p></div>';
+			echo '<div id="tpfrontpanel_bottom">', TPSubs::getInstance()->panel('front'), '<p class="clearthefloat"></p></div>';
 
 		return;
 	}
@@ -76,7 +76,7 @@ function template_frontpage()
 	<div class="tp_pageindex_upper">' , $context['TPortal']['pageindex'] , '</div>';
 
 	// use a customised template or the built-in?
-	render_template_layout($grid[(!empty($front['options']['layout']) ? $front['options']['layout'] : $context['TPortal']['frontpage_layout'])]['code'], 'category_');
+	TPSubs::getInstance()->render_template_layout($grid[(!empty($front['options']['layout']) ? $front['options']['layout'] : $context['TPortal']['frontpage_layout'])]['code'], 'category_');
 
 	// any pageindex?
 	if(!empty($context['TPortal']['pageindex']))
@@ -84,7 +84,7 @@ function template_frontpage()
 	<div class="tp_pageindex_lower">' , $context['TPortal']['pageindex'] , '</div>';
 
 	if($context['TPortal']['frontblock_type'] == 'last' && $context['TPortal']['front_type'] != 'frontblock')
-		echo '<div id="tpfrontpanel_bottom">', TPortal_panel('front'), '<p class="clearthefloat"></p></div>';
+		echo '<div id="tpfrontpanel_bottom">', TPSubs::getInstance()->panel('front'), '<p class="clearthefloat"></p></div>';
 }
 
 // Single article template
@@ -95,7 +95,7 @@ function template_article($article, $single = false)
 	if(isset($context['tportal']['article_expired']))
 		template_notpublished();
 
-	render_template(article_renders((!empty($article['category_opts']['catlayout']) ? $article['category_opts']['catlayout'] : 1) , true, true));
+	TPSubs::getInstance()->render_template(article_renders((!empty($article['category_opts']['catlayout']) ? $article['category_opts']['catlayout'] : 1) , true, true));
 }
 
 // Article categories template
@@ -140,7 +140,7 @@ function template_category()
 	if(!empty($context['TPortal']['category']['children']))
 		category_childs();
 
-	render_template_layout($grid[$category['options']['layout']]['code'], 'category_');
+	TPSubs::getInstance()->render_template_layout($grid[$category['options']['layout']]['code'], 'category_');
 
 	// any pageindex?
 	if(!empty($context['TPortal']['pageindex']))

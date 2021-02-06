@@ -43,29 +43,29 @@ class BlockAdmin extends \Action_Controller
             }
 
             $subActions = array (
-                'blocks'        => array($this, 'showBlock', array()),
-                'addblock'      => array($this, 'showBlock', array()),
-                'editblock'     => array($this, 'editBlock', array()),
-                'updateblock'   => array($this, 'updateBlock', array()),
-                'updateblocks'  => array($this, 'updateBlocks', array()),
-                'saveblock'     => array($this, 'saveBlock', array()),
-                'blockon'       => array($this, 'ajaxBlock', array()),
-                'blockoff'      => array($this, 'ajaxBlock', array()),
-                'blockdelete'   => array($this, 'ajaxBlock', array()),
-                'blockleft'     => array($this, 'ajaxBlock', array()),
-                'blocktop'      => array($this, 'ajaxBlock', array()),
-                'blockcenter'   => array($this, 'ajaxBlock', array()),
-                'blockfront'    => array($this, 'ajaxBlock', array()),
-                'blocklower'    => array($this, 'ajaxBlock', array()),
-                'blockbottom'   => array($this, 'ajaxBlock', array()),
-                'blockright'    => array($this, 'ajaxBlock', array()),
-                'addpos'        => array($this, 'ajaxBlock', array()),
-                'subpos'        => array($this, 'ajaxBlock', array()),
-                'blktype'       => array($this, 'ajaxBlock', array()),
-                'panels'        => array($this, 'updatePanels', array()),
-                'updatepanels'  => array($this, 'updatePanels', array()),
-                'blockoverview' => array($this, 'showOverview', array()),
-                'updateoverview'=> array($this, 'updateOverview', array()),
+                'blocks'        => array($this, 'action_block', array()),
+                'addblock'      => array($this, 'action_block', array()),
+                'editblock'     => array($this, 'action_edit', array()),
+                'updateblock'   => array($this, 'action_update', array()),
+                'updateblocks'  => array($this, 'action_updates', array()),
+                'saveblock'     => array($this, 'action_save', array()),
+                'blockon'       => array($this, 'action_ajax', array()),
+                'blockoff'      => array($this, 'action_ajax', array()),
+                'blockdelete'   => array($this, 'action_ajax', array()),
+                'blockleft'     => array($this, 'action_ajax', array()),
+                'blocktop'      => array($this, 'action_ajax', array()),
+                'blockcenter'   => array($this, 'action_ajax', array()),
+                'blockfront'    => array($this, 'action_ajax', array()),
+                'blocklower'    => array($this, 'action_ajax', array()),
+                'blockbottom'   => array($this, 'action_ajax', array()),
+                'blockright'    => array($this, 'action_ajax', array()),
+                'addpos'        => array($this, 'action_ajax', array()),
+                'subpos'        => array($this, 'action_ajax', array()),
+                'blktype'       => array($this, 'action_ajax', array()),
+                'panels'        => array($this, 'action_panels', array()),
+                'updatepanels'  => array($this, 'action_panels', array()),
+                'blockoverview' => array($this, 'action_show', array()),
+                'updateoverview'=> array($this, 'action_overview', array()),
             );
 
             if(\loadLanguage('TPortalAdmin') == false) {
@@ -97,7 +97,7 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function showBlock() {{{
+    public function action_block() {{{
         global $context, $txt, $settings, $scripturl;
 
         \isAllowedTo('tp_blocks');
@@ -202,7 +202,7 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function editBlock( $block_id = 0 ) {{{
+    public function action_edit( $block_id = 0 ) {{{
 
         global $settings, $context, $scripturl, $txt;
 
@@ -343,7 +343,7 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function updateBlocks() {{{
+    public function action_updates() {{{
         global $context;
 
         $blocks = array();
@@ -363,15 +363,15 @@ class BlockAdmin extends \Action_Controller
         }
 
         foreach($blocks as $block_id => $updateArray) {
-            TPBlock::getInstance()->updateBlock($block_id, $updateArray);
+            TPBlock::getInstance()->action_update($block_id, $updateArray);
         }
 
         $context['TPortal']['subaction'] = 'blocks';
-        self::showBlock();
+        self::action_block();
 
     }}}
 
-    public function updateBlock( $block_id = 0 ) {{{
+    public function action_update( $block_id = 0 ) {{{
         global $settings, $context, $scripturl, $txt;
 
         \checkSession('post');
@@ -504,13 +504,13 @@ class BlockAdmin extends \Action_Controller
 			$updateArray['themebox'] = implode(',', $themebox);
 		}
 
-        $tpBlock->updateBlock($block_id, $updateArray);
+        $tpBlock->action_update($block_id, $updateArray);
 
         redirectexit('action=admin;area=tpblocks;sa=editblock&id='.$block_id.';' . $context['session_var'] . '=' . $context['session_id']);
 
     }}}
 
-    public function saveBlock( ) {{{
+    public function action_save( ) {{{
         global $settings, $context, $scripturl, $txt;
 
         checkSession('post');
@@ -579,7 +579,7 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function ajaxBlock() {{{
+    public function action_ajax() {{{
 
         checksession('get');
         isAllowedTo('tp_blocks');
@@ -601,7 +601,7 @@ class BlockAdmin extends \Action_Controller
                 case 'blocktop':
                 case 'blocklower':
                     $loc    = $tpBlock->getBlockBarId(str_replace('block', '', $subAction));
-                    $tpBlock->updateBlock($id, array( 'bar' => $loc ));
+                    $tpBlock->action_update($id, array( 'bar' => $loc ));
                     redirectexit('action=admin;area=tpblocks;sa=blocks');
                     break;
                 case 'addpos':
@@ -609,9 +609,9 @@ class BlockAdmin extends \Action_Controller
                     $new        = $current[0]['pos'] + 1;
                     $existing   = $tpBlock->getBlockData('id', array( 'bar' => $current[0]['bar'], 'pos' => $new ) );
                     if(is_array($existing)) {
-                        $tpBlock->updateBlock($existing[0]['id'], array( 'pos' => $current[0]['pos']));
+                        $tpBlock->action_update($existing[0]['id'], array( 'pos' => $current[0]['pos']));
                     }
-                    $tpBlock->updateBlock($id, array( 'pos' => $new));
+                    $tpBlock->action_update($id, array( 'pos' => $new));
                     \redirectexit('action=admin;area=tpblocks;sa=blocks');
                     break;
                 case 'subpos':
@@ -619,19 +619,19 @@ class BlockAdmin extends \Action_Controller
                     $new        = $current[0]['pos'] - 1;
                     $existing   = $tpBlock->getBlockData('id', array( 'bar' => $current[0]['bar'], 'pos' => $new ) );
                     if(is_array($existing)) {
-                        $tpBlock->updateBlock($existing[0]['id'], array( 'pos' => $current[0]['pos']));
+                        $tpBlock->action_update($existing[0]['id'], array( 'pos' => $current[0]['pos']));
                     }
-                    $tpBlock->updateBlock($id, array( 'pos' => $new));
+                    $tpBlock->action_update($id, array( 'pos' => $new));
                     \redirectexit('action=admin;area=tpblocks;sa=blocks');
                     break;
                 case 'blockon':
                     $current    = $tpBlock->getBlockData(array( 'off' ), array( 'id' => $id) );
                     if(is_array($current)) {
                         if($current[0]['off'] == 1) {
-                            $tpBlock->updateBlock($id, array( 'off' => '0' ));
+                            $tpBlock->action_update($id, array( 'off' => '0' ));
                         }
                         else {
-                            $tpBlock->updateBlock($id, array( 'off' => '1' ));
+                            $tpBlock->action_update($id, array( 'off' => '1' ));
                         }
                     }
                     break;
@@ -642,7 +642,7 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function showOverview() {{{
+    public function action_show() {{{
         global $context, $txt, $scripturl;
 
         // are we on overview screen?
@@ -668,7 +668,7 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function updateOverview() {{{
+    public function action_overview() {{{
 
 		checkSession('post');
 		isAllowedTo('tp_blocks');
@@ -692,7 +692,7 @@ class BlockAdmin extends \Action_Controller
 
 		foreach($block as $bl => $blo) {
 			if($tpBlock->getBlockData('access', array('id' => $bl))) {
-				$tpBlock->updateBlock($bl, array('access' => implode(',', $blo)));
+				$tpBlock->action_update($bl, array('access' => implode(',', $blo)));
 			}
 		}
 
@@ -700,7 +700,7 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function updatePanels() {{{
+    public function action_panels() {{{
         global $txt, $context;
 
         if($context['TPortal']['subaction'] == 'panels') {

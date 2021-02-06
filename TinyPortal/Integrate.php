@@ -104,6 +104,7 @@ class Integrate
         $className  = str_replace('\\', '/', $className);
         $className  = str_replace('_', '.', $className);
         $classFile  = BOARDDIR . '/' . $className . '.php';
+
         if ( file_exists( $classFile ) ) {
             require_once($classFile);
         }
@@ -557,9 +558,7 @@ class Integrate
         require_once(SOURCEDIR . '/Templates.class.php');
         \Templates::instance()->addDirectory(BOARDDIR . '/TinyPortal/Views/');
 
-        // Now initialise the portal
-        require_once(SUBSDIR . '/TPortal.subs.php');
-        \TPortalInit();
+        Model\Portal::getInstance()->init();
 
     }}}
 

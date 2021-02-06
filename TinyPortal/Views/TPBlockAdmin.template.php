@@ -8,13 +8,14 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
+use TinyPortal\Model\Subs as TPSubs;
 
 // Edit Block Page (including settings per block type)
 function template_editblock()
 {
 	global $context, $settings, $txt, $scripturl, $boardurl;
 
-	$newtitle = html_entity_decode(TPgetlangOption($context['TPortal']['blockedit']['lang'], $context['user']['language']));
+	$newtitle = html_entity_decode(TPSubs::getInstance()->getlangOption($context['TPortal']['blockedit']['lang'], $context['user']['language']));
 	if(empty($newtitle)) {
 		$newtitle = html_entity_decode($context['TPortal']['blockedit']['title']);
 	}
@@ -394,7 +395,7 @@ function template_editblock()
 				<div>
 				<div class="panels-optionsbg">';
 
-			$types = tp_getblockstyles21();
+			$types = TPSubs::getInstance()->getBlockStyles21();
 
 			foreach($types as $blo => $bl) {
 				echo '
@@ -718,7 +719,7 @@ function template_panels()
 	$allpanels = array('left','right','top','center','front','lower','bottom');
 	$alternate = true;
 
-	$types = tp_getblockstyles21();
+	$types = TPSubs::getInstance()->getBlockStyles21();
 
 	foreach($allpanels as $pa => $panl) {
 		echo '
@@ -920,7 +921,7 @@ function template_blocks()
 			$n=0;
 			if($tn>0) {
 				foreach($context['TPortal']['admin_'.$side[$i].'block']['blocks'] as $lblock) {
-					$newtitle = TPgetlangOption($lblock['lang'], $context['user']['language']);
+					$newtitle = TPSubs::getInstance()->getlangOption($lblock['lang'], $context['user']['language']);
 					if(empty($newtitle)) {
 						$newtitle = $lblock['title'];
                     }

@@ -14,6 +14,7 @@ use \TinyPortal\Model\Article as TPArticle;
 use \TinyPortal\Model\Block as TPBlock;
 use \TinyPortal\Model\Database as TPDatabase;
 use \TinyPortal\Model\Mentions as TPMentions;
+use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 
 if (!defined('ELK')) {
@@ -42,7 +43,7 @@ class Article extends \Action_Controller
         require_once(SUBSDIR . '/TPortal.subs.php');
 
         // clear the linktree first
-        TPstrip_linktree();
+        TPSubs::getInstance()->strip_linktree();
 
         require_once(SUBSDIR . '/Action.class.php');
         $subActions = array (
@@ -173,7 +174,7 @@ class Article extends \Action_Controller
 		}
 
 		// construct the pages
-		$context['TPortal']['pageindex']        = TPageIndex($scripturl.'?action=tparticle;sa=showcomments', $tpstart, $check[0], 15);
+		$context['TPortal']['pageindex']        = TPSubs::getInstance()->pageIndex($scripturl.'?action=tparticle;sa=showcomments', $tpstart, $check[0], 15);
 		$context['TPortal']['unreadcomments']   = true;
 		$context['TPortal']['showall']          = $showall;
 		TPadd_linktree($scripturl.'?action=tparticle;sa=showcomments' . ($showall ? ';showall' : '')  , $txt['tp-showcomments']);
@@ -323,7 +324,7 @@ class Article extends \Action_Controller
         $mystart = (!empty($_GET['p']) && is_numeric($_GET['p'])) ? $_GET['p'] : 0;
         // sorting?
         $sort = $context['TPortal']['tpsort'] = (!empty($_GET['tpsort']) && in_array($_GET['tpsort'], array('date', 'id', 'subject'))) ? $_GET['tpsort'] : 'date';
-        $context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=tparticle;sa=myarticles;tpsort=' . $sort, $mystart, $allmy, 15);
+        $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl . '?action=tparticle;sa=myarticles;tpsort=' . $sort, $mystart, $allmy, 15);
 
         $context['TPortal']['subaction'] = 'myarticles';
         $context['TPortal']['myarticles'] = array();

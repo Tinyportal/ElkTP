@@ -16,6 +16,7 @@ use \TinyPortal\Model\Database as TPDatabase;
 use \TinyPortal\Model\Integrate as TPIntegrate;
 use \TinyPortal\Model\Mentions as TPMentions;
 use \TinyPortal\Model\Permissions as TPPermissions;
+use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 use \ElkArte\Errors\Errors;
 
@@ -44,7 +45,7 @@ class Block
         require_once(SUBSDIR . '/TPortal.subs.php');
 
         // clear the linktree first
-        \TPstrip_linktree();
+        TPSubs::getInstance()->strip_linktree();
     }}}
 
     public static function loadBlocks() {{{
@@ -93,7 +94,7 @@ class Block
 
                 // decode the block settings
                 $set        = json_decode($row['settings'], true);
-                $can_edit   = !empty($row['editgroups']) ? get_perm($row['editgroups'],'') : false;
+                $can_edit   = !empty($row['editgroups']) ? TPSubs::getInstance()->get_perm($row['editgroups'], '') : false;
                 $can_manage = allowedTo('tp_blocks');
                 if($can_manage) {
                     $can_edit = false;
@@ -210,7 +211,7 @@ class Block
         }
 
         if(($context['user']['is_admin'] && isset($_GET['noblocks'])) || ($context['TPortal']['hidebars_admin_only']=='1' && isset($in_admin))) {
-            tp_hidebars();
+            TPSubs::getInstance()->hidebars();
         }
 
         // check the panels
@@ -221,7 +222,7 @@ class Block
             }
             // check the hide setting
             if(!isset($context['TPortal']['not_forum']) && $context['TPortal']['hide_' . $panel . 'bar_forum']==1) {
-                tp_hidebars($panel);
+                TPSubs::getInstance()->hidebars($panels);
             }
         }
 

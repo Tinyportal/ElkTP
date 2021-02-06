@@ -17,6 +17,7 @@ use \TinyPortal\Model\Category as TPCategory;
 use \TinyPortal\Model\Database as TPDatabase;
 use \TinyPortal\Model\Permissions as TPPermissions;
 use \TinyPortal\Model\Mentions as TPMentions;
+use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 use \ElkArte\Errors\Errors;
 
@@ -48,7 +49,7 @@ class ArticleAdmin extends \Action_Controller
         require_once(SUBSDIR . '/TPortal.subs.php');
 
         // clear the linktree first
-        TPstrip_linktree();
+        TPSubs::getInstance()->strip_linktree();
 
         require_once(SUBSDIR . '/Action.class.php');
         $subActions = array (

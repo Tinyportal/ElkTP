@@ -8,6 +8,7 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
+use TinyPortal\Model\Subs as TPSubs;
 
 // Block template
 function TPblock($block, $theme, $side, $double=false)
@@ -65,7 +66,7 @@ function TPblock($block, $theme, $side, $double=false)
 		echo '<div class="block_' . $side . 'container" id="block_' . $block['type'] . '">';
 	}
 
-	$types = tp_getblockstyles21();
+	$types = TPSubs::getInstance()->getBlockStyles21();
 
 	// check
 	if ( ($block['var5'] == '') || ($block['var5'] == 99) )
@@ -2229,11 +2230,14 @@ function template_blockarticle()
 	global $context;
 
 	// use a customised template or the built-in?
-	if(!empty($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['template']))
-		render_template($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['template']);
-	else
-		render_template(blockarticle_renders());
+	if(!empty($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['template'])) {
+		TPSubs::getInstance()->render_template($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['template']);
+    }
+	else {
+		TPSubs::getInstance()->render_template(blockarticle_renders());
+    }
 }
+
 function blockarticle_renders()
 {
 
@@ -2296,7 +2300,7 @@ function blockarticle_views($render = true)
 function blockarticle_text($render = true)
 {
 	echo '
-	<div class="article_bodytext">' . tp_renderblockarticle() . '</div>';
+	<div class="article_bodytext">' . TPSubs::getInstance()->tp_renderblockarticle() . '</div>';
 
 }
 
