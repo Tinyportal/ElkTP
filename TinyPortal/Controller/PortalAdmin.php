@@ -60,7 +60,6 @@ class PortalAdmin extends \Action_Controller
 				\loadLanguage('TPmodules', 'english');
 			}
 
-            require_once(SUBSDIR . '/TPortal.subs.php');
 			$context['TPortal']['subaction'] = $sa;
 
 			$action     = new \Action();

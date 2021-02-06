@@ -190,8 +190,6 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 
                     $comments = $tpArticle->getArticleComments($context['user']['id'] , $article['id']);
 
-	                require_once(SUBSDIR . '/TPortal.subs.php');
-
                     $context['TPortal']['article']['countarticles'] = $tpArticle->getTotalAuthorArticles($context['TPortal']['article']['author_id'], true, true);
 
                     // We'll use this in the template to allow comment box

@@ -45,9 +45,6 @@ class ArticleAdmin extends \Action_Controller
         // a switch to make it clear what is "forum" and not
         $context['TPortal']['not_forum'] = true;
 
-        // call the editor setup
-        require_once(SUBSDIR . '/TPortal.subs.php');
-
         // clear the linktree first
         TPSubs::getInstance()->strip_linktree();
 
@@ -293,8 +290,6 @@ class ArticleAdmin extends \Action_Controller
 
         $db = TPDatabase::getInstance();
 
-        require_once(SUBSDIR . '/TPortal.subs.php');
-
         // a BBC article?
         if(isset($_GET['bbc']) || $_GET['sa'] == 'addarticle_bbc') {
             isAllowedTo('tp_submitbbc');
@@ -370,8 +365,6 @@ class ArticleAdmin extends \Action_Controller
 
     public function action_upload_image() {{{
         global $context, $boardurl;
-
-        require_once(SUBSDIR . '/TPortal.subs.php');
 
         $name = TPuploadpicture( 'image', $context['user']['id'].'uid', null, null, $context['TPortal']['image_upload_path']);
         tp_createthumb( $context['TPortal']['image_upload_path'] . $name, 50, 50, $context['TPortal']['image_upload_path'].'thumbs/thumb_'.$name );
@@ -457,7 +450,6 @@ class ArticleAdmin extends \Action_Controller
             loadLanguage('TPortal', 'english');
 
         require_once(SUBSDIR . '/Post.subs.php');
-        require_once(SUBSDIR . '/TPortal.subs.php');
 
         // some GET values set up
         $context['TPortal']['tpstart'] = isset($_GET['tpstart']) ? $_GET['tpstart'] : 0;

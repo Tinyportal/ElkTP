@@ -599,8 +599,6 @@ class Integrate
     public static function hookLoadTheme(&$id_theme) {{{
         global $modSettings;
 
-        require_once(SUBSDIR . '/TPortal.subs.php');
-
         $theme  = 0;
         $dB     = Model\Database::getInstance();
 

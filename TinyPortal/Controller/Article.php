@@ -39,9 +39,6 @@ class Article extends \Action_Controller
         // a switch to make it clear what is "forum" and not
         $context['TPortal']['not_forum'] = true;
 
-        // call the editor setup
-        require_once(SUBSDIR . '/TPortal.subs.php');
-
         // clear the linktree first
         TPSubs::getInstance()->strip_linktree();
 

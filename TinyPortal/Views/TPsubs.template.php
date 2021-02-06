@@ -1782,7 +1782,7 @@ function article_lead($render = true)
     $data = '';
 
 	if(in_array('lead',$context['TPortal']['article']['visual_options'])) {
-		$data = '<div class="article_lead">' . tp_renderarticle('intro') . '</div>';
+		$data = '<div class="article_lead">' . TPSubs::getInstance()->renderArticle('intro') . '</div>';
     }
 
     if($render) {
@@ -1847,7 +1847,7 @@ function article_print($render = true)
 
 function article_text($render = true)
 {
-	$data = '<div class="article_bodytext">' . tp_renderarticle() . '</div>';
+	$data = '<div class="article_bodytext">' . TPSubs::getInstance()->renderArticle() . '</div>';
 
     if($render) {
         echo $data;

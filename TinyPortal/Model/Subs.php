@@ -1459,7 +1459,7 @@ class Subs
         return $pageindex;
     }}}
 
-    public function tp_renderarticle($intro = '') {{{
+    public function renderArticle($intro = '') {{{
         global $context, $txt, $scripturl;
         global $image_proxy_enabled, $image_proxy_secret, $boardurl;
 
@@ -1476,7 +1476,7 @@ class Subs
         if(($context['TPortal']['article']['useintro'] == '1' && !$context['TPortal']['single_article']) || !empty($intro)) {
             if($context['TPortal']['article']['rendertype'] == 'php') {
                 ob_start();
-                eval(tp_convertphp($context['TPortal']['article']['intro'], true));
+                eval($this->convertphp($context['TPortal']['article']['intro'], true));
                 $data .= ob_get_clean();
             }
             elseif($context['TPortal']['article']['rendertype'] == 'bbc' || $context['TPortal']['article']['rendertype'] == 'import') {
@@ -1495,7 +1495,7 @@ class Subs
         else {
             if($context['TPortal']['article']['rendertype'] == 'php') {
                 ob_start();
-                eval(tp_convertphp($context['TPortal']['article']['body'], true));
+                eval($this->convertphp($context['TPortal']['article']['body'], true));
                 $data .= ob_get_clean();
             }
             elseif($context['TPortal']['article']['rendertype'] == 'bbc') {
@@ -1612,9 +1612,9 @@ class Subs
             if(preg_match_all('~(?<={)([A-Za-z0-9]+)(?=})~', $code, $match) !== false) {
                 foreach($match[0] as $suffix) {
                     $func = (string)"$prefix$suffix";
-                    if(function_exists($func)) {
+                    if(is_callable(array($this, $func), true, $funcName)) {
                         ob_start();
-                        $func();
+                        call_user_func(array($this, $func));
                         $output = ob_get_clean();
                         $code   = str_replace( '{'.$suffix.'}', $output, $code);
                     }
@@ -2300,7 +2300,7 @@ class Subs
             return $context['TPmembergroups'];
     }}}
 
-    public function tp_convertphp($code, $reverse = false) {{{
+    public function convertphp($code, $reverse = false) {{{
 
         if(!$reverse) {
             return $code;
