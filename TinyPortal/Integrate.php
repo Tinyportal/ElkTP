@@ -405,41 +405,41 @@ class Integrate
 
         // Profile area for 1.0
         $profile_areas['tp']['areas']['tpsummary'] = array(
-            'label' => $txt['tpsummary'],
-            'file' => '../subs/TPortal.subs.php',
-            'function' => 'tp_summary',
-            'icon' => 'menu_tp',
-            'permission' => array(
-                'own' => 'profile_view_own',
-                'any' => 'profile_view_any',
+            'label'         => $txt['tpsummary'],
+            'controller'    => '\\TinyPortal\\Controller\\Profile',
+            'function'      => 'summary',
+            'icon'          => 'menu_tp',
+            'permission'    => array(
+                'own'       => 'profile_view_own',
+                'any'       => 'profile_view_any',
             ),
         );
 
         if (!$context['TPortal']['use_wysiwyg']=='0') {
             $profile_areas['tp']['areas']['tparticles'] = array(
-                'label' => $txt['articlesprofile'],
-                'file' => '../subs/TPortal.subs.php',
-                'function' => 'tp_articles',
-                'icon' => 'menu_tparticle',
-                'permission' => array(
-                    'own' => 'profile_view_own',
-                    'any' => 'profile_view_any',
+                'label'         => $txt['articlesprofile'],
+                'controller'    => '\\TinyPortal\\Controller\\Profile',
+                'function'      => 'articles',
+                'icon'          => 'menu_tparticle',
+                'permission'    => array(
+                    'own'       => 'profile_view_own',
+                    'any'       => 'profile_view_any',
                 ),
-                'subsections' => array(
-                    'articles' => array($txt['tp-articles'], array('profile_view_own', 'profile_view_any')),
-                    'settings' => array($txt['tp-settings'], array('profile_view_own', 'profile_view_any')),
+                'subsections'   => array(
+                    'articles'  => array($txt['tp-articles'], array('profile_view_own', 'profile_view_any')),
+                    'settings'  => array($txt['tp-settings'], array('profile_view_own', 'profile_view_any')),
                 ),
             );
         }
         else {
             $profile_areas['tp']['areas']['tparticles'] = array(
-                'label' => $txt['articlesprofile'],
-                'file' => '../subs/TPortal.subs.php',
-                'function' => 'tp_articles',
-                'icon' => 'menu_tparticle',
-                'permission' => array(
-                    'own' => 'profile_view_own',
-                    'any' => 'profile_view_any',
+                'label'         => $txt['articlesprofile'],
+                'controller'    => '\\TinyPortal\\Controller\\Profile',
+                'function'      => 'articles',
+                'icon'          => 'menu_tparticle',
+                'permission'    => array(
+                    'own'       => 'profile_view_own',
+                    'any'       => 'profile_view_any',
                 ),
             );
         }

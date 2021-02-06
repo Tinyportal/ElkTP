@@ -2369,7 +2369,7 @@ class Subs
     }}}
 
     // profile summary
-    public function tp_profile_summary($member_id) {{{
+    public function profile_summary($member_id) {{{
         global $txt, $context;
         $context['page_title'] = $txt['tpsummary'];
         // get all articles written by member
@@ -2380,7 +2380,7 @@ class Subs
     }}}
 
     // articles and comments made by the member
-    public function tp_profile_articles($member_id) {{{
+    public function profile_articles($member_id) {{{
         global $txt, $context, $scripturl;
 
         $db = Database::getInstance();
@@ -2480,7 +2480,7 @@ class Subs
         // construct pageindexes
         $context['TPortal']['pageindex'] = '';
         if($max > 0) {
-            $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl.'?action=profile;area=tpadmin;sa=tparticles;u='.$member_id.';tpsort='.$sorting, $start, $max, '15');
+            $context['TPortal']['pageindex'] = self::pageIndex($scripturl.'?action=profile;area=tpadmin;sa=tparticles;u='.$member_id.';tpsort='.$sorting, $start, $max, '15');
         }
 
         // setup subaction
@@ -2499,24 +2499,12 @@ class Subs
                 ),
         );
 
-        if(loadLanguage('TPortalAdmin') == false) {
-            loadLanguage('TPortalAdmin', 'english');
+        if(\loadLanguage('TPortalAdmin') == false) {
+            \loadLanguage('TPortalAdmin', 'english');
         }
 
     }}}
 
-    // Tinyportal
-    public function tp_summary($member_id = null) {{{
-        global $txt, $context;
-
-        if(is_null($member_id)) {
-            $member_id = Util::filter('u', 'get', 'int');
-        }
-
-        loadtemplate('TPprofile');
-        $context['page_title'] = $txt['tpsummary'];
-        tp_profile_summary($member_id);
-    }}}
 
     public function tp_articles($member_id = null) {{{
         global $txt, $context;
