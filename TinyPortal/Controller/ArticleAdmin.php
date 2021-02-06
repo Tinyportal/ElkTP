@@ -619,11 +619,11 @@ class ArticleAdmin extends \Action_Controller
         // single article?
         if(isset($_GET['sa']) && substr($_GET['sa'], 0, 11) == 'editarticle') {
             $whatarticle = TPUtil::filter('article', 'get', 'string');
-            TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa='.$_GET['sa'].';article='.$whatarticle, $txt['tp-editarticle']);
+            TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa='.$_GET['sa'].';article='.$whatarticle, $txt['tp-editarticle']);
         }
         // are we starting a new one?
         if(isset($_GET['sa']) && substr($_GET['sa'], 0, 11) == 'addarticle_') {
-            TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa='.$_GET['sa'], $txt['tp-addarticle']);
+            TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa='.$_GET['sa'], $txt['tp-addarticle']);
             $context['TPortal']['editarticle'] = array(
                 'id' => '',
                 'date' => time(),
@@ -820,7 +820,7 @@ class ArticleAdmin extends \Action_Controller
                     'start' => $start
                 )
             );
-            TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=articles;cu='.$where, $txt['tp-blocktype19']);
+            TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=articles;cu='.$where, $txt['tp-blocktype19']);
 
             if($db->num_rows($request) > 0) {
                 $context['TPortal']['arts']=array();
@@ -926,7 +926,7 @@ class ArticleAdmin extends \Action_Controller
         \get_catlayouts();
 
         // we are on categories screen
-        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=categories', $txt['tp-categories']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=categories', $txt['tp-categories']);
         // first check if we simply want to copy or set as child
         if(isset($_GET['cu']) && is_numeric($_GET['cu'])) {
             $ccat = $_GET['cu'];
@@ -1065,7 +1065,7 @@ class ArticleAdmin extends \Action_Controller
                         $context['TPortal']['editcats'] = $allsorted;
                     }
                 }
-                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=categories;cu='. $ccat, $txt['tp-editcategory']);
+                TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=categories;cu='. $ccat, $txt['tp-editcategory']);
             }
         }
         else {
@@ -1116,10 +1116,10 @@ class ArticleAdmin extends \Action_Controller
             }
 
             if($context['TPortal']['subaction'] == 'newcategory') {
-                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=newcategory', $txt['tp-addcategory']);
+                TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=newcategory', $txt['tp-addcategory']);
             }
             else if($context['TPortal']['subaction'] == 'clist') {
-                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=clist', $txt['tp-tabs11']);
+                TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=clist', $txt['tp-tabs11']);
             }
 
         }
@@ -1331,7 +1331,7 @@ class ArticleAdmin extends \Action_Controller
       
         \loadTemplate('TPortalAdmin');
         $context['sub_template'] = 'articons';
-        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=articons', $txt['tp-adminicons']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=articons', $txt['tp-adminicons']);
 
     }}}
 
@@ -1366,7 +1366,7 @@ class ArticleAdmin extends \Action_Controller
 
         \loadTemplate('TPortalAdmin');
         $context['sub_template'] = 'artsettings';
-        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=artsettings', $txt['tp-settings']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=artsettings', $txt['tp-settings']);
 
     }}}
 
@@ -1465,7 +1465,7 @@ class ArticleAdmin extends \Action_Controller
         self::action_javascript();
         \loadTemplate('TPortalAdmin');
         $context['sub_template'] = 'strays';
-        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=strays', $txt['tp-strays']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=strays', $txt['tp-strays']);
     }}}
 
     public function action_submission() {{{
@@ -1571,8 +1571,8 @@ class ArticleAdmin extends \Action_Controller
 
         \loadTemplate('TPortalAdmin');
         $context['sub_template'] = 'submission';
-        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=articles', $txt['tp-articles']);
-        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=submission', $txt['tp-submissions']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=articles', $txt['tp-articles']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=submission', $txt['tp-submissions']);
     }}}
 
     public function action_javascript() {{{

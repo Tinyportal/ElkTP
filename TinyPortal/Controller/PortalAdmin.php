@@ -12,6 +12,7 @@ namespace TinyPortal\Controller;
 
 use \TinyPortal\Model\Admin as TPAdmin;
 use \TinyPortal\Model\Database as TPDatabase;
+use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 use ElkArte\Errors\Errors;
 

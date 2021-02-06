@@ -527,7 +527,7 @@ function template_editblock()
 					<div class="admintable">
 						<div>'.$txt['tp-displayhelp'].'</div>
 						<div id="collapse-options">
-						', tp_hidepanel('blockopts', true) , '
+						', TPSubs::getInstance()->hidepanel('blockopts', true) , '
 				' , empty($context['TPortal']['blockedit']['display2']) ? '<div class="tborder error" style="margin: 1em 0; padding: 4px 4px 4px 20px;">' . $txt['tp-noaccess'] . '</div>' : '' , '
 						<fieldset class="tborder" id="blockopts" ' , in_array('blockopts',$context['tp_panels']) ? ' style="display: none;"' : '' , '>
 						<input type="hidden" name="TPadmin_blocks_vo" value="'.$mg['id'].'" />';

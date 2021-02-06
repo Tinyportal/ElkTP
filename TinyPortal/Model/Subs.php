@@ -738,7 +738,7 @@ class Subs
         TPortal_sidebar('right');
     }}}
 
-    public function TPcollectSnippets() {{{
+    public function collectSnippets() {{{
         global $context;
 
         // fetch any blockcodes in blockcodes folder
@@ -746,7 +746,7 @@ class Subs
         if ($handle = opendir($context['TPortal']['blockcode_upload_path'])) {
             while (false !== ($file = readdir($handle))) {
                 if($file != '.' && $file != '..' && $file != '.htaccess' && substr($file, (strlen($file) - 10), 10) == '.blockcode') {
-                    $snippet = TPparseModfile(file_get_contents($context['TPortal']['blockcode_upload_path'] . $file), array('name', 'author', 'version', 'date', 'description'));
+                    $snippet = self::parseModfile(file_get_contents($context['TPortal']['blockcode_upload_path'] . $file), array('name', 'author', 'version', 'date', 'description'));
                     $codefiles[] = array(
                         'file' => substr($file, 0, strlen($file) - 10),
                         'name' => isset($snippet['name']) ? $snippet['name'] : '',
@@ -762,7 +762,7 @@ class Subs
 
     }}}
 
-    public function TPparseModfile($file , $returnarray) {{{
+    public function parseModfile($file , $returnarray) {{{
         $file = strtr($file, array("\r" => ''));
         $snippet = array();
 
@@ -913,7 +913,7 @@ class Subs
                 if($row['parent'] == $row['id'] || $row['parent'] == '' || $row['parent'] == '0')
                     $row['parent'] = 9999;
                 // check access
-                $show = $this->get_perm($row['access']);
+                $show = self::get_perm($row['access']);
                 if($show) {
                     $sorted[$row['id']] = array(
                         'id' => $row['id'],
@@ -1355,7 +1355,7 @@ class Subs
     }}}
 
     // add to the linktree
-    public function TPadd_linktree($url,$name) {{{
+    public function addLinkTree($url, $name) {{{
         global $context;
 
         $context['linktree'][] = array('url' => $url, 'name' => $name);
@@ -1476,7 +1476,7 @@ class Subs
         if(($context['TPortal']['article']['useintro'] == '1' && !$context['TPortal']['single_article']) || !empty($intro)) {
             if($context['TPortal']['article']['rendertype'] == 'php') {
                 ob_start();
-                eval($this->convertphp($context['TPortal']['article']['intro'], true));
+                eval(self::convertphp($context['TPortal']['article']['intro'], true));
                 $data .= ob_get_clean();
             }
             elseif($context['TPortal']['article']['rendertype'] == 'bbc' || $context['TPortal']['article']['rendertype'] == 'import') {
@@ -1495,7 +1495,7 @@ class Subs
         else {
             if($context['TPortal']['article']['rendertype'] == 'php') {
                 ob_start();
-                eval($this->convertphp($context['TPortal']['article']['body'], true));
+                eval(self::convertphp($context['TPortal']['article']['body'], true));
                 $data .= ob_get_clean();
             }
             elseif($context['TPortal']['article']['rendertype'] == 'bbc') {

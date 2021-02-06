@@ -390,10 +390,10 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                         $parts = array_reverse($parents, TRUE);
                         // add to the linktree
                         foreach($parts as $parent) {
-                            TPadd_linktree($scripturl.'?cat='. $parent['shortname'], $parent['name']);
+                            TPSubs::getInstance()->addLinkTree($scripturl.'?cat='. $parent['shortname'], $parent['name']);
                         }
 
-                        TPadd_linktree($scripturl.'?page='. (!empty($context['TPortal']['article']['shortname']) ? $context['TPortal']['article']['shortname'] : $context['TPortal']['article']['id']), $context['TPortal']['article']['subject']);
+                        TPSubs::getInstance()->addLinkTree($scripturl.'?page='. (!empty($context['TPortal']['article']['shortname']) ? $context['TPortal']['article']['shortname'] : $context['TPortal']['article']['id']), $context['TPortal']['article']['subject']);
                     }
 
                     $context['page_title'] = $context['TPortal']['article']['subject'];
@@ -647,14 +647,14 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     $parts = array_reverse($parents, TRUE);
                     // add to the linktree
                     foreach($parts as $parent) {
-                        TPadd_linktree($scripturl.'?cat='. $parent['shortname'] , $parent['name']);
+                        TPSubs::getInstance()->addLinkTree($scripturl.'?cat='. $parent['shortname'] , $parent['name']);
                     }
 
                     if(!empty($context['TPortal']['category']['shortname'])) {
-                        TPadd_linktree($scripturl.'?cat='. $context['TPortal']['category']['short_name'], $context['TPortal']['category']['display_name']);
+                        TPSubs::getInstance()->addLinkTree($scripturl.'?cat='. $context['TPortal']['category']['short_name'], $context['TPortal']['category']['display_name']);
                     }
                     else {
-                        TPadd_linktree($scripturl.'?cat='. $context['TPortal']['category']['id'], $context['TPortal']['category']['display_name']);
+                        TPSubs::getInstance()->addLinkTree($scripturl.'?cat='. $context['TPortal']['category']['id'], $context['TPortal']['category']['display_name']);
                     }
 
                     // check clist

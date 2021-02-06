@@ -174,7 +174,7 @@ class Article extends \Action_Controller
 		$context['TPortal']['pageindex']        = TPSubs::getInstance()->pageIndex($scripturl.'?action=tparticle;sa=showcomments', $tpstart, $check[0], 15);
 		$context['TPortal']['unreadcomments']   = true;
 		$context['TPortal']['showall']          = $showall;
-		TPadd_linktree($scripturl.'?action=tparticle;sa=showcomments' . ($showall ? ';showall' : '')  , $txt['tp-showcomments']);
+		TPSubs::getInstance()->addLinkTree($scripturl.'?action=tparticle;sa=showcomments' . ($showall ? ';showall' : '')  , $txt['tp-showcomments']);
 		loadTemplate('TParticle');
 		$context['sub_template'] = 'showcomments';
 		if(loadLanguage('TParticle') == false) {

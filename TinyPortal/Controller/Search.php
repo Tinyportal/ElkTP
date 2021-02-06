@@ -11,6 +11,7 @@
 namespace TinyPortal\Controller;
 
 use \TinyPortal\Model\Database as TPDatabase;
+use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 use \ElkArte\Errors\Errors;
 
@@ -44,7 +45,7 @@ class Search extends \Action_Controller
     public function action_search() {{{
         global $scripturl, $txt, $context;
 
-        TPadd_linktree($scripturl.'?action=tportal;sa=searcharticle' , $txt['tp-searcharticles2']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=tportal;sa=searcharticle' , $txt['tp-searcharticles2']);
         \loadTemplate('TPSearch');
         $context['sub_template'] = 'article_search_form';
 
