@@ -18,11 +18,6 @@
 		<remove-dir name="THEMEDIR/images/tinyportal" />
 		<remove-dir name="BOARDDIR/TinyPortal" />
 		<remove-dir name="THEMEDIR/scripts/tinyportal" />
-		<remove-file name="LANGUAGEDIR/english/TParticle.english.php" />
-		<remove-file name="LANGUAGEDIR/english/TPhelp.english.php" />
-		<remove-file name="LANGUAGEDIR/english/TPmodules.english.php" />
-		<remove-file name="LANGUAGEDIR/english/TPortal.english.php" />
-		<remove-file name="LANGUAGEDIR/english/TPortalAdmin.english.php" />
         <hook reverse="true" hook="integrate_pre_load" function="\TinyPortal\Integrate::hookPreLoad" file="BOARDDIR/TinyPortal/Integrate.php" />
 	</uninstall>
 </package-info>
