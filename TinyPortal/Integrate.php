@@ -139,14 +139,17 @@ class Integrate
 
         $permissionList['membergroup'] = array_merge(
             array(
-                'tp_settings' => array(false, 'tp', 'tp'),
-                'tp_blocks' => array(false, 'tp', 'tp'),
-                'tp_articles' => array(false, 'tp', 'tp'),
-                'tp_submithtml' => array(false, 'tp', 'tp'),
-                'tp_submitbbc' => array(false, 'tp', 'tp'),
+                'tp_settings'       => array(false, 'tp', 'tp'),
+                'tp_blocks'         => array(false, 'tp', 'tp'),
+                'tp_menu'           => array(false, 'tp', 'tp'),
+                'tp_download'       => array(false, 'tp', 'tp'),
+                'tp_gallery'        => array(false, 'tp', 'tp'),
+                'tp_articles'       => array(false, 'tp', 'tp'),
+                'tp_submithtml'     => array(false, 'tp', 'tp'),
+                'tp_submitbbc'      => array(false, 'tp', 'tp'),
                 'tp_editownarticle' => array(false, 'tp', 'tp'),
 				'tp_alwaysapproved' => array(false, 'tp', 'tp'),
-                'tp_artcomment' => array(false, 'tp', 'tp'),
+                'tp_artcomment'     => array(false, 'tp', 'tp'),
             ),
             $permissionList['membergroup']
         );
@@ -257,6 +260,9 @@ class Integrate
         $tp_illegal_perms = array(
             'tp_settings',
             'tp_blocks',
+            'tp_menu',
+            'tp_download',
+            'tp_gallery',
             'tp_articles',
             'tp_submithtml',
             'tp_submitbbc',
@@ -355,7 +361,7 @@ class Integrate
 
         $adminAreas['tpadmin'] = array (
 			'title' => $txt['tp-tphelp'],
-			'permission' => array ('admin_forum', 'tp_articles', 'tp_blocks', 'tp_settings'),
+			'permission' => array ('admin_forum', 'tp_articles', 'tp_blocks', 'tp_settings', 'tp_menu', 'tp_download', 'tp_gallery'),
 			'areas' => array (
 				'tpsettings' => array (
 					'label'       => $txt['tp-adminheader1'],
@@ -388,6 +394,39 @@ class Integrate
 					'subsections' => array (
 						'blocks'	    => array ( $txt['tp-blocks'] ),
 						'panels'	    => array ( $txt['tp-panels'] ),
+					),
+				),
+				'tpmenu' => array (
+					'label'       => $txt['tp-adminmenus'],
+					'controller'  => '\TinyPortal\Controller\MenuAdmin',
+					'function'    => 'action_index',
+					'icon'        => 'transparent.png',
+					'permission'  => array ( 'admin_forum', 'tp_menu' ),
+					'subsections' => array (
+						'list'	    => array ( $txt['tp-menu-list'] ),
+						'add'	    => array ( $txt['tp-menu-add'] ),
+					),
+				),
+                'tpdownload' => array (
+					'label'       => $txt['tp-admindownload'],
+					'controller'  => '\TinyPortal\Controller\DownloadAdmin',
+					'function'    => 'action_index',
+					'icon'        => 'transparent.png',
+					'permission'  => array ( 'admin_forum', 'tp_download' ),
+					'subsections' => array (
+						'list'	    => array ( $txt['tp-download-list'] ),
+						'add'	    => array ( $txt['tp-download-add'] ),
+					),
+				),
+                'tpgallery' => array (
+					'label'       => $txt['tp-admingallery'],
+					'controller'  => '\TinyPortal\Controller\GalleryAdmin',
+					'function'    => 'action_index',
+					'icon'        => 'transparent.png',
+					'permission'  => array ( 'admin_forum', 'tp_gallery' ),
+					'subsections' => array (
+						'list'	    => array ( $txt['tp-gallery-list'] ),
+						'add'	    => array ( $txt['tp-gallery-add'] ),
 					),
 				),
             ),
