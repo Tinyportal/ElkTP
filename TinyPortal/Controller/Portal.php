@@ -75,8 +75,8 @@ class Portal extends \Action_Controller implements Frontpage_Interface
             }
 
             $subActions = array(
-                'credits'   => array('', 'self::action_credits', array()),
-                'upshrink'  => array('', 'self::action_upshrink', array()),
+                'credits'   => array($this, 'action_credits', array()),
+                'upshrink'  => array($this, 'action_upshrink', array()),
             );
 
             call_integration_hook('integrate_tp_pre_subactions', array(&$subActions));
