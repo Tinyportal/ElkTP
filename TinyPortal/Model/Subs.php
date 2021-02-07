@@ -31,7 +31,7 @@ class Subs
     // Empty Clone method
     private function __clone() { }
 
-    public function tpLoadCSS() {{{
+    public function loadCSS() {{{
         global $context, $settings, $boardurl;
 
         $context['html_headers'] .=  "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>";
@@ -85,7 +85,7 @@ class Subs
 
     }}}
 
-    public function setupTPsettings() {{{
+    public function setupSettings() {{{
         global $maintenance, $context, $txt, $settings, $modSettings;
 
         $db = Database::getInstance();
@@ -202,6 +202,31 @@ class Subs
 
     }}}
 
+    public function permaTheme($theme) {{{
+        global $context;
+
+        $db = Database::getInstance();
+
+        $me = $context['user']['id'];
+        $db->query('', '
+            UPDATE {db_prefix}members
+            SET id_theme = {int:theme}
+            WHERE id_member = {int:mem_id}',
+            array(
+                'theme' => $theme, 'mem_id' => $me,
+            )
+        );
+
+        if(isset($context['TPortal']['querystring'])) {
+            $tp_where = str_replace(array(';permanent'), array(''), $context['TPortal']['querystring']);
+        }
+        else {
+            $tp_where = 'action=forum;';
+        }
+
+        redirectexit($tp_where);
+    }}}
+
     // TPortal side bar, left or right.
     public function panel($side) {{{
         global $context, $scripturl, $settings;
@@ -223,7 +248,7 @@ class Subs
 
             $grid_entry = 0;
             // fetch the grids..
-            TP_blockgrids();
+            self::blockGrids();
         }
 
         // check if we left out the px!!
@@ -481,7 +506,7 @@ class Subs
             }
             // according to a grid
             elseif($flow == 'grid') {
-                echo TP_blockgrid($block, $theme, $grid_entry, $side, $grid_entry == ($grid_recycle - 1) ? true : false, $grid_selected);
+                echo self::blockGrid($block, $theme, $grid_entry, $side, $grid_entry == ($grid_recycle - 1) ? true : false, $grid_selected);
                 $grid_entry++;
                 if($grid_recycle == $grid_entry) {
                     $grid_entry = 0;
@@ -490,7 +515,7 @@ class Subs
                 if($i == $n - 1) {
                     if($grid_entry > 0) {
                         for($a = $grid_entry; $a < $grid_recycle; $a++) {
-                            echo TP_blockgrid(0, 0, $a, $side, $a == ($grid_recycle-1) ? true : false, $grid_selected,true);
+                            echo self::blockGrid(0, 0, $a, $side, $a == ($grid_recycle-1) ? true : false, $grid_selected,true);
                         }
                     }
                 }
@@ -538,7 +563,7 @@ class Subs
         // return $code;
     }}}
 
-    public function tpSetupUpshrinks() {{{
+    public function setupUpshrinks() {{{
         global $context, $settings;
 
         $db = Database::getInstance();
@@ -676,7 +701,7 @@ class Subs
 
     }}}
 
-    public function TP_blockgrid($block, $theme, $pos, $side, $last = false, $gridtype, $none = false) {{{
+    public function blockGrid($block, $theme, $pos, $side, $last = false, $gridtype, $none = false) {{{
         global $context;
 
         // first, set the table, equal in all grids
@@ -706,7 +731,7 @@ class Subs
 
     }}}
 
-    public function TP_blockgrids() {{{
+    public function blockGrids() {{{
         global $context;
 
         $context['TPortal']['grid'] = array();
@@ -951,7 +976,7 @@ class Subs
         if($use_sorted) {
             // sort them
             if(count($sorted)>1) {
-                $context['TPortal']['article_categories'] = chain('id', 'parent', 'name', $sorted);
+                $context['TPortal']['article_categories'] = self::chain('id', 'parent', 'name', $sorted);
             }
             else {
                 $context['TPortal']['article_categories'] = $sorted;
@@ -965,77 +990,10 @@ class Subs
     }}}
 
     public function chain($primary_field, $parent_field, $sort_field, $rows, $root_id = 0, $maxlevel = 25) {{{
-       $c = new chain($primary_field, $parent_field, $sort_field, $rows, $root_id, $maxlevel);
+       $c = new Chain($primary_field, $parent_field, $sort_field, $rows, $root_id, $maxlevel);
        return $c->chain_table;
     }}}
 
-    public function chainCMP($a, $b) {{{
-       if($a[$a['key']] == $b[$b['key']]) {
-           return 0;
-       }
-       return($a[$a['key']] < $b[$b['key']]) ? -1 : 1;
-    }}}
-
-    public function TP_permaTheme($theme) {{{
-        global $context;
-
-        $db = Database::getInstance();
-
-        $me = $context['user']['id'];
-        $db->query('', '
-            UPDATE {db_prefix}members
-            SET id_theme = {int:theme}
-            WHERE id_member = {int:mem_id}',
-            array(
-                'theme' => $theme, 'mem_id' => $me,
-            )
-        );
-
-        if(isset($context['TPortal']['querystring']))
-            $tp_where = str_replace(array(';permanent'), array(''), $context['TPortal']['querystring']);
-        else
-            $tp_where = 'action=forum;';
-
-        redirectexit($tp_where);
-    }}}
-
-    public function TP_error($text) {{{
-        global $context;
-
-        $context['TPortal']['tperror'] = $text;
-        $context['template_layers'][] = 'tperror';
-    }}}
-
-    public function tp_renderbbc($message) {{{
-        global $context, $txt;
-
-        $descriptionEditorOptions = array(
-            'id' => 'description',
-            'value' => $context['theme']['description'],
-            // We do XML preview here.
-            'preview_type' => 0,
-            // Specify the size
-            'rows' => 7,
-            'columns' => 120,
-            'width' => '99%',
-        );
-        create_control_richedit($descriptionEditorOptions);
-
-        // We do not yet support spell checking.
-        $context['show_spellchecking'] = false;
-        $context['can_post_team'] = siteAllowedTo('postAsTeam');
-        $context['sub_template'] = 'themepost';
-        $context['page_title'] = $context['editing'] ? $txt['ts_editing_theme'] . $context['theme']['name'] : $txt['ts_add_new_theme'];
-        loadTemplate('Post');
-
-        echo '
-                <tr>
-                    <td class="content" colspan="2">';
-
-            echo '
-                    </td>
-                </tr>';
-    }}}
 
     public function get_snippets_xml() {{{
         return;
@@ -1081,7 +1039,7 @@ class Subs
         return $topi;
     }}}
 
-    public function TPwysiwyg_setup() {{{
+    public function wysiwygSetup() {{{
         global $context, $boardurl, $txt;
 
         $context['html_headers'] .= '
@@ -1133,7 +1091,7 @@ class Subs
 
     }}}
 
-    public function TPwysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $showchoice = true) {{{
+    public function wysiwyg($textarea, $body, $upload = true, $uploadname, $use = 1, $showchoice = true) {{{
         global $context, $scripturl, $txt, $boardurl, $user_info;
 
         echo '
@@ -1763,7 +1721,7 @@ class Subs
 
     }}}
 
-    public function tp_collectArticleIcons() {{{
+    public function collectArticleIcons() {{{
         global $context, $boardurl;
 
         $db = Database::getInstance();
@@ -2088,14 +2046,14 @@ class Subs
         return $data;
     }}}
 
-    public function TP_bbcbox($input) {{{
+    public function bbcbox($input) {{{
        echo'<div id="tp_smilebox"></div>';
        echo'<div id="tp_messbox"></div>';
 
-       echo template_control_richedit($input, 'tp_messbox', 'tp_smilebox');
+       echo \template_control_richedit($input, 'tp_messbox', 'tp_smilebox');
     }}}
 
-    public function TP_prebbcbox($id, $body = '') {{{
+    public function prebbcbox($id, $body = '') {{{
         require_once(SUBSDIR . '/Editor.subs.php');
 
         $editorOptions = array(
@@ -2105,7 +2063,7 @@ class Subs
             'height' => '300px',
             'width' => '100%',
         );
-        create_control_richedit($editorOptions);
+        \create_control_richedit($editorOptions);
     }}}
 
     public function tp_getblockstyles() {{{
@@ -2636,7 +2594,7 @@ class Subs
         $dir->close();
     }}}
 
-    public function get_catlayouts() {{{
+    public function catLayouts() {{{
         global $context, $txt;
 
         // setup the layoutboxes
@@ -2653,7 +2611,7 @@ class Subs
         );
     }}}
 
-    public function get_boards() {{{
+    public function boards() {{{
         global $context;
 
         $db = Database::getInstance();
@@ -2741,14 +2699,14 @@ class Subs
 
     }}}
 
-    public function tp_groups() {{{
+    public function groups() {{{
         global $txt;
 
         $db = Database::getInstance();
         // get all membergroups for permissions
         $grp    = array();
         $grp[]  = array(
-            'id' => '-1',
+            'id' =>'-1',
             'name' => $txt['tp-guests'],
             'posts' => '-1'
         );
@@ -2772,56 +2730,6 @@ class Subs
         return $grp;
     }}}
 
-}
-
-class chain
-{
-   public $table;
-   public $rows;
-   public $chain_table;
-   public $primary_field;
-   public $parent_field;
-   public $sort_field;
-
-   public function __construct($primary_field, $parent_field, $sort_field, $rows, $root_id, $maxlevel) {{{
-       $this->rows = $rows;
-       $this->primary_field = $primary_field;
-       $this->parent_field = $parent_field;
-       $this->sort_field = $sort_field;
-       $this->buildChain($root_id,$maxlevel);
-   }}}
-
-   public function buildChain($rootcatid,$maxlevel) {{{
-       foreach($this->rows as $row) {
-           $this->table[$row[$this->parent_field]][ $row[$this->primary_field]] = $row;
-       }
-       $this->makeBranch($rootcatid, 0, $maxlevel);
-   }}}
-
-   public function makeBranch($parent_id, $level, $maxlevel) {{{
-       if(!is_array($this->table)) {
-              $this->table = array();
-        }
-
-       if(!array_key_exists($parent_id, $this->table)) {
-              return;
-        }
-
-       $rows = $this->table[$parent_id];
-       foreach($rows as $key=>$value) {
-           $rows[$key]['key'] = $this->sort_field;
-       }
-
-       usort($rows, 'chainCMP');
-       foreach($rows as $item) {
-           $item['indent'] = $level;
-           $this->chain_table[] = $item;
-           if((isset($this->table[$item[$this->primary_field]])) && (($maxlevel > $level + 1) || ($maxlevel == 0))) {
-               $this->makeBranch($item[$this->primary_field], $level + 1, $maxlevel);
-           }
-       }
-
-   }}}
 }
 
 ?>

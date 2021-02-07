@@ -46,8 +46,7 @@ class Portal
             \loadLanguage('TPortal', 'english');
         }
 
-        $tpMention = Mentions::getInstance();
-        $tpMention->addJS();
+        Mentions::getInstance()->addJS();
 
         $context['TPortal'] = array();
 
@@ -57,7 +56,7 @@ class Portal
 
         $context['TPortal'] = array();
         // Add all the TP settings into ['TPortal']
-        Subs::getInstance()->setupTPsettings();
+        Subs::getInstance()->setupSettings();
         // Setup querystring
         $context['TPortal']['querystring'] = $_SERVER['QUERY_STRING'];
 
@@ -79,11 +78,11 @@ class Portal
 
         // is the permanent theme option set?
         if(isset($_GET['permanent']) && !empty($_GET['theme']) && $context['user']['is_logged']) {
-            Subs::getInstance()->TP_permaTheme($_GET['theme']);
+            Subs::getInstance()->permaTheme($_GET['theme']);
         }
 
         // Load the stylesheet stuff
-        Subs::getInstance()->tpLoadCSS();
+        Subs::getInstance()->loadCSS();
 
         // if we are in permissions admin section, load all permissions
         if((isset($_GET['action']) && $_GET['action'] == 'permissions') || (isset($_GET['area']) && $_GET['area'] == 'permissions')) {
@@ -102,7 +101,7 @@ class Portal
         \call_integration_hook('integrate_tp_post_init');
 
         // set cookie change for selected upshrinks
-        Subs::getInstance()->tpSetupUpshrinks();
+        Subs::getInstance()->setupUpshrinks();
 
     }}}
 

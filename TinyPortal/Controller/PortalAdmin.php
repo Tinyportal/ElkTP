@@ -206,8 +206,8 @@ class PortalAdmin extends \Action_Controller
 
         $context['TPortal']['SSI_boards'] = explode(',', $context['TPortal']['SSI_board']);
 
-        \get_boards();
-        \get_catlayouts();
+        TPSubs::getInstance()->boards();
+        TPSubs::getInstance()->catLayouts();
 
 
     }}}
