@@ -17,6 +17,7 @@ use \TinyPortal\Model\Category as TPCategory;
 use \TinyPortal\Model\Database as TPDatabase;
 use \TinyPortal\Model\Permissions as TPPermissions;
 use \TinyPortal\Model\Mentions as TPMentions;
+use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 use \ElkArte\Errors\Errors;
 
@@ -33,22 +34,19 @@ class ArticleAdmin extends \Action_Controller
 
         allowedTo(array('tp_articles', 'tp_editownarticle'));
 
-        if(loadLanguage('TParticle') == false) {
-            loadLanguage('TParticle', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
+            TPSubs::getInstance()->loadLanguage('TParticle', 'english');
         }
 
-        if(loadLanguage('TPortalAdmin') == false) {
-            loadLanguage('TPortalAdmin', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
 
         // a switch to make it clear what is "forum" and not
         $context['TPortal']['not_forum'] = true;
 
-        // call the editor setup
-        require_once(SUBSDIR . '/TPortal.subs.php');
-
         // clear the linktree first
-        TPstrip_linktree();
+        TPSubs::getInstance()->strip_linktree();
 
         require_once(SUBSDIR . '/Action.class.php');
         $subActions = array (
@@ -72,11 +70,11 @@ class ArticleAdmin extends \Action_Controller
             'articons'          => array($this, 'action_articons', array()),
             'submission'        => array($this, 'action_submission', array()),
             // FIXME split these out into the correct functions rather than calling the old method
-            'addarticle_bbc'    => array($this, 'TPortalAdmin', array()),
-            'addarticle_html'   => array($this, 'TPortalAdmin', array()),
-            'addarticle_php'    => array($this, 'TPortalAdmin', array()),
-            'addarticle_import' => array($this, 'TPortalAdmin', array()),
-            'articles'          => array($this, 'TPortalAdmin', array()),
+            'addarticle_bbc'    => array($this, 'action_admin', array()),
+            'addarticle_html'   => array($this, 'action_admin', array()),
+            'addarticle_php'    => array($this, 'action_admin', array()),
+            'addarticle_import' => array($this, 'action_admin', array()),
+            'articles'          => array($this, 'action_admin', array()),
         );
 
         $sa = TPUtil::filter('sa', 'get', 'string');
@@ -251,8 +249,8 @@ class ArticleAdmin extends \Action_Controller
         $article_data['options'] = implode(',', $options);
         // check if uploads are there
         if(array_key_exists('tp_article_illupload', $_FILES) && file_exists($_FILES['tp_article_illupload']['tmp_name'])) {
-            $name = TPuploadpicture('tp_article_illupload', '', $context['TPortal']['icon_max_size'], 'jpg,gif,png', 'tp-files/tp-articles/illustrations');
-            tp_createthumb('tp-files/tp-articles/illustrations/'. $name, $context['TPortal']['icon_width'], $context['TPortal']['icon_height'], 'tp-files/tp-articles/illustrations/s_'. $name);
+            $name = TPSubs::getInstance()->uploadpicture('tp_article_illupload', '', $context['TPortal']['icon_max_size'], 'jpg,gif,png', 'tp-files/tp-articles/illustrations');
+            TPSubs::getInstance()->createthumb('tp-files/tp-articles/illustrations/'. $name, $context['TPortal']['icon_width'], $context['TPortal']['icon_height'], 'tp-files/tp-articles/illustrations/s_'. $name);
             $article_data['illustration'] = $name;
         }
 
@@ -271,11 +269,11 @@ class ArticleAdmin extends \Action_Controller
         // check if uploadad picture
         if(isset($_FILES['qup_tp_article_body']) && file_exists($_FILES['qup_tp_article_body']['tmp_name'])) {
             $name = TPuploadpicture( 'qup_tp_article_body', $context['user']['id'].'uid', null, null, $context['TPortal']['image_upload_path']);
-            tp_createthumb($context['TPortal']['image_upload_path'].'/'. $name, 50, 50, $context['TPortal']['image_upload_path'].'/thumbs/thumb_'. $name);
+            TPSubs::getInstance()->createthumb($context['TPortal']['image_upload_path'].'/'. $name, 50, 50, $context['TPortal']['image_upload_path'].'/thumbs/thumb_'. $name);
         }
         // if this was a new article
         if(array_key_exists('tp_article_approved', $_POST) && $_POST['tp_article_approved'] == 1 && $_POST['tp_article_off'] == 0) {
-            tp_recordevent($timestamp, $_POST['tp_article_authorid'], 'tp-createdarticle', 'page=' . $where, 'Creation of new article.', (isset($allowed) ? $allowed : 0) , $where);
+            TPSubs::getInstance()->recordEvent($timestamp, $_POST['tp_article_authorid'], 'tp-createdarticle', 'page=' . $where, 'Creation of new article.', (isset($allowed) ? $allowed : 0) , $where);
         }
 
         if(array_key_exists('tpadmin_form', $_POST)) {
@@ -292,8 +290,6 @@ class ArticleAdmin extends \Action_Controller
 
         $db = TPDatabase::getInstance();
 
-        require_once(SUBSDIR . '/TPortal.subs.php');
-
         // a BBC article?
         if(isset($_GET['bbc']) || $_GET['sa'] == 'addarticle_bbc') {
             isAllowedTo('tp_submitbbc');
@@ -303,24 +299,18 @@ class ArticleAdmin extends \Action_Controller
 
             // Add in BBC editor before we call in template so the headers are there
             $context['TPortal']['editor_id'] = 'tp_article_body';
-            TP_prebbcbox($context['TPortal']['editor_id']);
+            TPSubs::getInstance()->prebbcbox($context['TPortal']['editor_id']);
         }
         else if($_GET['sa'] == 'addarticle_html') {
             $context['TPortal']['articletype'] = 'html';
             isAllowedTo('tp_submithtml');
-            TPwysiwyg_setup();
+            TPSubs::getInstance()->wysiwygSetup('tp_article_body');
         }
         else {
             redirectexit('action=forum');
         }
 
         $context['TPortal']['subaction'] = 'submitarticle';
-        if(loadLanguage('TParticle') == false) {
-            loadLanguage('TParticle', 'english');
-        }
-        if(loadLanguage('TPortalAdmin') == false) {
-            loadLanguage('TPortalAdmin', 'english');
-        }
         loadTemplate('TParticle');
         $context['sub_template'] = 'submitarticle';
 
@@ -331,8 +321,8 @@ class ArticleAdmin extends \Action_Controller
 
         $context['TPortal']['subaction'] = 'submitsuccess';
         loadTemplate('TParticle');
-        if(loadLanguage('TParticle') == false) {
-            loadLanguage('TParticle', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
+            TPSubs::getInstance()->loadLanguage('TParticle', 'english');
         }
         $context['sub_template'] = 'submitsuccess';
 
@@ -361,7 +351,7 @@ class ArticleAdmin extends \Action_Controller
         if(substr($newstring, 0, 1) == ',')
             $newstring = substr($newstring, 1);
 
-        updateTPSettings(array('frontpage_topics' => $newstring));
+        TPSubs::getInstance()->updateSettings(array('frontpage_topics' => $newstring));
 
         redirectexit('topic='. $t . '.0');
 
@@ -370,10 +360,8 @@ class ArticleAdmin extends \Action_Controller
     public function action_upload_image() {{{
         global $context, $boardurl;
 
-        require_once(SUBSDIR . '/TPortal.subs.php');
-
-        $name = TPuploadpicture( 'image', $context['user']['id'].'uid', null, null, $context['TPortal']['image_upload_path']);
-        tp_createthumb( $context['TPortal']['image_upload_path'] . $name, 50, 50, $context['TPortal']['image_upload_path'].'thumbs/thumb_'.$name );
+        $name = TPSubs::getInstance()->uploadpicture( 'image', $context['user']['id'].'uid', null, null, $context['TPortal']['image_upload_path']);
+        TPSubs::getInstance()->createthumb( $context['TPortal']['image_upload_path'] . $name, 50, 50, $context['TPortal']['image_upload_path'].'thumbs/thumb_'.$name );
         $response['data'] = str_replace(BOARDDIR, $boardurl, $context['TPortal']['image_upload_path']) . $name;
         $response['success'] = 'true';
         header( 'Content-type: application/json' );
@@ -447,16 +435,10 @@ class ArticleAdmin extends \Action_Controller
 
     }}}
 
-    public function TPortalAdmin() {{{
+    public function action_admin() {{{
         global $scripturl, $context, $txt;
 
-        if(loadLanguage('TPortalAdmin') == false)
-            loadLanguage('TPortalAdmin', 'english');
-        if(loadLanguage('TPortal') == false)
-            loadLanguage('TPortal', 'english');
-
         require_once(SUBSDIR . '/Post.subs.php');
-        require_once(SUBSDIR . '/TPortal.subs.php');
 
         // some GET values set up
         $context['TPortal']['tpstart'] = isset($_GET['tpstart']) ? $_GET['tpstart'] : 0;
@@ -465,10 +447,10 @@ class ArticleAdmin extends \Action_Controller
         $context['TPortal']['not_forum'] = true;
 
         // get all member groups
-        tp_groups();
+        TPSubs::getInstance()->groups();
 
         // get the layout schemes
-        get_catlayouts();
+        TPSubs::getInstance()->catlayouts();
 
         if(isset($_GET['id'])) {
             $context['TPortal']['subaction_id'] = $_GET['id'];
@@ -478,85 +460,31 @@ class ArticleAdmin extends \Action_Controller
         $return = $this->do_postchecks();
 
         if(!empty($return)) {
-            redirectexit('action=admin;area=tparticles;sa=' . $return);
+            \redirectexit('action=admin;area=tparticles;sa=' . $return);
         }
 
-        $tpsub = '';
-
-        $subAction  = TPUtil::filter('sa', 'get', 'string');
-        if($subAction == false) {
-            $subAction  = TPUtil::filter('area', 'get', 'string');
-        }
-        $subActions = array();
-
-        call_integration_hook('integrate_tp_pre_admin_subactions', array(&$subActions));
-
-        $context['TPortal']['subaction'] = $subAction;
-
-        // If it exists in our new subactions array load it
-        if(!empty($subAction) && array_key_exists($subAction, $subActions)) {
-            if (!empty($subActions[$subAction][0])) {
-                require_once(SOURCEDIR . '/' . $subActions[$subAction][0]);
-            }
-            call_user_func_array($subActions[$subAction][1], $subActions[$subAction][2]);
-        }
-        elseif(isset($_GET['sa'])) {
+        if(isset($_GET['sa'])) {
             $context['TPortal']['subaction'] = $tpsub = $_GET['sa'];
             if(substr($_GET['sa'], 0, 11) == 'editarticle') {
-                loadTemplate('TParticle');
+                \loadTemplate('TParticle');
                 $context['sub_template'] = 'submitarticle';
-                $tpsub = 'articles';
                 $context['TPortal']['subaction'] = 'editarticle';
             }
             elseif(substr($_GET['sa'], 0, 11) == 'addarticle_') {
-                loadTemplate('TParticle');
+                \loadTemplate('TParticle');
                 $context['sub_template'] = 'submitarticle';
-                $tpsub = 'articles';
                 $context['TPortal']['subaction'] = $_GET['sa'];
                 if($_GET['sa'] == 'addarticle_html') {
-                    TPwysiwyg_setup();
+                    TPSubs::getInstance()->wysiwygSetup('tp_article_body');
                 }
             }
 
-            $this->do_subaction($tpsub);
-        }
-        elseif(isset($_GET['artfeat']) || isset($_GET['artfront']) || isset($_GET['artdelete']) || isset($_GET['arton']) || isset($_GET['artoff']) || isset($_GET['artsticky']) || isset($_GET['artlock']) || isset($_GET['catcollapse'])) {
-            if(allowedTo('tp_articles')) {
-                $context['TPortal']['subaction'] = $tpsub = 'articles';
-                $this->do_articles($tpsub);
-            }
-            else {
-                throw new Elk_Exception($txt['tp-noadmin'], 'general');
-            }
+            self::do_articles();
         }
 
-        get_boards();
+        TPSubs::getInstance()->boards();
         $context['TPortal']['SSI_boards'] = explode(',', $context['TPortal']['SSI_board']);
-
-        TPAdmin::getInstance()->topMenu($tpsub);
-        TPAdmin::getInstance()->sideMenu($tpsub);
-
         \loadTemplate('TPortalAdmin');
-        \loadTemplate('TPsubs');
-
-        \validateSession();
-
-        call_integration_hook('integrate_tp_post_admin_subactions');
-    }}}
-
-    public function do_subaction($tpsub) {{{
-        global $context, $txt;
-
-        if(in_array($tpsub, array('articles')) && (allowedTo(array('tp_articles', 'tp_editownarticle'))) )  {
-            $this->do_articles();
-        }
-        elseif(!$context['user']['is_admin']) {
-            throw new Elk_Exception($txt['tp-noadmin'], 'general');
-        }
-        else {
-            redirectexit('action=admin;area=tpsettings');
-        }
-
     }}}
 
     public function do_articles() {{{
@@ -626,11 +554,11 @@ class ArticleAdmin extends \Action_Controller
         // single article?
         if(isset($_GET['sa']) && substr($_GET['sa'], 0, 11) == 'editarticle') {
             $whatarticle = TPUtil::filter('article', 'get', 'string');
-            TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa='.$_GET['sa'].';article='.$whatarticle, $txt['tp-editarticle']);
+            TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa='.$_GET['sa'].';article='.$whatarticle, $txt['tp-editarticle']);
         }
         // are we starting a new one?
         if(isset($_GET['sa']) && substr($_GET['sa'], 0, 11) == 'addarticle_') {
-            TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa='.$_GET['sa'], $txt['tp-addarticle']);
+            TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa='.$_GET['sa'], $txt['tp-addarticle']);
             $context['TPortal']['editarticle'] = array(
                 'id' => '',
                 'date' => time(),
@@ -679,7 +607,7 @@ class ArticleAdmin extends \Action_Controller
             // Add in BBC editor before we call in template so the headers are there
             if(substr($_GET['sa'], 11) == 'bbc') {
                 $context['TPortal']['editor_id'] = 'tp_article_body';
-                TP_prebbcbox($context['TPortal']['editor_id']);
+                TPsubs::getInstance()->prebbcbox($context['TPortal']['editor_id']);
             }
         }
 
@@ -705,7 +633,7 @@ class ArticleAdmin extends \Action_Controller
                 }
                 $db->free_result($request);
                 if(count($sorted) > 1) {
-                    $context['TPortal']['cats'] = chain('id', 'parent', 'name', $sorted);
+                    $context['TPortal']['cats'] = TPSubs::getInstance()->chain('id', 'parent', 'name', $sorted);
                 }
                 else {
                     $context['TPortal']['cats'] = $sorted;
@@ -736,13 +664,13 @@ class ArticleAdmin extends \Action_Controller
             }
 
             if($context['TPortal']['editarticle']['articletype'] == 'html') {
-                TPwysiwyg_setup();
+                TPSubs::getInstance()->wysiwygSetup('tp_article_body');
             }
 
             // Add in BBC editor before we call in template so the headers are there
             if($context['TPortal']['editarticle']['articletype'] == 'bbc') {
                 $context['TPortal']['editor_id'] = 'tp_article_body';
-                TP_prebbcbox($context['TPortal']['editor_id'], strip_tags($context['TPortal']['editarticle']['body']));
+                TPSubs::getInstance()->prebbcbox($context['TPortal']['editor_id'], strip_tags($context['TPortal']['editarticle']['body']));
             }
 
             $context['TPortal']['editorchoice'] = 1;
@@ -775,7 +703,7 @@ class ArticleAdmin extends \Action_Controller
         }
         // get the icons needed
         TPArticle::getInstance()->getArticleIcons();
-        tp_collectArticleIcons();
+        TPSubs::getInstance()->collectArticleIcons();
 
         TPArticle::getInstance()->getArticleCategories();
 
@@ -809,7 +737,7 @@ class ArticleAdmin extends \Action_Controller
             );
 
             $row = $db->fetch_assoc($request);
-            $context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=admin;area=tparticles;sa=articles;sort=' . $sort . ';cu=' . $where, $start, $row['total'], 15);
+            $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl . '?action=admin;area=tparticles;sa=articles;sort=' . $sort . ';cu=' . $where, $start, $row['total'], 15);
             $db->free_result($request);
 
             $request = $db->query('', '
@@ -827,7 +755,7 @@ class ArticleAdmin extends \Action_Controller
                     'start' => $start
                 )
             );
-            TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=articles;cu='.$where, $txt['tp-blocktype19']);
+            TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=articles;cu='.$where, $txt['tp-blocktype19']);
 
             if($db->num_rows($request) > 0) {
                 $context['TPortal']['arts']=array();
@@ -930,10 +858,10 @@ class ArticleAdmin extends \Action_Controller
             }
         }
 
-        \get_catlayouts();
+        TPSubs::getInstance()->catLayouts();
 
         // we are on categories screen
-        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=categories', $txt['tp-categories']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=categories', $txt['tp-categories']);
         // first check if we simply want to copy or set as child
         if(isset($_GET['cu']) && is_numeric($_GET['cu'])) {
             $ccat = $_GET['cu'];
@@ -1014,14 +942,14 @@ class ArticleAdmin extends \Action_Controller
             // guess we only want the category then
             else {
                 // get membergroups
-                get_grps();
-            $context['html_headers'] .= '
-            <script type="text/javascript"><!-- // --><![CDATA[
-                function changeIllu(node,name)
-                {
-                    node.src = \'' . $boardurl . '/tp-files/tp-articles/illustrations/\' + name;
-                }
-            // ]]></script>';
+                TPSubs::getInstance()->get_grps();
+                $context['html_headers'] .= '
+                <script type="text/javascript"><!-- // --><![CDATA[
+                    function changeIllu(node,name)
+                    {
+                        node.src = \'' . $boardurl . '/tp-files/tp-articles/illustrations/\' + name;
+                    }
+                // ]]></script>';
 
                 $request = $db->query('', '
                     SELECT * FROM {db_prefix}tp_categories
@@ -1066,13 +994,13 @@ class ArticleAdmin extends \Action_Controller
                     }
                     $db->free_result($request);
                     if(count($allsorted) > 1) {
-                        $context['TPortal']['editcats'] = chain('id', 'parent', 'name', $allsorted);
+                        $context['TPortal']['editcats'] = TPSubs::getInstance()->chain('id', 'parent', 'name', $allsorted);
                     }
                     else {
                         $context['TPortal']['editcats'] = $allsorted;
                     }
                 }
-                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=categories;cu='. $ccat, $txt['tp-editcategory']);
+                TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=categories;cu='. $ccat, $txt['tp-editcategory']);
             }
         }
         else {
@@ -1097,7 +1025,7 @@ class ArticleAdmin extends \Action_Controller
                 }
                 $db->free_result($request);
                 if(count($allsorted) > 1) {
-                    $context['TPortal']['editcats'] = chain('id', 'parent', 'name', $allsorted);
+                    $context['TPortal']['editcats'] = TPSubs::getInstance()->chain('id', 'parent', 'name', $allsorted);
                 }
                 else {
                     $context['TPortal']['editcats'] = $allsorted;
@@ -1123,10 +1051,10 @@ class ArticleAdmin extends \Action_Controller
             }
 
             if($context['TPortal']['subaction'] == 'newcategory') {
-                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=newcategory', $txt['tp-addcategory']);
+                TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=newcategory', $txt['tp-addcategory']);
             }
             else if($context['TPortal']['subaction'] == 'clist') {
-                TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=clist', $txt['tp-tabs11']);
+                TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=clist', $txt['tp-tabs11']);
             }
 
         }
@@ -1158,7 +1086,7 @@ class ArticleAdmin extends \Action_Controller
 
             $updateArray['cat_list'] = $catnames;
 
-            updateTPSettings($updateArray);
+            TPSubs::getInstance()->updateSettings($updateArray);
             redirectexit('action=admin;area=tparticles;sa=clist;');
         }
         else {
@@ -1321,8 +1249,8 @@ class ArticleAdmin extends \Action_Controller
 
         if(isset($_FILES['tp_article_newillustration']) && file_exists($_FILES['tp_article_newillustration']['tmp_name'])) {
             checkSession('post');
-            $name = TPuploadpicture('tp_article_newillustration', '', $context['TPortal']['icon_max_size'], 'jpg,gif,png', 'tp-files/tp-articles/illustrations');
-            tp_createthumb('tp-files/tp-articles/illustrations/'. $name, $context['TPortal']['icon_width'], $context['TPortal']['icon_height'], 'tp-files/tp-articles/illustrations/s_'. $name);
+            $name = TPSubs::getInstance()->uploadpicture('tp_article_newillustration', '', $context['TPortal']['icon_max_size'], 'jpg,gif,png', 'tp-files/tp-articles/illustrations');
+            TPSubs::getInstance()->createthumb('tp-files/tp-articles/illustrations/'. $name, $context['TPortal']['icon_width'], $context['TPortal']['icon_height'], 'tp-files/tp-articles/illustrations/s_'. $name);
             unlink('tp-files/tp-articles/illustrations/'. $name);
         }
 
@@ -1338,7 +1266,7 @@ class ArticleAdmin extends \Action_Controller
       
         \loadTemplate('TPortalAdmin');
         $context['sub_template'] = 'articons';
-        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=articons', $txt['tp-adminicons']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=articons', $txt['tp-adminicons']);
 
     }}}
 
@@ -1368,12 +1296,12 @@ class ArticleAdmin extends \Action_Controller
                     $updateArray[$key] = $clean;
                 }
             }
-            updateTPSettings($updateArray);
+            TPSubs::getInstance()->updateSettings($updateArray);
         }
 
         \loadTemplate('TPortalAdmin');
         $context['sub_template'] = 'artsettings';
-        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=artsettings', $txt['tp-settings']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=artsettings', $txt['tp-settings']);
 
     }}}
 
@@ -1443,7 +1371,7 @@ class ArticleAdmin extends \Action_Controller
             $start = (!empty($_GET['p']) && is_numeric($_GET['p'])) ? $_GET['p'] : 0;
             // sorting?
             $sort = $context['TPortal']['sort'] = (!empty($_GET['sort']) && in_array($_GET['sort'], array('off', 'date', 'id', 'author_id', 'locked', 'frontpage', 'sticky', 'featured', 'type', 'subject', 'parse'))) ? $_GET['sort'] : 'date';
-            $context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=admin;area=tparticles;sa=articles;sort=' . $sort , $start, $context['TPortal']['total_nocategory'], 15);
+            $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl . '?action=admin;area=tparticles;sa=articles;sort=' . $sort , $start, $context['TPortal']['total_nocategory'], 15);
             $request = $db->query('', '
                 SELECT	art.id, art.date, art.frontpage, art.category, art.author_id as author_id,
                     COALESCE(mem.real_name, art.author) as author, art.subject, art.approved, art.sticky,
@@ -1472,7 +1400,7 @@ class ArticleAdmin extends \Action_Controller
         self::action_javascript();
         \loadTemplate('TPortalAdmin');
         $context['sub_template'] = 'strays';
-        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=strays', $txt['tp-strays']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=strays', $txt['tp-strays']);
     }}}
 
     public function action_submission() {{{
@@ -1547,7 +1475,7 @@ class ArticleAdmin extends \Action_Controller
             $start = (!empty($_GET['p']) && is_numeric($_GET['p'])) ? $_GET['p'] : 0;
             // sorting?
             $sort = $context['TPortal']['sort'] = (!empty($_GET['sort']) && in_array($_GET['sort'], array('date', 'id','author_id', 'type', 'subject', 'parse'))) ? $_GET['sort'] : 'date';
-            $context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=admin;area=tparticles;sa=submission;sort=' . $sort , $start, $context['TPortal']['total_submissions'], 15);
+            $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl . '?action=admin;area=tparticles;sa=submission;sort=' . $sort , $start, $context['TPortal']['total_submissions'], 15);
             $request = $db->query('', '
                 SELECT	art.id, art.date, art.frontpage, art.category, art.author_id as author_id,
                     COALESCE(mem.real_name, art.author) as author, art.subject, art.approved,
@@ -1578,8 +1506,8 @@ class ArticleAdmin extends \Action_Controller
 
         \loadTemplate('TPortalAdmin');
         $context['sub_template'] = 'submission';
-        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=articles', $txt['tp-articles']);
-        TPadd_linktree($scripturl.'?action=admin;area=tparticles;sa=submission', $txt['tp-submissions']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=articles', $txt['tp-articles']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=submission', $txt['tp-submissions']);
     }}}
 
     public function action_javascript() {{{

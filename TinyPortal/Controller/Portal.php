@@ -16,6 +16,7 @@ use \TinyPortal\Model\Database as TPDatabase;
 use \TinyPortal\Model\Integrate as TPIntegrate;
 use \TinyPortal\Model\Mentions as TPMentions;
 use \TinyPortal\Model\Permissions as TPPermissions;
+use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 use \ElkArte\Errors\Errors;
 use \ElkArte\sources\Frontpage_Interface;
@@ -64,7 +65,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
     public function action_index() {{{
         global $context, $txt;
 
-		\loadLanguage('TPortal');
+		TPSubs::getInstance()->loadLanguage('TPortal');
 
         $action = TPUtil::filter('action', 'get', 'string');
         if($action == 'tportal') {
@@ -188,8 +189,6 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     $tpArticle->updateArticleViews($page);
 
                     $comments = $tpArticle->getArticleComments($context['user']['id'] , $article['id']);
-
-	                require_once(SUBSDIR . '/TPortal.subs.php');
 
                     $context['TPortal']['article']['countarticles'] = $tpArticle->getTotalAuthorArticles($context['TPortal']['article']['author_id'], true, true);
 
@@ -372,7 +371,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                         $allcats    = \TinyPortal\Model\Category::getInstance()->getCategoryData(array('*') , array('item_type' => 'category'));
 
                         // setup the linkree
-                        TPstrip_linktree();
+                        TPSubs::getInstance()->strip_linktree();
 
                         // do the category have any parents?
                         $parents = array();
@@ -391,10 +390,10 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                         $parts = array_reverse($parents, TRUE);
                         // add to the linktree
                         foreach($parts as $parent) {
-                            TPadd_linktree($scripturl.'?cat='. $parent['shortname'], $parent['name']);
+                            TPSubs::getInstance()->addLinkTree($scripturl.'?cat='. $parent['shortname'], $parent['name']);
                         }
 
-                        TPadd_linktree($scripturl.'?page='. (!empty($context['TPortal']['article']['shortname']) ? $context['TPortal']['article']['shortname'] : $context['TPortal']['article']['id']), $context['TPortal']['article']['subject']);
+                        TPSubs::getInstance()->addLinkTree($scripturl.'?page='. (!empty($context['TPortal']['article']['shortname']) ? $context['TPortal']['article']['shortname'] : $context['TPortal']['article']['id']), $context['TPortal']['article']['subject']);
                     }
 
                     $context['page_title'] = $context['TPortal']['article']['subject'];
@@ -616,10 +615,10 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     }
 
                     // make the pageindex!
-                    $context['TPortal']['pageindex'] = TPageIndex($scripturl . '?cat=' . $cat, $start, $all_articles, $max);
+                    $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl . '?cat=' . $cat, $start, $all_articles, $max);
 
                     // setup the linkree
-                    TPstrip_linktree();
+                    TPSubs::getInstance()->strip_linktree();
 
                     // do the category have any parents?
                     $parents = array();
@@ -648,14 +647,14 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     $parts = array_reverse($parents, TRUE);
                     // add to the linktree
                     foreach($parts as $parent) {
-                        TPadd_linktree($scripturl.'?cat='. $parent['shortname'] , $parent['name']);
+                        TPSubs::getInstance()->addLinkTree($scripturl.'?cat='. $parent['shortname'] , $parent['name']);
                     }
 
                     if(!empty($context['TPortal']['category']['shortname'])) {
-                        TPadd_linktree($scripturl.'?cat='. $context['TPortal']['category']['short_name'], $context['TPortal']['category']['display_name']);
+                        TPSubs::getInstance()->addLinkTree($scripturl.'?cat='. $context['TPortal']['category']['short_name'], $context['TPortal']['category']['display_name']);
                     }
                     else {
-                        TPadd_linktree($scripturl.'?cat='. $context['TPortal']['category']['id'], $context['TPortal']['category']['display_name']);
+                        TPSubs::getInstance()->addLinkTree($scripturl.'?cat='. $context['TPortal']['category']['id'], $context['TPortal']['category']['display_name']);
                     }
 
                     // check clist
@@ -752,7 +751,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                 $tpArticle          = TPArticle::getInstance();
                 $articles_total     = $tpArticle->getTotalArticles($artgroups);
                 // make the pageindex!
-                $context['TPortal']['pageindex'] = TPageIndex($scripturl .'?frontpage', $start, $articles_total, $max);
+                $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl .'?frontpage', $start, $articles_total, $max);
 
                 $request =  $db->query('', '
                     SELECT art.id, ( CASE WHEN art.useintro = 1 THEN art.intro ELSE  art.body END ) AS body,
@@ -878,7 +877,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
         case 'forum_selected':
             $totalmax = 200;
 
-            loadLanguage('Stats');
+            TPSubs::getInstance()->loadLanguage('Stats');
 
             // Find the post ids.
             if($context['TPortal']['front_type'] == 'forum_only') {
@@ -930,7 +929,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
             $posts      = $tpArticle->getForumPosts($posts);
 
             // make the pageindex!
-            $context['TPortal']['pageindex'] = TPageIndex($scripturl .'?frontpage', $start, $start + count($posts), $max);
+            $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl .'?frontpage', $start, $start + count($posts), $max);
 
             if(count($posts) > 0) {
                 $total      = min(count($posts), $max);
@@ -976,7 +975,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
             }
 
             $totalmax = 200;
-            loadLanguage('Stats');
+            TPSubs::getInstance()->loadLanguage('Stats');
             $year = 10000000;
             $year2 = 100000000;
 
@@ -1088,7 +1087,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                 }
             }
             // make the pageindex!
-            $context['TPortal']['pageindex'] = TPageIndex($scripturl .'?frontpage', $start, count($posts), $max);
+            $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl .'?frontpage', $start, count($posts), $max);
 
             // Clear request so that the check further down works correctly
             $request = false;
@@ -1366,8 +1365,8 @@ class Portal extends \Action_Controller implements Frontpage_Interface
         tp_hidebars();
         $context['TPortal']['not_forum'] = false;
 
-        if(\loadLanguage('TPhelp') == false) {
-            \loadLanguage('TPhelp', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPhelp') == false) {
+            TPSubs::getInstance()->loadLanguage('TPhelp', 'english');
         }
 
         \loadTemplate('TPhelp');

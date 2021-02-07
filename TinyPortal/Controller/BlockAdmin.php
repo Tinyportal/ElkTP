@@ -18,6 +18,7 @@ use \TinyPortal\Model\Database as TPDatabase;
 use \TinyPortal\Model\Integrate as TPIntegrate;
 use \TinyPortal\Model\Mentions as TPMentions;
 use \TinyPortal\Model\Permissions as TPPermissions;
+use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 use \ElkArte\Errors\Errors;
 
@@ -43,41 +44,41 @@ class BlockAdmin extends \Action_Controller
             }
 
             $subActions = array (
-                'blocks'        => array($this, 'showBlock', array()),
-                'addblock'      => array($this, 'showBlock', array()),
-                'editblock'     => array($this, 'editBlock', array()),
-                'updateblock'   => array($this, 'updateBlock', array()),
-                'saveblock'     => array($this, 'saveBlock', array()),
-                'blockon'       => array($this, 'ajaxBlock', array()),
-                'blockoff'      => array($this, 'ajaxBlock', array()),
-                'blockdelete'   => array($this, 'ajaxBlock', array()),
-                'blockleft'     => array($this, 'ajaxBlock', array()),
-                'blocktop'      => array($this, 'ajaxBlock', array()),
-                'blockcenter'   => array($this, 'ajaxBlock', array()),
-                'blockfront'    => array($this, 'ajaxBlock', array()),
-                'blocklower'    => array($this, 'ajaxBlock', array()),
-                'blockbottom'   => array($this, 'ajaxBlock', array()),
-                'blockright'    => array($this, 'ajaxBlock', array()),
-                'addpos'        => array($this, 'ajaxBlock', array()),
-                'subpos'        => array($this, 'ajaxBlock', array()),
-                'blktype'       => array($this, 'ajaxBlock', array()),
-                'panels'        => array($this, 'updatePanels', array()),
-                'updatepanels'  => array($this, 'updatePanels', array()),
-                'blockoverview' => array($this, 'showOverview', array()),
-                'updateoverview'=> array($this, 'updateOverview', array()),
+                'blocks'        => array($this, 'action_block', array()),
+                'addblock'      => array($this, 'action_block', array()),
+                'editblock'     => array($this, 'action_edit', array()),
+                'updateblock'   => array($this, 'action_update', array()),
+                'updateblocks'  => array($this, 'action_updates', array()),
+                'saveblock'     => array($this, 'action_save', array()),
+                'blockon'       => array($this, 'action_ajax', array()),
+                'blockoff'      => array($this, 'action_ajax', array()),
+                'blockdelete'   => array($this, 'action_ajax', array()),
+                'blockleft'     => array($this, 'action_ajax', array()),
+                'blocktop'      => array($this, 'action_ajax', array()),
+                'blockcenter'   => array($this, 'action_ajax', array()),
+                'blockfront'    => array($this, 'action_ajax', array()),
+                'blocklower'    => array($this, 'action_ajax', array()),
+                'blockbottom'   => array($this, 'action_ajax', array()),
+                'blockright'    => array($this, 'action_ajax', array()),
+                'addpos'        => array($this, 'action_ajax', array()),
+                'subpos'        => array($this, 'action_ajax', array()),
+                'blktype'       => array($this, 'action_ajax', array()),
+                'panels'        => array($this, 'action_panels', array()),
+                'updatepanels'  => array($this, 'action_panels', array()),
+                'blockoverview' => array($this, 'action_show', array()),
+                'updateoverview'=> array($this, 'action_overview', array()),
             );
 
-            if(\loadLanguage('TPortalAdmin') == false) {
-                \loadLanguage('TPortalAdmin', 'english');
+            if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+                TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
             }
-            if(\loadLanguage('TPortal') == false) {
-                \loadLanguage('TPortal', 'english');
+            if(TPSubs::getInstance()->loadLanguage('TPortal') == false) {
+                TPSubs::getInstance()->loadLanguage('TPortal', 'english');
             }
-            if(\loadLanguage('TPmodules') == false) {
-                \loadLanguage('TPmodules', 'english');
+            if(TPSubs::getInstance()->loadLanguage('TPmodules') == false) {
+                TPSubs::getInstance()->loadLanguage('TPmodules', 'english');
             }
 
-            require_once(SUBSDIR . '/TPortal.subs.php');
             $context['TPortal']['subaction'] = $sa;
 
             $action     = new \Action();
@@ -96,7 +97,7 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function showBlock() {{{
+    public function action_block() {{{
         global $context, $txt, $settings, $scripturl;
 
         \isAllowedTo('tp_blocks');
@@ -104,15 +105,15 @@ class BlockAdmin extends \Action_Controller
         $tpBlock    = TPBlock::getInstance();
 
         if(($context['TPortal']['subaction'] == 'blocks')) {
-            \TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=blocks', $txt['tp-blocks']);
+            TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tpblocks;sa=blocks', $txt['tp-blocks']);
         }
         else if($context['TPortal']['subaction'] == 'addblock') {
-            \TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=addblock', $txt['tp-addblock']);
+            TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tpblocks;sa=addblock', $txt['tp-addblock']);
             // collect all available PHP block snippets
-            $context['TPortal']['blockcodes']   = \TPcollectSnippets();
+            $context['TPortal']['blockcodes']   = TPSubs::getInstance()->collectSnippets();
             $context['TPortal']['copyblocks']   = $tpBlock->getBlocks();
             $context['TPortal']['blockside']    = TPUtil::filter('side', 'get', 'string');
-            \get_articles();
+            TPSubs::getInstance()->get_articles();
             // check which side its mean to be on
         }
 
@@ -151,7 +152,7 @@ class BlockAdmin extends \Action_Controller
             }
         }
 
-        \get_articles();
+        TPSubs::getInstance()->get_articles();
 
         $context['html_headers'] .= '
         <script type="text/javascript" src="'. $settings['default_theme_url']. '/scripts/editor.js?fin20"></script>
@@ -201,7 +202,7 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function editBlock( $block_id = 0 ) {{{
+    public function action_edit( $block_id = 0 ) {{{
 
         global $settings, $context, $scripturl, $txt;
 
@@ -216,16 +217,14 @@ class BlockAdmin extends \Action_Controller
             throw new Elk_Exception($txt['tp-notablock'], 'general');
         }
 
-        if(loadLanguage('TPortalAdmin') == false) {
-            loadLanguage('TPortalAdmin', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
 
         checksession('get');
 
-        require_once(SUBSDIR . '/TPortal.subs.php');
-
-        TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=blocks', $txt['tp-blocks']);
-        TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=editblock;id='.$block_id . ';'.$context['session_var'].'='.$context['session_id'], $txt['tp-editblock']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tpblocks;sa=blocks', $txt['tp-blocks']);
+        TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tpblocks;sa=editblock;id='.$block_id . ';'.$context['session_var'].'='.$context['session_id'], $txt['tp-editblock']);
 
         $row = $tpBlock->getBlock($block_id);
         if(is_array($row)) {
@@ -287,7 +286,7 @@ class BlockAdmin extends \Action_Controller
                 }
             }
             // collect all available PHP block snippets
-            $context['TPortal']['blockcodes'] = TPcollectSnippets();
+            $context['TPortal']['blockcodes'] = TPSubs::getInstance()->collectSnippets();
 
             // Get the category names
             $categories = TPCategory::getInstance()->getCategoryData(array('id', 'display_name'), array('item_type' => 'category'));
@@ -298,10 +297,10 @@ class BlockAdmin extends \Action_Controller
                 }
             }
 
-            \get_grps();
-            \get_langfiles();
-            \get_boards();
-            \get_articles();
+            TPSubs::getInstance()->get_grps();
+            TPSubs::getInstance()->get_langfiles();
+            TPSubs::getInstance()->get_boards();
+            TPSubs::getInstance()->get_articles();
             $context['TPortal']['edit_categories'] = array();
 
             // get all themes for selection
@@ -342,7 +341,35 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function updateBlock( $block_id = 0 ) {{{
+    public function action_updates() {{{
+        global $context;
+
+        $blocks = array();
+
+        if(is_array($_POST) && count($_POST)) {
+            foreach($_POST as $k => $v) {
+                foreach(array('pos', 'title', 'type', 'blockbody') as $type) {
+                    if(strstr($k, $type)) {
+                        $id = str_replace($type, '', $k);
+                        if($type == 'blockbody') {
+                            $type = 'body';
+                        }
+                        $blocks[$id][$type] = $v;
+                    }
+                }
+            }
+        }
+
+        foreach($blocks as $block_id => $updateArray) {
+            TPBlock::getInstance()->updateBlock($block_id, $updateArray);
+        }
+
+        $context['TPortal']['subaction'] = 'blocks';
+        self::action_block();
+
+    }}}
+
+    public function action_update( $block_id = 0 ) {{{
         global $settings, $context, $scripturl, $txt;
 
         \checkSession('post');
@@ -481,7 +508,7 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function saveBlock( ) {{{
+    public function action_save( ) {{{
         global $settings, $context, $scripturl, $txt;
 
         checkSession('post');
@@ -502,8 +529,8 @@ class BlockAdmin extends \Action_Controller
                 }
             }
             else {
-                $od     = TPparseModfile(file_get_contents($context['TPortal']['blockcode_upload_path'] . $type.'.blockcode') , array('code'));
-                $body   = tp_convertphp($od['code']);
+                $od     = TPSubs::getInstance()->parseModfile(file_get_contents($context['TPortal']['blockcode_upload_path'] . $type.'.blockcode') , array('code'));
+                $body   = TPSubs::getInstance()->convertphp($od['code']);
 				$type   = 10;
             }
         }
@@ -550,7 +577,7 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function ajaxBlock() {{{
+    public function action_ajax() {{{
 
         checksession('get');
         isAllowedTo('tp_blocks');
@@ -613,12 +640,12 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function showOverview() {{{
+    public function action_show() {{{
         global $context, $txt, $scripturl;
 
         // are we on overview screen?
         if($context['TPortal']['subaction'] == 'blockoverview') {
-            TPadd_linktree($scripturl.'?action=admin;area=tpblocks;sa=blockoverview', $txt['tp-blockoverview']);
+            TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tpblocks;sa=blockoverview', $txt['tp-blockoverview']);
 
             // fetch all blocks member group permissions
             $data   = TPBlock::getInstance()->getBlockData(array('id', 'title', 'bar', 'access', 'type'), array( 'off' => 0 ) );
@@ -634,12 +661,12 @@ class BlockAdmin extends \Action_Controller
                     );
                 }
             }
-            \get_grps(true,true);
+            TPSubs::getInstance()->get_grps(true,true);
         }
 
     }}}
 
-    public function updateOverview() {{{
+    public function action_overview() {{{
 
 		checkSession('post');
 		isAllowedTo('tp_blocks');
@@ -671,7 +698,7 @@ class BlockAdmin extends \Action_Controller
 
     }}}
 
-    public function updatePanels() {{{
+    public function action_panels() {{{
         global $txt, $context;
 
         if($context['TPortal']['subaction'] == 'panels') {
@@ -700,7 +727,7 @@ class BlockAdmin extends \Action_Controller
             }
         }
 
-        \updateTPSettings($updateArray);
+        TPSubs::getInstance()->updateSettings($updateArray);
 
         redirectexit('action=admin;area=tpblocks;sa=panels;' . $context['session_var'] . '=' . $context['session_id']);
     }}}
