@@ -51,14 +51,14 @@ class PortalAdmin extends \Action_Controller
 				'updatefrontpage'	=> array($this, 'update_frontpage', array()),
 			);
 
-			if(\TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
-				\TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
+			if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+				TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
 			}
-			if(\TPSubs::getInstance()->loadLanguage('TPortal') == false) {
-				\TPSubs::getInstance()->loadLanguage('TPortal', 'english');
+			if(TPSubs::getInstance()->loadLanguage('TPortal') == false) {
+				TPSubs::getInstance()->loadLanguage('TPortal', 'english');
 			}
-			if(\TPSubs::getInstance()->loadLanguage('TPmodules') == false) {
-				\TPSubs::getInstance()->loadLanguage('TPmodules', 'english');
+			if(TPSubs::getInstance()->loadLanguage('TPmodules') == false) {
+				TPSubs::getInstance()->loadLanguage('TPmodules', 'english');
 			}
 
 			$context['TPortal']['subaction'] = $sa;
@@ -156,9 +156,9 @@ class PortalAdmin extends \Action_Controller
                         if(strncmp($value, BOARDDIR, strlen(BOARDDIR)) == 0) {
                             // It cann't be part of the existing path
                             if(strncmp($value, $context['TPortal']['image_upload_path'], strlen($context['TPortal']['image_upload_path'])) != 0) {
-                                if(\tp_create_dir($value)) {
-                                    \tp_recursive_copy($context['TPortal']['image_upload_path'], $value);
-                                    \tp_delete_dir($context['TPortal']['image_upload_path']);
+                                if(TPSubs::getInstance()->create_dir($value)) {
+                                    TPSubs::getInstance()->recursive_copy($context['TPortal']['image_upload_path'], $value);
+                                    TPSubs::getInstance()->delete_dir($context['TPortal']['image_upload_path']);
                                     $updateArray['image_upload_path'] = $value;
                                 }
                             }
@@ -168,7 +168,7 @@ class PortalAdmin extends \Action_Controller
             }
         }
 
-        \updateTPSettings($updateArray);
+        TPSubs::getInstance()->updateSettings($updateArray);
         \redirectExit('action=admin;area=tpsettings;sa=settings');
 
 	}}}
@@ -273,7 +273,7 @@ class PortalAdmin extends \Action_Controller
 		    $updateArray['SSI_board'] = implode(',', $ssi);
         }
 
-        \updateTPSettings($updateArray);
+        TPSubs::getInstance()->updateSettings($updateArray);
         \redirectExit('action=admin;area=tpsettings;sa=frontpage');
 	}}}
 

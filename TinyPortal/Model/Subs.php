@@ -2265,7 +2265,7 @@ class Subs
         }
     }}}
 
-    public function updateTPSettings($addSettings) {{{
+    public function updateSettings($addSettings) {{{
         global $context;
 
         $tpAdmin = Admin::getInstance();
@@ -2651,41 +2651,41 @@ class Subs
         }
     }}}
 
-    public function tp_create_dir($path) {{{
+    public function create_dir($path) {{{
 
-        require_once(SOURCEDIR . '/Package.subs.php');
+        require_once(SUBSDIR . '/Package.subs.php');
 
         // Load up the package FTP information?
-        create_chmod_control();
+        \create_chmod_control();
 
-        if (!mktree($path, 0755)) {
-            deltree($path, true);
+        if (!\mktree($path, 0755)) {
+            \deltree($path, true);
             throw new Elk_Exception($txt['tp-failedcreatedir'], 'general');
         }
 
         return TRUE;
     }}}
 
-    public function tp_delete_dir($path) {{{
+    public function delete_dir($path) {{{
 
-        require_once(SOURCEDIR . '/Package.subs.php');
+        require_once(SUBSDIR . '/Package.subs.php');
 
         // Load up the package FTP information?
-        create_chmod_control();
+        \create_chmod_control();
 
-        deltree($path, true);
+        \deltree($path, true);
 
         return TRUE;
     }}}
 
-    public function tp_recursive_copy($src, $dst) {{{
+    public function recursive_copy($src, $dst) {{{
 
         $dir = opendir($src);
-        tp_create_dir($dst);
+        self::create_dir($dst);
         while(false !== ($file = readdir($dir)) ) {
             if(($file != '.') && ($file != '..')) {
                 if(is_dir($src . '/' . $file)) {
-                    tp_recursive_copy($src . '/' . $file,$dst . '/' . $file);
+                    self::recursive_copy($src . '/' . $file,$dst . '/' . $file);
                 }
                 else {
                     copy($src . '/' . $file,$dst . '/' . $file);

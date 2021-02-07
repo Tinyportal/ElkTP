@@ -727,7 +727,7 @@ class BlockAdmin extends \Action_Controller
             }
         }
 
-        \updateTPSettings($updateArray);
+        TPSubs::getInstance()->updateSettings($updateArray);
 
         redirectexit('action=admin;area=tpblocks;sa=panels;' . $context['session_var'] . '=' . $context['session_id']);
     }}}

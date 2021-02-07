@@ -10,7 +10,6 @@
 		<require-dir name="themes" destination="BOARDDIR" />
 		<require-dir name="TinyPortal" destination="BOARDDIR" />
 		<require-dir name="tp-files" destination="BOARDDIR" />
-		<require-dir name="tp-images" destination="BOARDDIR" />
 		<database>database.php</database>
         <hook hook="integrate_pre_load" function="\TinyPortal\Integrate::hookPreLoad" file="BOARDDIR/TinyPortal/Integrate.php" />
 	</install>

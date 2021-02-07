@@ -357,7 +357,7 @@ class ArticleAdmin extends \Action_Controller
         if(substr($newstring, 0, 1) == ',')
             $newstring = substr($newstring, 1);
 
-        updateTPSettings(array('frontpage_topics' => $newstring));
+        TPSubs::getInstance()->updateSettings(array('frontpage_topics' => $newstring));
 
         redirectexit('topic='. $t . '.0');
 
@@ -1099,7 +1099,7 @@ class ArticleAdmin extends \Action_Controller
 
             $updateArray['cat_list'] = $catnames;
 
-            updateTPSettings($updateArray);
+            TPSubs::getInstance()->updateSettings($updateArray);
             redirectexit('action=admin;area=tparticles;sa=clist;');
         }
         else {
