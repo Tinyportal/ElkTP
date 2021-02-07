@@ -10,6 +10,7 @@
  */
 namespace TinyPortal\Controller;
 
+use \TinyPortal\Model\Admin as TPAdmin;
 use \TinyPortal\Model\Article as TPArticle;
 use \TinyPortal\Model\Block as TPBlock;
 use \TinyPortal\Model\Database as TPDatabase;
