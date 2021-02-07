@@ -104,6 +104,7 @@ class Integrate
         $className  = str_replace('\\', '/', $className);
         $className  = str_replace('_', '.', $className);
         $classFile  = BOARDDIR . '/' . $className . '.php';
+
         if ( file_exists( $classFile ) ) {
             require_once($classFile);
         }
@@ -119,6 +120,9 @@ class Integrate
         else {
             define('TP_PGSQL', false);
         }
+
+        define('TP_VERSION',        '1.0.0 RC2');
+        define('TP_SHORT_VERSION',  '100RC2');
 
         // Set this up for everything that TinyPortal needs
         $context['TPortal']                     = array();
@@ -199,7 +203,7 @@ class Integrate
         }
 
 
-        $string = '<a target="_blank" href="https://www.tinyportal.net" title="TinyPortal">TinyPortal 1.0.0 RC1</a> &copy; <a href="' . $scripturl . '?action=tportal;sa=credits" title="Credits">2005-2021</a>';
+        $string = '<a target="_blank" href="https://www.tinyportal.net" title="TinyPortal">TinyPortal '.TP_VERSION.'</a> &copy; <a href="' . $scripturl . '?action=tportal;sa=credits" title="Credits">2005-2021</a>';
 
         if (ELK == 'SSI' || strpos($buffer, $string) !== false) {
             return $buffer;
@@ -281,7 +285,7 @@ class Integrate
             return;
         }
 
-		\loadLanguage('TPortal');
+		Model\Subs::getInstance()->loadLanguage('TPortal');
 
         $buttons = \elk_array_insert($buttons, 'home', array (
             'base' => array(
@@ -322,7 +326,7 @@ class Integrate
                         'action_hook' 	=> true,
                         'sub_buttons'   => $subButtons,
                     ),
-                ), 'after',
+                ), 'after'
             );
         }
 
@@ -346,8 +350,8 @@ class Integrate
     public static function hookAdminAreas(&$adminAreas) {{{
         global $txt;
 
-        \loadLanguage('TPortal');
-        \loadLanguage('TPortalAdmin');
+        Model\Subs::getInstance()->loadLanguage('TPortal');
+        Model\Subs::getInstance()->loadLanguage('TPortalAdmin');
 
         $adminAreas['tpadmin'] = array (
 			'title' => $txt['tp-tphelp'],
@@ -401,41 +405,41 @@ class Integrate
 
         // Profile area for 1.0
         $profile_areas['tp']['areas']['tpsummary'] = array(
-            'label' => $txt['tpsummary'],
-            'file' => '../subs/TPortal.subs.php',
-            'function' => 'tp_summary',
-            'icon' => 'menu_tp',
-            'permission' => array(
-                'own' => 'profile_view_own',
-                'any' => 'profile_view_any',
+            'label'         => $txt['tpsummary'],
+            'controller'    => '\\TinyPortal\\Controller\\Profile',
+            'function'      => 'summary',
+            'icon'          => 'menu_tp',
+            'permission'    => array(
+                'own'       => 'profile_view_own',
+                'any'       => 'profile_view_any',
             ),
         );
 
         if (!$context['TPortal']['use_wysiwyg']=='0') {
             $profile_areas['tp']['areas']['tparticles'] = array(
-                'label' => $txt['articlesprofile'],
-                'file' => '../subs/TPortal.subs.php',
-                'function' => 'tp_articles',
-                'icon' => 'menu_tparticle',
-                'permission' => array(
-                    'own' => 'profile_view_own',
-                    'any' => 'profile_view_any',
+                'label'         => $txt['articlesprofile'],
+                'controller'    => '\\TinyPortal\\Controller\\Profile',
+                'function'      => 'articles',
+                'icon'          => 'menu_tparticle',
+                'permission'    => array(
+                    'own'       => 'profile_view_own',
+                    'any'       => 'profile_view_any',
                 ),
-                'subsections' => array(
-                    'articles' => array($txt['tp-articles'], array('profile_view_own', 'profile_view_any')),
-                    'settings' => array($txt['tp-settings'], array('profile_view_own', 'profile_view_any')),
+                'subsections'   => array(
+                    'articles'  => array($txt['tp-articles'], array('profile_view_own', 'profile_view_any')),
+                    'settings'  => array($txt['tp-settings'], array('profile_view_own', 'profile_view_any')),
                 ),
             );
         }
         else {
             $profile_areas['tp']['areas']['tparticles'] = array(
-                'label' => $txt['articlesprofile'],
-                'file' => '../subs/TPortal.subs.php',
-                'function' => 'tp_articles',
-                'icon' => 'menu_tparticle',
-                'permission' => array(
-                    'own' => 'profile_view_own',
-                    'any' => 'profile_view_any',
+                'label'         => $txt['articlesprofile'],
+                'controller'    => '\\TinyPortal\\Controller\\Profile',
+                'function'      => 'articles',
+                'icon'          => 'menu_tparticle',
+                'permission'    => array(
+                    'own'       => 'profile_view_own',
+                    'any'       => 'profile_view_any',
                 ),
             );
         }
@@ -459,7 +463,7 @@ class Integrate
     public static function hookWhosOnline($actions) {{{
         global $txt, $scripturl;
 
-        loadLanguage('TPortal');
+        Model\Subs::getInstance()->loadLanguage('TPortal');
 
         $dB = Model\Database::getInstance();
 
@@ -554,9 +558,7 @@ class Integrate
         require_once(SOURCEDIR . '/Templates.class.php');
         \Templates::instance()->addDirectory(BOARDDIR . '/TinyPortal/Views/');
 
-        // Now initialise the portal
-        require_once(SUBSDIR . '/TPortal.subs.php');
-        \TPortalInit();
+        Model\Portal::getInstance()->init();
 
     }}}
 
@@ -596,8 +598,6 @@ class Integrate
 
     public static function hookLoadTheme(&$id_theme) {{{
         global $modSettings;
-
-        require_once(SUBSDIR . '/TPortal.subs.php');
 
         $theme  = 0;
         $dB     = Model\Database::getInstance();

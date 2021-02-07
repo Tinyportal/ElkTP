@@ -191,7 +191,7 @@ $settingsArray = array(
     'fulltextsearch' => '0',
     'disable_template_eval' => '1',
     'copyrightremoval' => '',
-    'image_upload_path'     => BOARDDIR.'/tp-images/',
+    'image_upload_path'     => BOARDDIR.'/tp-files/tp-images/',
     'blockcode_upload_path' => BOARDDIR.'/tp-files/tp-blockcodes/',
     // frontpage
     'front_type' => 'forum_articles',

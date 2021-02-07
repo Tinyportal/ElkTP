@@ -8,6 +8,7 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
+use TinyPortal\Model\Subs as TPSubs;
 
 function template_tp_above()
 {
@@ -57,7 +58,7 @@ function template_tp_above()
 	if($context['TPortal']['toppanel']==1)
 		echo '
 		<div id="tptopbarHeader" style="' , in_array('tptopbarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , 'clear: both;">
-			'	, TPortal_panel('top') , '
+			'	, TPSubs::getInstance()->panel('top') , '
 			<p class="clearthefloat"></p>
 		</div>';
 
@@ -72,7 +73,7 @@ function template_tp_above()
 					' , $context['TPortal']['useroundframepanels']==1 ?
 					'<span class="upperframe"><span></span></span>
 					<div class="roundframe" style="overflow: auto;">' : ''
-					, TPortal_panel('left') ,
+					, TPSubs::getInstance()->panel('left') ,
 					$context['TPortal']['useroundframepanels']==1 ?
 					'</div>
 					<span class="lowerframe"><span></span></span>' : '' , '
@@ -89,7 +90,7 @@ function template_tp_above()
 					' , $context['TPortal']['useroundframepanels']==1 ?
 					'<span class="upperframe"><span></span></span>
 					<div class="roundframe">' : ''
-						, TPortal_panel('right') ,
+						, TPSubs::getInstance()->panel('right') ,
 						$context['TPortal']['useroundframepanels']==1 ?
 					'</div>
 					<span class="lowerframe"><span></span></span>' : '' , '
@@ -104,7 +105,7 @@ function template_tp_above()
 	if($context['TPortal']['centerpanel']==1) {
 		echo '
 					<div id="tpcenterbarHeader" style="' , in_array('tpcenterbarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , '">
-						' , TPortal_panel('center') , '
+						' , TPSubs::getInstance()->panel('center') , '
 						<p class="clearthefloat"></p>
 					</div>';
     }
@@ -119,7 +120,7 @@ function template_tp_below()
 	if($context['TPortal']['lowerpanel']==1)
 		echo '
 				<div id="tplowerbarHeader" style="' , in_array('tplowerbarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , '">
-					' , TPortal_panel('lower') , '
+					' , TPSubs::getInstance()->panel('lower') , '
 					<p class="clearthefloat"></p>
 				</div>';
 // end centerContainer
@@ -133,7 +134,7 @@ function template_tp_below()
 	if($context['TPortal']['bottompanel']==1)
 		echo '
 		<div id="tpbottombarHeader" style="clear: both;' , in_array('tpbottombarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , '">
-			' , TPortal_panel('bottom') , '
+			' , TPSubs::getInstance()->panel('bottom') , '
 			<p class="clearthefloat"></p>
 		</div>';
 	echo '

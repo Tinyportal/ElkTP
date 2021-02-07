@@ -14,6 +14,7 @@ use \TinyPortal\Model\Article as TPArticle;
 use \TinyPortal\Model\Block as TPBlock;
 use \TinyPortal\Model\Database as TPDatabase;
 use \TinyPortal\Model\Mentions as TPMentions;
+use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 
 if (!defined('ELK')) {
@@ -27,22 +28,19 @@ class Article extends \Action_Controller
 
         global $settings, $context, $txt;
 
-        if(loadLanguage('TParticle') == false) {
-            loadLanguage('TParticle', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
+            TPSubs::getInstance()->loadLanguage('TParticle', 'english');
         }
 
-        if(loadLanguage('TPortalAdmin') == false) {
-            loadLanguage('TPortalAdmin', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
 
         // a switch to make it clear what is "forum" and not
         $context['TPortal']['not_forum'] = true;
 
-        // call the editor setup
-        require_once(SUBSDIR . '/TPortal.subs.php');
-
         // clear the linktree first
-        TPstrip_linktree();
+        TPSubs::getInstance()->strip_linktree();
 
         require_once(SUBSDIR . '/Action.class.php');
         $subActions = array (
@@ -173,14 +171,14 @@ class Article extends \Action_Controller
 		}
 
 		// construct the pages
-		$context['TPortal']['pageindex']        = TPageIndex($scripturl.'?action=tparticle;sa=showcomments', $tpstart, $check[0], 15);
+		$context['TPortal']['pageindex']        = TPSubs::getInstance()->pageIndex($scripturl.'?action=tparticle;sa=showcomments', $tpstart, $check[0], 15);
 		$context['TPortal']['unreadcomments']   = true;
 		$context['TPortal']['showall']          = $showall;
-		TPadd_linktree($scripturl.'?action=tparticle;sa=showcomments' . ($showall ? ';showall' : '')  , $txt['tp-showcomments']);
+		TPSubs::getInstance()->addLinkTree($scripturl.'?action=tparticle;sa=showcomments' . ($showall ? ';showall' : '')  , $txt['tp-showcomments']);
 		loadTemplate('TParticle');
 		$context['sub_template'] = 'showcomments';
-		if(loadLanguage('TParticle') == false) {
-			loadLanguage('TParticle', 'english');
+		if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
+			TPSubs::getInstance()->loadLanguage('TParticle', 'english');
 		};
 
 	}}}
@@ -236,8 +234,8 @@ class Article extends \Action_Controller
 					);
 					$context['sub_template'] = 'editcomment';
 					loadTemplate('TParticle');
-					if(loadLanguage('TParticle') == false) {
-						loadLanguage('TParticle', 'english');
+					if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
+						TPSubs::getInstance()->loadLanguage('TParticle', 'english');
 					};
 				}
 				throw new Elk_Exception($txt['tp-notallowed'], 'general');
@@ -323,7 +321,7 @@ class Article extends \Action_Controller
         $mystart = (!empty($_GET['p']) && is_numeric($_GET['p'])) ? $_GET['p'] : 0;
         // sorting?
         $sort = $context['TPortal']['tpsort'] = (!empty($_GET['tpsort']) && in_array($_GET['tpsort'], array('date', 'id', 'subject'))) ? $_GET['tpsort'] : 'date';
-        $context['TPortal']['pageindex'] = TPageIndex($scripturl . '?action=tparticle;sa=myarticles;tpsort=' . $sort, $mystart, $allmy, 15);
+        $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl . '?action=tparticle;sa=myarticles;tpsort=' . $sort, $mystart, $allmy, 15);
 
         $context['TPortal']['subaction'] = 'myarticles';
         $context['TPortal']['myarticles'] = array();
@@ -346,8 +344,8 @@ class Article extends \Action_Controller
             $db->free_result($request2);
         }
 
-        if(loadLanguage('TPortalAdmin') == false) {
-            loadLanguage('TPortalAdmin', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
 
         loadTemplate('TParticle');
