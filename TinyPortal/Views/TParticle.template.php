@@ -8,6 +8,7 @@
  * Copyright (C) 2020 - The TinyPortal Team
  *
  */
+use \TinyPortal\Model\Subs as TPSubs;
 
 // ** Sections **
 // Submit Article
@@ -96,13 +97,13 @@ function template_submitarticle()
 					echo '<textarea name="tp_article_body" id="tp_article_body" wrap="auto">' ,  $mg['body'] , '</textarea><br>';
                 }
 				elseif(($tp_use_wysiwyg > 0) && ($article_type == 'html')) {
-					TPwysiwyg('tp_article_body', $mg['body'], true, 'qup_tp_article_body', $tp_use_wysiwyg);
+					TPSubs::getInstance()->wysiwyg('tp_article_body', $mg['body'], true, 'qup_tp_article_body', $tp_use_wysiwyg);
                 }
 				elseif(($tp_use_wysiwyg == 0) && ($article_type == 'html')) {
 					echo '<textarea name="tp_article_body" id="tp_article_body" wrap="auto">' , $mg['body'], '</textarea><br>';
                 }
 				elseif($article_type == 'bbc') {
-					TP_bbcbox($context['TPortal']['editor_id']);
+					TPSubs::getInstance()->bbcbox($context['TPortal']['editor_id']);
                 }
 				else {
 					echo '
@@ -129,7 +130,7 @@ function template_submitarticle()
 				if($article_type == 'php' || $article_type == 'html')	{
 					echo '<div id="tp_article_show_intro"', ($mg['useintro'] == 0) ? 'style="display:none;">' : '>' , '<div class="font-strong">'.$txt['tp-introtext'].'</div>';
 					if( ( $tp_use_wysiwyg > 0 ) && ( $article_type == 'html' ) ) {
-						TPwysiwyg('tp_article_intro',  $mg['intro'], true, 'qup_tp_article_intro', $tp_use_wysiwyg, false);
+						TPSubs::getInstance()->wysiwyg('tp_article_intro',  $mg['intro'], true, 'qup_tp_article_intro', $tp_use_wysiwyg, false);
                     }
 					else {
 						echo '<textarea name="tp_article_intro" id="tp_article_intro" rows=5 cols=20 wrap="soft">'.$mg['intro'].'</textarea>';
