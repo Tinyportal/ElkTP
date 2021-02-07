@@ -226,8 +226,8 @@ class Admin extends Base {
 	public function sideMenu($area = '') {{{
 		global $txt, $context, $scripturl;
 
-		if(loadLanguage('TPortalAdmin') == false) {
-			loadLanguage('TPortalAdmin', 'english');
+		if(Subs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+			Subs::getInstance()->loadLanguage('TPortalAdmin', 'english');
 		}
 
 		$context['admin_tabs'] = array();

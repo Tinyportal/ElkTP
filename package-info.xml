@@ -7,16 +7,13 @@
 	<version>1.0.0 RC2</version>
 		<install for="1.1.* - 1.1.99">
 		<redirect url="">Installed!</redirect>
-		<require-dir name="themes" destination="BOARDDIR" />
 		<require-dir name="TinyPortal" destination="BOARDDIR" />
 		<require-dir name="tp-files" destination="BOARDDIR" />
 		<database>database.php</database>
         <hook hook="integrate_pre_load" function="\TinyPortal\Integrate::hookPreLoad" file="BOARDDIR/TinyPortal/Integrate.php" />
 	</install>
 	<uninstall for="1.1.* - 1.1.99">
-		<remove-dir name="THEMEDIR/images/tinyportal" />
 		<remove-dir name="BOARDDIR/TinyPortal" />
-		<remove-dir name="THEMEDIR/scripts/tinyportal" />
         <hook reverse="true" hook="integrate_pre_load" function="\TinyPortal\Integrate::hookPreLoad" file="BOARDDIR/TinyPortal/Integrate.php" />
 	</uninstall>
 </package-info>

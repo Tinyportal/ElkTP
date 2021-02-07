@@ -217,8 +217,8 @@ class BlockAdmin extends \Action_Controller
             throw new Elk_Exception($txt['tp-notablock'], 'general');
         }
 
-        if(loadLanguage('TPortalAdmin') == false) {
-            loadLanguage('TPortalAdmin', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
 
         checksession('get');

@@ -249,8 +249,8 @@ class ArticleAdmin extends \Action_Controller
         $article_data['options'] = implode(',', $options);
         // check if uploads are there
         if(array_key_exists('tp_article_illupload', $_FILES) && file_exists($_FILES['tp_article_illupload']['tmp_name'])) {
-            $name = TPuploadpicture('tp_article_illupload', '', $context['TPortal']['icon_max_size'], 'jpg,gif,png', 'tp-files/tp-articles/illustrations');
-            tp_createthumb('tp-files/tp-articles/illustrations/'. $name, $context['TPortal']['icon_width'], $context['TPortal']['icon_height'], 'tp-files/tp-articles/illustrations/s_'. $name);
+            $name = TPSubs::getInstance()->uploadpicture('tp_article_illupload', '', $context['TPortal']['icon_max_size'], 'jpg,gif,png', 'tp-files/tp-articles/illustrations');
+            TPSubs::getInstance()->createthumb('tp-files/tp-articles/illustrations/'. $name, $context['TPortal']['icon_width'], $context['TPortal']['icon_height'], 'tp-files/tp-articles/illustrations/s_'. $name);
             $article_data['illustration'] = $name;
         }
 
@@ -269,11 +269,11 @@ class ArticleAdmin extends \Action_Controller
         // check if uploadad picture
         if(isset($_FILES['qup_tp_article_body']) && file_exists($_FILES['qup_tp_article_body']['tmp_name'])) {
             $name = TPuploadpicture( 'qup_tp_article_body', $context['user']['id'].'uid', null, null, $context['TPortal']['image_upload_path']);
-            tp_createthumb($context['TPortal']['image_upload_path'].'/'. $name, 50, 50, $context['TPortal']['image_upload_path'].'/thumbs/thumb_'. $name);
+            TPSubs::getInstance()->createthumb($context['TPortal']['image_upload_path'].'/'. $name, 50, 50, $context['TPortal']['image_upload_path'].'/thumbs/thumb_'. $name);
         }
         // if this was a new article
         if(array_key_exists('tp_article_approved', $_POST) && $_POST['tp_article_approved'] == 1 && $_POST['tp_article_off'] == 0) {
-            tp_recordevent($timestamp, $_POST['tp_article_authorid'], 'tp-createdarticle', 'page=' . $where, 'Creation of new article.', (isset($allowed) ? $allowed : 0) , $where);
+            TPSubs::getInstance()->recordEvent($timestamp, $_POST['tp_article_authorid'], 'tp-createdarticle', 'page=' . $where, 'Creation of new article.', (isset($allowed) ? $allowed : 0) , $where);
         }
 
         if(array_key_exists('tpadmin_form', $_POST)) {
@@ -304,19 +304,13 @@ class ArticleAdmin extends \Action_Controller
         else if($_GET['sa'] == 'addarticle_html') {
             $context['TPortal']['articletype'] = 'html';
             isAllowedTo('tp_submithtml');
-            TPSubs::getInstance()->wysiwygSetup();
+            TPSubs::getInstance()->wysiwygSetup('tp_article_body');
         }
         else {
             redirectexit('action=forum');
         }
 
         $context['TPortal']['subaction'] = 'submitarticle';
-        if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
-            TPSubs::getInstance()->loadLanguage('TParticle', 'english');
-        }
-        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
-            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
-        }
         loadTemplate('TParticle');
         $context['sub_template'] = 'submitarticle';
 
@@ -366,8 +360,8 @@ class ArticleAdmin extends \Action_Controller
     public function action_upload_image() {{{
         global $context, $boardurl;
 
-        $name = TPuploadpicture( 'image', $context['user']['id'].'uid', null, null, $context['TPortal']['image_upload_path']);
-        tp_createthumb( $context['TPortal']['image_upload_path'] . $name, 50, 50, $context['TPortal']['image_upload_path'].'thumbs/thumb_'.$name );
+        $name = TPSubs::getInstance()->uploadpicture( 'image', $context['user']['id'].'uid', null, null, $context['TPortal']['image_upload_path']);
+        TPSubs::getInstance()->createthumb( $context['TPortal']['image_upload_path'] . $name, 50, 50, $context['TPortal']['image_upload_path'].'thumbs/thumb_'.$name );
         $response['data'] = str_replace(BOARDDIR, $boardurl, $context['TPortal']['image_upload_path']) . $name;
         $response['success'] = 'true';
         header( 'Content-type: application/json' );
@@ -444,13 +438,6 @@ class ArticleAdmin extends \Action_Controller
     public function action_admin() {{{
         global $scripturl, $context, $txt;
 
-        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
-            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
-        }
-        if(TPSubs::getInstance()->loadLanguage('TPortal') == false) {
-            TPSubs::getInstance()->loadLanguage('TPortal', 'english');
-        }
-
         require_once(SUBSDIR . '/Post.subs.php');
 
         // some GET values set up
@@ -488,7 +475,7 @@ class ArticleAdmin extends \Action_Controller
                 $context['sub_template'] = 'submitarticle';
                 $context['TPortal']['subaction'] = $_GET['sa'];
                 if($_GET['sa'] == 'addarticle_html') {
-                    TPSubs::getInstance()->wysiwygSetup();
+                    TPSubs::getInstance()->wysiwygSetup('tp_article_body');
                 }
             }
 
@@ -677,7 +664,7 @@ class ArticleAdmin extends \Action_Controller
             }
 
             if($context['TPortal']['editarticle']['articletype'] == 'html') {
-                TPSubs::getInstance()->wysiwygSetup();
+                TPSubs::getInstance()->wysiwygSetup('tp_article_body');
             }
 
             // Add in BBC editor before we call in template so the headers are there
@@ -1262,8 +1249,8 @@ class ArticleAdmin extends \Action_Controller
 
         if(isset($_FILES['tp_article_newillustration']) && file_exists($_FILES['tp_article_newillustration']['tmp_name'])) {
             checkSession('post');
-            $name = TPuploadpicture('tp_article_newillustration', '', $context['TPortal']['icon_max_size'], 'jpg,gif,png', 'tp-files/tp-articles/illustrations');
-            tp_createthumb('tp-files/tp-articles/illustrations/'. $name, $context['TPortal']['icon_width'], $context['TPortal']['icon_height'], 'tp-files/tp-articles/illustrations/s_'. $name);
+            $name = TPSubs::getInstance()->uploadpicture('tp_article_newillustration', '', $context['TPortal']['icon_max_size'], 'jpg,gif,png', 'tp-files/tp-articles/illustrations');
+            TPSubs::getInstance()->createthumb('tp-files/tp-articles/illustrations/'. $name, $context['TPortal']['icon_width'], $context['TPortal']['icon_height'], 'tp-files/tp-articles/illustrations/s_'. $name);
             unlink('tp-files/tp-articles/illustrations/'. $name);
         }
 

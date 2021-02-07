@@ -86,7 +86,7 @@ class Subs
     }}}
 
     public function setupSettings() {{{
-        global $maintenance, $context, $txt, $settings, $modSettings;
+        global $maintenance, $context, $txt, $settings, $modSettings, $boardurl;
 
         $db = Database::getInstance();
 
@@ -134,7 +134,7 @@ class Subs
                 $settings['tp_images_url'] = $settings['images_url'] . '/tinyportal';
             }
             else {
-                $settings['tp_images_url'] = $settings['default_images_url'] . '/tinyportal';
+                $settings['tp_images_url'] = $boardurl . '/TinyPortal/Views/images';
             }
         }
 
@@ -1039,17 +1039,17 @@ class Subs
         return $topi;
     }}}
 
-    public function wysiwygSetup() {{{
+    public function wysiwygSetup( $id, $body = '' ) {{{
         global $context, $boardurl, $txt;
 
         $context['html_headers'] .= '
-            <link rel="stylesheet" href="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/themes/default.min.css" />
-            <script src="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/sceditor.min.js"></script>
-            <script src="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/formats/xhtml.js"></script>
-            <script src="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/languages/'.$txt['lang_dictionary'].'.js"></script>
+            <link rel="stylesheet" href="'.$boardurl.'/TinyPortal/Views/scripts/sceditor/minified/themes/default.min.css" />
+            <script src="'.$boardurl.'/TinyPortal/Views/scripts/sceditor/minified/sceditor.min.js"></script>
+            <script src="'.$boardurl.'/TinyPortal/Views/scripts/sceditor/minified/formats/xhtml.js"></script>
+            <script src="'.$boardurl.'/TinyPortal/Views/scripts/sceditor/languages/'.$txt['lang_dictionary'].'.js"></script>
             <style>
-                .sceditor-button-floatleft div { background: url('.$boardurl.'/themes/default/images/tinyportal/floatleft.png); width:24px; height:24px; margin: -3px; }
-                .sceditor-button-floatright div { background: url('.$boardurl.'/themes/default/images/tinyportal/floatright.png); width:24px; height:24px; margin: -3px; }
+                .sceditor-button-floatleft div { background: url('.$boardurl.'/TinyPortal/Views/images/floatleft.png); width:24px; height:24px; margin: -3px; }
+                .sceditor-button-floatright div { background: url('.$boardurl.'/TinyPortal/Views/images/floatright.png); width:24px; height:24px; margin: -3px; }
             </style>
             <script type="text/javascript"><!-- // --><![CDATA[
                 sceditor.command.set(\'floatleft\', {
@@ -1086,7 +1086,7 @@ class Subs
             // ]]></script>';
 
         if($context['TPortal']['use_dragdrop']) {
-            $context['html_headers'] .= '<script src="'.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/plugins/dragdrop.js"></script>';
+            $context['html_headers'] .= '<script src="'.$boardurl.'/TinyPortal/Views/scripts/sceditor/minified/plugins/dragdrop.js"></script>';
         }
 
     }}}
@@ -1154,8 +1154,8 @@ class Subs
             echo '
                     format: \'xhtml\',
                     locale: "' . $txt['lang_dictionary'] . '",
-                    style: \''.$boardurl.'/themes/default/scripts/tinyportal/sceditor/minified/themes/content/default.min.css\',
-                    emoticonsRoot: \''.$boardurl.'/themes/default/scripts/tinyportal/sceditor/\'
+                    style: \''.$boardurl.'/TinyPortal/Views/scripts/sceditor/minified/themes/content/default.min.css\',
+                    emoticonsRoot: \''.$boardurl.'/TinyPortal/Views/scripts/sceditor/\'
                 });
 
             // ]]></script>';
@@ -1756,7 +1756,7 @@ class Subs
 
     }}}
 
-    public function tp_recordevent($date, $id_member, $textvariable, $link, $description, $allowed, $eventid) {{{
+    public function recordEvent($date, $id_member, $textvariable, $link, $description, $allowed, $eventid) {{{
         $db = Database::getInstance();
 
         $db->insert('insert',
@@ -2474,7 +2474,7 @@ class Subs
         tp_profile_articles($member_id);
     }}}
 
-    public function tp_createthumb($picture, $width, $height, $thumb) {{{
+    public function createthumb($picture, $width, $height, $thumb) {{{
 
         //code modified from http://www.akemapa.com/2008/07/10/php-gd-resize-transparent-image-png-gif/
         //Check if GD extension is loaded
@@ -2534,7 +2534,7 @@ class Subs
         return $thumb;
     }}}
 
-    public function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png', $destdir = 'tp-images') {{{
+    public function uploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png', $destdir = 'tp-images') {{{
         global $txt;
 
         self::loadLanguage('TPortal');
@@ -2737,9 +2737,10 @@ class Subs
         $filePath = BOARDDIR . '/TinyPortal/Views/languages/'.$lang.'/'.$template_name.'.'.$lang.'.php';
         if(file_exists($filePath)) {
             require_once($filePath);
+            return $lang;
         }
         else {
-            \loadLanguage($template_name, $lang, $fatal, $force_reload);
+            return \loadLanguage($template_name, $lang, $fatal, $force_reload);
         }
 
     }}}
