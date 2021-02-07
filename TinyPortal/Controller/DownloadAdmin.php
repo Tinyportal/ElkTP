@@ -39,10 +39,10 @@ class DownloadAdmin extends \Action_Controller
             $subAction  = TPUtil::filter('sa', 'get', 'string');
 
             $subActions = array(
-                'delete'    => array('', 'self::action_delete', array()),
-                'edit'      => array('', 'self::action_edit', array()),
-                'list'      => array('', 'self::action_list', array()),
-                'new'       => array('', 'self::action_new', array()),
+                'delete'    => array($this, 'action_delete', array()),
+                'edit'      => array($this, 'action_edit', array()),
+                'list'      => array($this, 'action_list', array()),
+                'new'       => array($this, 'action_new', array()),
             );
 
             $context['TPortal']['subaction'] = $subAction;
