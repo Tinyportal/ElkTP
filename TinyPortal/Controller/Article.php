@@ -28,12 +28,12 @@ class Article extends \Action_Controller
 
         global $settings, $context, $txt;
 
-        if(loadLanguage('TParticle') == false) {
-            loadLanguage('TParticle', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
+            TPSubs::getInstance()->loadLanguage('TParticle', 'english');
         }
 
-        if(loadLanguage('TPortalAdmin') == false) {
-            loadLanguage('TPortalAdmin', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
 
         // a switch to make it clear what is "forum" and not
@@ -177,8 +177,8 @@ class Article extends \Action_Controller
 		TPSubs::getInstance()->addLinkTree($scripturl.'?action=tparticle;sa=showcomments' . ($showall ? ';showall' : '')  , $txt['tp-showcomments']);
 		loadTemplate('TParticle');
 		$context['sub_template'] = 'showcomments';
-		if(loadLanguage('TParticle') == false) {
-			loadLanguage('TParticle', 'english');
+		if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
+			TPSubs::getInstance()->loadLanguage('TParticle', 'english');
 		};
 
 	}}}
@@ -234,8 +234,8 @@ class Article extends \Action_Controller
 					);
 					$context['sub_template'] = 'editcomment';
 					loadTemplate('TParticle');
-					if(loadLanguage('TParticle') == false) {
-						loadLanguage('TParticle', 'english');
+					if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
+						TPSubs::getInstance()->loadLanguage('TParticle', 'english');
 					};
 				}
 				throw new Elk_Exception($txt['tp-notallowed'], 'general');
@@ -344,8 +344,8 @@ class Article extends \Action_Controller
             $db->free_result($request2);
         }
 
-        if(loadLanguage('TPortalAdmin') == false) {
-            loadLanguage('TPortalAdmin', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
 
         loadTemplate('TParticle');

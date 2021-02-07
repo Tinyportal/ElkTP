@@ -30,12 +30,12 @@ class Block
     public function __construct() {{{
         global $context, $txt;
 
-        if(\loadLanguage('TPmodules') == false) {
-            \loadLanguage('TPmodules', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPmodules') == false) {
+            TPSubs::getInstance()->loadLanguage('TPmodules', 'english');
         }
 
-        if(\loadLanguage('TPortalAdmin') == false) {
-            \loadLanguage('TPortalAdmin', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
 
         // a switch to make it clear what is "forum" and not

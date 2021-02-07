@@ -24,8 +24,8 @@ class Search extends \Action_Controller
 
     public function action_index() {{{
 
-        if(\loadLanguage('TPmodules') == false) {
-            \loadLanguage('TPmodules', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPmodules') == false) {
+            TPSubs::getInstance()->loadLanguage('TPmodules', 'english');
         }
 
         require_once(SUBSDIR . '/Action.class.php');

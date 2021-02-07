@@ -285,7 +285,7 @@ class Integrate
             return;
         }
 
-		\loadLanguage('TPortal');
+		Model\Subs::getInstance()->loadLanguage('TPortal');
 
         $buttons = \elk_array_insert($buttons, 'home', array (
             'base' => array(
@@ -350,8 +350,8 @@ class Integrate
     public static function hookAdminAreas(&$adminAreas) {{{
         global $txt;
 
-        \loadLanguage('TPortal');
-        \loadLanguage('TPortalAdmin');
+        Model\Subs::getInstance()->loadLanguage('TPortal');
+        Model\Subs::getInstance()->loadLanguage('TPortalAdmin');
 
         $adminAreas['tpadmin'] = array (
 			'title' => $txt['tp-tphelp'],
@@ -463,7 +463,7 @@ class Integrate
     public static function hookWhosOnline($actions) {{{
         global $txt, $scripturl;
 
-        loadLanguage('TPortal');
+        Model\Subs::getInstance()->loadLanguage('TPortal');
 
         $dB = Model\Database::getInstance();
 

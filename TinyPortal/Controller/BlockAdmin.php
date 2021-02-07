@@ -69,14 +69,14 @@ class BlockAdmin extends \Action_Controller
                 'updateoverview'=> array($this, 'action_overview', array()),
             );
 
-            if(\loadLanguage('TPortalAdmin') == false) {
-                \loadLanguage('TPortalAdmin', 'english');
+            if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+                TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
             }
-            if(\loadLanguage('TPortal') == false) {
-                \loadLanguage('TPortal', 'english');
+            if(TPSubs::getInstance()->loadLanguage('TPortal') == false) {
+                TPSubs::getInstance()->loadLanguage('TPortal', 'english');
             }
-            if(\loadLanguage('TPmodules') == false) {
-                \loadLanguage('TPmodules', 'english');
+            if(TPSubs::getInstance()->loadLanguage('TPmodules') == false) {
+                TPSubs::getInstance()->loadLanguage('TPmodules', 'english');
             }
 
             $context['TPortal']['subaction'] = $sa;
@@ -661,7 +661,7 @@ class BlockAdmin extends \Action_Controller
                     );
                 }
             }
-            \get_grps(true,true);
+            TPSubs::getInstance()->get_grps(true,true);
         }
 
     }}}

@@ -65,7 +65,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
     public function action_index() {{{
         global $context, $txt;
 
-		\loadLanguage('TPortal');
+		TPSubs::getInstance()->loadLanguage('TPortal');
 
         $action = TPUtil::filter('action', 'get', 'string');
         if($action == 'tportal') {
@@ -877,7 +877,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
         case 'forum_selected':
             $totalmax = 200;
 
-            loadLanguage('Stats');
+            TPSubs::getInstance()->loadLanguage('Stats');
 
             // Find the post ids.
             if($context['TPortal']['front_type'] == 'forum_only') {
@@ -975,7 +975,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
             }
 
             $totalmax = 200;
-            loadLanguage('Stats');
+            TPSubs::getInstance()->loadLanguage('Stats');
             $year = 10000000;
             $year2 = 100000000;
 
@@ -1365,8 +1365,8 @@ class Portal extends \Action_Controller implements Frontpage_Interface
         tp_hidebars();
         $context['TPortal']['not_forum'] = false;
 
-        if(\loadLanguage('TPhelp') == false) {
-            \loadLanguage('TPhelp', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPhelp') == false) {
+            TPSubs::getInstance()->loadLanguage('TPhelp', 'english');
         }
 
         \loadTemplate('TPhelp');

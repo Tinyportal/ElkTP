@@ -1835,18 +1835,17 @@ class Subs
 
         // This is done to clear any output that was made before now. (would use ob_clean(), but that's PHP 4.2.0+...)
         ob_end_clean();
-        if (!empty($modSettings['enableCompressedOutput']) && @version_compare(PHP_VERSION, '4.2.0') >= 0 && @filesize($filename) <= 4194304 && in_array($file_ext, array('txt', 'html', 'htm', 'js', 'doc', 'pdf', 'docx', 'rtf', 'css', 'php', 'log', 'xml', 'sql', 'c', 'java')))
+        if (!empty($modSettings['enableCompressedOutput']) && @version_compare(PHP_VERSION, '4.2.0') >= 0 && @filesize($filename) <= 4194304 && in_array($file_ext, array('txt', 'html', 'htm', 'js', 'doc', 'pdf', 'docx', 'rtf', 'css', 'php', 'log', 'xml', 'sql', 'c', 'java'))) {
             @ob_start('ob_gzhandler');
-        else
-        {
+        }
+        else {
             ob_start();
             header('Content-Encoding: none');
         }
 
         // No point in a nicer message, because this is supposed to be an attachment anyway...
-        if (!file_exists($filename))
-        {
-            loadLanguage('Errors');
+        if (!file_exists($filename)) {
+            self::loadLanguage('Errors');
 
             header('HTTP/1.0 404 ' . $txt['attachment_not_found']);
             header('Content-Type: text/plain; charset=UTF-8');
@@ -1856,11 +1855,9 @@ class Subs
         }
 
         // If it hasn't been modified since the last time this attachement was retrieved, there's no need to display it again.
-        if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE']))
-        {
+        if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
             list($modified_since) = explode(';', $_SERVER['HTTP_IF_MODIFIED_SINCE']);
-            if (strtotime($modified_since) >= filemtime($filename))
-            {
+            if (strtotime($modified_since) >= filemtime($filename)) {
                 ob_end_clean();
 
                 // Answer the question - no, it hasn't been modified ;).
@@ -2457,8 +2454,8 @@ class Subs
                 ),
         );
 
-        if(\loadLanguage('TPortalAdmin') == false) {
-            \loadLanguage('TPortalAdmin', 'english');
+        if(self::loadLanguage('TPortalAdmin') == false) {
+            self::loadLanguage('TPortalAdmin', 'english');
         }
 
     }}}
@@ -2540,7 +2537,7 @@ class Subs
     public function TPuploadpicture($widthhat, $prefix, $maxsize='1800', $exts='jpg,gif,png', $destdir = 'tp-images') {{{
         global $txt;
 
-        loadLanguage('TPortal');
+        self::loadLanguage('TPortal');
 
         $upload = Upload::getInstance();
 
@@ -2730,6 +2727,22 @@ class Subs
         return $grp;
     }}}
 
+    public function loadLanguage($template_name, $lang = '', $fatal = true, $force_reload = false) {{{
+        global $user_info, $language, $txt;
+
+        if ($lang == '') {
+		    $lang = isset($user_info['language']) ? $user_info['language'] : $language;
+        }
+
+        $filePath = BOARDDIR . '/TinyPortal/Views/languages/'.$lang.'/'.$template_name.'.'.$lang.'.php';
+        if(file_exists($filePath)) {
+            require_once($filePath);
+        }
+        else {
+            \loadLanguage($template_name, $lang, $fatal, $force_reload);
+        }
+
+    }}}
 }
 
 ?>

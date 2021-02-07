@@ -34,12 +34,12 @@ class ArticleAdmin extends \Action_Controller
 
         allowedTo(array('tp_articles', 'tp_editownarticle'));
 
-        if(loadLanguage('TParticle') == false) {
-            loadLanguage('TParticle', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
+            TPSubs::getInstance()->loadLanguage('TParticle', 'english');
         }
 
-        if(loadLanguage('TPortalAdmin') == false) {
-            loadLanguage('TPortalAdmin', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
 
         // a switch to make it clear what is "forum" and not
@@ -311,11 +311,11 @@ class ArticleAdmin extends \Action_Controller
         }
 
         $context['TPortal']['subaction'] = 'submitarticle';
-        if(loadLanguage('TParticle') == false) {
-            loadLanguage('TParticle', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
+            TPSubs::getInstance()->loadLanguage('TParticle', 'english');
         }
-        if(loadLanguage('TPortalAdmin') == false) {
-            loadLanguage('TPortalAdmin', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
         loadTemplate('TParticle');
         $context['sub_template'] = 'submitarticle';
@@ -327,8 +327,8 @@ class ArticleAdmin extends \Action_Controller
 
         $context['TPortal']['subaction'] = 'submitsuccess';
         loadTemplate('TParticle');
-        if(loadLanguage('TParticle') == false) {
-            loadLanguage('TParticle', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
+            TPSubs::getInstance()->loadLanguage('TParticle', 'english');
         }
         $context['sub_template'] = 'submitsuccess';
 
@@ -444,11 +444,11 @@ class ArticleAdmin extends \Action_Controller
     public function action_admin() {{{
         global $scripturl, $context, $txt;
 
-        if(\loadLanguage('TPortalAdmin') == false) {
-            \loadLanguage('TPortalAdmin', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
-        if(\loadLanguage('TPortal') == false) {
-            \loadLanguage('TPortal', 'english');
+        if(TPSubs::getInstance()->loadLanguage('TPortal') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortal', 'english');
         }
 
         require_once(SUBSDIR . '/Post.subs.php');
@@ -871,7 +871,7 @@ class ArticleAdmin extends \Action_Controller
             }
         }
 
-        \get_catlayouts();
+        TPSubs::getInstance()->catLayouts();
 
         // we are on categories screen
         TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=categories', $txt['tp-categories']);
@@ -955,14 +955,14 @@ class ArticleAdmin extends \Action_Controller
             // guess we only want the category then
             else {
                 // get membergroups
-                get_grps();
-            $context['html_headers'] .= '
-            <script type="text/javascript"><!-- // --><![CDATA[
-                function changeIllu(node,name)
-                {
-                    node.src = \'' . $boardurl . '/tp-files/tp-articles/illustrations/\' + name;
-                }
-            // ]]></script>';
+                TPSubs::getInstance()->get_grps();
+                $context['html_headers'] .= '
+                <script type="text/javascript"><!-- // --><![CDATA[
+                    function changeIllu(node,name)
+                    {
+                        node.src = \'' . $boardurl . '/tp-files/tp-articles/illustrations/\' + name;
+                    }
+                // ]]></script>';
 
                 $request = $db->query('', '
                     SELECT * FROM {db_prefix}tp_categories

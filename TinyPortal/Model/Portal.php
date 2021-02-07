@@ -42,8 +42,8 @@ class Portal
             return;
         }
 
-        if(\loadLanguage('TPortal') == false) {
-            \loadLanguage('TPortal', 'english');
+        if(Subs::getInstance()->loadLanguage('TPortal') == false) {
+            Subs::getInstance()->loadLanguage('TPortal', 'english');
         }
 
         Mentions::getInstance()->addJS();
