@@ -91,6 +91,9 @@ class ArticleAdmin extends \Action_Controller
         $subAction  = $action->initialize($subActions, $sa);
         $action->dispatch($subAction);
 
+        if(!isset($context['sub_template'])) {
+            $context['sub_template'] = $sa;
+        }
     }}}
 
     public function action_attachment() {{{
