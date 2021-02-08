@@ -945,7 +945,7 @@ class ArticleAdmin extends \Action_Controller
             // guess we only want the category then
             else {
                 // get membergroups
-                TPSubs::getInstance()->get_grps();
+                TPSubs::getInstance()->grps();
                 $context['html_headers'] .= '
                 <script type="text/javascript"><!-- // --><![CDATA[
                     function changeIllu(node,name)

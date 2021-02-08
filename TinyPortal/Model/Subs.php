@@ -938,7 +938,7 @@ class Subs
                 if($row['parent'] == $row['id'] || $row['parent'] == '' || $row['parent'] == '0')
                     $row['parent'] = 9999;
                 // check access
-                $show = self::get_perm($row['access']);
+                $show = self::perm($row['access']);
                 if($show) {
                     $sorted[$row['id']] = array(
                         'id' => $row['id'],
@@ -1304,7 +1304,7 @@ class Subs
     }}}
 
 
-    public function get_perm($perm, $moderate = '') {{{
+    public function perm($perm, $moderate = '') {{{
         return Permissions::getInstance()->getPermissions($perm, $moderate);
     }}}
 
@@ -2214,7 +2214,7 @@ class Subs
         );
     }}}
 
-    public function get_grps($save = true, $noposts = true) {{{
+    public function grps($save = true, $noposts = true) {{{
         global $context, $txt;
 
         $db = Database::getInstance();
@@ -2578,7 +2578,7 @@ class Subs
         return basename($dstPath);
     }}}
 
-    public function get_langfiles() {{{
+    public function langfiles() {{{
         global $context, $settings;
 
         // get all languages for blocktitles
@@ -2629,7 +2629,7 @@ class Subs
         }
     }}}
 
-    public function get_articles() {{{
+    public function articles() {{{
 
         global $context;
 
@@ -2734,14 +2734,15 @@ class Subs
 		    $lang = isset($user_info['language']) ? $user_info['language'] : $language;
         }
 
-        $filePath = BOARDDIR . '/TinyPortal/Views/languages/'.$lang.'/'.$template_name.'.'.$lang.'.php';
-        if(file_exists($filePath)) {
-            require_once($filePath);
-            return $lang;
+        foreach( array ( $lang, 'english' ) as $l) {
+            $filePath = BOARDDIR . '/TinyPortal/Views/languages/'.$l.'/'.$template_name.'.'.$l.'.php';
+            if(file_exists($filePath)) {
+                require_once($filePath);
+                return $lang;
+            }
         }
-        else {
-            return \loadLanguage($template_name, $lang, $fatal, $force_reload);
-        }
+
+        return \loadLanguage($template_name, $lang, $fatal, $force_reload);
 
     }}}
 }
