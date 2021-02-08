@@ -1988,7 +1988,7 @@ function article_comments($render = true)
 		$data .= '
 	<a name="tp-comment">
 	<div></div>
-	<h2 class="category_header article_extra">' . $txt['tp-comments'] . ': ' . $context['TPortal']['article_comments_count'] . '' . (TPSubs::getInstance()->hidepanel('articlecomments', false, true, '5px 5px 0 5px')) . '</h2> ';
+	<h2 class="category_header article_extra">' . $txt['tp-comments'] . ': ' . $context['TPortal']['article_comments_count'] . '' . (TPSubs::getInstance()->hidePanel('articlecomments', false, true, '5px 5px 0 5px')) . '</h2> ';
 	}
 
 	if(in_array('comments', $context['TPortal']['article']['visual_options']) && !$context['TPortal']['article_comments_count'] == 0) {
