@@ -312,12 +312,12 @@ class Admin extends Base {
 				'list' => array(
 					'title' => $txt['tp-menu-list'],
 					'href' => $scripturl . '?action=admin;area=tpmenu;sa=list',
-					'is_selected' => $area == 'list',
+					'is_selected' => $area == 'list' && (Util::filter('area', 'get', 'string') == 'tpmenu'),
 				),
 				'add' => array(
 					'title' => $txt['tp-menu-add'],
 					'href' => $scripturl . '?action=admin;area=tpmenu;sa=add',
-					'is_selected' => $area == 'add',
+					'is_selected' => $area == 'add' && (Util::filter('area', 'get', 'string') == 'tpmenu'),
 				),
 			);
 		}
@@ -327,12 +327,12 @@ class Admin extends Base {
 				'list' => array(
 					'title' => $txt['tp-download-list'],
 					'href' => $scripturl . '?action=admin;area=tpdownload;sa=list',
-					'is_selected' => $area == 'list',
+					'is_selected' => $area == 'list' && (Util::filter('area', 'get', 'string') == 'tpdownload'),
 				),
 				'add' => array(
 					'title' => $txt['tp-download-add'],
 					'href' => $scripturl . '?action=admin;area=tpdownload;sa=add',
-					'is_selected' => $area == 'add',
+					'is_selected' => $area == 'add' && (Util::filter('area', 'get', 'string') == 'tpdownload'),
 				),
 			);
 		}
@@ -342,12 +342,12 @@ class Admin extends Base {
 				'list' => array(
 					'title'         => $txt['tp-gallery-list'],
 					'href'          => $scripturl . '?action=admin;area=tpgallery;sa=list',
-					'is_selected'   => $area == 'list',
+					'is_selected'   => $area == 'list' && (Util::filter('area', 'get', 'string') == 'tpgallery'),
 				),
 				'add' => array(
 					'title'         => $txt['tp-gallery-add'],
 					'href'          => $scripturl . '?action=admin;area=tpgallery;sa=add',
-					'is_selected'   => $area == 'add',
+					'is_selected'   => $area == 'add' && (Util::filter('area', 'get', 'string') == 'tpgallery'),
 				),
 			);
 		}
