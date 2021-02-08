@@ -642,10 +642,10 @@ class Subs
                 if($context['TPortal'][$side.'panel'] == 1) {
                     // add to the panel
                     if($pan == 'Left' || $pan == 'Right') {
-                        $context['TPortal']['upshrinkpanel'] .= $this->hidepanel('tp' . strtolower($pan) . 'barHeader', 'tp' . strtolower($pan) . 'barContainer', strtolower($pan).'-tp-upshrink_description');
+                        $context['TPortal']['upshrinkpanel'] .= $this->hidePanelTitle('tp' . strtolower($pan) . 'barHeader', 'tp' . strtolower($pan) . 'barContainer', strtolower($pan).'-tp-upshrink_description');
                     }
                     else {
-                        $context['TPortal']['upshrinkpanel'] .= $this->hidepanel('tp' . strtolower($pan) . 'barHeader', '', strtolower($pan).'-tp-upshrink_description');
+                        $context['TPortal']['upshrinkpanel'] .= $this->hidePanelTitle('tp' . strtolower($pan) . 'barHeader', '', strtolower($pan).'-tp-upshrink_description');
                     }
                 }
             }
@@ -1292,7 +1292,25 @@ class Subs
         return $boards;
     }}}
 
-    public function hidepanel($id, $id2, $alt) {{{
+        
+    public function hidePanel($id, $inline = false, $string = false, $margin='') {{{
+        global $context, $settings;
+
+        $what = '
+        <a style="' . (!$inline ? 'float: right;' : '') . ' cursor: pointer;" onclick="togglepanel(\''.$id.'\')">
+            <img id="toggle_' . $id . '" src="' . $settings['tp_images_url'] . '/TPupshrink' . (in_array($id, $context['tp_panels']) ? '2' : '') . '.png" ' . (!empty($margin) ? 'style="margin: '.$margin.';"' : '') . 'alt="*" />
+        </a>';
+
+        if($string) {
+            return $what;
+        }
+        else {
+            echo $what;
+        }
+
+    }}}
+
+    public function hidePanelTitle($id, $id2, $alt) {{{
         global $txt, $context, $settings;
 
         $what = '
