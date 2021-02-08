@@ -10,21 +10,22 @@
  */
 use \TinyPortal\Model\Subs as TPSubs;
 
-//  New Gallery
-function template_new_gallery()
+// New Download
+function template_new_download()
 {
 
 
 }
 
-function template_edit_gallery()
+function template_edit_download()
 {
+
 
 }
 
-function template_list_gallery()
+function template_list_download()
 {
-
+    template_show_list('download_list');
 }
 
 ?>

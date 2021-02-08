@@ -16,6 +16,7 @@ use \TinyPortal\Model\Block as TPBlock;
 use \TinyPortal\Model\Database as TPDatabase;
 use \TinyPortal\Model\Integrate as TPIntegrate;
 use \TinyPortal\Model\Mentions as TPMentions;
+use \TinyPortal\Model\Menu as TPMenu;
 use \TinyPortal\Model\Permissions as TPPermissions;
 use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
@@ -25,11 +26,18 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class MenuAdmin extends \Action_Controller
+class MenuAdmin extends BaseAdmin
 {
 
+    function __construct() {{{
+
+        parent::__construct();
+
+        loadTemplate('TPMenu');
+
+    }}}
+
     public function action_index() {{{
-        global $context, $txt;
 
 		TPSubs::getInstance()->loadLanguage('TPMenu');
 
@@ -45,13 +53,13 @@ class MenuAdmin extends \Action_Controller
                 'new'       => array($this, 'action_new', array()),
             );
 
-            $context['TPortal']['subaction'] = $subAction;
+            $this->context['TPortal']['subaction'] = $subAction;
 
-            TPAdmin::getInstance()->topMenu($sa);
-            TPAdmin::getInstance()->sideMenu($sa);
+            TPAdmin::getInstance()->topMenu($subAction);
+            TPAdmin::getInstance()->sideMenu($subAction);
 
             $action     = new \Action();
-            $subAction  = $action->initialize($subActions, $sa);
+            $subAction  = $action->initialize($subActions, $subAction);
             $action->dispatch($subAction);
        }
 
@@ -66,17 +74,28 @@ class MenuAdmin extends \Action_Controller
     public function action_edit() {{{
 
 
+        $this->context['sub_template'] = 'edit_menu';
     }}}
 
     public function action_list() {{{
 
+        parent::make_list('menu');
 
+        $this->context['sub_template'] = 'list_menu';
     }}}
 
     public function action_new() {{{
 
 
+        $this->context['sub_template'] = 'new_menu';
     }}}
-}
 
-?>
+    public function list_menu($start, $items_per_page, $sort) {{{
+        return TPMenu::getInstance()->list($start, $items_per_page, $sort);
+	}}}
+
+	public function list_total_menu() {{{
+        return TPMenu::getInstance()->total();
+	}}}
+
+}

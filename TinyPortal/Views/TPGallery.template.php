@@ -24,7 +24,7 @@ function template_edit_gallery()
 
 function template_list_gallery()
 {
-
+    template_show_list('gallery_list');
 }
 
 ?>

@@ -5,17 +5,28 @@
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
- * Copyright (C) 2020 - The TinyPortal Team
+ * Copyright - The TinyPortal Team
  *
  */
 use \TinyPortal\Model\Subs as TPSubs;
 
-// Submit Article
-function template_download()
+// New Download
+function template_new_download()
 {
 
 
 }
 
+function template_edit_download()
+{
+
+
+}
+
+function template_list_download()
+{
+
+
+}
 
 ?>

@@ -10,21 +10,24 @@
  */
 use \TinyPortal\Model\Subs as TPSubs;
 
-//  New Gallery
-function template_new_gallery()
+// New Menu
+function template_new_menu()
 {
 
 
 }
 
-function template_edit_gallery()
+// Edit existing menu
+function template_edit_menu()
 {
+
 
 }
 
-function template_list_gallery()
+// List existing menu
+function template_list_menu()
 {
-
+    template_show_list('menu_list');
 }
 
 ?>

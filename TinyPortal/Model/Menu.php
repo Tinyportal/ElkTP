@@ -37,41 +37,50 @@ class Menu extends Base
         parent::__construct();
 
         $this->dBStructure = array (
-            'id'            => 'int',
-            'name'          => 'string',
-            'type'          => 'string',
-            'link'          => 'string',
-            'parent'        => 'string',
-            'permissions'   => 'string',
-            'enabled'       => 'int',
-        );
+                'id'            => 'int',
+                'name'          => 'string',
+                'type'          => 'string',
+                'link'          => 'string',
+                'parent'        => 'string',
+                'permissions'   => 'string',
+                'enabled'       => 'int',
+                );
 
     }}}
 
-    public function getMenuData( $columns, $where ) {{{
+    public function select( $columns, $where ) {{{
 
         return self::getSQLData($columns, $where, $this->dBStructure, 'tp_menu');
 
     }}}
 
-   public function insertMenu($menu_data) {{{
+    public function insert($menu_data) {{{
 
         return self::insertSQL($menu_data, $this->dBStructure, 'tp_menu');
 
     }}}
 
-     public function updateMenu($menu_id, $menu_data) {{{
+    public function update($menu_id, $menu_data) {{{
 
         return self::updateSQL($menu_id, $menu_data, $this->dBStructure, 'tp_menu');
 
     }}}
 
-    public function deleteMenu( $menu_id ) {{{
+    public function delete( $menu_id ) {{{
 
         return self::deleteSQL($menu_id, 'tp_menu');
 
     }}}
 
+    public function list($start, $items_per_page, $sort) {{{
+
+
+    }}}
+
+    public function total() {{{
+
+
+    }}}
 }
 
 ?>

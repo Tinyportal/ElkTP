@@ -14,7 +14,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class Gallery extends Base
+class Download extends Base
 {
 
     private static $_instance   = null;
@@ -59,39 +59,36 @@ class Gallery extends Base
 
     public function select( $columns, $where ) {{{
 
-        return self::getSQLData($columns, $where, $this->dBStructure, 'tp_gallery');
+        return self::getSQLData($columns, $where, $this->dBStructure, 'tp_download');
 
     }}}
 
-    public function insert($gallery_data) {{{
+    public function insert($download_data) {{{
 
-        return self::insertSQL($gallery_data, $this->dBStructure, 'tp_gallery');
-
-    }}}
-
-    public function update($gallery_id, $gallery_data) {{{
-
-        return self::updateSQL($gallery_id, $gallery_data, $this->dBStructure, 'tp_gallery');
+        return self::insertSQL($download_data, $this->dBStructure, 'tp_download');
 
     }}}
 
-    public function delete( $gallery_id ) {{{
+    public function update($download_id, $download_data) {{{
 
-        return self::deleteSQL($gallery_id, 'tp_gallery');
+        return self::updateSQL($download_id, $download_data, $this->dBStructure, 'tp_download');
+
+    }}}
+
+    public function delete( $download_id ) {{{
+
+        return self::deleteSQL($download_id, 'tp_download');
 
     }}}
 
     public function list($start, $items_per_page, $sort) {{{
-        $list = array();
 
 
-        return $list;
     }}}
 
     public function total() {{{
-        $total = 0;
 
-        return $total;
+
     }}}
 
 }

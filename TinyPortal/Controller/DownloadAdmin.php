@@ -14,6 +14,7 @@ use \TinyPortal\Model\Admin as TPAdmin;
 use \TinyPortal\Model\Article as TPArticle;
 use \TinyPortal\Model\Block as TPBlock;
 use \TinyPortal\Model\Database as TPDatabase;
+use \TinyPortal\Model\Download as TPDownload;
 use \TinyPortal\Model\Integrate as TPIntegrate;
 use \TinyPortal\Model\Mentions as TPMentions;
 use \TinyPortal\Model\Permissions as TPPermissions;
@@ -25,13 +26,18 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class DownloadAdmin extends \Action_Controller
+class DownloadAdmin extends BaseAdmin
 {
+    public function __construct() {{{
+        parent::__construct();
+
+        loadTemplate('TPDownload');
+    }}}
 
     public function action_index() {{{
         global $context, $txt;
 
-		TPSubs::getInstance()->loadLanguage('TPMenu');
+		TPSubs::getInstance()->loadLanguage('TPDownload');
 
         $action = TPUtil::filter('area', 'get', 'string');
         if($action == 'tpdownload') {
@@ -47,11 +53,11 @@ class DownloadAdmin extends \Action_Controller
 
             $context['TPortal']['subaction'] = $subAction;
 
-            TPAdmin::getInstance()->topMenu($sa);
-            TPAdmin::getInstance()->sideMenu($sa);
+            TPAdmin::getInstance()->topMenu($subAction);
+            TPAdmin::getInstance()->sideMenu($subAction);
 
             $action     = new \Action();
-            $subAction  = $action->initialize($subActions, $sa);
+            $subAction  = $action->initialize($subActions, $subAction);
             $action->dispatch($subAction);
        }
 
@@ -69,14 +75,24 @@ class DownloadAdmin extends \Action_Controller
     }}}
 
     public function action_list() {{{
+        parent::make_list('download');
 
-
-    }}}
+        $this->context['sub_template'] = 'list_download';
+    }}}    
 
     public function action_new() {{{
 
 
     }}}
+
+    public function list_download($start, $items_per_page, $sort) {{{
+        return TPDownload::getInstance()->list($start, $items_per_page, $sort);
+	}}}
+
+	public function list_total_download() {{{
+        return TPDownload::getInstance()->total();
+	}}}
+
 }
 
 ?>
