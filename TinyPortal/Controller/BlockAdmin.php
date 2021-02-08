@@ -113,7 +113,7 @@ class BlockAdmin extends \Action_Controller
             $context['TPortal']['blockcodes']   = TPSubs::getInstance()->collectSnippets();
             $context['TPortal']['copyblocks']   = $tpBlock->getBlocks();
             $context['TPortal']['blockside']    = TPUtil::filter('side', 'get', 'string');
-            TPSubs::getInstance()->get_articles();
+            TPSubs::getInstance()->articles();
             // check which side its mean to be on
         }
 
@@ -152,7 +152,7 @@ class BlockAdmin extends \Action_Controller
             }
         }
 
-        TPSubs::getInstance()->get_articles();
+        TPSubs::getInstance()->articles();
 
         $context['html_headers'] .= '
         <script type="text/javascript" src="'. $settings['default_theme_url']. '/scripts/editor.js?fin20"></script>
@@ -297,10 +297,10 @@ class BlockAdmin extends \Action_Controller
                 }
             }
 
-            TPSubs::getInstance()->get_grps();
-            TPSubs::getInstance()->get_langfiles();
-            TPSubs::getInstance()->get_boards();
-            TPSubs::getInstance()->get_articles();
+            TPSubs::getInstance()->grps();
+            TPSubs::getInstance()->langfiles();
+            TPSubs::getInstance()->boards();
+            TPSubs::getInstance()->articles();
             $context['TPortal']['edit_categories'] = array();
 
             // get all themes for selection
@@ -661,7 +661,7 @@ class BlockAdmin extends \Action_Controller
                     );
                 }
             }
-            TPSubs::getInstance()->get_grps(true,true);
+            TPSubs::getInstance()->grps(true,true);
         }
 
     }}}

@@ -91,7 +91,7 @@ class Block
 
                 // decode the block settings
                 $set        = json_decode($row['settings'], true);
-                $can_edit   = !empty($row['editgroups']) ? TPSubs::getInstance()->get_perm($row['editgroups'], '') : false;
+                $can_edit   = !empty($row['editgroups']) ? TPSubs::getInstance()->perm($row['editgroups'], '') : false;
                 $can_manage = allowedTo('tp_blocks');
                 if($can_manage) {
                     $can_edit = false;
