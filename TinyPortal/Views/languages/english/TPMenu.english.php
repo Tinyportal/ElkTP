@@ -1,5 +1,6 @@
 <?php
 
+$txt['tp-menutitle']    = 'Menu';
 $txt['tp-addmenu']      = 'Add Menu';
 $txt['tp-menulist']     = 'Menu List';
 $txt['tp-notfound']     = 'No Menu Found';

@@ -186,7 +186,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                          )
                     )['image'];
 
-                    $tpArticle->updateArticleViews($page);
+                    $tpArticle->updateViews($page);
 
                     $comments = $tpArticle->getArticleComments($context['user']['id'] , $article['id']);
 
@@ -368,7 +368,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     }
                     else {
                         // we need the categories for the linktree
-                        $allcats    = \TinyPortal\Model\Category::getInstance()->getCategoryData(array('*') , array('item_type' => 'category'));
+                        $allcats    = \TinyPortal\Model\Category::getInstance()->select(array('*') , array('item_type' => 'category'));
 
                         // setup the linkree
                         TPSubs::getInstance()->strip_linktree();
@@ -449,10 +449,10 @@ class Portal extends \Action_Controller implements Frontpage_Interface
             $cat            = TPUtil::filter('cat', 'get', 'string');
             // get the category first
             if(is_numeric($cat)) {
-                $category   = \TinyPortal\Model\Category::getInstance()->getCategoryData(array('*') , array('id' => $cat));
+                $category   = \TinyPortal\Model\Category::getInstance()->select(array('*') , array('id' => $cat));
             }
             else {
-                $category   = \TinyPortal\Model\Category::getInstance()->getCategoryData(array('*') , array('short_name' => $cat));
+                $category   = \TinyPortal\Model\Category::getInstance()->select(array('*') , array('short_name' => $cat));
             }
             if(is_array($category) && (count($category) > 0)) {
                 $category = $category[0];

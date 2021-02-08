@@ -312,25 +312,25 @@ class Block extends Base {
 
     }}}
 
-    public function getBlockData( $columns, $where ) {{{
+    public function select( $columns, $where ) {{{
 
         return self::getSQLData($columns, $where, $this->dBStructure, 'tp_blocks');
 
     }}}
 
-   public function insertBlock($block_data) {{{
+   public function insert($block_data) {{{
 
         return self::insertSQL($block_data, $this->dBStructure, 'tp_blocks');
 
     }}}
 
-     public function updateBlock($block_id, $block_data) {{{
+     public function update($block_id, $block_data) {{{
 
         return self::updateSQL($block_id, $block_data, $this->dBStructure, 'tp_blocks');
 
     }}}
 
-    public function deleteBlock( $block_id ) {{{
+    public function delete( $block_id ) {{{
 
         return self::deleteSQL($block_id, 'tp_blocks');
 

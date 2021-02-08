@@ -261,11 +261,11 @@ class ArticleAdmin extends \Action_Controller
         $tpArticle  = TPArticle::getInstance();
         if(empty($where)) {
             // We are inserting
-            $where = $tpArticle->insertArticle($article_data);
+            $where = $tpArticle->insert($article_data);
         }
         else {
             // We are updating
-            $tpArticle->updateArticle((int)$where, $article_data);
+            $tpArticle->update((int)$where, $article_data);
         }
 
         unset($tpArticle);
@@ -854,7 +854,7 @@ class ArticleAdmin extends \Action_Controller
         $db = TPDatabase::getInstance();
 
         // Get the category names
-        $categories = TPCategory::getInstance()->getCategoryData(array('id', 'display_name'), array('item_type' => 'category'));
+        $categories = TPCategory::getInstance()->select(array('id', 'display_name'), array('item_type' => 'category'));
         if(is_array($categories)) {
             foreach($categories as $k => $v) {
                 $context['TPortal']['catnames'][$v['id']] = $v['display_name'];
@@ -1216,7 +1216,7 @@ class ArticleAdmin extends \Action_Controller
             checksession('get');
             if($id > 0) {
                 // first get info
-                $newcat = TPCategory::getInstance()->getCategoryData(array('id', 'parent'), array('id' => $id));
+                $newcat = TPCategory::getInstance()->select(array('id', 'parent'), array('id' => $id));
                 if(is_array($newcat)) {
                     $newcat = $newcat[0]['parent'];
                     $db->query('', '
@@ -1236,7 +1236,7 @@ class ArticleAdmin extends \Action_Controller
                     );
                 }
 
-                TPCategory::getInstance()->deleteCategory($id);
+                TPCategory::getInstance()->delete($id);
                 redirectexit('action=admin;area=tparticles;sa=categories');
             }
             else {

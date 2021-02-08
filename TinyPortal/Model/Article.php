@@ -114,7 +114,7 @@ class Article extends Base
 
         if($this->dB->db_num_rows($request) > 0) {
             while ( $row = $this->dB->db_fetch_assoc($request)) {
-                $categoryData               = Category::getInstance()->getCategoryData(array('display_name', 'short_name', 'settings', 'access', 'custom_template'), array( 'item_type' => 'category', 'id' => $row['category']));
+                $categoryData               = Category::getInstance()->select(array('display_name', 'short_name', 'settings', 'access', 'custom_template'), array( 'item_type' => 'category', 'id' => $row['category']));
                 if(is_array($categoryData)) {
                     $categoryData               = $categoryData[0];
                     $row['category_name']       = $categoryData['display_name'];
@@ -135,7 +135,7 @@ class Article extends Base
 
     }}}
 
-    public function getArticleData( $columns, $where ) {{{
+    public function select( $columns, $where ) {{{
 
         $values = null;
 
@@ -281,7 +281,7 @@ class Article extends Base
         return parent::deleteComment($comment_id, 'article_comment');
     }}}
 
-    public function updateArticleViews($article_id) {{{
+    public function updateViews($article_id) {{{
 
         // update views
         $this->dB->db_query('', '
@@ -295,19 +295,19 @@ class Article extends Base
 
     }}}
 
-   public function insertArticle($article_data) {{{
+   public function insert($article_data) {{{
 
         return self::insertSQL($article_data, $this->dBStructure, 'tp_articles');
 
     }}}
 
-     public function updateArticle($article_id, $article_data) {{{
+     public function update($article_id, $article_data) {{{
 
         return self::updateSQL($article_id, $article_data, $this->dBStructure, 'tp_articles');
 
     }}}
 
-    public function deleteArticle( $article_id ) {{{
+    public function delete( $article_id ) {{{
 
         return self::deleteSQL($article_id, 'tp_articles');
 

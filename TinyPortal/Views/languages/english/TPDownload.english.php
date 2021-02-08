@@ -1,6 +1,6 @@
 <?php
 
-$txt['tp-gallerytitle']     = 'Gallery';
+$txt['tp-downloadtitle']    = 'Downlaod';
 $txt['tp-adddownload']      = 'Add Download';
 $txt['tp-downloadlist']     = 'Download List';
 $txt['tp-notfound']         = 'No Download Found';
