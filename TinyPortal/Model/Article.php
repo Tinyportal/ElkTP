@@ -594,7 +594,7 @@ class Article extends Base
 
             $db->free_result($request);
             if(count($allsorted) > 1) {
-                $context['TPortal']['allcats'] = Subs::chain('id', 'parent', 'name', $allsorted);
+                $context['TPortal']['allcats'] = Subs::getInstance()->chain('id', 'parent', 'name', $allsorted);
             }
             else {
                 $context['TPortal']['allcats'] = $allsorted;
