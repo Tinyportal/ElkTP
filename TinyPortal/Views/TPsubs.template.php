@@ -66,7 +66,7 @@ function TPblock($block, $theme, $side, $double=false)
 		echo '<div class="block_' . $side . 'container" id="block_' . $block['type'] . '">';
 	}
 
-	$types = TPSubs::getInstance()->getBlockStyles21();
+	$types = TPSubs::getInstance()->getBlockStyles();
 
 	// check
 	if ( ($block['var5'] == '') || ($block['var5'] == 99) )

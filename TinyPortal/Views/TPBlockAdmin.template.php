@@ -395,7 +395,7 @@ function template_editblock()
 				<div>
 				<div class="panels-optionsbg">';
 
-			$types = TPSubs::getInstance()->getBlockStyles21();
+			$types = TPSubs::getInstance()->getBlockStyles();
 
 			foreach($types as $blo => $bl) {
 				echo '
@@ -719,7 +719,7 @@ function template_panels()
 	$allpanels = array('left','right','top','center','front','lower','bottom');
 	$alternate = true;
 
-	$types = TPSubs::getInstance()->getBlockStyles21();
+	$types = TPSubs::getInstance()->getBlockStyles();
 
 	foreach($allpanels as $pa => $panl) {
 		echo '
