@@ -437,6 +437,7 @@ class ArticleAdmin extends \Action_Controller
 
         unset($tpArticle);
 
+        obExit(false);
     }}}
 
     public function action_admin() {{{
@@ -548,8 +549,6 @@ class ArticleAdmin extends \Action_Controller
                 array('cat' => 0, 'category' => $acats)
             );
         }
-
-        $this->action_ajax();
 
         if(isset($_GET['cu']) && is_numeric($_GET['cu'])) {
             $where = $_GET['cu'];
@@ -1320,8 +1319,6 @@ class ArticleAdmin extends \Action_Controller
             checkSession('post');
             isAllowedTo('tp_articles');
 
-            self::action_ajax();
-
             $ccats = array();
             // check if we have some values
             foreach($_POST as $what => $value) {
@@ -1415,8 +1412,6 @@ class ArticleAdmin extends \Action_Controller
         if(is_array($_POST) && count($_POST)) {
             checkSession('post');
             isAllowedTo('tp_articles');
-
-            self::action_ajax();
 
             $ccats = array();
             // check if we have some values
