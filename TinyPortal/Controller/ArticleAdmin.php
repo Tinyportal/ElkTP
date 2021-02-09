@@ -98,7 +98,7 @@ class ArticleAdmin extends \Action_Controller
     }}}
 
     public function action_attachment() {{{
-        tpattach();
+        TPSubs::getInstance()->attach();
     }}}
 
     public function action_edit() {{{

@@ -789,7 +789,7 @@ function TPortal_rss()
 {
 	global $context;
 
-	echo '<div style="padding: 5px; ' , !empty($context['TPortal']['rsswidth']) ? 'max-width: ' . $context['TPortal']['rsswidth'] .';' : '' , '" class="middletext">' , TPparseRSS('', $context['TPortal']['rss_utf8']) , '</div>';
+	echo '<div style="padding: 5px; ' , !empty($context['TPortal']['rsswidth']) ? 'max-width: ' . $context['TPortal']['rsswidth'] .';' : '' , '" class="middletext">' , TPSubs::getInstance()->parseRSS('', $context['TPortal']['rss_utf8']) , '</div>';
 }
 
 // blocktype 16: sitemap
@@ -2300,7 +2300,7 @@ function blockarticle_views($render = true)
 function blockarticle_text($render = true)
 {
 	echo '
-	<div class="article_bodytext">' . TPSubs::getInstance()->tp_renderblockarticle() . '</div>';
+	<div class="article_bodytext">' . TPSubs::getInstance()->renderBlockArticle() . '</div>';
 
 }
 
