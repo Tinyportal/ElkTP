@@ -144,19 +144,19 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 
                 // if its not approved, say so.
                 if($article['approved'] == 0) {
-                    TP_error($txt['tp-notapproved']);
+                    \ElkArte\Errors\Errors::instance()->log_error($txt['tp-notapproved'], 'general');
                     $shown = true;
                 }
 
                 // and for no category
                 if( ( $article['category'] < 1 || $article['category'] > 9999 ) && $shown == false) {
-                    TP_error($txt['tp-nocategory']);
+                    \ElkArte\Errors\Errors::instance()->log_error($txt['tp-nocategory'], 'general');
                     $shown = true;
                 }
 
                 // likewise for off.
                 if($article['off'] == 1 && $shown == false) {
-                    TP_error($txt['tp-noton']);
+                    \ElkArte\Errors\Errors::instance()->log_error($txt['tp-noton'], 'general');
                     $shown = true;
                 }
 

@@ -69,6 +69,7 @@ class ArticleAdmin extends \Action_Controller
             'artsettings'       => array($this, 'action_settings', array()),
             'articons'          => array($this, 'action_articons', array()),
             'submission'        => array($this, 'action_submission', array()),
+            'ajax'              => array($this, 'action_ajax', array()),
             // FIXME split these out into the correct functions rather than calling the old method
             'addarticle_bbc'    => array($this, 'action_admin', array()),
             'addarticle_html'   => array($this, 'action_admin', array()),
@@ -1558,7 +1559,7 @@ class ArticleAdmin extends \Action_Controller
                 var id = target.id.replace("artActive", "");
                 var Ajax = getXMLHttpRequest();
 
-                Ajax.open("POST", "?action=admin;area=tparticles;arton=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+                Ajax.open("POST", "?action=admin;area=tparticles;sa=ajax;arton=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
                 Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
                 var source = target.src;
@@ -1572,7 +1573,7 @@ class ArticleAdmin extends \Action_Controller
                     }
                 }
 
-                var params = "?action=admin;area=tparticles;arton=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+                var params = "?action=admin;area=tparticles;sa=ajax;arton=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
                 Ajax.send(params);
             }
             function toggleFront(e)
@@ -1586,7 +1587,7 @@ class ArticleAdmin extends \Action_Controller
                 var id = target.id.replace("artFront", "");
                 var Ajax = getXMLHttpRequest();
 
-                Ajax.open("POST", "?action=admin;area=tparticles;artfront=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+                Ajax.open("POST", "?action=admin;area=tparticles;sa=ajax;artfront=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
                 Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
                 var source = target.src;
@@ -1600,7 +1601,7 @@ class ArticleAdmin extends \Action_Controller
                     }
                 }
 
-                var params = "?action=admin;area=tparticles;artfront=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+                var params = "?action=admin;area=tparticles;sa=ajax;artfront=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
                 Ajax.send(params);
             }
             function toggleSticky(e)
@@ -1614,7 +1615,7 @@ class ArticleAdmin extends \Action_Controller
                 var id = target.id.replace("artSticky", "");
                 var Ajax = getXMLHttpRequest();
 
-                Ajax.open("POST", "?action=admin;area=tparticles;artsticky=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+                Ajax.open("POST", "?action=admin;area=tparticles;sa=ajax;artsticky=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
                 Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
                 var source = target.src;
@@ -1628,7 +1629,7 @@ class ArticleAdmin extends \Action_Controller
                     }
                 }
 
-                var params = "?action=admin;area=tparticles;artsticky=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+                var params = "?action=admin;area=tparticles;sa=ajax;artsticky=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
                 Ajax.send(params);
             }
             function toggleLock(e)
@@ -1642,7 +1643,7 @@ class ArticleAdmin extends \Action_Controller
                 var id = target.id.replace("artLock", "");
                 var Ajax = getXMLHttpRequest();
 
-                Ajax.open("POST", "?action=admin;area=tparticles;artlock=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+                Ajax.open("POST", "?action=admin;area=tparticles;sa=ajax;artlock=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
                 Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
                 var source = target.src;
@@ -1656,7 +1657,7 @@ class ArticleAdmin extends \Action_Controller
                     }
                 }
 
-                var params = "?action=admin;area=tparticles;artlock=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+                var params = "?action=admin;area=tparticles;sa=ajax;artlock=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
                 Ajax.send(params);
             }
             function toggleFeatured(e)
@@ -1680,7 +1681,7 @@ class ArticleAdmin extends \Action_Controller
                 var id = target.id.replace("artFeatured", "");
                 var Ajax = getXMLHttpRequest();
 
-                Ajax.open("POST", "?action=admin;area=tparticles;artfeat=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+                Ajax.open("POST", "?action=admin;area=tparticles;sa=ajax;artfeat=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
                 Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
                 var source = target.src;
@@ -1694,7 +1695,7 @@ class ArticleAdmin extends \Action_Controller
                     }
                 }
 
-                var params = "?action=admin;area=tparticles;artfeat=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+                var params = "?action=admin;area=tparticles;sa=ajax;artfeat=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
                 Ajax.send(params);
             }
         // ]]></script>';
