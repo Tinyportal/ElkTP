@@ -88,7 +88,9 @@ class Integrate
         global $modSettings;
 
         // Should check TinyPortal is enabled..
-        $modSettings['front_page']  = '\TinyPortal\Controller\Portal';
+        if( Model\Admin::getInstance()->getSetting('front_type') != 'boardindex' ) {
+            $modSettings['front_page']  = '\TinyPortal\Controller\Portal';
+        }
 
         return;
     }}}
@@ -287,20 +289,22 @@ class Integrate
 
 		Model\Subs::getInstance()->loadLanguage('TPortal');
 
-        $buttons = \elk_array_insert($buttons, 'home', array (
-            'base' => array(
-                'title' 	    => $txt['tp-home'],
-                'href' 		    => $boardurl,
-                'data-icon'     => 'i-home',
-                'show'          => true,
-                'action_hook' 	=> true,
-                ),
-            )
-        );
+        if($context['TPortal']['front_type'] != 'boardindex' ) {
+            $buttons = \elk_array_insert($buttons, 'home', array (
+                'base' => array(
+                    'title' 	    => $txt['tp-home'],
+                    'href' 		    => $boardurl,
+                    'data-icon'     => 'i-home',
+                    'show'          => true,
+                    'action_hook' 	=> true,
+                    ),
+                )
+            );
 
-        // Change the home icon to something else and rewrite the standard action
-        $buttons['home']['data-icon'] = 'i-users';
-        $buttons['home']['href']      = $scripturl . '?action=forum';
+            // Change the home icon to something else and rewrite the standard action
+            $buttons['home']['data-icon'] = 'i-users';
+            $buttons['home']['href']      = $scripturl . '?action=forum';
+        }
 
         if($context['TPortal']['hideadminmenu'] != '1' ) {
             $subButtons = array();
@@ -336,7 +340,7 @@ class Integrate
 
         global $context, $scripturl, $txt;
 
-        if(allowedTo(array('tp_settings')) && (($context['TPortal']['front_type']=='forum_selected' || $context['TPortal']['front_type']=='forum_selected_articles'))) {
+        if(allowedTo(array('tp_settings')) && (($context['TPortal']['front_type'] == 'forum_selected' || $context['TPortal']['front_type'] == 'forum_selected_articles'))) {
             if(!in_array($context['current_topic'], explode(',', $context['TPortal']['frontpage_topics']))) {
                 $context['normal_buttons']['publish'] = array('active' => false, 'text' => 'tp-publish', 'lang' => true, 'url' => $scripturl . '?action=tportal;sa=publish;t=' . $context['current_topic']);
             }
