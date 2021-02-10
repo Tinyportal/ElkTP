@@ -376,6 +376,7 @@ class Article extends Base
 		$request =  $this->dB->db_query('', '
 			SELECT COUNT(art.id) AS num_articles
 			FROM {db_prefix}tp_articles AS art
+            LEFT JOIN {db_prefix}tp_categories AS var ON (var.id = art.category)
 			WHERE art.off = 0
 			' . $group . '
 			AND art.category > 0
