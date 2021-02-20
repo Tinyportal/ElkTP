@@ -86,7 +86,7 @@ function template_tp_above()
 	{
 		echo '
 			<div id="tprightbarContainer" style="width:' ,$context['TPortal']['rightbar_width'], 'px;' , in_array('tprightbarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , '" >
-				<div id="tprightbarHeader" style="' , in_array('tprightbarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , '">
+				<div id="tprightbarHeader" ' , in_array('tprightbarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'style="display: none;"' : '' , '>
 					' , $context['TPortal']['useroundframepanels']==1 ?
 					'<span class="upperframe"><span></span></span>
 					<div class="roundframe">' : ''
