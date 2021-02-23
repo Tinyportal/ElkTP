@@ -532,35 +532,6 @@ class Subs
             echo '</div><p class="clearthefloat"></p></div>';
         }
 
-        // the upshrink routine for blocks
-        // echo '</div>
-            echo '<script type="text/javascript"><!-- // --><![CDATA[
-                    function toggle( targetId )
-                    {
-                        var state = 0;
-                        var blockname = "block" + targetId;
-                        var blockimage = "blockcollapse" + targetId;
-
-                        if ( document.getElementById ) {
-                            target = document.getElementById( blockname );
-                            if ( target.style.display == "none" ) {
-                                target.style.display = "";
-                                state = 1;
-                            }
-                            else {
-                                target.style.display = "none";
-                                state = 0;
-                            }
-
-                            document.getElementById( blockimage ).src = "'.$settings['tp_images_url'].'" + (state ? "/TPcollapse.png" : "/TPexpand.png");
-                            var tempImage = new Image();
-                            tempImage.src = "'.$scripturl.'?action=tportal;sa=upshrink;id=" + targetId + ";state=" + state + ";" + (new Date().getTime());
-
-                        }
-                    }
-                // ]]></script>';
-
-        // return $code;
     }}}
 
     public function setupUpshrinks() {{{
