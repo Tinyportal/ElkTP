@@ -614,17 +614,21 @@ function TPortal_recentbox()
 		$include_boards = null;
 
 	$what = ssi_recentTopics($num_recent = $context['TPortal']['recentboxnum'] , $exclude_boards,  $include_boards, $output_method = 'array');
-	if($context['TPortal']['useavatar'] == 0)
-	{
+
+	if($context['TPortal']['useavatar'] == 0) {
 		// Output the topics
 		echo '
 		<ul class="recent_topics" style="' , isset($context['TPortal']['recentboxscroll']) && $context['TPortal']['recentboxscroll'] == 1 ? 'overflow: auto; height: 20ex;' : '' , 'margin: 0; padding: 0;">';
 		$coun = 1;
-		foreach($what as $wi => $w)
-		{
+		foreach($what as $wi => $w) {
 			echo '
 			<li' , $coun<count($what) ? '' : ' style="border: none; margin-bottom: 0;padding-bottom: 0;"'  , '>';
-				echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen#new" rel="nofollow" class="new_posts" style="margin:0px;">' . $txt['new'] . '</a> ';
+                if(!empty($w['is_new'])) {
+				    echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen#new" rel="nofollow" class="new_posts" style="margin:0px;">' . $txt['new'] . '</a> ';
+                }
+                else {
+				    echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen" rel="nofollow" class="posts" style="margin:0px;"></a> ';
+                }
 			echo '
 				<a href="' . $w['href'] . '" title="' . $w['subject'] . '">' . $w['short_subject'] . '</a>
 				 ', $txt['by'], ' <b>', $w['poster']['link'],'</b> ';
@@ -635,11 +639,9 @@ function TPortal_recentbox()
 		echo '
 		</ul>';
 	}
-	else
-	{
+	else {
 		$member_ids = array();
-		foreach($what as $wi => $w)
-		{
+		foreach($what as $wi => $w) {
 			$member_ids[] = $w['poster']['id'];
 		}
 
@@ -652,11 +654,15 @@ function TPortal_recentbox()
 		$coun = 1;
 		echo '
 		<ul class="recent_topics" style="' , isset($context['TPortal']['recentboxscroll']) && $context['TPortal']['recentboxscroll']==1 ? 'overflow: auto; height: 20ex;' : '' , 'margin: 0; padding: 0;">';
-		foreach($what as $wi => $w)
-		{
+		foreach($what as $wi => $w) {
 			echo '
 			<li' , $coun<count($what) ? '' : ' style="border: none; margin-bottom: 0;padding-bottom: 0;"'  , '>';
-				echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen#new" rel="nofollow" class="new_posts" style="margin:0px;">' . $txt['new'] . '</a> ';
+                if(!empty($w['is_new'])) {
+				    echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen#new" rel="nofollow" class="new_posts" style="margin:0px;">' . $txt['new'] . '</a> ';
+                }
+                else {
+				    echo ' <a href="' . $scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen" rel="nofollow" class="posts" style="margin:0px;"></a> ';
+                }
 			echo '
 					<span class="tpavatar"><a href="' . $scripturl. '?action=profile;u=' . $w['poster']['id'] . '">' , empty($avatars[$w['poster']['id']]) ? '<img src="' . $settings['tp_images_url'] . '/TPguest.png" alt="" />' : $avatars[$w['poster']['id']] , '</a></span><a href="'.$w['href'].'">' . $w['short_subject'].'</a>
 				 ', $txt['by'], ' <b>', $w['poster']['link'],'</b> ';
