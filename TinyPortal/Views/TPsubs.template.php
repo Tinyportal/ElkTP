@@ -82,7 +82,9 @@ function TPblock($block, $theme, $side, $double=false)
 			echo $types[$block['var5']]['code_title_left'];
 
             if($block['visible'] == '' || $block['visible'] == '1') {
-                echo '<a href="javascript:void(0);return%20false" onclick="toggle(\''.$block['id'].'\'); return false"><img id="blockcollapse'.$block['id'].'" style="margin: 2px 0 0 0;float:right" src="' .$settings['tp_images_url']. '/' , !in_array($block['id'],$context['TPortal']['upshrinkblocks'])  ? 'TPcollapse' : 'TPexpand' , '.png" alt="" title="'.$txt['block-upshrink_description'].'" /></a>';
+                $collapsed  = in_array($block['id'],$context['TPortal']['upshrinkblocks']);
+			    $href       = $scripturl . '?action=tportal;sa=upshrink;id=' . $block['id'] . ';state=' . ($collapsed > 0 ? '1' : '0') .';sc='.$context['session_id'];
+			    echo '<a class="chevricon i-chevron-', $collapsed ? 'down' : 'up', '" href="', $href, '" title="', $collapsed ? $txt['show'] : $txt['hide'], '"></a>';
             }
 
             // can you edit the block?
@@ -97,8 +99,11 @@ function TPblock($block, $theme, $side, $double=false)
 			if(($block['visible'] == '' || $block['visible'] == '1') && $block['frame'] != 'frame') {
 				echo '
 		<div style="padding: 4px;">';
-				if($block['visible'] == '' || $block['visible'] == '1')
-					echo '<a href="javascript:void(0);return%20false" onclick="toggle(\''.$block['id'].'\'); return false"><img id="blockcollapse'.$block['id'].'" style="margin: 0;float:right" src="' .$settings['tp_images_url']. '/' , !in_array($block['id'],$context['TPortal']['upshrinkblocks']) ? 'TPcollapse' : 'TPexpand' , '.png" alt="" title="'.$txt['block-upshrink_description'].'" /></a>';
+				if($block['visible'] == '' || $block['visible'] == '1') {
+                    $collapsed  = in_array($block['id'],$context['TPortal']['upshrinkblocks']);
+	    		    $href       = $scripturl . '?action=tportal;sa=upshrink;id=' . $block['id'] . ';state=' . ($collapsed > 0 ? '1' : '0') .';sc='.$context['session_id'];
+		    	    echo '<a class="chevricon i-chevron-', $collapsed ? 'down' : 'up', '" href="', $href, '" title="', $collapsed ? $txt['show'] : $txt['hide'], '"></a>';
+                }
 				echo '&nbsp;
 		</div>';
 			}

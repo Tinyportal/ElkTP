@@ -1399,8 +1399,9 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                 }
             }
             // Don't output anything...
-            $tid = time();
-            redirectexit($settings['images_url'] . '/blank.png?ti='.$tid);
+            //$tid = time();
+            //redirectexit($settings['images_url'] . '/blank.png?ti='.$tid);
+            redirectexit();
         }
         else {
             redirectexit();
