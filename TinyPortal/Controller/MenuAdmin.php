@@ -43,14 +43,16 @@ class MenuAdmin extends BaseAdmin
 
         $action = TPUtil::filter('area', 'get', 'string');
         if($action == 'tpmenu') {
+		    \isAllowedTo('tp_menu');
             require_once(SUBSDIR . '/Action.class.php');
             $subAction  = TPUtil::filter('sa', 'get', 'string');
 
             $subActions = array(
+                'add'       => array($this, 'action_new', array()),
                 'delete'    => array($this, 'action_delete', array()),
                 'edit'      => array($this, 'action_edit', array()),
                 'list'      => array($this, 'action_list', array()),
-                'new'       => array($this, 'action_new', array()),
+                'save'      => array($this, 'action_save', array()),
             );
 
             $this->context['TPortal']['subaction'] = $subAction;
@@ -67,6 +69,9 @@ class MenuAdmin extends BaseAdmin
 
     public function action_delete() {{{
 
+        if($id = TPUtil::filter('id', 'get', 'int')) {
+            TPMenu::getInstance()->delete($id);
+        }
 
         self::action_list();
     }}}
@@ -86,8 +91,38 @@ class MenuAdmin extends BaseAdmin
 
     public function action_new() {{{
 
+        $this->context['TPortal']['addmenu']            = array();
+        $this->context['TPortal']['addmenu']['types']   = array( 'menu', 'category', 'article', 'link', 'header', 'spacer');
+        $this->context['TPortal']['addmenu']['type']    = 'menu';
 
         $this->context['sub_template'] = 'new_menu';
+    }}}
+
+    public function action_save() {{{
+        \checksession('post');
+        
+        // Configure the default array
+        $this->context['TPortal']['editmenu'] = array();
+        
+        $action = TPUtil::filter('tpadmin_form', 'post', 'string');
+        switch($action) {
+            case 'add':
+                if($type = TPUtil::filter('tp_menu_type', 'post', 'string')) {
+                    $id = TPMenu::getInstance()->insert(array('type' => $type));
+                }
+                break;
+            case 'edit':
+        
+                break;
+            default:
+
+                break;
+        }
+
+        $menu = TPMenu::getInstance()->select(array('id', 'name' ,'type', 'link', 'parent', 'permissions', 'enabled'), array('id' => $id));
+        $this->context['TPortal']['editmenu']   = $menu;
+        $this->context['sub_template']          = 'edit_menu';
+
     }}}
 
     public function list_menu($start, $items_per_page, $sort) {{{

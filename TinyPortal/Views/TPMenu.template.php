@@ -13,14 +13,46 @@ use \TinyPortal\Model\Subs as TPSubs;
 // New Menu
 function template_new_menu()
 {
+    global $context, $scripturl, $txt;
 
+    echo '
+        <form action="', $scripturl, '?action=admin;area=tpmenu;sa=save" method="post" accept-charset="UTF-8" name="addmenu" id="addmenu" class="flow_hidden">
+            <input type="hidden" name="sc" value="', $context['session_id'], '" />
+            <input type="hidden" name="tpadmin_form" value="add">
+            <div class="category_header">
+                <h3>
+                    ', $context['page_title'], '
+                </h3>
+            </div>
+            <div class="roundframe">
+                <dl class="settings tptitle">
+				<dt>
+					<label for="tp_menu_type">'.$txt['tp-type'].'</label>
+				</dt>
+				<dd>
+					<select size="1" name="tp_menu_type" id="tp_menu_type">';
+                        foreach($context['TPortal']['addmenu']['types'] as $type) {
+						    echo '<option value="'.$type.'" ',  $context['TPortal']['addmenu']['type'] == $type ? 'selected' : '', '>'.$txt['tp-'.$type].'</option>';
+                        }
+					echo '
+                    </select>
+				</dd>
+			</dl>
+
+            </div>
+            <div class="submitbutton">
+                <input name="submit" value="', $txt['tp-submit'], '" class="button_submit" type="submit" />
+            </div>
+        </form>';
 
 }
 
 // Edit existing menu
 function template_edit_menu()
 {
+    global $context;
 
+    var_dump($context['TPortal']['editmenu']);
 
 }
 

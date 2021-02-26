@@ -37,14 +37,14 @@ class Menu extends Base
         parent::__construct();
 
         $this->dBStructure = array (
-                'id'            => 'int',
-                'name'          => 'string',
-                'type'          => 'string',
-                'link'          => 'string',
-                'parent'        => 'string',
-                'permissions'   => 'string',
-                'enabled'       => 'int',
-                );
+            'id'            => 'int',
+            'name'          => 'string',
+            'type'          => 'string',
+            'link'          => 'string',
+            'parent'        => 'string',
+            'permissions'   => 'string',
+            'enabled'       => 'int',
+        );
 
     }}}
 
@@ -73,13 +73,30 @@ class Menu extends Base
     }}}
 
     public function list($start, $items_per_page, $sort) {{{
+        $menus  = array();
 
+        $menu   = self::select(array('id', 'name' ,'type', 'link', 'parent', 'permissions', 'enabled'), '');
+        if(is_array($menu)) {
+            foreach($menu as $id => $row) {
+                $menus[$id] = array ( 
+                        'id'            => $row['id'],
+                        'title'         => $row['name'],
+                        'category'      => $row['type'],
+                        'member'        => $row['parent'],
+                        'dt_published'  => $row['link'],
+                        'status'        => $row['enabled'],
+                );
+            }
+        }
 
+        return $menus;
     }}}
 
     public function total() {{{
 
+        $menu = self::select(array('id', 'name' ,'type', 'link', 'parent', 'permissions', 'enabled'), '');
 
+        return is_countable($menu) ? count($menu) : 0;
     }}}
 }
 
