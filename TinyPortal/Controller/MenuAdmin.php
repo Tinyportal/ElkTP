@@ -76,33 +76,44 @@ class MenuAdmin extends BaseAdmin
         self::action_list();
     }}}
 
-    public function action_edit() {{{
+    public function action_edit( $id = null ) {{{
+    
+        if(is_null($id)) {
+            \checksession('get');
+            $id = TPUtil::filter('id', 'get', 'int');
+        }
 
+        self::default_menu_items();
 
+        $menu = TPMenu::getInstance()->select(array('id', 'name' ,'type', 'link', 'parent', 'permissions', 'enabled'), array('id' => $id));
+        if(is_array($menu)) {
+            $this->context['TPortal']['menu'] = array_merge($this->context['TPortal']['menu'], $menu[0]);
+        }
+        else {
+            self::action_new();
+        }
+
+        // Set the sub template
         $this->context['sub_template'] = 'edit_menu';
     }}}
 
     public function action_list() {{{
 
         parent::make_list('menu');
-
+        // Set the sub template
         $this->context['sub_template'] = 'list_menu';
     }}}
 
     public function action_new() {{{
+        self::default_menu_items();
 
-        $this->context['TPortal']['addmenu']            = array();
-        $this->context['TPortal']['addmenu']['types']   = array( 'menu', 'category', 'article', 'link', 'header', 'spacer');
-        $this->context['TPortal']['addmenu']['type']    = 'menu';
-
-        $this->context['sub_template'] = 'new_menu';
+        $this->context['TPortal']['menu']['type']   = 'menu';
+        // Set the sub template
+        $this->context['sub_template']              = 'new_menu';
     }}}
 
     public function action_save() {{{
         \checksession('post');
-        
-        // Configure the default array
-        $this->context['TPortal']['editmenu'] = array();
         
         $action = TPUtil::filter('tpadmin_form', 'post', 'string');
         switch($action) {
@@ -112,17 +123,17 @@ class MenuAdmin extends BaseAdmin
                 }
                 break;
             case 'edit':
-        
+                if($id = TPUtil::filter('id', 'post', 'int')) {
+                    $updateArray['type'] = TPUtil::filter('tp_menu_type', 'post', 'string');
+                    TPMenu::getInstance()->update($id, $updateArray);
+                }
                 break;
             default:
 
                 break;
         }
 
-        $menu = TPMenu::getInstance()->select(array('id', 'name' ,'type', 'link', 'parent', 'permissions', 'enabled'), array('id' => $id));
-        $this->context['TPortal']['editmenu']   = $menu;
-        $this->context['sub_template']          = 'edit_menu';
-
+        self::action_edit( $id );
     }}}
 
     public function list_menu($start, $items_per_page, $sort) {{{
@@ -133,4 +144,11 @@ class MenuAdmin extends BaseAdmin
         return TPMenu::getInstance()->total();
 	}}}
 
+    protected function default_menu_items() {{{
+
+        // Configure the default array
+        $this->context['TPortal']['menu']           = array();
+        $this->context['TPortal']['menu']['types']  = array( 'menu', 'category', 'article', 'link', 'header', 'spacer');
+        
+    }}}
 }
