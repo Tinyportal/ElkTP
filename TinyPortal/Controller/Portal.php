@@ -88,8 +88,8 @@ class Portal extends \Action_Controller implements Frontpage_Interface
             $context['TPortal']['subaction'] = $subAction;
 
             $action     = new \Action();
-            $subAction  = $action->initialize($subActions, $sa);
-            $action->dispatch($subAction);
+            $sa         = $action->initialize($subActions, $subAction);
+            $action->dispatch($sa);
 
             call_integration_hook('integrate_tp_post_subactions');
         }
