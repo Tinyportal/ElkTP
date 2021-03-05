@@ -110,30 +110,39 @@ function TPblock($block, $theme, $side, $double=false)
 		}
 		echo '
 		<div class="', (($theme || $block['frame'] == 'frame') ? 'tp_'.$side.'block_body' : ''), '"', in_array($block['id'],$context['TPortal']['upshrinkblocks']) ? ' style="display: none;"' : ''  , ' id="block'.$block['id'].'">';
-		if($theme || $block['frame'] == 'frame')
+		if($theme || $block['frame'] == 'frame') {
 			echo $types[$block['var5']]['code_top'];
+        }
 
-		$func = 'TPortal_' . $block['type'];
-		if (function_exists($func))
-		{
-			if($double)
-			{
-				// figure out the height
-				$h = $context['TPortal']['blockheight_'.$side];
-				if(substr($context['TPortal']['blockheight_'.$side],strlen($context['TPortal']['blockheight_'.$side])-2,2) == 'px')
-					$nh = ((substr($context['TPortal']['blockheight_'.$side],0,strlen($context['TPortal']['blockheight_'.$side])-2)*2) + 43).'px';
-				elseif(substr($context['TPortal']['blockheight_'.$side],strlen($context['TPortal']['blockheight_'.$side])-1,1) == '%')
-					$nh = (substr($context['TPortal']['blockheight_'.$side],0,strlen($context['TPortal']['blockheight_'.$side])-1)*2).'%';
-			}
-			echo '<div class="blockbody" style="overflow: auto;' , !empty($context['TPortal']['blockheight_'.$side]) ? 'height: '. ($double ? $nh : $context['TPortal']['blockheight_'.$side]) .';' : '' , '">';
+        if($double) {
+            // figure out the height
+            $h = $context['TPortal']['blockheight_'.$side];
+            if(substr($context['TPortal']['blockheight_'.$side],strlen($context['TPortal']['blockheight_'.$side])-2,2) == 'px') {
+                $nh = ((substr($context['TPortal']['blockheight_'.$side],0,strlen($context['TPortal']['blockheight_'.$side])-2)*2) + 43).'px';
+            }
+            elseif(substr($context['TPortal']['blockheight_'.$side],strlen($context['TPortal']['blockheight_'.$side])-1,1) == '%') {
+                $nh = (substr($context['TPortal']['blockheight_'.$side],0,strlen($context['TPortal']['blockheight_'.$side])-1)*2).'%';
+            }
+        }
+		echo '<div class="blockbody" style="overflow: auto;' , !empty($context['TPortal']['blockheight_'.$side]) ? 'height: '. ($double ? $nh : $context['TPortal']['blockheight_'.$side]) .';' : '' , '">';
+
+        $blockClass = '\TinyPortal\Blocks\\'.ucfirst(str_replace('box', '', $block['type']));
+		$func       = 'TPortal_' . $block['type'];
+        if(class_exists($blockClass)) {
+            $func = (new $blockClass)->display($block);
+        }
+        else if (function_exists($func)) {
 			$func($block['id']);
-			echo '</div>';
-		}
-		else
-			echo '<div class="blockbody" style="overflow: auto;' , !empty($context['TPortal']['blockheight_'.$side]) ? 'height: '.$context['TPortal']['blockheight_'.$side].';' : '' , '">' , parse_bbc($block['body']) , '</div>';
+        }
+        else {
+            echo parse_bbc($block['body']);
+        }
+			
+        echo '</div>';
 
-		if($theme || $block['frame'] == 'frame')
+		if($theme || $block['frame'] == 'frame') {
 			echo $types[$block['var5']]['code_bottom'];
+        }
 		echo '
 		</div>
 	</div>';
@@ -379,18 +388,6 @@ function TPortal_searchbox()
 		<br><span class="smalltext"><a href="', $scripturl, '?action=search;advanced">', $txt['search_advanced'], '</a></span>
 		<input type="hidden" name="advanced" value="0" />
 	</form>';
-}
-
-// blocktype 6: online
-function TPortal_onlinebox()
-{
-	global $context;
-
-	if($context['TPortal']['useavataronline'] == 1)
-		tpo_whos();
-	else
-		echo '
-	<div style="line-height: 1.4em;">' , ssi_whosOnline() , '</div>';
 }
 
 // blocktype 7: Themes
@@ -646,7 +643,7 @@ function TPortal_recentbox()
 		}
 
 		if(!empty($member_ids))
-			$avatars = progetAvatars($member_ids);
+			$avatars = TPSubs::getInstance()->getAvatars($member_ids);
 		else
 			$avatars = array();
 
@@ -903,86 +900,6 @@ function TPortal_categorybox()
 function TPortal_sidebar()
 {
 	return;
-}
-
-// Some functions, not templates
-function tpo_whos($buddy_only = false)
-{
-	global $txt, $scripturl;
-
-	$whos = tpo_whosOnline();
-	echo '
-	<div>
-	' . $whos['num_guests'] .' ' , $whos['num_guests'] == 1 ? $txt['guest'] : $txt['guests'] , ',
-	' . $whos['num_users_online'] .' ' , $whos['num_users_online'] == 1 ? $txt['user'] : $txt['users'] , '
-	</div>';
-	if(isset($whos['users_online']) && count($whos['users_online']) > 0)
-	{
-		$ids = array();
-		$names = array();
-		$times = array();
-		foreach($whos['users_online'] as $w => $wh)
-		{
-			// For reasons historical, ELK produces the timestamp as
-			// the timestamp followed by the user's name, so let's fix it.
-			$timestamp = (int) strtr($w, array($wh['username'] => ''));
-			$ids[] = $wh['id'];
-			$names[$wh['id']] = $wh['name'];
-			$times[$wh['id']] = standardTime($timestamp);
-		}
-		$avy = progetAvatars($ids);
-		foreach($avy as $a => $av)
-			echo '
-		<a class="tp_avatar_single2" title="'.$names[$a].'" href="' . $scripturl . '?action=profile;u='.$a.'">' . $av . '</a>';
-	}
-}
-
-function tpo_whosOnline()
-{
-    require_once(SUBSDIR . '/MembersOnline.subs.php');
-	$membersOnlineOptions = array(
-		'show_hidden' => allowedTo('moderate_forum'),
-		'sort' => 'log_time',
-		'reverse_sort' => true,
-	);
-	$return = getMembersOnlineStats($membersOnlineOptions);
-	return $return;
-}
-
-function progetAvatars($ids)
-{
-	global $user_info, $modSettings, $scripturl;
-	global $image_proxy_enabled, $image_proxy_secret, $boardurl;
-
-    $db = database();
-
-	$request = $db->query('', '
-		SELECT
-			mem.real_name, mem.member_name, mem.id_member, mem.show_online,mem.avatar, mem.email_address AS email_address,
-			COALESCE(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type AS attachment_type
-		FROM {db_prefix}members AS mem
-		LEFT JOIN {db_prefix}attachments AS a ON (a.id_member = mem.id_member AND a.attachment_type != 3)
-		WHERE mem.id_member IN ({array_int:ids})',
-		array('ids' => $ids)
-	);
-
-	$avy = array();
-	if($db->num_rows($request) > 0)
-	{
-		while ($row = $db->fetch_assoc($request)) {
-            $avy[$row['id_member']] = determineAvatar( array(
-                    'avatar'            => $row['avatar'],
-                    'email_address'     => $row['email_address'],
-                    'filename'          => !empty($row['filename']) ? $row['filename'] : '',
-                    'id_attach'         => $row['id_attach'],
-                    'attachment_type'   => $row['attachment_type'],
-                )
-            )['image'];
-		}
-		$db->free_result($request);
-	}
-
-	return $avy;
 }
 
 // a dummy layer for layer articles

@@ -356,112 +356,109 @@ class Subs
                 $block['title'] = $newtitle;
             }
 
-            $use = true;
-            // special title links and variables for special types
-            switch($block['type']){
-                case 'searchbox':
-                    $mp = '<a class="subject" href="'.$scripturl.'?action=search">'.$block['title'].'</a>';
-                    $block['title'] = $mp;
-                    break;
-                case 'onlinebox':
-                    $mp = '<a class="subject"  href="'.$scripturl.'?action=who">'.$block['title'].'</a>';
-                    $block['title'] = $mp;
-                    if($block['var1'] == 0) {
-                        $context['TPortal']['useavataronline'] = 0;
-                    }
-                    else {
-                        $context['TPortal']['useavataronline'] = 1;
-                    }
-                    break;
-                case 'userbox':
-                    if($context['user']['is_logged']) {
-                        $mp = ''.$block['title'].'';
-                    }
-                    else {
-                        $mp = '<a class="subject"  href="'.$scripturl.'?action=login">'.$block['title'].'</a>';
-                    }
-                    $block['title'] = $mp;
-                    break;
-                case 'statsbox':
-                    $mp='<a class="subject"  href="'.$scripturl.'?action=stats">'.$block['title'].'</a>';
-                    $block['title'] = $mp;
-                    break;
-                case 'recentbox':
-                    $mp = '<a class="subject"  href="'.$scripturl.'?action=recent">'.$block['title'].'</a>';
-                    $context['TPortal']['recentboxnum'] = $block['body'];
-                    $context['TPortal']['useavatar'] = $block['var1'];
-                    $context['TPortal']['boardmode'] = $block['var3'];
-                    if($block['var1'] == '') {
-                        $context['TPortal']['useavatar'] = 1;
-                    }
-                    if(!empty($block['var2'])) {
-                        $context['TPortal']['recentboards'] = explode(',', $block['var2']);
-                    }
-                    break;
-                case 'scriptbox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['scriptboxbody'] = $block['body'];
-                    break;
-                case 'phpbox':
-                    $block['title']='<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['phpboxbody'] = $block['body'];
-                    break;
-                case 'ssi':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['ssifunction'] = $block['body'];
-                    break;
-                case 'module':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['moduleblock'] = $block['body'];
-                    $context['TPortal']['modulevar2'] = $block['var2'];
-                    break;
-                case 'themebox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['themeboxbody'] = $block['body'];
-                    break;
-                case 'newsbox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    if($context['random_news_line'] == '') {
-                        $use = false;
-                    }
-                    break;
-                case 'articlebox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['blockarticle'] = $block['body'];
-                    break;
-                case 'rss':
-                    $block['title'] = '<span class="header rss">' . $block['title'] . '</span>';
-                    $context['TPortal']['rss'] = $block['body'];
-                    $context['TPortal']['rss_notitles'] = $block['var2'];
-                    $context['TPortal']['rss_utf8'] = $block['var1'];
-                    $context['TPortal']['rsswidth'] = isset($block['var3']) ? $block['var3'] : '';
-                    $context['TPortal']['rssmaxshown'] = !empty($block['var4']) ? $block['var4'] : '20';
-                    break;
-                case 'categorybox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['blocklisting'] = $block['body'];
-                    $context['TPortal']['blocklisting_height'] = $block['var1'];
-                    $context['TPortal']['blocklisting_author'] = $block['var2'];
-                    break;
-                case 'shoutbox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['shoutbox_stitle'] = $block['body'];
-                    $context['TPortal']['shoutbox_id'] = $block['var2'];
-                    $context['TPortal']['shoutbox_layout'] = $block['var3'];
-                    $context['TPortal']['shoutbox_height'] = $block['var4'];
-                case 'modulebox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['moduleid'] = $block['var1'];
-                    $context['TPortal']['modulevar2'] = $block['var2'];
-                    $context['TPortal']['modulebody'] = $block['body'];
-                    break;
-                case 'catmenu':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['menuid'] = is_numeric($block['body']) ? $block['body'] : 0;
-                    $context['TPortal']['menuvar1'] = $block['var1'];
-                    $context['TPortal']['menuvar2'] = $block['var2'];
-                    $context['TPortal']['blockid'] = $block['id'];
-                    break;
+            $blockClass = '\TinyPortal\Blocks\\'.ucfirst(str_replace('box', '', $block['type']));
+            if(class_exists($blockClass)) {
+                (new $blockClass)->setup($block);
+            }
+            // Old block method
+            else {
+                $use = true;
+                // special title links and variables for special types
+                switch($block['type']){
+                    case 'searchbox':
+                        $mp = '<a class="subject" href="'.$scripturl.'?action=search">'.$block['title'].'</a>';
+                        $block['title'] = $mp;
+                        break;
+                    case 'userbox':
+                        if($context['user']['is_logged']) {
+                            $mp = ''.$block['title'].'';
+                        }
+                        else {
+                            $mp = '<a class="subject"  href="'.$scripturl.'?action=login">'.$block['title'].'</a>';
+                        }
+                        $block['title'] = $mp;
+                        break;
+                    case 'statsbox':
+                        $mp='<a class="subject"  href="'.$scripturl.'?action=stats">'.$block['title'].'</a>';
+                        $block['title'] = $mp;
+                        break;
+                    case 'recentbox':
+                        $mp = '<a class="subject"  href="'.$scripturl.'?action=recent">'.$block['title'].'</a>';
+                        $context['TPortal']['recentboxnum'] = $block['body'];
+                        $context['TPortal']['useavatar'] = $block['var1'];
+                        $context['TPortal']['boardmode'] = $block['var3'];
+                        if($block['var1'] == '') {
+                            $context['TPortal']['useavatar'] = 1;
+                        }
+                        if(!empty($block['var2'])) {
+                            $context['TPortal']['recentboards'] = explode(',', $block['var2']);
+                        }
+                        break;
+                    case 'scriptbox':
+                        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+                        $context['TPortal']['scriptboxbody'] = $block['body'];
+                        break;
+                    case 'phpbox':
+                        $block['title']='<span class="header">' . $block['title'] . '</span>';
+                        $context['TPortal']['phpboxbody'] = $block['body'];
+                        break;
+                    case 'ssi':
+                        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+                        $context['TPortal']['ssifunction'] = $block['body'];
+                        break;
+                    case 'module':
+                        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+                        $context['TPortal']['moduleblock'] = $block['body'];
+                        $context['TPortal']['modulevar2'] = $block['var2'];
+                        break;
+                    case 'themebox':
+                        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+                        $context['TPortal']['themeboxbody'] = $block['body'];
+                        break;
+                    case 'newsbox':
+                        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+                        if($context['random_news_line'] == '') {
+                            $use = false;
+                        }
+                        break;
+                    case 'articlebox':
+                        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+                        $context['TPortal']['blockarticle'] = $block['body'];
+                        break;
+                    case 'rss':
+                        $block['title'] = '<span class="header rss">' . $block['title'] . '</span>';
+                        $context['TPortal']['rss'] = $block['body'];
+                        $context['TPortal']['rss_notitles'] = $block['var2'];
+                        $context['TPortal']['rss_utf8'] = $block['var1'];
+                        $context['TPortal']['rsswidth'] = isset($block['var3']) ? $block['var3'] : '';
+                        $context['TPortal']['rssmaxshown'] = !empty($block['var4']) ? $block['var4'] : '20';
+                        break;
+                    case 'categorybox':
+                        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+                        $context['TPortal']['blocklisting'] = $block['body'];
+                        $context['TPortal']['blocklisting_height'] = $block['var1'];
+                        $context['TPortal']['blocklisting_author'] = $block['var2'];
+                        break;
+                    case 'shoutbox':
+                        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+                        $context['TPortal']['shoutbox_stitle'] = $block['body'];
+                        $context['TPortal']['shoutbox_id'] = $block['var2'];
+                        $context['TPortal']['shoutbox_layout'] = $block['var3'];
+                        $context['TPortal']['shoutbox_height'] = $block['var4'];
+                    case 'modulebox':
+                        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+                        $context['TPortal']['moduleid'] = $block['var1'];
+                        $context['TPortal']['modulevar2'] = $block['var2'];
+                        $context['TPortal']['modulebody'] = $block['body'];
+                        break;
+                    case 'catmenu':
+                        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+                        $context['TPortal']['menuid'] = is_numeric($block['body']) ? $block['body'] : 0;
+                        $context['TPortal']['menuvar1'] = $block['var1'];
+                        $context['TPortal']['menuvar2'] = $block['var2'];
+                        $context['TPortal']['blockid'] = $block['id'];
+                        break;
+                }
             }
 
             // render them horisontally
@@ -2559,6 +2556,41 @@ class Subs
         return \loadLanguage($template_name, $lang, $fatal, $force_reload);
 
     }}}
+
+    public function getAvatars($ids) {{{
+        global $user_info, $modSettings, $scripturl;
+        global $image_proxy_enabled, $image_proxy_secret, $boardurl;
+
+        $db = \database();
+
+        $request = $db->query('', '
+            SELECT
+                mem.real_name, mem.member_name, mem.id_member, mem.show_online,mem.avatar, mem.email_address AS email_address,
+                COALESCE(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type AS attachment_type
+            FROM {db_prefix}members AS mem
+            LEFT JOIN {db_prefix}attachments AS a ON (a.id_member = mem.id_member AND a.attachment_type != 3)
+            WHERE mem.id_member IN ({array_int:ids})',
+            array('ids' => $ids)
+        );
+
+        $avy = array();
+        if($db->num_rows($request) > 0) {
+            while ($row = $db->fetch_assoc($request)) {
+                $avy[$row['id_member']] = \determineAvatar( array(
+                        'avatar'            => $row['avatar'],
+                        'email_address'     => $row['email_address'],
+                        'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                        'id_attach'         => $row['id_attach'],
+                        'attachment_type'   => $row['attachment_type'],
+                    )
+                )['image'];
+            }
+            $db->free_result($request);
+        }
+
+        return $avy;
+    }}}
+
 }
 
 ?>

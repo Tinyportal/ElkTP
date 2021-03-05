@@ -62,7 +62,7 @@ class Block extends Base {
             3   => 'statsbox',
             4   => 'searchbox',
             5   => 'html',
-            6   => 'onlinebox',
+            6   => 'online',
             7   => 'themebox',
             8   => 'shoutbox',
             9   => 'catmenu',
