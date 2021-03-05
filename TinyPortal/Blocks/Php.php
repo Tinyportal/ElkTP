@@ -14,7 +14,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class News extends Base
+class Php extends Base
 {
 
     public function __construct() {{{
@@ -30,8 +30,9 @@ class News extends Base
 
     public function display( $block ) {{{
 
-        // Show a random news item? (or you could pick one from news_lines...)
-        echo '<div class="tp_newsblock">', $this->context['random_news_line'], '</div>';
+        if(!empty($block['body'])) {
+            eval(TinyPortal\Modules\Subs::getInstance()->convertphp($block['body'], true));
+        }
 
     }}}
 

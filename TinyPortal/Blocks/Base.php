@@ -19,13 +19,19 @@ class Base
     protected $context;
     protected $scripturl;
     protected $txt;
+    protected $settings;
+    protected $user_info;
+    protected $maintenance;
 
     public function __construct() {{{
-       global $context, $scripturl, $txt;
+       global $context, $scripturl, $txt, $settings, $user_info, $maintenance, $modSettings;
 
         $this->context      = &$context;
         $this->scripturl    = $scripturl;
         $this->txt          = $txt;
+        $this->settings     = $settings;
+        $this->modSettings  = $modSettings;
+        $this->user_info    = $user_info;
 
     }}}
 

@@ -70,22 +70,22 @@ class Block
         if (is_array($availableBlocks) && count($availableBlocks)) {
             foreach($availableBlocks as $row) {
                 // some tests to minimize sql calls
-                if($row['type'] == TP_BLOCK_THEMEBOX) {
+                if($row['type'] == TP_BLOCK_THEME) {
                     $test_themebox = true;
                 }
-                elseif($row['type'] == TP_BLOCK_ARTICLEBOX) {
+                elseif($row['type'] == TP_BLOCK_ARTICLE) {
                     $test_articlebox = true;
                     if(is_numeric($row['body'])) {
                         $fetch_articles[] = $row['body'];
                     }
                 }
-                elseif($row['type'] == TP_BLOCK_CATEGORYBOX) {
+                elseif($row['type'] == TP_BLOCK_CATEGORY) {
                     $test_catbox = true;
                     if(is_numeric($row['body'])) {
                         $fetch_article_titles[] = $row['body'];
                     }
                 }
-                elseif($row['type'] == TP_BLOCK_SHOUTBOX) {
+                elseif($row['type'] == TP_BLOCK_SHOUT) {
                     call_integration_hook('integrate_tp_shoutbox', array(&$row));
                 }
 

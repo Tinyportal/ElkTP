@@ -57,25 +57,25 @@ class Block extends Base {
 
         $this->blockType = array(
             0   => 'no',
-            1   => 'userbox',
+            1   => 'user',
             2   => 'news',
-            3   => 'statsbox',
-            4   => 'searchbox',
+            3   => 'stats',
+            4   => 'search',
             5   => 'html',
             6   => 'online',
-            7   => 'themebox',
-            8   => 'shoutbox',
+            7   => 'theme',
+            8   => 'shout',
             9   => 'catmenu',
-            10  => 'phpbox',
-            11  => 'scriptbox',
-            12  => 'recentbox',
+            10  => 'php',
+            11  => 'script',
+            12  => 'recent',
             13  => 'ssi',
             14  => '--', // Was modulebox
             15  => 'rss',
             16  => 'sitemap',
             17  => 'admin',
-            18  => 'articlebox',
-            19  => 'categorybox',
+            18  => 'article',
+            19  => 'category',
         );
 
         $this->blockPanel = array(

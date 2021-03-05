@@ -14,7 +14,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class News extends Base
+class Module extends Base
 {
 
     public function __construct() {{{
