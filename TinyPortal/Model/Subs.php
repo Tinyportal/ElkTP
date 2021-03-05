@@ -365,10 +365,6 @@ class Subs
                 $use = true;
                 // special title links and variables for special types
                 switch($block['type']){
-                    case 'searchbox':
-                        $mp = '<a class="subject" href="'.$scripturl.'?action=search">'.$block['title'].'</a>';
-                        $block['title'] = $mp;
-                        break;
                     case 'userbox':
                         if($context['user']['is_logged']) {
                             $mp = ''.$block['title'].'';
@@ -414,12 +410,6 @@ class Subs
                     case 'themebox':
                         $block['title'] = '<span class="header">' . $block['title'] . '</span>';
                         $context['TPortal']['themeboxbody'] = $block['body'];
-                        break;
-                    case 'newsbox':
-                        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                        if($context['random_news_line'] == '') {
-                            $use = false;
-                        }
                         break;
                     case 'articlebox':
                         $block['title'] = '<span class="header">' . $block['title'] . '</span>';

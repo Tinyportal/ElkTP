@@ -58,7 +58,7 @@ class Block extends Base {
         $this->blockType = array(
             0   => 'no',
             1   => 'userbox',
-            2   => 'newsbox',
+            2   => 'news',
             3   => 'statsbox',
             4   => 'searchbox',
             5   => 'html',

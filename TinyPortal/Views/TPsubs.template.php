@@ -311,15 +311,6 @@ function TPortal_userbox()
 	</div>';
 }
 
-// blocktype 2: News
-function TPortal_newsbox()
-{
-	global $context;
-
-	// Show a random news item? (or you could pick one from news_lines...)
-	echo '<div class="tp_newsblock">', $context['random_news_line'], '</div>';
-}
-
 // blocktype 3: Stats
 function TPortal_statsbox()
 {
@@ -374,20 +365,6 @@ function TPortal_statsbox()
 	}
 	echo '
 	</div>';
-}
-
-// blocktype 4: search
-function TPortal_searchbox()
-{
-	global $context, $txt, $scripturl;
-
-	echo '
-	<form accept-charset="', 'UTF-8', '" action="', $scripturl, '?action=search;sa=results" method="post" style="padding: 0; text-align: center; margin: 0; ">
-		<input type="text" class="block_search" name="search" value="" />
-		<input type="submit" name="submit" value="', $txt['search'], '" class="block_search_submit button_submit" /><br>
-		<br><span class="smalltext"><a href="', $scripturl, '?action=search;advanced">', $txt['search_advanced'], '</a></span>
-		<input type="hidden" name="advanced" value="0" />
-	</form>';
 }
 
 // blocktype 7: Themes
