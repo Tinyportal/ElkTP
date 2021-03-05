@@ -86,14 +86,10 @@ class Portal extends \Action_Controller implements Frontpage_Interface
             }
 
             $context['TPortal']['subaction'] = $subAction;
-            // If it exists in our new subactions array load it
-            if(!empty($subAction) && array_key_exists($subAction, $subActions)) {
-                if (!empty($subActions[$subAction][0])) {
-                    require_once(SOURCEDIR . '/' . $subActions[$subAction][0]);
-                }
 
-                call_user_func_array($subActions[$subAction][1], $subActions[$subAction][2]);
-            }
+            $action     = new \Action();
+            $subAction  = $action->initialize($subActions, $sa);
+            $action->dispatch($subAction);
 
             call_integration_hook('integrate_tp_post_subactions');
         }
