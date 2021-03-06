@@ -28,7 +28,7 @@ class Search extends Base
 
     }}}
 
-    function display( $block ) {{{
+    public function display( $block ) {{{
 
         echo '
         <form accept-charset="', 'UTF-8', '" action="', $this->scripturl, '?action=search;sa=results" method="post" style="padding: 0; text-align: center; margin: 0; ">

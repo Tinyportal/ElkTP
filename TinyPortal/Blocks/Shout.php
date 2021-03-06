@@ -28,7 +28,7 @@ class Shout extends Base
 
     }}}
 
-    function display( $block ) {{{
+    public function display( $block ) {{{
 
     }}}
 

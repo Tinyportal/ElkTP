@@ -34,7 +34,7 @@ class Online extends Base
 
     }}}
 
-    function display( $block ) {{{
+    public function display( $block ) {{{
 
         if($this->context['TPortal']['useavataronline'] == 1) {
 

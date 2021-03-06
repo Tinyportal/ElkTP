@@ -31,7 +31,7 @@ class Category extends Base
 
     }}}
 
-    function display( $block ) {{{
+    public function display( $block ) {{{
 
         if(isset($this->context['TPortal']['blockarticle_titles'][$this->context['TPortal']['blocklisting']])){
             echo '<div class="middletext" ', (count($this->context['TPortal']['blockarticle_titles'][$this->context['TPortal']['blocklisting']])>$this->context['TPortal']['blocklisting_height'] && $this->context['TPortal']['blocklisting_height']!='0') ? ' style="overflow: auto; width: 100%; height: '.$this->context['TPortal']['blocklisting_height'].'em;"' : '' ,'>';

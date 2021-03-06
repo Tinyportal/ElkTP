@@ -30,7 +30,7 @@ class User extends Base
 
     }}}
 
-    function display( $block ) {{{
+    public function display( $block ) {{{
 
         $bullet = '<img src="'.$this->settings['tp_images_url'].'/TPdivider.png" alt="" style="margin:0 4px 0 0;" />';
         $bullet2 = '<img src="'.$this->settings['tp_images_url'].'/TPdivider2.png" alt="" style="margin:0 4px 0 0;" />';

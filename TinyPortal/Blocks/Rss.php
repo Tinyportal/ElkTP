@@ -28,7 +28,7 @@ class Rss extends Base
 
     }}}
 
-    function display( $block ) {{{
+    public function display( $block ) {{{
 
         echo '<div style="padding: 5px; ' , !empty($this->context['TPortal']['rsswidth']) ? 'max-width: ' . $this->context['TPortal']['rsswidth'] .';' : '' , '" class="middletext">' , TinyPortal\Model\Subs::getInstance()->parseRSS('', $this->context['TPortal']['rss_utf8']) , '</div>';
 
