@@ -24,7 +24,7 @@ class Stats extends Base
 
     public function setup( &$block ) {{{
 
-        $block['title'] = '<a class="subject"  href="'.$this->this->scripturl.'?action=stats">'.$block['title'].'</a>';
+        $block['title'] = '<a class="subject"  href="'.$this->scripturl.'?action=stats">'.$block['title'].'</a>';
 
     }}}
 
