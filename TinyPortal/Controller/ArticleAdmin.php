@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -69,6 +69,7 @@ class ArticleAdmin extends \Action_Controller
             'artsettings'       => array($this, 'action_settings', array()),
             'articons'          => array($this, 'action_articons', array()),
             'submission'        => array($this, 'action_submission', array()),
+            'ajax'              => array($this, 'action_ajax', array()),
             // FIXME split these out into the correct functions rather than calling the old method
             'addarticle_bbc'    => array($this, 'action_admin', array()),
             'addarticle_html'   => array($this, 'action_admin', array()),
@@ -91,10 +92,13 @@ class ArticleAdmin extends \Action_Controller
         $subAction  = $action->initialize($subActions, $sa);
         $action->dispatch($subAction);
 
+        if(!isset($context['sub_template'])) {
+            $context['sub_template'] = $sa;
+        }
     }}}
 
     public function action_attachment() {{{
-        tpattach();
+        TPSubs::getInstance()->attach();
     }}}
 
     public function action_edit() {{{
@@ -258,17 +262,17 @@ class ArticleAdmin extends \Action_Controller
         $tpArticle  = TPArticle::getInstance();
         if(empty($where)) {
             // We are inserting
-            $where = $tpArticle->insertArticle($article_data);
+            $where = $tpArticle->insert($article_data);
         }
         else {
             // We are updating
-            $tpArticle->updateArticle((int)$where, $article_data);
+            $tpArticle->update((int)$where, $article_data);
         }
 
         unset($tpArticle);
         // check if uploadad picture
         if(isset($_FILES['qup_tp_article_body']) && file_exists($_FILES['qup_tp_article_body']['tmp_name'])) {
-            $name = TPuploadpicture( 'qup_tp_article_body', $context['user']['id'].'uid', null, null, $context['TPortal']['image_upload_path']);
+            $name = TPSubs::getInstance()->uploadpicture( 'qup_tp_article_body', $context['user']['id'].'uid', null, null, $context['TPortal']['image_upload_path']);
             TPSubs::getInstance()->createthumb($context['TPortal']['image_upload_path'].'/'. $name, 50, 50, $context['TPortal']['image_upload_path'].'/thumbs/thumb_'. $name);
         }
         // if this was a new article
@@ -433,6 +437,7 @@ class ArticleAdmin extends \Action_Controller
 
         unset($tpArticle);
 
+        obExit(false);
     }}}
 
     public function action_admin() {{{
@@ -544,8 +549,6 @@ class ArticleAdmin extends \Action_Controller
                 array('cat' => 0, 'category' => $acats)
             );
         }
-
-        $this->action_ajax();
 
         if(isset($_GET['cu']) && is_numeric($_GET['cu'])) {
             $where = $_GET['cu'];
@@ -851,7 +854,7 @@ class ArticleAdmin extends \Action_Controller
         $db = TPDatabase::getInstance();
 
         // Get the category names
-        $categories = TPCategory::getInstance()->getCategoryData(array('id', 'display_name'), array('item_type' => 'category'));
+        $categories = TPCategory::getInstance()->select(array('id', 'display_name'), array('item_type' => 'category'));
         if(is_array($categories)) {
             foreach($categories as $k => $v) {
                 $context['TPortal']['catnames'][$v['id']] = $v['display_name'];
@@ -942,7 +945,7 @@ class ArticleAdmin extends \Action_Controller
             // guess we only want the category then
             else {
                 // get membergroups
-                TPSubs::getInstance()->get_grps();
+                TPSubs::getInstance()->grps();
                 $context['html_headers'] .= '
                 <script type="text/javascript"><!-- // --><![CDATA[
                     function changeIllu(node,name)
@@ -1213,7 +1216,7 @@ class ArticleAdmin extends \Action_Controller
             checksession('get');
             if($id > 0) {
                 // first get info
-                $newcat = TPCategory::getInstance()->getCategoryData(array('id', 'parent'), array('id' => $id));
+                $newcat = TPCategory::getInstance()->select(array('id', 'parent'), array('id' => $id));
                 if(is_array($newcat)) {
                     $newcat = $newcat[0]['parent'];
                     $db->query('', '
@@ -1233,7 +1236,7 @@ class ArticleAdmin extends \Action_Controller
                     );
                 }
 
-                TPCategory::getInstance()->deleteCategory($id);
+                TPCategory::getInstance()->delete($id);
                 redirectexit('action=admin;area=tparticles;sa=categories');
             }
             else {
@@ -1315,8 +1318,6 @@ class ArticleAdmin extends \Action_Controller
             // stray articles
             checkSession('post');
             isAllowedTo('tp_articles');
-
-            self::action_ajax();
 
             $ccats = array();
             // check if we have some values
@@ -1411,8 +1412,6 @@ class ArticleAdmin extends \Action_Controller
         if(is_array($_POST) && count($_POST)) {
             checkSession('post');
             isAllowedTo('tp_articles');
-
-            self::action_ajax();
 
             $ccats = array();
             // check if we have some values
@@ -1558,7 +1557,7 @@ class ArticleAdmin extends \Action_Controller
                 var id = target.id.replace("artActive", "");
                 var Ajax = getXMLHttpRequest();
 
-                Ajax.open("POST", "?action=admin;area=tparticles;arton=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+                Ajax.open("POST", "?action=admin;area=tparticles;sa=ajax;arton=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
                 Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
                 var source = target.src;
@@ -1572,7 +1571,7 @@ class ArticleAdmin extends \Action_Controller
                     }
                 }
 
-                var params = "?action=admin;area=tparticles;arton=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+                var params = "?action=admin;area=tparticles;sa=ajax;arton=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
                 Ajax.send(params);
             }
             function toggleFront(e)
@@ -1586,7 +1585,7 @@ class ArticleAdmin extends \Action_Controller
                 var id = target.id.replace("artFront", "");
                 var Ajax = getXMLHttpRequest();
 
-                Ajax.open("POST", "?action=admin;area=tparticles;artfront=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+                Ajax.open("POST", "?action=admin;area=tparticles;sa=ajax;artfront=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
                 Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
                 var source = target.src;
@@ -1600,7 +1599,7 @@ class ArticleAdmin extends \Action_Controller
                     }
                 }
 
-                var params = "?action=admin;area=tparticles;artfront=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+                var params = "?action=admin;area=tparticles;sa=ajax;artfront=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
                 Ajax.send(params);
             }
             function toggleSticky(e)
@@ -1614,7 +1613,7 @@ class ArticleAdmin extends \Action_Controller
                 var id = target.id.replace("artSticky", "");
                 var Ajax = getXMLHttpRequest();
 
-                Ajax.open("POST", "?action=admin;area=tparticles;artsticky=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+                Ajax.open("POST", "?action=admin;area=tparticles;sa=ajax;artsticky=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
                 Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
                 var source = target.src;
@@ -1628,7 +1627,7 @@ class ArticleAdmin extends \Action_Controller
                     }
                 }
 
-                var params = "?action=admin;area=tparticles;artsticky=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+                var params = "?action=admin;area=tparticles;sa=ajax;artsticky=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
                 Ajax.send(params);
             }
             function toggleLock(e)
@@ -1642,7 +1641,7 @@ class ArticleAdmin extends \Action_Controller
                 var id = target.id.replace("artLock", "");
                 var Ajax = getXMLHttpRequest();
 
-                Ajax.open("POST", "?action=admin;area=tparticles;artlock=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+                Ajax.open("POST", "?action=admin;area=tparticles;sa=ajax;artlock=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
                 Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
                 var source = target.src;
@@ -1656,7 +1655,7 @@ class ArticleAdmin extends \Action_Controller
                     }
                 }
 
-                var params = "?action=admin;area=tparticles;artlock=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+                var params = "?action=admin;area=tparticles;sa=ajax;artlock=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
                 Ajax.send(params);
             }
             function toggleFeatured(e)
@@ -1680,7 +1679,7 @@ class ArticleAdmin extends \Action_Controller
                 var id = target.id.replace("artFeatured", "");
                 var Ajax = getXMLHttpRequest();
 
-                Ajax.open("POST", "?action=admin;area=tparticles;artfeat=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
+                Ajax.open("POST", "?action=admin;area=tparticles;sa=ajax;artfeat=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'");
                 Ajax.setRequestHeader("Content-type", "application/x-www-form-urlencode");
 
                 var source = target.src;
@@ -1694,7 +1693,7 @@ class ArticleAdmin extends \Action_Controller
                     }
                 }
 
-                var params = "?action=admin;area=tparticles;artfeat=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
+                var params = "?action=admin;area=tparticles;sa=ajax;artfeat=" + id + ";' . $context['session_var'] . '=' . $context['session_id'].'";
                 Ajax.send(params);
             }
         // ]]></script>';

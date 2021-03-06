@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -10,7 +10,6 @@
  */
 
 // ** Sections ** (ordered like in the admin screen):
-// TP Admin Main overview page
 // General Settings page
 // Frontpage Settings page
 // Article Categories page
@@ -41,74 +40,6 @@ $xpath = new DOMXPath($html); // So we can use XPath...
 
 return($xpath->query("//*[@id='$id']")->item(0)); // Return the first item in element matching our id.
 
-}
-
-function template_main()
-{
-	global $context, $settings, $options, $txt, $scripturl, $modSettings, $boarddir, $boardurl, $language;
-
-	echo '
-	<div id="tpadmin" class="tpadmin tborder">';
-
-	$go = isset($context['TPortal']['subaction']) ? 'template_' . $context['TPortal']['subaction'] : '';
-
-	if($go == 'template_credits') {
-		$go = 'template_tpcredits';
-		$param = '';
-	}
-	elseif($go == 'template_categories' && !empty($_GET['cu']) && is_numeric($_GET['cu'])) {
-		$go = 'template_editcategory';
-		$param = '';
-	}
-	else {
-		$param = '';
-    }
-
-	call_user_func($go, $param);
-
-	echo '
-		<p class="clearthefloat"></p>
-        <script>
-			$(document).ready( function() {
-				var $clickme = $(".clickme"),
-					$box = $(".box");
-				if ($box) {
-					$box.hide();
-				}
-				if ($clickme) {
-					$clickme.click( function(e) {
-						$(this).text(($(this).text() === "'.$txt['tp-hide'].'" ? "'.$txt['tp-more'].'" : "'.$txt['tp-hide'].'")).next(".box").slideToggle();
-						e.preventDefault();
-					});
-				}
-			});
-		</script>
-	</div>';
-}
-
-// TP Admin Main overview page
-function template_overview()
-{
-	global $context, $settings, $txt, $boardurl;
-
-	echo '
-	<div class="title_bar">
-		<h3 class="category_header">'.$txt['tp-tpadmin'].'</h3>
-	</div>
-	<div>
-		<div id="tp_overview" class="tp_overview content">';
-
-	if(is_array($context['admin_tabs']) && count($context['admin_tabs']) > 0 ) {
-		echo '<ul>';
-		foreach($context['admin_tabs'] as $ad => $tab) {
-			$tabs = array();
-			foreach($tab as $t => $tb) {
-				echo '<li><a href="' . $tb['href'] . '"><img style="margin-bottom: 8px;" src="' . $settings['tp_images_url'] . '/TPov_' . strtolower($t) . '.png" alt="TPov_' . strtolower($t) . '" /><br><b>'.$tb['title'].'</b></a></li>';
-            }
-		}
-		echo '</ul>';
-	}
-	echo '</div></div>';
 }
 
 // General Settings page

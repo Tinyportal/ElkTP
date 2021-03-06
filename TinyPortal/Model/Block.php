@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -57,25 +57,25 @@ class Block extends Base {
 
         $this->blockType = array(
             0   => 'no',
-            1   => 'userbox',
-            2   => 'newsbox',
-            3   => 'statsbox',
-            4   => 'searchbox',
+            1   => 'user',
+            2   => 'news',
+            3   => 'stats',
+            4   => 'search',
             5   => 'html',
-            6   => 'onlinebox',
-            7   => 'themebox',
-            8   => 'shoutbox',
+            6   => 'online',
+            7   => 'theme',
+            8   => 'shout',
             9   => 'catmenu',
-            10  => 'phpbox',
-            11  => 'scriptbox',
-            12  => 'recentbox',
+            10  => 'php',
+            11  => 'script',
+            12  => 'recent',
             13  => 'ssi',
             14  => '--', // Was modulebox
             15  => 'rss',
             16  => 'sitemap',
             17  => 'admin',
-            18  => 'articlebox',
-            19  => 'categorybox',
+            18  => 'article',
+            19  => 'category',
         );
 
         $this->blockPanel = array(
@@ -312,25 +312,25 @@ class Block extends Base {
 
     }}}
 
-    public function getBlockData( $columns, $where ) {{{
+    public function select( $columns, $where ) {{{
 
         return self::getSQLData($columns, $where, $this->dBStructure, 'tp_blocks');
 
     }}}
 
-   public function insertBlock($block_data) {{{
+   public function insert($block_data) {{{
 
         return self::insertSQL($block_data, $this->dBStructure, 'tp_blocks');
 
     }}}
 
-     public function updateBlock($block_id, $block_data) {{{
+     public function update($block_id, $block_data) {{{
 
         return self::updateSQL($block_id, $block_data, $this->dBStructure, 'tp_blocks');
 
     }}}
 
-    public function deleteBlock( $block_id ) {{{
+    public function delete( $block_id ) {{{
 
         return self::deleteSQL($block_id, 'tp_blocks');
 

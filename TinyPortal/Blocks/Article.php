@@ -1,0 +1,88 @@
+<?php
+/**
+ * @package TinyPortal
+ * @version 1.0.0 RC3
+ * @author TinyPortal - http://www.tinyportal.net
+ * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
+ *
+ * Copyright (C) 2020 - The TinyPortal Team
+ *
+ */
+namespace TinyPortal\Blocks;
+
+if (!defined('ELK')) {
+	die('Hacking attempt...');
+}
+
+class Article extends Base
+{
+
+    public function __construct() {{{
+        parent::__construct();
+
+    }}}
+
+    public function prepare( &$block ) {{{
+
+        if(!is_numeric($block['body'])) {
+            return;
+        }
+
+        $this->context['TPortal']['blockarticles'] = array();
+        $articles   = \TinyPortal\Model\Article::getInstance()->getArticle($block['body']);
+        if(is_array($articles)) {
+            foreach($articles as $article) {
+                // allowed and all is well, go on with it.
+                $this->context['TPortal']['blockarticles'][$article['id']] = $article;
+                // setup the avatar code
+                if ($modSettings['avatar_action_too_large'] == 'option_html_resize' || $modSettings['avatar_action_too_large'] == 'option_js_resize') {
+                    $avatar_width   = !empty($modSettings['avatar_max_width_external']) ? ' width="' . $modSettings['avatar_max_width_external'] . '"' : '';
+                    $avatar_height  = !empty($modSettings['avatar_max_height_external']) ? ' height="' . $modSettings['avatar_max_height_external'] . '"' : '';
+                }
+                else {
+                    $avatar_width   = '';
+                    $avatar_height  = '';
+                }
+
+                $this->context['TPortal']['blockarticles'][$article['id']]['avatar'] = determineAvatar( array(
+                            'avatar'            => $article['avatar'],
+                            'email_address'     => $article['email_address'],
+                            'filename'          => !empty($article['filename']) ? $article['filename'] : '',
+                            'id_attach'         => $article['id_attach'],
+                            'attachment_type'   => $article['attachment_type'],
+                        )
+                )['image'];
+                // sort out the options
+                $this->context['TPortal']['blockarticles'][$article['id']]['visual_options'] = array();
+                // since these are inside blocks, some stuff has to be left out
+                $this->context['TPortal']['blockarticles'][$article['id']]['frame'] = 'none';
+            }
+        }
+
+    }}}
+
+    public function setup( &$block ) {{{
+
+        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+        $this->context['TPortal']['blockarticle'] = $block['body'];
+
+    }}}
+
+    public function display( $block ) {{{
+
+        if(isset($this->context['TPortal']['blockarticles'][$this->context['TPortal']['blockarticle']])) {
+		    echo '<div class="block_article">';
+            if(!empty($this->context['TPortal']['blockarticles'][$this->context['TPortal']['blockarticle']]['template'])) {
+                \TinyPortal\Model\Subs::getInstance()->render_template($this->context['TPortal']['blockarticles'][$this->context['TPortal']['blockarticle']]['template']);
+            }
+            else {
+                \TinyPortal\Model\Subs::getInstance()->render_template(blockarticle_renders());
+            }
+            echo '</div>';
+        }
+
+    }}}
+
+}
+
+?>

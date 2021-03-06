@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -163,6 +163,66 @@ $tables = array(
             array('type' => 'primary', 'columns' => array('id')),
         ),
     ),
+    'tp_menu' => array(
+        'columns' => array(
+            array('name' => 'id', 'type' => 'int', 'size' => 11, 'auto' => true,),
+            array('name' => 'name', 'type' => 'tinytext' ) + $type ,
+            array('name' => 'type', 'type' => 'tinytext' ) + $type ,
+            array('name' => 'link', 'type' => 'tinytext' ) + $type , 
+            array('name' => 'parent', 'type' => 'tinytext' ) + $type ,
+            array('name' => 'permissions', 'type' => 'mediumtext') + $type, 
+            array('name' => 'enabled', 'type' => 'smallint', 'size' => 4, 'default' => 0),
+        ),
+        'indexes' => array(
+            array('type' => 'primary', 'columns' => array('id')),
+        ),
+    ),
+    'tp_downloads' => array(
+		'columns' => array(
+			array('name' => 'id', 'type' => 'mediumint', 'size' => 8, 'auto' => true, 'unsigned' => true),
+			array('name' => 'category_id', 'type' => 'mediumint', 'size' => 8, 'default' => 0, 'unsigned' => true),
+			array('name' => 'member_id', 'type' => 'mediumint', 'size' => 8, 'default' => 0, 'unsigned' => true),
+			array('name' => 'member_name', 'type' => 'varchar', 'size' => 80, 'default' => ''),
+			array('name' => 'dt_created', 'type' => 'int', 'size' => 10, 'default' => 0),
+			array('name' => 'dt_published', 'type' => 'int', 'size' => 10, 'default' => 0),
+			array('name' => 'title', 'type' => 'varchar', 'size' => 255, 'default' => ''),
+			array('name' => 'body', 'type' => 'text') + $type,
+			array('name' => 'download_link', 'type' => 'varchar', 'size' => 255, 'default' => ''),
+			array('name' => 'type', 'type' => 'varchar', 'size' => 40, 'default' => ''),
+			array('name' => 'date', 'type' => 'int', 'size' => 10, 'default' => 0, 'unsigned' => true),
+			array('name' => 'permissions', 'type' => 'mediumint', 'size' => 8, 'default' => 0, 'unsigned' => true),
+			array('name' => 'styles', 'type' => 'mediumint', 'size' => 8, 'default' => 0, 'unsigned' => true),
+			array('name' => 'views', 'type' => 'int', 'size' => 10, 'default' => 0, 'unsigned' => true),
+			array('name' => 'comments', 'type' => 'int', 'size' => 10, 'default' => 0, 'unsigned' => true),
+			array('name' => 'status', 'type' => 'tinyint', 'size' => 4, 'default' => 1),
+		),
+		'indexes' => array(
+			array('type' => 'primary', 'columns' => array('id')),
+		),
+	),
+    'tp_galleries' => array(
+		'columns' => array(
+			array('name' => 'id', 'type' => 'mediumint', 'size' => 8, 'auto' => true, 'unsigned' => true),
+			array('name' => 'category_id', 'type' => 'mediumint', 'size' => 8, 'default' => 0, 'unsigned' => true),
+			array('name' => 'member_id', 'type' => 'mediumint', 'size' => 8, 'default' => 0, 'unsigned' => true),
+			array('name' => 'member_name', 'type' => 'varchar', 'size' => 80, 'default' => ''),
+			array('name' => 'dt_created', 'type' => 'int', 'size' => 10, 'default' => 0),
+			array('name' => 'dt_published', 'type' => 'int', 'size' => 10, 'default' => 0),
+			array('name' => 'title', 'type' => 'varchar', 'size' => 255, 'default' => ''),
+			array('name' => 'body', 'type' => 'text') + $type,
+			array('name' => 'image_name', 'type' => 'varchar', 'size' => 255, 'default' => ''),
+			array('name' => 'type', 'type' => 'varchar', 'size' => 40, 'default' => ''),
+			array('name' => 'date', 'type' => 'int', 'size' => 10, 'default' => 0, 'unsigned' => true),
+			array('name' => 'permissions', 'type' => 'mediumint', 'size' => 8, 'default' => 0, 'unsigned' => true),
+			array('name' => 'styles', 'type' => 'mediumint', 'size' => 8, 'default' => 0, 'unsigned' => true),
+			array('name' => 'views', 'type' => 'int', 'size' => 10, 'default' => 0, 'unsigned' => true),
+			array('name' => 'comments', 'type' => 'int', 'size' => 10, 'default' => 0, 'unsigned' => true),
+			array('name' => 'status', 'type' => 'tinyint', 'size' => 4, 'default' => 1),
+		),
+		'indexes' => array(
+			array('type' => 'primary', 'columns' => array('id')),
+		),
+	),
 );
 
 $db_table   = db_table();

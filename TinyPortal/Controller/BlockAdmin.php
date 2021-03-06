@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -113,7 +113,7 @@ class BlockAdmin extends \Action_Controller
             $context['TPortal']['blockcodes']   = TPSubs::getInstance()->collectSnippets();
             $context['TPortal']['copyblocks']   = $tpBlock->getBlocks();
             $context['TPortal']['blockside']    = TPUtil::filter('side', 'get', 'string');
-            TPSubs::getInstance()->get_articles();
+            TPSubs::getInstance()->articles();
             // check which side its mean to be on
         }
 
@@ -152,7 +152,7 @@ class BlockAdmin extends \Action_Controller
             }
         }
 
-        TPSubs::getInstance()->get_articles();
+        TPSubs::getInstance()->articles();
 
         $context['html_headers'] .= '
         <script type="text/javascript" src="'. $settings['default_theme_url']. '/scripts/editor.js?fin20"></script>
@@ -289,7 +289,7 @@ class BlockAdmin extends \Action_Controller
             $context['TPortal']['blockcodes'] = TPSubs::getInstance()->collectSnippets();
 
             // Get the category names
-            $categories = TPCategory::getInstance()->getCategoryData(array('id', 'display_name'), array('item_type' => 'category'));
+            $categories = TPCategory::getInstance()->select(array('id', 'display_name'), array('item_type' => 'category'));
             if(is_array($categories)) {
                 foreach($categories as $k => $v) {
                     $context['TPortal']['catnames'][$v['id']] = $v['display_name'];
@@ -297,10 +297,10 @@ class BlockAdmin extends \Action_Controller
                 }
             }
 
-            TPSubs::getInstance()->get_grps();
-            TPSubs::getInstance()->get_langfiles();
-            TPSubs::getInstance()->get_boards();
-            TPSubs::getInstance()->get_articles();
+            TPSubs::getInstance()->grps();
+            TPSubs::getInstance()->langfiles();
+            TPSubs::getInstance()->boards();
+            TPSubs::getInstance()->articles();
             $context['TPortal']['edit_categories'] = array();
 
             // get all themes for selection
@@ -361,7 +361,7 @@ class BlockAdmin extends \Action_Controller
         }
 
         foreach($blocks as $block_id => $updateArray) {
-            TPBlock::getInstance()->updateBlock($block_id, $updateArray);
+            TPBlock::getInstance()->update($block_id, $updateArray);
         }
 
         $context['TPortal']['subaction'] = 'blocks';
@@ -426,7 +426,7 @@ class BlockAdmin extends \Action_Controller
                     case 'var3':
                     case 'var4':
                     case 'var5':
-                        $existing = $tpBlock->getBlockData(array('settings'), array('id' => $block_id));
+                        $existing = $tpBlock->select(array('settings'), array('id' => $block_id));
                         if(is_array($existing)) {
                             $data   = json_decode($existing[0]['settings'], true);
                         }
@@ -485,7 +485,7 @@ class BlockAdmin extends \Action_Controller
 				else
 					$tpath = '';
 
-				$themebox[] = $theme . '|' . $value . '|' . $tpath;
+				$themebox[] = $theme . '|' . $v . '|' . $tpath;
 			}
 
 			$updateArray['display'] 	= implode(',', $access);
@@ -499,10 +499,10 @@ class BlockAdmin extends \Action_Controller
 		}
 
 		if(isset($themebox)) {
-			$updateArray['themebox'] = implode(',', $themebox);
+			$updateArray['body'] = implode(',', $themebox);
 		}
 
-        $tpBlock->updateBlock($block_id, $updateArray);
+        $tpBlock->update($block_id, $updateArray);
 
         redirectexit('action=admin;area=tpblocks;sa=editblock&id='.$block_id.';' . $context['session_var'] . '=' . $context['session_id']);
 
@@ -523,7 +523,7 @@ class BlockAdmin extends \Action_Controller
         $type   = TPUtil::filter('tp_addblock', 'post', 'string');
         if(!is_numeric($type)) {
             if(substr($type, 0, 3) == 'mb_') {
-                $cp = TPBlock::getInstance()->getBlockData(array('*'), array('id' => substr($type, 3)));
+                $cp = TPBlock::getInstance()->select(array('*'), array('id' => substr($type, 3)));
                 if(is_array($cp)) {
                     $cp = $cp[0];
                 }
@@ -542,7 +542,7 @@ class BlockAdmin extends \Action_Controller
 
         // Find the last position
         $position   = 0;
-        $pos        = TPBlock::getInstance()->getBlockData(array('pos'), array('bar' => $panel));
+        $pos        = TPBlock::getInstance()->select(array('pos'), array('bar' => $panel));
         if(is_array($pos)) {
             foreach($pos as $k => $v) {
                 if($position <= $v['pos']) {
@@ -567,7 +567,7 @@ class BlockAdmin extends \Action_Controller
             $block = array ( 'type' => $type, 'frame' => 'frame', 'title' => $title, 'body' => $body, 'access' => '-1,0,1', 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => '', 'display' => 'allpages', 'editgroups' => '', 'settings' => json_encode(array('var1' => 0, 'var2' => 0, 'var3' => 0, 'var4' => 0, 'var5' => 0 )));
         }
 
-        $id = TPBlock::getInstance()->insertBlock($block);
+        $id = TPBlock::getInstance()->insert($block);
         if(!empty($id)) {
 		    redirectexit('action=admin;area=tpblocks;sa=editblock&id='.$id.';sesc='. $context['session_id']);
         }
@@ -588,7 +588,7 @@ class BlockAdmin extends \Action_Controller
             $subAction  = TPUtil::filter('sa', 'get', 'string');
             switch($subAction) {
                 case 'blockdelete':
-                    $tpBlock->deleteBlock($id);
+                    $tpBlock->delete($id);
                     redirectexit('action=admin;area=tpblocks;sa=blocks');
                     break;
                 case 'blockright':
@@ -599,37 +599,37 @@ class BlockAdmin extends \Action_Controller
                 case 'blocktop':
                 case 'blocklower':
                     $loc    = $tpBlock->getBlockBarId(str_replace('block', '', $subAction));
-                    $tpBlock->updateBlock($id, array( 'bar' => $loc ));
+                    $tpBlock->update($id, array( 'bar' => $loc ));
                     redirectexit('action=admin;area=tpblocks;sa=blocks');
                     break;
                 case 'addpos':
-                    $current    = $tpBlock->getBlockData(array( 'pos', 'bar'), array( 'id' => $id) );
+                    $current    = $tpBlock->select(array( 'pos', 'bar'), array( 'id' => $id) );
                     $new        = $current[0]['pos'] + 1;
-                    $existing   = $tpBlock->getBlockData('id', array( 'bar' => $current[0]['bar'], 'pos' => $new ) );
+                    $existing   = $tpBlock->select('id', array( 'bar' => $current[0]['bar'], 'pos' => $new ) );
                     if(is_array($existing)) {
-                        $tpBlock->updateBlock($existing[0]['id'], array( 'pos' => $current[0]['pos']));
+                        $tpBlock->update($existing[0]['id'], array( 'pos' => $current[0]['pos']));
                     }
-                    $tpBlock->updateBlock($id, array( 'pos' => $new));
+                    $tpBlock->update($id, array( 'pos' => $new));
                     \redirectexit('action=admin;area=tpblocks;sa=blocks');
                     break;
                 case 'subpos':
-                    $current    = $tpBlock->getBlockData(array( 'pos', 'bar'), array( 'id' => $id) );
+                    $current    = $tpBlock->select(array( 'pos', 'bar'), array( 'id' => $id) );
                     $new        = $current[0]['pos'] - 1;
-                    $existing   = $tpBlock->getBlockData('id', array( 'bar' => $current[0]['bar'], 'pos' => $new ) );
+                    $existing   = $tpBlock->select('id', array( 'bar' => $current[0]['bar'], 'pos' => $new ) );
                     if(is_array($existing)) {
-                        $tpBlock->updateBlock($existing[0]['id'], array( 'pos' => $current[0]['pos']));
+                        $tpBlock->update($existing[0]['id'], array( 'pos' => $current[0]['pos']));
                     }
-                    $tpBlock->updateBlock($id, array( 'pos' => $new));
+                    $tpBlock->update($id, array( 'pos' => $new));
                     \redirectexit('action=admin;area=tpblocks;sa=blocks');
                     break;
                 case 'blockon':
-                    $current    = $tpBlock->getBlockData(array( 'off' ), array( 'id' => $id) );
+                    $current    = $tpBlock->select(array( 'off' ), array( 'id' => $id) );
                     if(is_array($current)) {
                         if($current[0]['off'] == 1) {
-                            $tpBlock->updateBlock($id, array( 'off' => '0' ));
+                            $tpBlock->update($id, array( 'off' => '0' ));
                         }
                         else {
-                            $tpBlock->updateBlock($id, array( 'off' => '1' ));
+                            $tpBlock->update($id, array( 'off' => '1' ));
                         }
                     }
                     break;
@@ -648,7 +648,7 @@ class BlockAdmin extends \Action_Controller
             TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tpblocks;sa=blockoverview', $txt['tp-blockoverview']);
 
             // fetch all blocks member group permissions
-            $data   = TPBlock::getInstance()->getBlockData(array('id', 'title', 'bar', 'access', 'type'), array( 'off' => 0 ) );
+            $data   = TPBlock::getInstance()->select(array('id', 'title', 'bar', 'access', 'type'), array( 'off' => 0 ) );
             if(is_array($data)) {
                 $context['TPortal']['blockoverview'] = array();
                 foreach($data as $row) {
@@ -661,7 +661,7 @@ class BlockAdmin extends \Action_Controller
                     );
                 }
             }
-            TPSubs::getInstance()->get_grps(true,true);
+            TPSubs::getInstance()->grps(true,true);
         }
 
     }}}
@@ -689,8 +689,8 @@ class BlockAdmin extends \Action_Controller
 		}
 
 		foreach($block as $bl => $blo) {
-			if($tpBlock->getBlockData('access', array('id' => $bl))) {
-				$tpBlock->updateBlock($bl, array('access' => implode(',', $blo)));
+			if($tpBlock->select('access', array('id' => $bl))) {
+				$tpBlock->update($bl, array('access' => implode(',', $blo)));
 			}
 		}
 

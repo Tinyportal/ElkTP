@@ -1,14 +1,18 @@
 <?php
-// @version 1.0.0 RC2; TPortalAdmin
+// @version 1.0.0 RC3; TPortalAdmin
 global $context;
 
 // Menu
 $txt['tp-adminheader1'] = 'Settings & Frontpage';
-$txt['tp-settings'] = 'Settings';
-$txt['tp-frontpage'] = 'Frontpage';
-$txt['tp-articles'] = 'Articles';
-$txt['tp-tabs4'] = 'Submissions';
-$txt['tp-adminpanels'] = 'Panels and Blocks';
+$txt['tp-settings']     = 'Settings';
+$txt['tp-frontpage']    = 'Frontpage';
+$txt['tp-articles']     = 'Articles';
+$txt['tp-tabs4']        = 'Submissions';
+$txt['tp-adminpanels']  = 'Panels and Blocks';
+$txt['tp-admingallery'] = 'Gallery';
+$txt['tp-adminmenus']   = 'Menu';
+$txt['tp-admindownload']= 'Download';
+
 
 // Settings page
 $txt['tp-generalsettings'] = 'General settings';
@@ -494,7 +498,9 @@ $txt['tp-nowindowmenu'] = 'Same window';
 $txt['tp-windowmenu'] = 'Open in a new window';
 $txt['tp-link'] = 'Link';
 $txt['tp-spacer'] = 'Spacer';
-$txt['tp-menu'] = 'Menu button';
+$txt['tp-menu'] = 'Menu';
+$txt['tp-gallery'] = 'Gallery';
+$txt['tp-download'] = 'Download';
 $txt['tp-item'] = 'Item';
 $txt['tp-sitemap_on'] = 'Sitemap?';
 $txt['tp-showmenustyle'] = 'Menu style';
@@ -594,5 +600,14 @@ $txt['tp-menus'] = 'Sections';
 $txt['tp-name'] = 'Name';
 $txt['tp-shortname'] = 'Short name';
 $txt['tp-shortnamedesc'] = 'Here you can create \'meaningful URLs\': specify a short text to be used in the page URL display. Without a value the url will be displayed as: .../index.php?cat=20. if a value is added (for example \'Categoryname\') the url will show as: .../index.php?page=Categoryname';
+
+$txt['tp-download-list']    = 'List Downloads';
+$txt['tp-download-add']     = 'Add Download';
+
+$txt['tp-menu-list']        = 'List Menu';
+$txt['tp-menu-add']         = 'Add Menu';
+
+$txt['tp-gallery-list']     = 'List Gallery';
+$txt['tp-gallery-add']      = 'Add Gallery';
 
 ?>

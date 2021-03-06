@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -395,7 +395,7 @@ function template_editblock()
 				<div>
 				<div class="panels-optionsbg">';
 
-			$types = TPSubs::getInstance()->getBlockStyles21();
+			$types = TPSubs::getInstance()->getBlockStyles();
 
 			foreach($types as $blo => $bl) {
 				echo '
@@ -527,7 +527,7 @@ function template_editblock()
 					<div class="admintable">
 						<div>'.$txt['tp-displayhelp'].'</div>
 						<div id="collapse-options">
-						', TPSubs::getInstance()->hidepanel('blockopts', true) , '
+						', TPSubs::getInstance()->hidePanel('blockopts', true) , '
 				' , empty($context['TPortal']['blockedit']['display2']) ? '<div class="tborder error" style="margin: 1em 0; padding: 4px 4px 4px 20px;">' . $txt['tp-noaccess'] . '</div>' : '' , '
 						<fieldset class="tborder" id="blockopts" ' , in_array('blockopts',$context['tp_panels']) ? ' style="display: none;"' : '' , '>
 						<input type="hidden" name="TPadmin_blocks_vo" value="'.$mg['id'].'" />';
@@ -719,7 +719,7 @@ function template_panels()
 	$allpanels = array('left','right','top','center','front','lower','bottom');
 	$alternate = true;
 
-	$types = TPSubs::getInstance()->getBlockStyles21();
+	$types = TPSubs::getInstance()->getBlockStyles();
 
 	foreach($allpanels as $pa => $panl) {
 		echo '
@@ -965,8 +965,8 @@ function template_blocks()
 								<option value="11"' ,$lblock['type']=='scriptbox' ? ' selected' : '' , '>', $txt['tp-blocktype11'] , '</option>
 								<option value="10"' ,$lblock['type']=='phpbox' ? ' selected' : '' , '>', $txt['tp-blocktype10'] , '</option>
 								<option value="9"' ,$lblock['type']=='catmenu' ? ' selected' : '' , '>', $txt['tp-blocktype9'] , '</option>
-								<option value="2"' ,$lblock['type']=='newsbox' ? ' selected' : '' , '>', $txt['tp-blocktype2'] , '</option>
-								<option value="6"' ,$lblock['type']=='onlinebox' ? ' selected' : '' , '>', $txt['tp-blocktype6'] , '</option>
+								<option value="2"' ,$lblock['type']=='news' ? ' selected' : '' , '>', $txt['tp-blocktype2'] , '</option>
+								<option value="6"' ,$lblock['type']=='online' ? ' selected' : '' , '>', $txt['tp-blocktype6'] , '</option>
 								<option value="12"' ,$lblock['type']=='recentbox' ? ' selected' : '' , '>', $txt['tp-blocktype12'] , '</option>
 								<option value="15"' ,$lblock['type']=='rss' ? ' selected' : '' , '>', $txt['tp-blocktype15'] , '</option>
 								<option value="4"' ,$lblock['type']=='searchbox' ? ' selected' : '' , '>', $txt['tp-blocktype4'] , '</option>

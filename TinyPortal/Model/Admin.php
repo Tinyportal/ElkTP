@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -234,6 +234,9 @@ class Admin extends Base {
 		$context['admin_header']['tp_settings'] = $txt['tp-adminheader1'];
 		$context['admin_header']['tp_articles'] = $txt['tp-articles'];
 		$context['admin_header']['tp_blocks']   = $txt['tp-adminpanels'];
+		$context['admin_header']['tp_menu']     = $txt['tp-adminmenus'];
+		$context['admin_header']['tp_download'] = $txt['tp-admindownload'];
+		$context['admin_header']['tp_gallery']  = $txt['tp-admingallery'];
 
 		if (allowedTo('tp_settings')) {
 			$context['admin_tabs']['tp_settings'] = array(
@@ -304,8 +307,50 @@ class Admin extends Base {
 			);
 		}
 
-		call_integration_hook('integrate_tp_admin_areas');
+		if (allowedTo('tp_menu')) {
+			$context['admin_tabs']['tp_menu'] = array(
+				'list' => array(
+					'title' => $txt['tp-menu-list'],
+					'href' => $scripturl . '?action=admin;area=tpmenu;sa=list',
+					'is_selected' => $area == 'list' && (Util::filter('area', 'get', 'string') == 'tpmenu'),
+				),
+				'add' => array(
+					'title' => $txt['tp-menu-add'],
+					'href' => $scripturl . '?action=admin;area=tpmenu;sa=add',
+					'is_selected' => $area == 'add' && (Util::filter('area', 'get', 'string') == 'tpmenu'),
+				),
+			);
+		}
 
+		if (allowedTo('tp_download')) {
+			$context['admin_tabs']['tp_download'] = array(
+				'list' => array(
+					'title' => $txt['tp-download-list'],
+					'href' => $scripturl . '?action=admin;area=tpdownload;sa=list',
+					'is_selected' => $area == 'list' && (Util::filter('area', 'get', 'string') == 'tpdownload'),
+				),
+				'add' => array(
+					'title' => $txt['tp-download-add'],
+					'href' => $scripturl . '?action=admin;area=tpdownload;sa=add',
+					'is_selected' => $area == 'add' && (Util::filter('area', 'get', 'string') == 'tpdownload'),
+				),
+			);
+		}
+
+		if (allowedTo('tp_gallery')) {
+			$context['admin_tabs']['tp_gallery'] = array(
+				'list' => array(
+					'title'         => $txt['tp-gallery-list'],
+					'href'          => $scripturl . '?action=admin;area=tpgallery;sa=list',
+					'is_selected'   => $area == 'list' && (Util::filter('area', 'get', 'string') == 'tpgallery'),
+				),
+				'add' => array(
+					'title'         => $txt['tp-gallery-add'],
+					'href'          => $scripturl . '?action=admin;area=tpgallery;sa=add',
+					'is_selected'   => $area == 'add' && (Util::filter('area', 'get', 'string') == 'tpgallery'),
+				),
+			);
+		}
 	}}}
 
 }
