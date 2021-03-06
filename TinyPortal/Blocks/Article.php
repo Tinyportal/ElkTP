@@ -34,10 +34,10 @@ class Article extends Base
         if(isset($this->context['TPortal']['blockarticles'][$this->context['TPortal']['blockarticle']])) {
 		    echo '<div class="block_article">';
             if(!empty($this->context['TPortal']['blockarticles'][$this->context['TPortal']['blockarticle']]['template'])) {
-                TinyPortal\Model\Subs::getInstance()->render_template($this->context['TPortal']['blockarticles'][$this->context['TPortal']['blockarticle']]['template']);
+                \TinyPortal\Model\Subs::getInstance()->render_template($this->context['TPortal']['blockarticles'][$this->context['TPortal']['blockarticle']]['template']);
             }
             else {
-                TinyPortal\Model\Subs::getInstance()->render_template(blockarticle_renders());
+                \TinyPortal\Model\Subs::getInstance()->render_template(blockarticle_renders());
             }
             echo '</div>';
         }

@@ -24,7 +24,7 @@ class Stats extends Base
 
     public function setup( &$block ) {{{
 
-        $block['title'] = '<a class="subject"  href="'.$this->scripturl.'?action=stats">'.$block['title'].'</a>';
+        $block['title'] = '<a class="subject"  href="'.$this->this->scripturl.'?action=stats">'.$block['title'].'</a>';
 
     }}}
 
@@ -39,17 +39,17 @@ class Stats extends Base
         if(isset($this->context['TPortal']['userbox']['stats'])) {
             // members stats
             echo '
-                <h5 class="mlist"><a href="'.$scripturl.'?action=memberlist">'.$this->txt['members'].'</a></h5>
+                <h5 class="mlist"><a href="'.$this->scripturl.'?action=memberlist">'.$this->txt['members'].'</a></h5>
                 <ul>
                 <li>' . $bullet. $this->txt['total_members'].': ' , isset($this->modSettings['memberCount']) ? $this->modSettings['memberCount'] : $this->modSettings['totalMembers'] , '</li>
-                <li>' . $bullet. $this->txt['tp-latest']. ': <a href="', $scripturl, '?action=profile;u=', $this->modSettings['latestMember'], '"><strong>', $this->modSettings['latestRealName'], '</strong></a></li>
+                <li>' . $bullet. $this->txt['tp-latest']. ': <a href="', $this->scripturl, '?action=profile;u=', $this->modSettings['latestMember'], '"><strong>', $this->modSettings['latestRealName'], '</strong></a></li>
                 </ul>';
         }
 
         if(isset($this->context['TPortal']['userbox']['stats_all'])) {
             // more stats
             echo '
-                <h5 class="stats"><a href="'.$scripturl.'?action=stats">'.$this->txt['tp-stats'].'</a></h5>
+                <h5 class="stats"><a href="'.$this->scripturl.'?action=stats">'.$this->txt['tp-stats'].'</a></h5>
                 <ul>
                 <li>'.  $bullet. $this->txt['total_posts'].': '.$this->modSettings['totalMessages']. '</li>
                 <li>'.  $bullet. $this->txt['total_topics'].': '.$this->modSettings['totalTopics']. '</li>
@@ -62,7 +62,7 @@ class Stats extends Base
         if(isset($this->context['TPortal']['userbox']['online'])) {
             // add online users
             echo '
-                <h5 class="online"><a href="'.$scripturl.'?action=who">'.$this->txt['online_users'].'</a></h5>
+                <h5 class="online"><a href="'.$this->scripturl.'?action=who">'.$this->txt['online_users'].'</a></h5>
                 <div class="tp_stats_users" style="line-height: 1.3em;">';
 
             $online = ssi_whosOnline('array');

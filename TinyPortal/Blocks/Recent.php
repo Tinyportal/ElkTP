@@ -59,7 +59,7 @@ class Recent extends Base
         else
             $include_boards = null;
 
-        $what = ssi_recentTopics($num_recent = $this->context['TPortal']['recentboxnum'] , $exclude_boards,  $include_boards, $output_method = 'array');
+        $what = \ssi_recentTopics($num_recent = $this->context['TPortal']['recentboxnum'] , $exclude_boards,  $include_boards, $output_method = 'array');
 
         if($this->context['TPortal']['useavatar'] == 0) {
             // Output the topics
@@ -92,7 +92,7 @@ class Recent extends Base
             }
 
             if(!empty($member_ids))
-                $avatars = TPSubs::getInstance()->getAvatars($member_ids);
+                $avatars = \TinyPortal\Model\Subs::getInstance()->getAvatars($member_ids);
             else
                 $avatars = array();
 
@@ -110,7 +110,7 @@ class Recent extends Base
                     echo ' <a href="' . $this->scripturl . '?topic=' . $w['topic'] . '.msg' . $w['new_from'] . ';topicseen" rel="nofollow" class="posts" style="margin:0px;"></a> ';
                 }
                 echo '
-                    <span class="tpavatar"><a href="' . $this->scripturl. '?action=profile;u=' . $w['poster']['id'] . '">' , empty($avatars[$w['poster']['id']]) ? '<img src="' . $settings['tp_images_url'] . '/TPguest.png" alt="" />' : $avatars[$w['poster']['id']] , '</a></span><a href="'.$w['href'].'">' . $w['short_subject'].'</a>
+                    <span class="tpavatar"><a href="' . $this->scripturl. '?action=profile;u=' . $w['poster']['id'] . '">' , empty($avatars[$w['poster']['id']]) ? '<img src="' . $this->settings['tp_images_url'] . '/TPguest.png" alt="" />' : $avatars[$w['poster']['id']] , '</a></span><a href="'.$w['href'].'">' . $w['short_subject'].'</a>
                     ', $this->txt['by'], ' <b>', $w['poster']['link'],'</b> ';
                 echo '<br><span class="smalltext">['.$w['time'].']</span>
                     </li>';
