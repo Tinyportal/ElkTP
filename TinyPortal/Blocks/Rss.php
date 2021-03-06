@@ -14,7 +14,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class News extends Base
+class Rss extends Base
 {
 
     public function __construct() {{{
@@ -30,8 +30,7 @@ class News extends Base
 
     function display( $block ) {{{
 
-        // Show a random news item? (or you could pick one from news_lines...)
-        echo '<div class="tp_newsblock">', $this->context['random_news_line'], '</div>';
+        echo '<div style="padding: 5px; ' , !empty($this->context['TPortal']['rsswidth']) ? 'max-width: ' . $this->context['TPortal']['rsswidth'] .';' : '' , '" class="middletext">' , TinyPortal\Model\Subs::getInstance()->parseRSS('', $this->context['TPortal']['rss_utf8']) , '</div>';
 
     }}}
 

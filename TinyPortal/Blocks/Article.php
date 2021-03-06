@@ -14,7 +14,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class News extends Base
+class Article extends Base
 {
 
     public function __construct() {{{
@@ -25,13 +25,22 @@ class News extends Base
     public function setup( &$block ) {{{
 
         $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+        $this->context['TPortal']['blockarticle'] = $block['body'];
 
     }}}
 
-    function display( $block ) {{{
+    public function display( $block ) {{{
 
-        // Show a random news item? (or you could pick one from news_lines...)
-        echo '<div class="tp_newsblock">', $this->context['random_news_line'], '</div>';
+        if(isset($this->context['TPortal']['blockarticles'][$this->context['TPortal']['blockarticle']])) {
+		    echo '<div class="block_article">';
+            if(!empty($this->context['TPortal']['blockarticles'][$this->context['TPortal']['blockarticle']]['template'])) {
+                TinyPortal\Model\Subs::getInstance()->render_template($this->context['TPortal']['blockarticles'][$this->context['TPortal']['blockarticle']]['template']);
+            }
+            else {
+                TinyPortal\Model\Subs::getInstance()->render_template(blockarticle_renders());
+            }
+            echo '</div>';
+        }
 
     }}}
 

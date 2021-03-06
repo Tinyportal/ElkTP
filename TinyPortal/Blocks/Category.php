@@ -14,7 +14,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class News extends Base
+class Category extends Base
 {
 
     public function __construct() {{{
@@ -25,13 +25,22 @@ class News extends Base
     public function setup( &$block ) {{{
 
         $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+        $this->context['TPortal']['blocklisting'] = $block['body'];
+        $this->context['TPortal']['blocklisting_height'] = $block['var1'];
+        $this->context['TPortal']['blocklisting_author'] = $block['var2'];
 
     }}}
 
     function display( $block ) {{{
 
-        // Show a random news item? (or you could pick one from news_lines...)
-        echo '<div class="tp_newsblock">', $this->context['random_news_line'], '</div>';
+        if(isset($this->context['TPortal']['blockarticle_titles'][$this->context['TPortal']['blocklisting']])){
+            echo '<div class="middletext" ', (count($this->context['TPortal']['blockarticle_titles'][$this->context['TPortal']['blocklisting']])>$this->context['TPortal']['blocklisting_height'] && $this->context['TPortal']['blocklisting_height']!='0') ? ' style="overflow: auto; width: 100%; height: '.$this->context['TPortal']['blocklisting_height'].'em;"' : '' ,'>';
+            foreach($this->context['TPortal']['blockarticle_titles'][$this->context['TPortal']['blocklisting']] as $listing){
+                if($listing['category'] == $this->context['TPortal']['blocklisting'])
+                    echo '<b><a href="'.$this->scripturl.'?page='.$listing['shortname'].'">'.$listing['subject'].'</a></b> ' , $this->context['TPortal']['blocklisting_author']=='1' ? $this->txt['by'].' '.$listing['poster'] : '' , '<br>';
+            }
+            echo '</div>';
+        }
 
     }}}
 
