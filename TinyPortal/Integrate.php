@@ -123,8 +123,8 @@ class Integrate
             define('TP_PGSQL', false);
         }
 
-        define('TP_VERSION',        '1.0.0 RC2');
-        define('TP_SHORT_VERSION',  '100RC2');
+        define('TP_VERSION',        '1.0.0 RC3');
+        define('TP_SHORT_VERSION',  '100RC3');
 
         // Set this up for everything that TinyPortal needs
         $context['TPortal']                     = array();
