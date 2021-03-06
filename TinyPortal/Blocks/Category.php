@@ -24,7 +24,7 @@ class Category extends Base
 
     public function prepare( &$block ) {{{
 
-        $categories = \TinyPortal\Model\Articles::getInstance()->getArticlesInCategory($block['body'], false, true);
+        $categories = \TinyPortal\Model\Article::getInstance()->getArticlesInCategory($block['body'], false, true);
         if (!isset($context['TPortal']['blockarticle_titles'])) {
             $context['TPortal']['blockarticle_titles'] = array();
         }
