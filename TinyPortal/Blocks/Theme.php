@@ -65,16 +65,16 @@ class Theme extends Base
             for($a=0 ; $a<(count($temaid)); $a++)
             {
                 echo '
-                    <option value="'.$temaid[$a].'" ', $settings['theme_id'] == $temaid[$a] ? 'selected="selected"' : '' ,'>'.substr($temanavn[$a],0,20).'</option>';
+                    <option value="'.$temaid[$a].'" ', $this->settings['theme_id'] == $temaid[$a] ? 'selected="selected"' : '' ,'>'.substr($temanavn[$a],0,20).'</option>';
             }
             echo '
                 </select><br>' , $this->context['user']['is_logged'] ?
                 '<input type="checkbox" value=";permanent" onclick="realtheme()" /> '. $this->txt['tp-permanent']. '<br>' : '' , '<br>
                 <input type="button" class="button_submit" value="'.$this->txt['tp-changetheme'].'" onclick="jumpit()" /><br><br>
-                <input type="hidden" value="'.\Util::htmlspecialchars($this->scripturl . '?'.$tp_where.'theme='.$settings['theme_id']).'" name="jumpurl3" />
+                <input type="hidden" value="'.\Util::htmlspecialchars($this->scripturl . '?'.$tp_where.'theme='.$this->settings['theme_id']).'" name="jumpurl3" />
                 <div style="text-align: center; width: 95%; overflow: hidden;">';
 
-            echo ' <img src="'.$settings['images_url'].'/thumbnail.png" alt="" id="chosen" name="chosen" style="max-width: 100%;" />';
+            echo ' <img src="'.$this->settings['images_url'].'/thumbnail.png" alt="" id="chosen" name="chosen" style="max-width: 100%;" />';
 
             echo '
                 </div>

@@ -22,6 +22,49 @@ class Category extends Base
 
     }}}
 
+    public function prepare( &$block ) {{{
+
+        $categories = \TinyPortal\Model\Articles::getInstance()->getArticlesInCategory($block['body'], false, true);
+        if (!isset($context['TPortal']['blockarticle_titles'])) {
+            $context['TPortal']['blockarticle_titles'] = array();
+        }
+
+        if(is_array($categories)) {
+            foreach($categories as $row) {
+                if(empty($row['author'])) {
+                    global $memberContext;
+                    // Load their context data.
+                    if(!array_key_exists('admin_features', $context)) {
+                        $context['admin_features']  = array();
+                        $adminFeatures              = true;
+                    }
+                    else {
+                        $adminFeatures              = false;
+                    }
+
+                    \loadMemberData($row['author_id'], false, 'normal');
+                    \loadMemberContext($row['author_id']);
+
+                    if($adminFeatures == true) {
+                        unset($context['admin_features']);
+                    }
+                    $row['real_name'] = $memberContext[$row['author_id']]['username'];
+                }
+                else {
+                    $row['real_name'] = $row['author'];
+                }
+                $context['TPortal']['blockarticle_titles'][$row['category']][$row['date'].'_'.$row['id']] = array(
+                    'id'        => $row['id'],
+                    'subject'   => $row['subject'],
+                    'shortname' => $row['shortname']!='' ?$row['shortname'] : $row['id'] ,
+                    'category'  => $row['category'],
+                    'poster'    => '<a href="'.$scripturl.'?action=profile;u='.$row['author_id'].'">'.$row['real_name'].'</a>',
+                );
+            }
+        }
+
+    }}}
+
     public function setup( &$block ) {{{
 
         $block['title'] = '<span class="header">' . $block['title'] . '</span>';

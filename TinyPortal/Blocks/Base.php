@@ -35,6 +35,22 @@ class Base
 
     }}}
 
+    public function prepare(&$block) {{{
+
+    }}}
+
+    public function setup(&$block) {{{
+
+    }}}
+
+    public function display($block) {{{
+
+    }}}
+
+    public function admin(&$block) {{{
+
+    }}}
+
 }
 
 ?>

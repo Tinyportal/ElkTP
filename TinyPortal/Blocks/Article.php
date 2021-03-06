@@ -22,6 +22,45 @@ class Article extends Base
 
     }}}
 
+    public function prepare( &$block ) {{{
+
+        if(!is_numeric($block['body'])) {
+            return;
+        }
+
+        $this->context['TPortal']['blockarticles'] = array();
+        $articles   = \TinyPortal\Model\Article::getInstance()->getArticle($block['body']);
+        if(is_array($articles)) {
+            foreach($articles as $article) {
+                // allowed and all is well, go on with it.
+                $this->context['TPortal']['blockarticles'][$article['id']] = $article;
+                // setup the avatar code
+                if ($modSettings['avatar_action_too_large'] == 'option_html_resize' || $modSettings['avatar_action_too_large'] == 'option_js_resize') {
+                    $avatar_width   = !empty($modSettings['avatar_max_width_external']) ? ' width="' . $modSettings['avatar_max_width_external'] . '"' : '';
+                    $avatar_height  = !empty($modSettings['avatar_max_height_external']) ? ' height="' . $modSettings['avatar_max_height_external'] . '"' : '';
+                }
+                else {
+                    $avatar_width   = '';
+                    $avatar_height  = '';
+                }
+
+                $this->context['TPortal']['blockarticles'][$article['id']]['avatar'] = determineAvatar( array(
+                            'avatar'            => $article['avatar'],
+                            'email_address'     => $article['email_address'],
+                            'filename'          => !empty($article['filename']) ? $article['filename'] : '',
+                            'id_attach'         => $article['id_attach'],
+                            'attachment_type'   => $article['attachment_type'],
+                        )
+                )['image'];
+                // sort out the options
+                $this->context['TPortal']['blockarticles'][$article['id']]['visual_options'] = array();
+                // since these are inside blocks, some stuff has to be left out
+                $this->context['TPortal']['blockarticles'][$article['id']]['frame'] = 'none';
+            }
+        }
+
+    }}}
+
     public function setup( &$block ) {{{
 
         $block['title'] = '<span class="header">' . $block['title'] . '</span>';

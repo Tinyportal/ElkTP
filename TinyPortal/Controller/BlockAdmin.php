@@ -485,7 +485,7 @@ class BlockAdmin extends \Action_Controller
 				else
 					$tpath = '';
 
-				$themebox[] = $theme . '|' . $value . '|' . $tpath;
+				$themebox[] = $theme . '|' . $v . '|' . $tpath;
 			}
 
 			$updateArray['display'] 	= implode(',', $access);
@@ -499,7 +499,7 @@ class BlockAdmin extends \Action_Controller
 		}
 
 		if(isset($themebox)) {
-			$updateArray['themebox'] = implode(',', $themebox);
+			$updateArray['body'] = implode(',', $themebox);
 		}
 
         $tpBlock->update($block_id, $updateArray);
