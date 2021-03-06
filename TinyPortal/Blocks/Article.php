@@ -35,9 +35,9 @@ class Article extends Base
                 // allowed and all is well, go on with it.
                 $this->context['TPortal']['blockarticles'][$article['id']] = $article;
                 // setup the avatar code
-                if ($modSettings['avatar_action_too_large'] == 'option_html_resize' || $modSettings['avatar_action_too_large'] == 'option_js_resize') {
-                    $avatar_width   = !empty($modSettings['avatar_max_width_external']) ? ' width="' . $modSettings['avatar_max_width_external'] . '"' : '';
-                    $avatar_height  = !empty($modSettings['avatar_max_height_external']) ? ' height="' . $modSettings['avatar_max_height_external'] . '"' : '';
+                if ($this->modSettings['avatar_action_too_large'] == 'option_html_resize' || $this->modSettings['avatar_action_too_large'] == 'option_js_resize') {
+                    $avatar_width   = !empty($this->modSettings['avatar_max_width_external']) ? ' width="' . $this->modSettings['avatar_max_width_external'] . '"' : '';
+                    $avatar_height  = !empty($this->modSettings['avatar_max_height_external']) ? ' height="' . $this->modSettings['avatar_max_height_external'] . '"' : '';
                 }
                 else {
                     $avatar_width   = '';
