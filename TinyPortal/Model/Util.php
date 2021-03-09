@@ -54,7 +54,7 @@ class Util
                 $str = rtrim($str,' '.$arg.' ');
             }
             else {
-                $str = 'AND ( '. implode('\' = ANY (string_to_array( '.$field.', \',\' )) OR \'', $data) . ' = ANY (string_to_array('.$field.', \',\')))';
+                $str = 'AND ( '. implode(' = ANY (string_to_array( '.$field.', \',\' )) OR ', $data) . ' = ANY (string_to_array('.$field.', \',\')))';
             }
         }
 
