@@ -23,7 +23,8 @@ class Integrate
         if(!defined('ELK_BACKWARDS_COMPAT')) {
             define('ELK_BACKWARDS_COMPAT', true);
             self::setup_db_backwards_compat();
-            spl_autoload_register('\TinyPortal\Integrate::TPortalAutoLoadClass');
+            \Elk_Autoloader::instance()->register('TinyPortal', '\\TinyPortal');
+            //spl_autoload_register('\TinyPortal\Integrate::TPortalAutoLoadClass');
         }
 
         $hooks = array (

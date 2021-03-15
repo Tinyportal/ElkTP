@@ -25,8 +25,8 @@ class Category extends Base
     public function prepare( &$block ) {{{
 
         $categories = \TinyPortal\Model\Article::getInstance()->getArticlesInCategory($block['body'], false, true);
-        if (!isset($context['TPortal']['blockarticle_titles'])) {
-            $context['TPortal']['blockarticle_titles'] = array();
+        if (!isset($this->context['TPortal']['blockarticle_titles'])) {
+            $this->context['TPortal']['blockarticle_titles'] = array();
         }
 
         if(is_array($categories)) {
@@ -34,31 +34,31 @@ class Category extends Base
                 if(empty($row['author'])) {
                     global $memberContext;
                     // Load their context data.
-                    if(!array_key_exists('admin_features', $context)) {
-                        $context['admin_features']  = array();
-                        $adminFeatures              = true;
+                    if(!array_key_exists('admin_features', $this->context)) {
+                        $this->context['admin_features']    = array();
+                        $adminFeatures                      = true;
                     }
                     else {
-                        $adminFeatures              = false;
+                        $adminFeatures                      = false;
                     }
 
                     \loadMemberData($row['author_id'], false, 'normal');
                     \loadMemberContext($row['author_id']);
 
                     if($adminFeatures == true) {
-                        unset($context['admin_features']);
+                        unset($this->context['admin_features']);
                     }
                     $row['real_name'] = $memberContext[$row['author_id']]['username'];
                 }
                 else {
                     $row['real_name'] = $row['author'];
                 }
-                $context['TPortal']['blockarticle_titles'][$row['category']][$row['date'].'_'.$row['id']] = array(
+                $this->context['TPortal']['blockarticle_titles'][$row['category']][$row['date'].'_'.$row['id']] = array(
                     'id'        => $row['id'],
                     'subject'   => $row['subject'],
                     'shortname' => $row['shortname']!='' ?$row['shortname'] : $row['id'] ,
                     'category'  => $row['category'],
-                    'poster'    => '<a href="'.$scripturl.'?action=profile;u='.$row['author_id'].'">'.$row['real_name'].'</a>',
+                    'poster'    => '<a href="'.$this->scripturl.'?action=profile;u='.$row['author_id'].'">'.$row['real_name'].'</a>',
                 );
             }
         }
@@ -68,9 +68,9 @@ class Category extends Base
     public function setup( &$block ) {{{
 
         $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-        $this->context['TPortal']['blocklisting'] = $block['body'];
-        $this->context['TPortal']['blocklisting_height'] = $block['var1'];
-        $this->context['TPortal']['blocklisting_author'] = $block['var2'];
+        $this->context['TPortal']['blocklisting']           = $block['body'];
+        $this->context['TPortal']['blocklisting_height']    = $block['var1'];
+        $this->context['TPortal']['blocklisting_author']    = $block['var2'];
 
     }}}
 

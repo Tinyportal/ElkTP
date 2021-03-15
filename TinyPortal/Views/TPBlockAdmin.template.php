@@ -49,6 +49,7 @@ function template_editblock()
 						<dd>
 							<select size="1" onchange="document.getElementById(\'blocknotice\').style.display=\'\';" name="tp_block_type" id="tp_block_type">
 								<option value="0"' ,$context['TPortal']['blockedit']['type']=='0' ? ' selected' : '' , '>', $txt['tp-blocktype0'] , '</option>
+								<option value="8"' ,$context['TPortal']['blockedit']['type']=='8' ? ' selected' : '' , '>', $txt['tp-blocktype8'] , '</option>
 								<option value="18"' ,$context['TPortal']['blockedit']['type']=='18' ? ' selected' : '' , '>', $txt['tp-blocktype18'] , '</option>
 								<option value="19"' ,$context['TPortal']['blockedit']['type']=='19' ? ' selected' : '' , '>', $txt['tp-blocktype19'] , '</option>
 								<option value="5"' ,$context['TPortal']['blockedit']['type']=='5' ? ' selected' : '' , '>', $txt['tp-blocktype5'] , '</option>
@@ -88,7 +89,7 @@ function template_editblock()
 				{
 						echo '
 						</div><hr><div>';
-					TP_bbcbox($context['TPortal']['editor_id']);
+					TPSubs::getInstance()->bbcbox($context['TPortal']['editor_id']);
 				}
 				else
 						echo '<hr><b>'.$txt['tp-body'].'</b>';
