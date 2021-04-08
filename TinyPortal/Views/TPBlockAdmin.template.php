@@ -79,33 +79,29 @@ function template_editblock()
 					<div class="content padding-div">
 					 <div>';
 // Block types: 5 (BBC code), 10 (PHP Code) and 11 (HTML & Javascript code)
-			if($context['TPortal']['blockedit']['type']=='5' || $context['TPortal']['blockedit']['type']=='10' || $context['TPortal']['blockedit']['type']=='11')
-			{
-				if($context['TPortal']['blockedit']['type']=='11')
-				{
+			if($context['TPortal']['blockedit']['type']=='5' || $context['TPortal']['blockedit']['type']=='10' || $context['TPortal']['blockedit']['type']=='11') {
+				if($context['TPortal']['blockedit']['type']=='11') {
 					echo '</div><hr><div><b>',$txt['tp-body'],'</b> <br><textarea style="width: 94%;" name="tp_block_body" id="tp_block_body" rows="15" cols="40" wrap="auto">' , $context['TPortal']['blockedit']['body'], '</textarea>';
 				}
-				elseif($context['TPortal']['blockedit']['type']=='5')
-				{
-						echo '
-						</div><hr><div>';
+				elseif($context['TPortal']['blockedit']['type']=='5') {
+					echo '</div><hr><div>';
 					TPSubs::getInstance()->bbcbox($context['TPortal']['editor_id']);
 				}
-				else
+				else {
 						echo '<hr><b>'.$txt['tp-body'].'</b>';
-				if($context['TPortal']['blockedit']['type']=='10')
-				{
+                }
+
+				if($context['TPortal']['blockedit']['type'] == '10' ) {
 					echo '
 						</div><div>
 						<textarea style="width: 94%; margin: 0px 0px 10px;" name="tp_block_body" id="tp_block_body" rows="15" cols="40" wrap="auto">' ,  $context['TPortal']['blockedit']['body'] , '</textarea>
 						<p><div class="tborder" style=""><p style="padding: 0 0 5px 0; margin: 0;">' , $txt['tp-blockcodes'] , ':</p>
 							<select name="tp_blockcode" id="tp_blockcode" size="8" style="margin-bottom: 5px; width: 94%" onchange="changeSnippet(this.selectedIndex);">
 								<option value="0" selected="selected">' , $txt['tp-none-'] , '</option>';
-					if(!empty($context['TPortal']['blockcodes']))
-					{
-						foreach($context['TPortal']['blockcodes'] as $bc)
-							echo '
-								<option value="' , $bc['file'] , '">' , $bc['name'] , '</option>';
+					if(!empty($context['TPortal']['blockcodes'])) {
+						foreach($context['TPortal']['blockcodes'] as $bc) {
+							echo '<option value="' , $bc['file'] , '">' , $bc['name'] , '</option>';
+                        }
 					}
 					echo '
 							</select>
@@ -123,8 +119,7 @@ function template_editblock()
 							snippAuthor[0] = "";
 							snippTitle[0] = "";';
 					$count=1;
-					foreach($context['TPortal']['blockcodes'] as $bc)
-					{
+					foreach($context['TPortal']['blockcodes'] as $bc) {
 						$what = str_replace(array(",",".","/","\n"),array("&#44;","&#46;","&#47;",""), $bc['text']);
 						echo '
 							snipp[' . $count . '] = "<div>' . $what . '</div>";
@@ -139,7 +134,7 @@ function template_editblock()
 				}
 			}
 // Block types: Recent Topics
-			elseif($context['TPortal']['blockedit']['type']=='12'){
+			elseif($context['TPortal']['blockedit']['type']=='12') {
 				if(!is_numeric($context['TPortal']['blockedit']['body']))
 					$context['TPortal']['blockedit']['body']=10;
 				echo '

@@ -484,6 +484,11 @@ class BlockAdmin extends \Action_Controller
 
 				$themebox[] = $theme . '|' . $v . '|' . $tpath;
 			}
+			elseif(substr($k, 0, 12) == 'tp_blockcode') {
+                if(!empty($_POST['tp_blockcode'])) {
+                    $updateArray['body'] = TPSubs::getInstance()->parseModfile(file_get_contents($context['TPortal']['blockcode_upload_path'] . $_POST['tp_blockcode'].'.blockcode') , array('code'))['code'];
+                }
+            }
 
 			$updateArray['display'] 	= implode(',', $access);
 			$updateArray['access'] 		= implode(',', $tpgroups);
