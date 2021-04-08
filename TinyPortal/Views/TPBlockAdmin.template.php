@@ -953,24 +953,24 @@ function template_blocks()
 							</div>
 							<select size="1" name="type' .$lblock['id']. '">
 								<option value="0"' ,$lblock['type']=='no' ? ' selected' : '' , '>', $txt['tp-blocktype0'] , '</option>
-								<option value="8"' ,$lblock['type']=='shoutbox' ? ' selected' : '' , '>', $txt['tp-blocktype8'] , '</option>
-								<option value="18"' ,$lblock['type']=='articlebox' ? ' selected' : '' , '>', $txt['tp-blocktype18'] , '</option>
-								<option value="19"' ,$lblock['type']=='categorybox' ? ' selected' : '' , '>', $txt['tp-blocktype19'] , '</option>
+								<option value="8"' ,$lblock['type']=='shout' ? ' selected' : '' , '>', $txt['tp-blocktype8'] , '</option>
+								<option value="18"' ,$lblock['type']=='article' ? ' selected' : '' , '>', $txt['tp-blocktype18'] , '</option>
+								<option value="19"' ,$lblock['type']=='category' ? ' selected' : '' , '>', $txt['tp-blocktype19'] , '</option>
 								<option value="14"' ,$lblock['type']=='module' ? ' selected' : '' , '>', $txt['tp-blocktype14'] , '</option>
 								<option value="5"' ,$lblock['type']=='html' ? ' selected' : '' , '>', $txt['tp-blocktype5'] , '</option>
-								<option value="11"' ,$lblock['type']=='scriptbox' ? ' selected' : '' , '>', $txt['tp-blocktype11'] , '</option>
-								<option value="10"' ,$lblock['type']=='phpbox' ? ' selected' : '' , '>', $txt['tp-blocktype10'] , '</option>
+								<option value="11"' ,$lblock['type']=='script' ? ' selected' : '' , '>', $txt['tp-blocktype11'] , '</option>
+								<option value="10"' ,$lblock['type']=='php' ? ' selected' : '' , '>', $txt['tp-blocktype10'] , '</option>
 								<option value="9"' ,$lblock['type']=='catmenu' ? ' selected' : '' , '>', $txt['tp-blocktype9'] , '</option>
 								<option value="2"' ,$lblock['type']=='news' ? ' selected' : '' , '>', $txt['tp-blocktype2'] , '</option>
 								<option value="6"' ,$lblock['type']=='online' ? ' selected' : '' , '>', $txt['tp-blocktype6'] , '</option>
-								<option value="12"' ,$lblock['type']=='recentbox' ? ' selected' : '' , '>', $txt['tp-blocktype12'] , '</option>
+								<option value="12"' ,$lblock['type']=='recent' ? ' selected' : '' , '>', $txt['tp-blocktype12'] , '</option>
 								<option value="15"' ,$lblock['type']=='rss' ? ' selected' : '' , '>', $txt['tp-blocktype15'] , '</option>
-								<option value="4"' ,$lblock['type']=='searchbox' ? ' selected' : '' , '>', $txt['tp-blocktype4'] , '</option>
+								<option value="4"' ,$lblock['type']=='search' ? ' selected' : '' , '>', $txt['tp-blocktype4'] , '</option>
 								<option value="16"' ,$lblock['type']=='sitemap' ? ' selected' : '' , '>', $txt['tp-blocktype16'] , '</option>
 								<option value="13"' ,$lblock['type']=='ssi' ? ' selected' : '' , '>', $txt['tp-blocktype13'] , '</option>
-								<option value="3"' ,$lblock['type']=='statsbox' ? ' selected' : '' , '>', $txt['tp-blocktype3'] , '</option>
-								<option value="7"' ,$lblock['type']=='themebox' ? ' selected' : '' , '>', $txt['tp-blocktype7'] , '</option>
-								<option value="1"' ,$lblock['type']=='userbox' ? ' selected' : '' , '>', $txt['tp-blocktype1'] , '</option>';
+								<option value="3"' ,$lblock['type']=='stats' ? ' selected' : '' , '>', $txt['tp-blocktype3'] , '</option>
+								<option value="7"' ,$lblock['type']=='theme' ? ' selected' : '' , '>', $txt['tp-blocktype7'] , '</option>
+								<option value="1"' ,$lblock['type']=='user' ? ' selected' : '' , '>', $txt['tp-blocktype1'] , '</option>';
 				echo '	</select>
 						</div>
 						<div style="width:10%;" class="smalltext fullwidth-on-res-layout float-items tpcenter">

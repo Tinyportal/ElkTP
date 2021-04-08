@@ -31,7 +31,7 @@ class Php extends Base
     public function display( $block ) {{{
 
         if(!empty($block['body'])) {
-            eval(TinyPortal\Modules\Subs::getInstance()->convertphp($block['body'], true));
+            eval(\TinyPortal\Model\Subs::getInstance()->convertphp($block['body'], true));
         }
 
     }}}
