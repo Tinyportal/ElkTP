@@ -23,7 +23,8 @@ class Integrate
         if(!defined('ELK_BACKWARDS_COMPAT')) {
             define('ELK_BACKWARDS_COMPAT', true);
             self::setup_db_backwards_compat();
-            spl_autoload_register('\TinyPortal\Integrate::TPortalAutoLoadClass');
+            \Elk_Autoloader::instance()->register('TinyPortal', '\\TinyPortal');
+            //spl_autoload_register('\TinyPortal\Integrate::TPortalAutoLoadClass');
         }
 
         $hooks = array (
@@ -123,8 +124,8 @@ class Integrate
             define('TP_PGSQL', false);
         }
 
-        define('TP_VERSION',        '1.0.0 RC2');
-        define('TP_SHORT_VERSION',  '100RC2');
+        define('TP_VERSION',        '1.0.0 RC3');
+        define('TP_SHORT_VERSION',  '100RC3');
 
         // Set this up for everything that TinyPortal needs
         $context['TPortal']                     = array();

@@ -267,10 +267,7 @@ class BlockAdmin extends \Action_Controller
             // Add in BBC editor before we call in template so the headers are there
             if($context['TPortal']['blockedit']['type'] == '5') {
                 $context['TPortal']['editor_id'] = 'tp_block_body';
-                TP_prebbcbox($context['TPortal']['editor_id'], strip_tags($context['TPortal']['blockedit']['body']));
-            }
-            elseif($row['type'] == 8) {
-                call_integration_hook('integrate_tp_shoutbox', array(&$row));
+                TPSubs::getInstance()->prebbcbox($context['TPortal']['editor_id'], strip_tags($context['TPortal']['blockedit']['body']));
             }
             elseif($row['type'] == 20) {
                 call_integration_hook('integrate_tp_blocks', array(&$row));
@@ -487,6 +484,11 @@ class BlockAdmin extends \Action_Controller
 
 				$themebox[] = $theme . '|' . $v . '|' . $tpath;
 			}
+			elseif(substr($k, 0, 12) == 'tp_blockcode') {
+                if(!empty($_POST['tp_blockcode'])) {
+                    $updateArray['body'] = TPSubs::getInstance()->parseModfile(file_get_contents($context['TPortal']['blockcode_upload_path'] . $_POST['tp_blockcode'].'.blockcode') , array('code'))['code'];
+                }
+            }
 
 			$updateArray['display'] 	= implode(',', $access);
 			$updateArray['access'] 		= implode(',', $tpgroups);

@@ -14,7 +14,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class Php extends Base
+class Bbc extends Base
 {
 
     public function __construct() {{{
@@ -31,7 +31,7 @@ class Php extends Base
     public function display( $block ) {{{
 
         if(!empty($block['body'])) {
-            eval(\TinyPortal\Model\Subs::getInstance()->convertphp($block['body'], true));
+            echo \parse_bbc($block['body']);
         }
 
     }}}
