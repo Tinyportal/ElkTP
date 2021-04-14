@@ -71,18 +71,19 @@ class Portal extends \Action_Controller implements Frontpage_Interface
         if($action == 'tportal') {
             $subAction  = TPUtil::filter('sa', 'get', 'string');
             if($subAction == false) {
-                throw new Elk_Exception($txt['tp-no-sa-url'], 'general');
+                throw new \Elk_Exception($txt['tp-no-sa-url'], 'general');
             }
 
             $subActions = array(
                 'credits'   => array($this, 'action_credits', array()),
                 'upshrink'  => array($this, 'action_upshrink', array()),
+                'publish'   => array(new ArticleAdmin, 'action_publish', array()),
             );
 
             call_integration_hook('integrate_tp_pre_subactions', array(&$subActions));
 
             if(!array_key_exists($subAction, $subActions)) {
-                throw new Elk_Exception($txt['tp-no-sa-list'], 'general');
+                throw new \Elk_Exception($txt['tp-no-sa-list'], 'general');
             }
 
             $context['TPortal']['subaction'] = $subAction;

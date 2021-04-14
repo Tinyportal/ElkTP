@@ -2283,7 +2283,7 @@ class Subs
         if($upload->upload_file($_FILES[$widthhat]['tmp_name'], $dstPath) === FALSE) {
             unlink($_FILES[$widthhat]['tmp_name']);
             $error_string = sprintf($txt['tp-notuploaded'], $upload->get_error(TRUE));
-            throw new Elk_Exception($error_string, 'general');
+            throw new \Elk_Exception($error_string, 'general');
         }
 
         return basename($dstPath);
@@ -2371,7 +2371,7 @@ class Subs
 
         if (!\mktree($path, 0755)) {
             \deltree($path, true);
-            throw new Elk_Exception($txt['tp-failedcreatedir'], 'general');
+            throw new \Elk_Exception($txt['tp-failedcreatedir'], 'general');
         }
 
         return TRUE;

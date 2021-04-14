@@ -510,12 +510,12 @@ class ArticleAdmin extends \Action_Controller
                     )
                 );
                 if($db->num_rows($request) == 0) {
-                    throw new Elk_Exception($txt['tp-noadmin'], 'general');
+                    throw new \Elk_Exception($txt['tp-noadmin'], 'general');
                 }
                 $db->free_result($request);
             }
             else {
-                throw new Elk_Exception($txt['tp-noadmin'], 'general');
+                throw new \Elk_Exception($txt['tp-noadmin'], 'general');
             }
         }
 

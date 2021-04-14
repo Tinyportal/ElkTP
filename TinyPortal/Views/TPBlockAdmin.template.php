@@ -78,8 +78,13 @@ function template_editblock()
 					</dl>
 					<div class="content padding-div">
 					 <div>';
+            
+            $blockClass = '\TinyPortal\Blocks\\'.ucfirst(str_replace('box', '', \TinyPortal\Model\Block::getInstance()->getBlockType($context['TPortal']['blockedit']['type'])));
+            if(class_exists($blockClass)) {
+                (new $blockClass)->admin_display($context['TPortal']['blockedit']);
+            }
 // Block types: 5 (BBC code), 10 (PHP Code) and 11 (HTML & Javascript code)
-			if($context['TPortal']['blockedit']['type']=='5' || $context['TPortal']['blockedit']['type']=='10' || $context['TPortal']['blockedit']['type']=='11') {
+			elseif($context['TPortal']['blockedit']['type']=='5' || $context['TPortal']['blockedit']['type']=='11') {
 				if($context['TPortal']['blockedit']['type']=='11') {
 					echo '</div><hr><div><b>',$txt['tp-body'],'</b> <br><textarea style="width: 94%;" name="tp_block_body" id="tp_block_body" rows="15" cols="40" wrap="auto">' , $context['TPortal']['blockedit']['body'], '</textarea>';
 				}
@@ -90,48 +95,6 @@ function template_editblock()
 				else {
 						echo '<hr><b>'.$txt['tp-body'].'</b>';
                 }
-
-				if($context['TPortal']['blockedit']['type'] == '10' ) {
-					echo '
-						</div><div>
-						<textarea style="width: 94%; margin: 0px 0px 10px;" name="tp_block_body" id="tp_block_body" rows="15" cols="40" wrap="auto">' ,  $context['TPortal']['blockedit']['body'] , '</textarea>
-						<p><div class="tborder" style=""><p style="padding: 0 0 5px 0; margin: 0;">' , $txt['tp-blockcodes'] , ':</p>
-							<select name="tp_blockcode" id="tp_blockcode" size="8" style="margin-bottom: 5px; width: 94%" onchange="changeSnippet(this.selectedIndex);">
-								<option value="0" selected="selected">' , $txt['tp-none-'] , '</option>';
-					if(!empty($context['TPortal']['blockcodes'])) {
-						foreach($context['TPortal']['blockcodes'] as $bc) {
-							echo '<option value="' , $bc['file'] , '">' , $bc['name'] , '</option>';
-                        }
-					}
-					echo '
-							</select>
-							<p style="padding: 10px 0 10px 0; margin: 0;"><input type="button" value="' , $txt['tp-insert'] , '" name="blockcode_save" onclick="submit();" />
-							<input type="checkbox" name="blockcode_overwrite" value="' . $context['TPortal']['blockedit']['id'] . '" /> ' , $txt['tp-blockcodes_overwrite'] , '</p>
-						</div>
-					<div id="blockcodeinfo" class="description" >&nbsp;</div>
-					<script type="text/javascript"><!-- // --><![CDATA[
-						function changeSnippet(indx)
-						{
-							var snipp = new Array();
-							var snippAuthor = new Array();
-							var snippTitle = new Array();
-							snipp[0] = "";
-							snippAuthor[0] = "";
-							snippTitle[0] = "";';
-					$count=1;
-					foreach($context['TPortal']['blockcodes'] as $bc) {
-						$what = str_replace(array(",",".","/","\n"),array("&#44;","&#46;","&#47;",""), $bc['text']);
-						echo '
-							snipp[' . $count . '] = "<div>' . $what . '</div>";
-							snippTitle[' . $count . '] = "<h3 style=\"margin: 0 0 5px 0; padding: 0;\">' . $bc['name'].' <span style=\"font-weight: normal;\">' . $txt['tp-by'] . '</span> ' . $bc['author'] . '</h3>";
-							';
-							$count++;
-					}
-					echo '
-							setInnerHTML(document.getElementById("blockcodeinfo"), snippTitle[indx] + snipp[indx]);
-						}
-					// ]]></script>';
-				}
 			}
 // Block types: Recent Topics
 			elseif($context['TPortal']['blockedit']['type']=='12') {

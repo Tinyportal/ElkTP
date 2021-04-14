@@ -91,11 +91,11 @@ class Portal
 
         // finally..any errors finding an article or category?
         if(!empty($context['art_error'])) {
-            throw new Elk_Exception($txt['tp-articlenotexist'], 'general');
+            throw new \Elk_Exception($txt['tp-articlenotexist'], 'general');
         }
 
         if(!empty($context['cat_error'])) {
-            throw new Elk_Exception($txt['tp-categorynotexist'], 'general');
+            throw new \Elk_Exception($txt['tp-categorynotexist'], 'general');
         }
 
         \call_integration_hook('integrate_tp_post_init');

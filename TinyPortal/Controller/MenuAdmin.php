@@ -55,6 +55,10 @@ class MenuAdmin extends BaseAdmin
                 'save'      => array($this, 'action_save', array()),
             );
 
+            if(empty($subAction)) {
+                $subAction = 'list';
+            }
+
             $this->context['TPortal']['subaction'] = $subAction;
 
             TPAdmin::getInstance()->topMenu($subAction);

@@ -68,7 +68,7 @@ class Article extends \Action_Controller
 		checkSession('post');
 
 		if (!allowedTo('tp_artcomment')) {
-			throw new Elk_Exception($txt['tp-nocomments'], 'general');
+			throw new \Elk_Exception($txt['tp-nocomments'], 'general');
 		}
 
 		$commenter  = $context['user']['id'];
@@ -188,7 +188,7 @@ class Article extends \Action_Controller
 		global $context, $txt;
 
 		if (!allowedTo('tp_artcomment')) {
-			throw new Elk_Exception($txt['tp-nocomments'], 'general');
+			throw new \Elk_Exception($txt['tp-nocomments'], 'general');
 		}
 
 		// edit or deleting a comment?
@@ -196,7 +196,7 @@ class Article extends \Action_Controller
 			// check that you indeed can edit or delete
 			$comment = TPUtil::filter('comment', 'get', 'int');
 			if(!is_numeric($comment)) {
-				throw new Elk_Exception($txt['tp-noadmincomments'], 'general');
+				throw new \Elk_Exception($txt['tp-noadmincomments'], 'general');
 			}
 
 			$tpArticle  = TPArticle::getInstance();
@@ -213,14 +213,14 @@ class Article extends \Action_Controller
 		global $context, $txt;
 
 	   if (!allowedTo('tp_artcomment')) {
-			throw new Elk_Exception($txt['tp-nocomments'], 'general');
+			throw new \Elk_Exception($txt['tp-nocomments'], 'general');
 		}
 
 		if($context['user']['is_logged']) {
 			// check that you indeed can edit or delete
 			$comment = substr($_GET['sa'], 11);
 			if(!is_numeric($comment)) {
-				throw new Elk_Exception($txt['tp-noadmincomments'], 'general');
+				throw new \Elk_Exception($txt['tp-noadmincomments'], 'general');
 			}
 
 			$tpArticle  = TPArticle::getInstance();
@@ -238,7 +238,7 @@ class Article extends \Action_Controller
 						TPSubs::getInstance()->loadLanguage('TParticle', 'english');
 					};
 				}
-				throw new Elk_Exception($txt['tp-notallowed'], 'general');
+				throw new \Elk_Exception($txt['tp-notallowed'], 'general');
 			}
 		}
 
@@ -306,7 +306,7 @@ class Article extends \Action_Controller
         // show own articles?
         // not for guests
         if($context['user']['is_guest']) {
-            throw new Elk_Exception($txt['tp-noarticlesfound'], 'general');
+            throw new \Elk_Exception($txt['tp-noarticlesfound'], 'general');
         }
 
         // get all articles
