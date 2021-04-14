@@ -109,66 +109,66 @@ class Article extends \Action_Controller
 
 		$db = TPDatabase::getInstance();
 
-		if(!empty($_GET['tpstart']) && is_numeric($_GET['tpstart'])) {
-			$tpstart = $_GET['tpstart'];
-		}
-		else {
-			$tpstart = 0;
-		}
+        if(!empty($_GET['tpstart']) && is_numeric($_GET['tpstart'])) {
+            $tpstart = $_GET['tpstart'];
+        }
+        else {
+            $tpstart = 0;
+        }
 
-		$mylast = 0;
-		$mylast = $user_info['last_login'];
-		$showall = false;
-		if(isset($_GET['showall'])) {
-			$showall = true;
-		}
+        $mylast = 0;
+        $mylast = $user_info['last_login'];
+        $showall = false;
+        if(isset($_GET['showall'])) {
+            $showall = true;
+        }
 
-		$request = $db->query('', '
-			SELECT COUNT(var.display_name)
-			FROM ({db_prefix}tp_categories AS var, {db_prefix}tp_articles AS art)
-			WHERE var.type = {string:type}
-			' . ((!$showall || $mylast == 0) ? 'AND var.dt_log > '.$mylast : '') .'
-			AND art.id = var.page',
-			array('type' => 'article_comment')
-		);
-		$check = $db->fetch_row($request);
-		$db->free_result($request);
+        $request = $db->query('', '
+            SELECT COUNT(var.subject)
+            FROM {db_prefix}tp_comments AS var
+            INNER JOIN {db_prefix}tp_articles AS art ON art.id = var.item_id
+            WHERE var.item_type = {string:type}
+            ' . ((!$showall || $mylast == 0) ? 'AND var.datetime > '.$mylast : ''),
+            array('type' => 'article_comment')
+        );
+        $check = $db->fetch_row($request);
+        $db->free_result($request);
 
-		$request = $db->query('', '
-			SELECT art.subject, memb.real_name AS author, art.author_id AS authorID, var.display_name, var.parent, var.access,
-			var.page, var.dt_log, mem.real_name AS realName,
-			' . ($user_info['is_guest'] ? '1' : '(COALESCE(log.item, 0) >= var.dt_log)') . ' AS isRead
-			FROM ({db_prefix}tp_categories AS var, {db_prefix}tp_articles AS art)
-			LEFT JOIN {db_prefix}members AS memb ON (art.author_id = memb.id_member)
-			LEFT JOIN {db_prefix}members AS mem ON (var.access = mem.id_member)
-			LEFT JOIN {db_prefix}tp_data AS log ON (log.value = art.id AND log.type = 1 AND log.id_member = '.$context['user']['id'].')
-			WHERE var.type = {string:type}
-			AND art.id = var.page
-			' . ((!$showall || $mylast == 0 ) ? 'AND var.dt_log > {int:last}' : '') .'
-			ORDER BY var.dt_log DESC LIMIT {int:start}, 15',
-			array('type' => 'article_comment', 'last' => $mylast, 'start' => $tpstart)
-		);
+        $request = $db->query('', '
+            SELECT art.subject, memb.real_name AS author, art.author_id AS author_id, var.subject, var.comment, var.member_id,
+            var.item_id, var.datetime, mem.real_name AS real_name,
+            ' . ($user_info['is_guest'] ? '1' : '(COALESCE(log.item, 0) >= var.datetime)') . ' AS is_read
+            FROM {db_prefix}tp_comments AS var
+            INNER JOIN {db_prefix}tp_articles AS art ON ( art.id = var.item_id )
+            LEFT JOIN {db_prefix}members AS memb ON (art.author_id = memb.id_member)
+            LEFT JOIN {db_prefix}members AS mem ON (var.member_id = mem.id_member)
+            LEFT JOIN {db_prefix}tp_data AS log ON (log.value = art.id AND log.type = 1 AND log.id_member = '.$context['user']['id'].')
+            WHERE var.item_type = {string:type}
+            ' . ((!$showall || $mylast == 0 ) ? 'AND var.datetime > {int:last}' : '') .'
+            ORDER BY var.datetime DESC LIMIT 15 OFFSET {int:start}',
+            array('type' => 'article_comment', 'last' => $mylast, 'start' => $tpstart)
+        );
 
-		$context['TPortal']['artcomments']['new'] = array();
+        $context['TPortal']['artcomments']['new'] = array();
 
-		if($db->num_rows($request) > 0) {
-			while($row=$db->fetch_assoc($request)) {
-				$context['TPortal']['artcomments']['new'][] = array(
-					'page' => $row['page'],
-					'subject' => $row['subject'],
-					'title' => $row['display_name'],
-					'comment' => $row['parent'],
-					'membername' => $row['realName'],
-					'time' => standardTime($row['dt_log']),
-					'author' => $row['author'],
-					'authorID' => $row['authorID'],
-					'member_id' => $row['access'],
-					'is_read' => $row['isRead'],
-					'replies' => $check[0],
-				);
-			}
-			$db->free_result($request);
-		}
+        if($db->num_rows($request) > 0) {
+            while($row=$db->fetch_assoc($request)) {
+                $context['TPortal']['artcomments']['new'][] = array(
+                        'page' => $row['item_id'],
+                        'subject' => $row['subject'],
+                        'title' => $row['subject'],
+                        'comment' => $row['comment'],
+                        'membername' => $row['real_name'],
+                        'time' => standardTime($row['datetime']),
+                        'author' => $row['author'],
+                        'author_id' => $row['author_id'],
+                        'member_id' => $row['member_id'],
+                        'is_read' => $row['is_read'],
+                        'replies' => $check[0],
+                        );
+            }
+            $db->free_result($request);
+        }
 
 		// construct the pages
 		$context['TPortal']['pageindex']        = TPSubs::getInstance()->pageIndex($scripturl.'?action=tparticle;sa=showcomments', $tpstart, $check[0], 15);
