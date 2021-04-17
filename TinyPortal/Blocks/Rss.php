@@ -24,13 +24,14 @@ class Rss extends Base
 
     public function setup( &$block ) {{{
 
-        $block['title'] = '<span class="header">' . $block['title'] . '</span>';
+        $block['title']     = '<span class="header">' . $block['title'] . '</span>';
+        $block['use_rtf8']  = $block['var1'];
 
     }}}
 
     public function display( $block ) {{{
 
-        echo '<div style="padding: 5px; ' , !empty($this->context['TPortal']['rsswidth']) ? 'max-width: ' . $this->context['TPortal']['rsswidth'] .';' : '' , '" class="middletext">' , TinyPortal\Model\Subs::getInstance()->parseRSS('', $this->context['TPortal']['rss_utf8']) , '</div>';
+        echo '<div style="padding: 5px; ' , !empty($this->context['TPortal']['rsswidth']) ? 'max-width: ' . $this->context['TPortal']['rsswidth'] .';' : '' , '" class="middletext">' , \TinyPortal\Model\Subs::getInstance()->parseRSS($block['body'], $block['rss_utf8']) , '</div>';
 
     }}}
 

@@ -80,7 +80,7 @@ function template_editblock()
 					 <div>';
             
             $blockClass = '\TinyPortal\Blocks\\'.ucfirst(str_replace('box', '', \TinyPortal\Model\Block::getInstance()->getBlockType($context['TPortal']['blockedit']['type'])));
-            if(class_exists($blockClass)) {
+            if(class_exists($blockClass) && method_exists('admin_display', $blockClass)) {
                 (new $blockClass)->admin_display($context['TPortal']['blockedit']);
             }
 // Block types: 5 (BBC code), 10 (PHP Code) and 11 (HTML & Javascript code)
@@ -224,7 +224,7 @@ function template_editblock()
 							<label for="tp_block_var3">' . $txt['tp-rssblock-maxwidth'].'</label>
 						</dt>
 						<dd>
-							<input type="number" name="tp_block_var3 id="tp_block_var3" value="' , $context['TPortal']['blockedit']['var3'],'" style="width: 6em">
+							<input type="number" name="tp_block_var3" id="tp_block_var3" value="' , $context['TPortal']['blockedit']['var3'],'" style="width: 6em">
 						</dd>
 						<dt>
 							<label for="tp_block_var4">' . $txt['tp-rssblock-maxshown'].'</label>

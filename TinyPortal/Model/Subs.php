@@ -1457,7 +1457,7 @@ class Subs
         return $this->category_col('col2', false, $render);
     }}}
 
-    public function parseRSS($override = '', $encoding = 0) {{{
+    public function parseRSS($override = '', $encoding = 0, $max = 10) {{{
         global $context;
 
         // Initialise the number of RSS Feeds to show
@@ -1466,41 +1466,36 @@ class Subs
         $backend = isset($context['TPortal']['rss']) ? $context['TPortal']['rss'] : '';
         if($override != '')
             $backend = $override;
-
-        $allow_url = ini_get('allow_url_fopen');
-        if ($allow_url){
-            $xml = simplexml_load_file($backend);
-        } else {
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_URL, $backend);
-            $ret = curl_exec($curl);
-            curl_close($curl);
-            $xml = simplexml_load_string($ret);
-        }
-
+        
+        require_once(SUBSDIR . '/Package.subs.php');
+		$data   = fetch_web_data($backend);
+        $xml    = simplexml_load_string($data);
         if($xml !== false) {
             switch (strtolower($xml->getName())) {
                 case 'rss':
                     foreach ($xml->channel->item as $v) {
-                        if($numShown++ >= $context['TPortal']['rssmaxshown'])
+                        if($numShown++ >= $max) {
                             break;
+                        }
 
                         printf("<div class=\"rss_title%s\"><a target='_blank' href='%s'>%s</a></div>", $context['TPortal']['rss_notitles'] ? '_normal' : '', trim($v->link), Util::htmlspecialchars(trim($v->title), ENT_QUOTES));
 
-                        if(!$context['TPortal']['rss_notitles'])
+                        if(!$context['TPortal']['rss_notitles']) {
                             printf("<div class=\"rss_date\">%s</div><div class=\"rss_body\">%s</div>", $v->pubDate, $v->description);
+                        }
                     }
                     break;
                 case 'feed':
                     foreach ($xml->entry as $v) {
-                        if($numShown++ >= $context['TPortal']['rssmaxshown'])
+                        if($numShown++ >= $max) {
                             break;
+                        }
 
                         printf("<div class=\"rss_title%s\"><a target='_blank' href='%s'>%s</a></div>", $context['TPortal']['rss_notitles'] ? '_normal' : '', trim($v->link['href']), Util::htmlspecialchars(trim($v->title), ENT_QUOTES));
 
-                        if(!$context['TPortal']['rss_notitles'])
+                        if(!$context['TPortal']['rss_notitles']) {
                             printf("<div class=\"rss_date\">%s</div><div class=\"rss_body\">%s</div>", isset($v->issued) ? $v->issued : $v->published, $v->summary);
+                        }
                     }
                     break;
             }
