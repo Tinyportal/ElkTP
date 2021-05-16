@@ -474,13 +474,13 @@ class Integrate
     public static function hookActions(&$actionArray, &$adminAction) {{{
 
 		$actionArray = array_merge(
+			$actionArray,
 			array (
-				'forum'     => array('BoardIndex.controller.php', 'BoardIndex_Controller', 'action_boardindex'),
+				'forum'     => array('\TinyPortal\Controller\BoardIndex', 'action_index'),
 				'tparticle' => array('\TinyPortal\Controller\Article',  'action_index'),
 				'tportal'   => array('\TinyPortal\Controller\Portal',   'action_index'),
 				'tpsearch'  => array('\TinyPortal\Controller\Search',   'action_index'),
-			),
-			$actionArray
+			)
 		);
 
     }}}
@@ -708,14 +708,6 @@ class Integrate
 
         return $id_theme;
     }}}
-
-	public static function hookPreBoardIndex() {{{
-
-		if( Model\Admin::getInstance()->getSetting('portal_type') == 'portal_guest' ) {
-			$actionArray['forum'] = array('Auth.controller.php', 'Auth_Controller', 'action_kickguest');
-		}
-
-	}}}
 
 }
 
