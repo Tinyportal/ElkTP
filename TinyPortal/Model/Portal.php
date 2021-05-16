@@ -42,6 +42,10 @@ class Portal
             return;
         }
 
+		if(self::restrictedGuestAccess()) {
+			return;
+		}
+
         if(Subs::getInstance()->loadLanguage('TPortal') == false) {
             Subs::getInstance()->loadLanguage('TPortal', 'english');
         }
@@ -105,6 +109,11 @@ class Portal
 
     }}}
 
+	protected function restrictedGuestAccess() {{{
+		global $modSettings, $user_info;
+
+		return empty($modSettings['allow_guestAccess']) && $user_info['is_guest'];
+	}}}
 }
 
 ?>

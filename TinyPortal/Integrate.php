@@ -24,7 +24,6 @@ class Integrate
             define('ELK_BACKWARDS_COMPAT', true);
             self::setup_db_backwards_compat();
             \Elk_Autoloader::instance()->register('TinyPortal', '\\TinyPortal');
-            //spl_autoload_register('\TinyPortal\Integrate::TPortalAutoLoadClass');
         }
 
         $hooks = array (
@@ -93,25 +92,7 @@ class Integrate
             $modSettings['front_page']  = '\TinyPortal\Controller\Portal';
         }
 
-        return;
-    }}}
-
-    public static function TPortalAutoLoadClass($className) {{{
-
-        $classPrefix    = mb_substr($className, 0, 10);
-
-        if( 'TinyPortal' !== $classPrefix ) {
-            return;
-        }
-
-        $className  = str_replace('\\', '/', $className);
-        $className  = str_replace('_', '.', $className);
-        $classFile  = BOARDDIR . '/' . $className . '.php';
-
-        if ( file_exists( $classFile ) ) {
-            require_once($classFile);
-        }
-
+	    return;
     }}}
 
     public static function setup_db_backwards_compat() {{{
@@ -492,15 +473,15 @@ class Integrate
 
     public static function hookActions(&$actionArray, &$adminAction) {{{
 
-        $actionArray = array_merge(
-            array (
-                'forum'     => array('BoardIndex.controller.php', 'BoardIndex_Controller', 'action_boardindex'),
-                'tparticle' => array('\TinyPortal\Controller\Article',  'action_index'),
-                'tportal'   => array('\TinyPortal\Controller\Portal',   'action_index'),
-                'tpsearch'  => array('\TinyPortal\Controller\Search',   'action_index'),
-            ),
-            $actionArray
-        );
+		$actionArray = array_merge(
+			array (
+				'forum'     => array('BoardIndex.controller.php', 'BoardIndex_Controller', 'action_boardindex'),
+				'tparticle' => array('\TinyPortal\Controller\Article',  'action_index'),
+				'tportal'   => array('\TinyPortal\Controller\Portal',   'action_index'),
+				'tpsearch'  => array('\TinyPortal\Controller\Search',   'action_index'),
+			),
+			$actionArray
+		);
 
     }}}
 
@@ -727,6 +708,14 @@ class Integrate
 
         return $id_theme;
     }}}
+
+	public static function hookPreBoardIndex() {{{
+
+		if( Model\Admin::getInstance()->getSetting('portal_type') == 'portal_guest' ) {
+			$actionArray['forum'] = array('Auth.controller.php', 'Auth_Controller', 'action_kickguest');
+		}
+
+	}}}
 
 }
 

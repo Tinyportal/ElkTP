@@ -29,7 +29,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 {
 
     public static function canFrontPage() {{{
-        return true;
+		return true;
     }}}
 
     public static function frontPageOptions() {{{

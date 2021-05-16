@@ -1466,7 +1466,7 @@ class Subs
         $backend = isset($context['TPortal']['rss']) ? $context['TPortal']['rss'] : '';
         if($override != '')
             $backend = $override;
-
+        
         require_once(SUBSDIR . '/Package.subs.php');
 		$data   = fetch_web_data($backend);
         $xml    = simplexml_load_string($data);
