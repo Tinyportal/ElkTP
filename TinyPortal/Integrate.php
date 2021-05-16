@@ -277,7 +277,7 @@ class Integrate
 
 		Model\Subs::getInstance()->loadLanguage('TPortal');
 
-        if($context['TPortal']['front_type'] != 'boardindex' ) {
+        if(Model\Admin::getInstance()->getSetting('front_type') != 'boardindex' ) {
             $buttons = \elk_array_insert($buttons, 'home', array (
                 'base' => array(
                     'title' 	    => $txt['tp-home'],
@@ -294,7 +294,7 @@ class Integrate
             $buttons['home']['href']      = $scripturl . '?action=forum';
         }
 
-        if($context['TPortal']['hideadminmenu'] != '1' ) {
+        if(Model\Admin::getInstance()->getSetting('hideadminmenu') != '1' ) {
             $subButtons = array();
             Model\Admin::getInstance()->sideMenu();
             foreach($context['admin_tabs'] as $k => $v) {

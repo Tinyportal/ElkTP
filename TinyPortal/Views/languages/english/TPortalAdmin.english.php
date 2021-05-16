@@ -34,6 +34,10 @@ $txt['tp-use_groupcolor'] = 'Use membergroup color for user names throughout the
 $txt['tp-use_groupcolordesc'] = 'This setting will activate the use of the member group colour for user names throughout the forum. Users names will be displayed in the forum in the color of the primary user group that a member is assigned to. Note that there is a similar settings in the shoutbox that will only activate this in the shoutbox: The general TP setting takes preference over the shoutbox setting.';
 $txt['tp-maxrating'] = 'Max rating';
 $txt['tp-stars'] = 'Display stars instead of numbers';
+$txt['tp-portaltype']	= 'Portal Type';
+$txt['tp-standalone']	= 'Standalone';
+$txt['tp-guestonly']	= 'Guest Only';
+$txt['tp-guestaccess']	= 'Guest Access';
 
 $txt['tp-useoldsidebar'] = 'Use old sidebar for admin';
 $txt['tp-admin_showblocks'] = 'Admin can see all blocks';
