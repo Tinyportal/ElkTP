@@ -2446,7 +2446,7 @@ class Subs
             require_once($filePath);
 		}
 
-        foreach( array ( $lang, 'english' ) as $l) {
+        foreach( array ( $lang ) as $l) {
             $filePath = BOARDDIR . '/TinyPortal/Views/languages/'.$l.'/'.$template_name.'.'.$l.'.php';
             if(file_exists($filePath)) {
                 require_once($filePath);
