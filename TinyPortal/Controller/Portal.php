@@ -544,7 +544,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 
                             $row['avatar'] = determineAvatar( array(
                                         'avatar'            => $row['avatar'],
-                                        'emai_addressl'     => $row['email_address'],
+                                        'email_address'		=> $row['email_address'],
                                         'filename'          => !empty($row['filename']) ? $row['filename'] : '',
                                         'id_attach'         => $row['id_attach'],
                                         'attachment_type'   => $row['attachment_type'],
