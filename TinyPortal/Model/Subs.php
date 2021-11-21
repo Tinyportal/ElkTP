@@ -2440,6 +2440,12 @@ class Subs
 		    $lang = isset($user_info['language']) ? $user_info['language'] : $language;
         }
 
+		// Always load english
+		$filePath = BOARDDIR . '/TinyPortal/Views/languages/english/'.$template_name.'.english.php';
+        if(file_exists($filePath)) {
+            require_once($filePath);
+		}
+
         foreach( array ( $lang, 'english' ) as $l) {
             $filePath = BOARDDIR . '/TinyPortal/Views/languages/'.$l.'/'.$template_name.'.'.$l.'.php';
             if(file_exists($filePath)) {
