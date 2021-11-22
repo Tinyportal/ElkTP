@@ -1373,7 +1373,7 @@ class Subs
         }
     }}}
 
-    public function hidebars($what = 'all' ) {{{
+    public function hidebars($what = 'all') {{{
         global $context;
 
         if($what == 'all'){

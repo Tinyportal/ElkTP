@@ -357,7 +357,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                         loadtemplate('TPprint');
                         $context['template_layers'] = array('tp_print');
                         $context['sub_template'] = 'tp_print_body';
-                        tp_hidebars();
+                        TPSubs::getInstance()->hidebars();
                     }
                     // linktree?
                     if(!in_array('linktree', $context['TPortal']['article']['visual_options'])) {
@@ -1359,7 +1359,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
     function action_credits() {{{
         global $context;
 
-        tp_hidebars();
+        TPSubs::getInstance()->hidebars();
         $context['TPortal']['not_forum'] = false;
 
         if(TPSubs::getInstance()->loadLanguage('TPhelp') == false) {
