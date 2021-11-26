@@ -2145,10 +2145,13 @@ class Subs
         }
 
         // setup subaction
-        $context['TPortal']['profile_action'] = '';
+		$context['TPortal']['profile_action'] = '';
+        /*
         if(isset($_GET['sa']) && $_GET['sa'] == 'settings') {
             $context['TPortal']['profile_action'] = 'settings';
         }
+		*/
+
 
         // Create the tabs for the template.
         $context[$context['profile_menu_name']]['tab_data'] = array(
@@ -2156,9 +2159,9 @@ class Subs
             'description' => $txt['articlesprofile2'],
             'tabs' => array(
                 'articles' => array(),
-                'settings' => array(),
-                ),
+            ),
         );
+
 
         if(self::loadLanguage('TPortalAdmin') == false) {
             self::loadLanguage('TPortalAdmin', 'english');

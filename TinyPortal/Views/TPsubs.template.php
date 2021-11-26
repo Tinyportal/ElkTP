@@ -1593,7 +1593,6 @@ function template_tpadm_above()
 		<span class="upperframe"><span></span></span>
 		<div class="roundframe">';
 
-
 	if(is_array($context['admin_tabs']) && count($context['admin_tabs']) > 0) {
 		echo '
 			<ul style="padding-bottom: 10px;">';
