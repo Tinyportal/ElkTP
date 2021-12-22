@@ -340,7 +340,7 @@ class Util
     private static function filterType($type) {{{
         switch (strtolower($type)) {
             case 'string':
-                $filter = FILTER_SANITIZE_STRING;
+                $filter = FILTER_UNSAFE_RAW;
                 break;
             case 'int':
                 $filter = FILTER_SANITIZE_NUMBER_INT;
@@ -358,11 +358,15 @@ class Util
                 $filter = FILTER_SANITIZE_EMAIL;
                 break;
             default:
-                $filter = FILTER_SANITIZE_STRING;
+                $filter = FILTER_UNSAFE_RAW;
         }
         return $filter;
     }}}
 
+	private static function filter_string_polyfill(string $string): string {{{
+	   $str = preg_replace('/x00|<[^>]*>?/', '', $string);
+	   return str_replace(["'", '"'], ['&#39;', '&#34;'], $str);
+	}}}
 }
 
 ?>
