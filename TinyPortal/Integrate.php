@@ -24,7 +24,6 @@ class Integrate
             define('ELK_BACKWARDS_COMPAT', true);
             self::setup_db_backwards_compat();
             \Elk_Autoloader::instance()->register('TinyPortal', '\\TinyPortal');
-            //spl_autoload_register('\TinyPortal\Integrate::TPortalAutoLoadClass');
         }
 
         $hooks = array (
@@ -93,25 +92,7 @@ class Integrate
             $modSettings['front_page']  = '\TinyPortal\Controller\Portal';
         }
 
-        return;
-    }}}
-
-    public static function TPortalAutoLoadClass($className) {{{
-
-        $classPrefix    = mb_substr($className, 0, 10);
-
-        if( 'TinyPortal' !== $classPrefix ) {
-            return;
-        }
-
-        $className  = str_replace('\\', '/', $className);
-        $className  = str_replace('_', '.', $className);
-        $classFile  = BOARDDIR . '/' . $className . '.php';
-
-        if ( file_exists( $classFile ) ) {
-            require_once($classFile);
-        }
-
+	    return;
     }}}
 
     public static function setup_db_backwards_compat() {{{
@@ -296,7 +277,7 @@ class Integrate
 
 		Model\Subs::getInstance()->loadLanguage('TPortal');
 
-        if($context['TPortal']['front_type'] != 'boardindex' ) {
+        if(Model\Admin::getInstance()->getSetting('front_type') != 'boardindex' ) {
             $buttons = \elk_array_insert($buttons, 'home', array (
                 'base' => array(
                     'title' 	    => $txt['tp-home'],
@@ -313,7 +294,7 @@ class Integrate
             $buttons['home']['href']      = $scripturl . '?action=forum';
         }
 
-        if($context['TPortal']['hideadminmenu'] != '1' ) {
+        if(Model\Admin::getInstance()->getSetting('hideadminmenu') != '1' ) {
             $subButtons = array();
             Model\Admin::getInstance()->sideMenu();
             foreach($context['admin_tabs'] as $k => $v) {
@@ -471,7 +452,7 @@ class Integrate
                 ),
                 'subsections'   => array(
                     'articles'  => array($txt['tp-articles'], array('profile_view_own', 'profile_view_any')),
-                    'settings'  => array($txt['tp-settings'], array('profile_view_own', 'profile_view_any')),
+                    //'settings'  => array($txt['tp-settings'], array('profile_view_own', 'profile_view_any')),
                 ),
             );
         }
@@ -492,15 +473,15 @@ class Integrate
 
     public static function hookActions(&$actionArray, &$adminAction) {{{
 
-        $actionArray = array_merge(
-            array (
-                'forum'     => array('BoardIndex.controller.php', 'BoardIndex_Controller', 'action_boardindex'),
-                'tparticle' => array('\TinyPortal\Controller\Article',  'action_index'),
-                'tportal'   => array('\TinyPortal\Controller\Portal',   'action_index'),
-                'tpsearch'  => array('\TinyPortal\Controller\Search',   'action_index'),
-            ),
-            $actionArray
-        );
+		$actionArray = array_merge(
+			$actionArray,
+			array (
+				'forum'     => array('\TinyPortal\Controller\BoardIndex', 'action_index'),
+				'tparticle' => array('\TinyPortal\Controller\Article',  'action_index'),
+				'tportal'   => array('\TinyPortal\Controller\Portal',   'action_index'),
+				'tpsearch'  => array('\TinyPortal\Controller\Search',   'action_index'),
+			)
+		);
 
     }}}
 

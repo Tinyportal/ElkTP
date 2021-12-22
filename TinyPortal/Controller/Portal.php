@@ -29,7 +29,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 {
 
     public static function canFrontPage() {{{
-        return true;
+		return true;
     }}}
 
     public static function frontPageOptions() {{{
@@ -71,18 +71,19 @@ class Portal extends \Action_Controller implements Frontpage_Interface
         if($action == 'tportal') {
             $subAction  = TPUtil::filter('sa', 'get', 'string');
             if($subAction == false) {
-                throw new Elk_Exception($txt['tp-no-sa-url'], 'general');
+                throw new \Elk_Exception($txt['tp-no-sa-url'], 'general');
             }
 
             $subActions = array(
                 'credits'   => array($this, 'action_credits', array()),
                 'upshrink'  => array($this, 'action_upshrink', array()),
+                'publish'   => array(new ArticleAdmin, 'action_publish', array()),
             );
 
             call_integration_hook('integrate_tp_pre_subactions', array(&$subActions));
 
             if(!array_key_exists($subAction, $subActions)) {
-                throw new Elk_Exception($txt['tp-no-sa-list'], 'general');
+                throw new \Elk_Exception($txt['tp-no-sa-list'], 'general');
             }
 
             $context['TPortal']['subaction'] = $subAction;
@@ -356,7 +357,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                         loadtemplate('TPprint');
                         $context['template_layers'] = array('tp_print');
                         $context['sub_template'] = 'tp_print_body';
-                        tp_hidebars();
+                        TPSubs::getInstance()->hidebars();
                     }
                     // linktree?
                     if(!in_array('linktree', $context['TPortal']['article']['visual_options'])) {
@@ -543,7 +544,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 
                             $row['avatar'] = determineAvatar( array(
                                         'avatar'            => $row['avatar'],
-                                        'emai_addressl'     => $row['email_address'],
+                                        'email_address'		=> $row['email_address'],
                                         'filename'          => !empty($row['filename']) ? $row['filename'] : '',
                                         'id_attach'         => $row['id_attach'],
                                         'attachment_type'   => $row['attachment_type'],
@@ -1358,7 +1359,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
     function action_credits() {{{
         global $context;
 
-        tp_hidebars();
+        TPSubs::getInstance()->hidebars();
         $context['TPortal']['not_forum'] = false;
 
         if(TPSubs::getInstance()->loadLanguage('TPhelp') == false) {

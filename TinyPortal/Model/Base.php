@@ -268,11 +268,15 @@ class Base
 
      protected function updateSQL(int $id, array $data, array $dBStructure, string $table) {{{
 
+
         $update_data = $data;
         array_walk($update_data, function(&$update_data, $key) use ( $dBStructure ) {
-                $update_data = $key.' = {'.$dBStructure[$key].':'.$key.'}';
+                if(array_key_exists($key, $dBStructure)) {
+                    $update_data = $key.' = {'.$dBStructure[$key].':'.$key.'}';
+                }
             }
         );
+
         $update_query = implode(', ', array_values($update_data));
 
         $data['id'] = (int)$id;

@@ -77,11 +77,11 @@ class Search extends \Action_Controller
                 $what       = $params['search'];
             }
             else {
-                throw new Elk_Exception($txt['tp-nosearchentered'], false);
+                throw new \Elk_Exception($txt['tp-nosearchentered'], false);
             }
         }
         else if(empty($_POST['tpsearch_what'])) {
-            throw new Elk_Exception($txt['tp-nosearchentered'], false);
+            throw new \Elk_Exception($txt['tp-nosearchentered'], false);
         }
         else {
             checkSession('post');

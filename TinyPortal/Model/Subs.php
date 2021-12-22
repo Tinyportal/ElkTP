@@ -1373,7 +1373,7 @@ class Subs
         }
     }}}
 
-    public function hidebars($what = 'all' ) {{{
+    public function hidebars($what = 'all') {{{
         global $context;
 
         if($what == 'all'){
@@ -1457,7 +1457,7 @@ class Subs
         return $this->category_col('col2', false, $render);
     }}}
 
-    public function parseRSS($override = '', $encoding = 0) {{{
+    public function parseRSS($override = '', $encoding = 0, $max = 10) {{{
         global $context;
 
         // Initialise the number of RSS Feeds to show
@@ -1466,41 +1466,36 @@ class Subs
         $backend = isset($context['TPortal']['rss']) ? $context['TPortal']['rss'] : '';
         if($override != '')
             $backend = $override;
-
-        $allow_url = ini_get('allow_url_fopen');
-        if ($allow_url){
-            $xml = simplexml_load_file($backend);
-        } else {
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_URL, $backend);
-            $ret = curl_exec($curl);
-            curl_close($curl);
-            $xml = simplexml_load_string($ret);
-        }
-
+        
+        require_once(SUBSDIR . '/Package.subs.php');
+		$data   = fetch_web_data($backend);
+        $xml    = simplexml_load_string($data);
         if($xml !== false) {
             switch (strtolower($xml->getName())) {
                 case 'rss':
                     foreach ($xml->channel->item as $v) {
-                        if($numShown++ >= $context['TPortal']['rssmaxshown'])
+                        if($numShown++ >= $max) {
                             break;
+                        }
 
                         printf("<div class=\"rss_title%s\"><a target='_blank' href='%s'>%s</a></div>", $context['TPortal']['rss_notitles'] ? '_normal' : '', trim($v->link), Util::htmlspecialchars(trim($v->title), ENT_QUOTES));
 
-                        if(!$context['TPortal']['rss_notitles'])
+                        if(!$context['TPortal']['rss_notitles']) {
                             printf("<div class=\"rss_date\">%s</div><div class=\"rss_body\">%s</div>", $v->pubDate, $v->description);
+                        }
                     }
                     break;
                 case 'feed':
                     foreach ($xml->entry as $v) {
-                        if($numShown++ >= $context['TPortal']['rssmaxshown'])
+                        if($numShown++ >= $max) {
                             break;
+                        }
 
                         printf("<div class=\"rss_title%s\"><a target='_blank' href='%s'>%s</a></div>", $context['TPortal']['rss_notitles'] ? '_normal' : '', trim($v->link['href']), Util::htmlspecialchars(trim($v->title), ENT_QUOTES));
 
-                        if(!$context['TPortal']['rss_notitles'])
+                        if(!$context['TPortal']['rss_notitles']) {
                             printf("<div class=\"rss_date\">%s</div><div class=\"rss_body\">%s</div>", isset($v->issued) ? $v->issued : $v->published, $v->summary);
+                        }
                     }
                     break;
             }
@@ -2150,10 +2145,13 @@ class Subs
         }
 
         // setup subaction
-        $context['TPortal']['profile_action'] = '';
+		$context['TPortal']['profile_action'] = '';
+        /*
         if(isset($_GET['sa']) && $_GET['sa'] == 'settings') {
             $context['TPortal']['profile_action'] = 'settings';
         }
+		*/
+
 
         // Create the tabs for the template.
         $context[$context['profile_menu_name']]['tab_data'] = array(
@@ -2161,9 +2159,9 @@ class Subs
             'description' => $txt['articlesprofile2'],
             'tabs' => array(
                 'articles' => array(),
-                'settings' => array(),
-                ),
+            ),
         );
+
 
         if(self::loadLanguage('TPortalAdmin') == false) {
             self::loadLanguage('TPortalAdmin', 'english');
@@ -2283,7 +2281,7 @@ class Subs
         if($upload->upload_file($_FILES[$widthhat]['tmp_name'], $dstPath) === FALSE) {
             unlink($_FILES[$widthhat]['tmp_name']);
             $error_string = sprintf($txt['tp-notuploaded'], $upload->get_error(TRUE));
-            throw new Elk_Exception($error_string, 'general');
+            throw new \Elk_Exception($error_string, 'general');
         }
 
         return basename($dstPath);
@@ -2371,7 +2369,7 @@ class Subs
 
         if (!\mktree($path, 0755)) {
             \deltree($path, true);
-            throw new Elk_Exception($txt['tp-failedcreatedir'], 'general');
+            throw new \Elk_Exception($txt['tp-failedcreatedir'], 'general');
         }
 
         return TRUE;
@@ -2445,7 +2443,13 @@ class Subs
 		    $lang = isset($user_info['language']) ? $user_info['language'] : $language;
         }
 
-        foreach( array ( $lang, 'english' ) as $l) {
+		// Always load english
+		$filePath = BOARDDIR . '/TinyPortal/Views/languages/english/'.$template_name.'.english.php';
+        if(file_exists($filePath)) {
+            require_once($filePath);
+		}
+
+        foreach( array ( $lang ) as $l) {
             $filePath = BOARDDIR . '/TinyPortal/Views/languages/'.$l.'/'.$template_name.'.'.$l.'.php';
             if(file_exists($filePath)) {
                 require_once($filePath);

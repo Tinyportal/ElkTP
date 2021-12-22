@@ -42,6 +42,10 @@ class Portal
             return;
         }
 
+		if(self::restrictedGuestAccess()) {
+			return;
+		}
+
         if(Subs::getInstance()->loadLanguage('TPortal') == false) {
             Subs::getInstance()->loadLanguage('TPortal', 'english');
         }
@@ -91,11 +95,11 @@ class Portal
 
         // finally..any errors finding an article or category?
         if(!empty($context['art_error'])) {
-            throw new Elk_Exception($txt['tp-articlenotexist'], 'general');
+            throw new \Elk_Exception($txt['tp-articlenotexist'], 'general');
         }
 
         if(!empty($context['cat_error'])) {
-            throw new Elk_Exception($txt['tp-categorynotexist'], 'general');
+            throw new \Elk_Exception($txt['tp-categorynotexist'], 'general');
         }
 
         \call_integration_hook('integrate_tp_post_init');
@@ -105,6 +109,11 @@ class Portal
 
     }}}
 
+	protected function restrictedGuestAccess() {{{
+		global $modSettings, $user_info;
+
+		return empty($modSettings['allow_guestAccess']) && $user_info['is_guest'];
+	}}}
 }
 
 ?>

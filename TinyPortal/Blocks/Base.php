@@ -47,10 +47,13 @@ class Base
 
     }}}
 
-    public function admin(&$block) {{{
+    public function admin_setup( &$block ) {{{
 
     }}}
 
+    public function admin_display( $block ) {{{
+
+    }}}
 }
 
 ?>

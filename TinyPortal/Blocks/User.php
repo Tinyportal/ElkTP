@@ -25,7 +25,7 @@ class User extends Base
     public function setup( &$block ) {{{
 
         if(!$this->context['user']['is_logged']) {
-            $block['title'] = '<a class="subject"  href="'.$this->this->scripturl.'?action=login">'.$block['title'].'</a>';
+            $block['title'] = '<a class="subject"  href="'.$this->scripturl.'?action=login">'.$block['title'].'</a>';
         }
 
     }}}

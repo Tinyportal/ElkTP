@@ -104,6 +104,16 @@ function template_settings()
 					<dd>
 						<input type="checkbox" id="tp_hideadminmenu" name="tp_hideadminmenu" value="1" ' , $context['TPortal']['hideadminmenu']=='1' ? 'checked' : '' , '>
 					</dd>
+					<dt>
+						<label for="tp_portal_type">', $txt['tp-portaltype'], '</label>
+					</dt>
+					<dd>
+						<select name="tp_portal_type" id="tp_portal_type">
+							<option value="portal_guest"', $context['TPortal']['portal_type'] == 'portal_guest' ? ' selected="selected"' : '', '>', $txt['tp-guestaccess'] ,'</option>
+							<option value="portal"', $context['TPortal']['portal_type'] == 'portal' ? ' selected="selected"' : '', '>', $txt['tp-guestonly'], '</option>
+							<option value="standalone"', $context['TPortal']['portal_type'] == 'standalone' ? ' selected="selected"' : '', '>', $txt['tp-standalone'], '</option>
+						</select> 	
+					</dd>
 				</dl>
 					<hr>
 				<dl class="settings">

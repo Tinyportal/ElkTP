@@ -119,7 +119,7 @@ function template_category()
 		echo '<div style="overflow: hidden;">' , tp_template_button_strip($buts, 'top'), '</div>';
 	}
     elseif(isset($context['TPortal']['category']['no_articles']) && $context['TPortal']['category']['no_articles'] == true) {
-		throw new Elk_Exception($txt['tp-categorynoarticles'], 'general');
+		throw new \Elk_Exception($txt['tp-categorynoarticles'], 'general');
     }
 
 	$category = $context['TPortal']['category'];
