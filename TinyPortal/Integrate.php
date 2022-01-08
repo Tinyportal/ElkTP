@@ -612,8 +612,8 @@ class Integrate
 
         // are we on search page? then add TP search options as well!
         if($context['TPortal']['action'] == 'search') {
-            if(!in_array('TPsearch', \Template_Layers::getInstance()->getLayers())) {
-                \Template_Layers::getInstance()->add('TPSearch');
+            if(!in_array('TPsearch', \theme()->getLayers()->getLayers())) {
+                \theme()->getLayers()->add('TPSearch');
             }
         }
 
