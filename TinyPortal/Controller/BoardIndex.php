@@ -21,8 +21,8 @@ class BoardIndex extends \ElkArte\Controller\BoardIndex implements \ElkArte\Fron
 
 	public function action_index() {{{
 
-		if( \TinyPortal\Model\Admin::getInstance()->getSetting('portal_type') == 'portal_guest' ) {
-			$controller = new \ElkArte\Controller\Auth('action_kickguest');
+		if( (\TinyPortal\Model\Admin::getInstance()->getSetting('portal_type') == 'portal_guest') && \Elkarte\User::$info->is_guest) {
+			$controller = new \ElkArte\Controller\Auth(new \Elkarte\EventManager());
 			$controller->action_kickguest();
 			obExit(null, true);
 		}

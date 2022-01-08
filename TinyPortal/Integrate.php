@@ -18,6 +18,7 @@ class Integrate
 {
 
     public static function hookPreLoad() {{{
+	    global $modSettings; // Needed for frontPageHook
 
         // We need to load our autoloader outside of the main function
         if(!defined('ELK_BACKWARDS_COMPAT')) {
@@ -29,7 +30,11 @@ class Integrate
 			$loader = new \ElkArte\ext\Composer\Autoload\ClassLoader();
 			$loader->setPsr4('TinyPortal\\', BOARDDIR . '/TinyPortal');
 			$loader->register();
-            //\Elk_Autoloader::instance()->register('TinyPortal', '\\TinyPortal');
+        }
+
+        // Should check TinyPortal is enabled..
+        if( Model\Admin::getInstance()->getSetting('front_type') != 'boardindex' ) {
+            $modSettings['front_page']  = '\TinyPortal\Controller\Portal';
         }
 
         $hooks = array (

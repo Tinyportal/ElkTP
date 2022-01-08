@@ -19,13 +19,12 @@ use \TinyPortal\Model\Permissions as TPPermissions;
 use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 use \ElkArte\Errors\Errors;
-use \ElkArte\sources\Frontpage_Interface;
 
 if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class Portal extends \ElkArte\AbstractController implements Frontpage_Interface
+class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageInterface
 {
 
     public static function canFrontPage() {{{

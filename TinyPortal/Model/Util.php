@@ -20,7 +20,7 @@ class Util
 
 	public static function __callStatic($call, $vars) {{{
 
-        return call_user_func_array("\Util::$call", $vars);
+        return call_user_func_array("\Elkarte\Util::$call", $vars);
 
 	}}}
 
