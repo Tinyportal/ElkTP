@@ -24,8 +24,8 @@ if (!defined('ELK')) {
 class Article extends \ElkArte\AbstractController
 {
 
-	public function __construct() {{{ 
-
+	public function __construct() {{{
+		parent::__construct(new \Elkarte\EventManager());
 	}}}
 
     public function action_index() {{{

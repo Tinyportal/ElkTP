@@ -27,6 +27,10 @@ if (!defined('ELK')) {
 class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageInterface
 {
 
+	public function __construct() {{{
+		parent::__construct(new \Elkarte\EventManager());
+	}}}
+
     public static function canFrontPage() {{{
 		return true;
     }}}

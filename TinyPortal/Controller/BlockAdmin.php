@@ -29,6 +29,10 @@ if (!defined('ELK')) {
 class BlockAdmin extends \ElkArte\AbstractController
 {
 
+    public function __construct() {{{
+ 		parent::__construct(new \Elkarte\EventManager());
+	}}}
+
     // Admin Actions
     public function action_index() {{{
         global $context, $txt;

@@ -23,6 +23,10 @@ if (!defined('ELK')) {
 class PortalAdmin extends \ElkArte\AbstractController
 {
 
+    public function __construct() {{{
+ 		parent::__construct(new \Elkarte\EventManager());
+	}}}
+
     public function action_index() {{{
         global $context, $txt;
 

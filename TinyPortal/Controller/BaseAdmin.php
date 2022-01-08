@@ -31,13 +31,14 @@ class BaseAdmin extends \ElkArte\AbstractController
     protected $scripturl;
     protected $txt;
 
-    public function __construct() {{{
+	public function __construct() {{{
         global $context, $scripturl, $txt;
 
         $this->context      = &$context;
         $this->scripturl    = &$scripturl;
         $this->txt          = &$txt;
 
+		parent::__construct(new \Elkarte\EventManager());
     }}}
 
     public function action_index() {{{

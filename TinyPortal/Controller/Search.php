@@ -22,6 +22,10 @@ if (!defined('ELK')) {
 class Search extends \ElkArte\AbstractController
 {
 
+    public function __construct() {{{
+ 		parent::__construct(new \Elkarte\EventManager());
+	}}}
+
     public function action_index() {{{
 
         if(TPSubs::getInstance()->loadLanguage('TPmodules') == false) {
