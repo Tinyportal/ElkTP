@@ -41,7 +41,6 @@ class GalleryAdmin extends BaseAdmin
 
         $action = TPUtil::filter('area', 'get', 'string');
         if($action == 'tpgallery') {
-            require_once(SUBSDIR . '/Action.class.php');
             $subAction  = TPUtil::filter('sa', 'get', 'string');
 
             $subActions = array(
@@ -56,7 +55,7 @@ class GalleryAdmin extends BaseAdmin
             TPAdmin::getInstance()->topMenu($subAction);
             TPAdmin::getInstance()->sideMenu($subAction);
 
-            $action     = new \Action();
+            $action     = new \Elkarte\Action();
             $subAction  = $action->initialize($subActions, $subAction);
             $action->dispatch($subAction);
        }

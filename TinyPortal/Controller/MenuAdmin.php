@@ -44,7 +44,6 @@ class MenuAdmin extends BaseAdmin
         $action = TPUtil::filter('area', 'get', 'string');
         if($action == 'tpmenu') {
 		    \isAllowedTo('tp_menu');
-            require_once(SUBSDIR . '/Action.class.php');
             $subAction  = TPUtil::filter('sa', 'get', 'string');
 
             $subActions = array(
@@ -64,7 +63,7 @@ class MenuAdmin extends BaseAdmin
             TPAdmin::getInstance()->topMenu($subAction);
             TPAdmin::getInstance()->sideMenu($subAction);
 
-            $action     = new \Action();
+            $action     = new \Elkarte\Action();
             $subAction  = $action->initialize($subActions, $subAction);
             $action->dispatch($subAction);
        }

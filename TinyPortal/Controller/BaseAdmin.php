@@ -25,7 +25,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class BaseAdmin extends \Action_Controller
+class BaseAdmin extends \ElkArte\AbstractController
 {
     protected $context;
     protected $scripturl;

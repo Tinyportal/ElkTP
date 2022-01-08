@@ -217,9 +217,9 @@ class Admin extends Base {
             );
     }
 
-    if(!in_array('tpadm', \Template_Layers::getInstance()->getLayers())) {
-        \Template_Layers::getInstance()->add('tpadm');
-        \Template_Layers::getInstance()->add('subtab');
+    if(!in_array('tpadm', theme()->getLayers()->getLayers())) {
+        theme()->getLayers()->add('tpadm');
+        theme()->getLayers()->add('subtab');
     }
 
 }}}

@@ -29,6 +29,7 @@ class Integrate
 			$loader = new \ElkArte\ext\Composer\Autoload\ClassLoader();
 			$loader->setPsr4('TinyPortal\\', BOARDDIR . '/TinyPortal');
 			$loader->register();
+            //\Elk_Autoloader::instance()->register('TinyPortal', '\\TinyPortal');
         }
 
         $hooks = array (
@@ -597,7 +598,7 @@ class Integrate
 
     }}}
 
-    public static function hookRedirect(&$setLocation, &$refresh) {{{
+    public static function hookRedirect(&$setLocation) {{{
         global $scripturl, $context;
 
         if ($setLocation == $scripturl && !empty($context['TPortal']['redirectforum'])) {

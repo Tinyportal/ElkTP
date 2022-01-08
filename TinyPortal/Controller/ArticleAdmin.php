@@ -25,7 +25,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class ArticleAdmin extends \Action_Controller
+class ArticleAdmin extends \ElkArte\AbstractController
 {
 
     public function action_index() {{{
@@ -48,7 +48,6 @@ class ArticleAdmin extends \Action_Controller
         // clear the linktree first
         TPSubs::getInstance()->strip_linktree();
 
-        require_once(SUBSDIR . '/Action.class.php');
         $subActions = array (
             'editarticle'       => array($this, 'action_edit', array()),
             'tpattach'          => array($this, 'action_attachment', array()),
@@ -88,7 +87,7 @@ class ArticleAdmin extends \Action_Controller
         TPAdmin::getInstance()->topMenu($sa);
         TPAdmin::getInstance()->sideMenu($sa);
 
-        $action     = new \Action();
+        $action     = new \Elkarte\Action();
         $subAction  = $action->initialize($subActions, $sa);
         $action->dispatch($subAction);
 

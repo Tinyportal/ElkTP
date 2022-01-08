@@ -25,7 +25,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class Portal extends \Action_Controller implements Frontpage_Interface
+class Portal extends \ElkArte\AbstractController implements Frontpage_Interface
 {
 
     public static function canFrontPage() {{{
@@ -88,7 +88,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 
             $context['TPortal']['subaction'] = $subAction;
 
-            $action     = new \Action();
+            $action     = new \Elkarte\Action();
             $sa         = $action->initialize($subActions, $subAction);
             $action->dispatch($sa);
 

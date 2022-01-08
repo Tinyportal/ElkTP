@@ -19,7 +19,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class Search extends \Action_Controller
+class Search extends \ElkArte\AbstractController
 {
 
     public function action_index() {{{
@@ -28,7 +28,6 @@ class Search extends \Action_Controller
             TPSubs::getInstance()->loadLanguage('TPmodules', 'english');
         }
 
-        require_once(SUBSDIR . '/Action.class.php');
         $subActions = array (
             'searcharticle' => array($this, 'action_search', array()),
             'searchresults' => array($this, 'action_results', array()),
@@ -36,7 +35,7 @@ class Search extends \Action_Controller
 
         $sa = TPUtil::filter('sa', 'get', 'string');
 
-        $action     = new \Action();
+        $action     = new \Elkarte\Action();
         $subAction  = $action->initialize($subActions, $sa);
         $action->dispatch($subAction);
 

@@ -26,7 +26,7 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class BlockAdmin extends \Action_Controller
+class BlockAdmin extends \ElkArte\AbstractController
 {
 
     // Admin Actions
@@ -36,7 +36,6 @@ class BlockAdmin extends \Action_Controller
         $area = TPUtil::filter('area', 'get', 'string');
 
         if($area == 'tpblocks') {
-            require_once(SUBSDIR . '/Action.class.php');
 
             $sa = TPUtil::filter('sa', 'get', 'string');
             if($sa == false) {
@@ -81,7 +80,7 @@ class BlockAdmin extends \Action_Controller
 
             $context['TPortal']['subaction'] = $sa;
 
-            $action     = new \Action();
+            $action     = new \Elkarte\Action();
             $subAction  = $action->initialize($subActions, $sa);
             $action->dispatch($subAction);
 
