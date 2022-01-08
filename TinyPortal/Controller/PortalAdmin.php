@@ -70,8 +70,8 @@ class PortalAdmin extends \ElkArte\AbstractController
 
 			$context['sub_template']         = $context['TPortal']['subaction'];
 
-			\loadTemplate('TPortalAdmin');
-			\loadTemplate('TPsubs');
+			\theme()->getTemplates()->load('TPortalAdmin');
+			\theme()->getTemplates()->load('TPsubs');
 		}
 
     }}}

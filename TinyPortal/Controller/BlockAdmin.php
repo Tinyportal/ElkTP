@@ -89,8 +89,8 @@ class BlockAdmin extends \ElkArte\AbstractController
 
             $context['sub_template']         = $context['TPortal']['subaction'];
 
-            \loadTemplate('TPBlockAdmin');
-            \loadTemplate('TPsubs');
+            \theme()->getTemplates()->load('TPBlockAdmin');
+            \theme()->getTemplates()->load('TPsubs');
 
         }
 
@@ -333,7 +333,7 @@ class BlockAdmin extends \ElkArte\AbstractController
         $context['sub_template'] = 'editblock';
 
 
-        loadTemplate('TPBlockLayout');
+        theme()->getTemplates()->load('TPBlockLayout');
 
     }}}
 

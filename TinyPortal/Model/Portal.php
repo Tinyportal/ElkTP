@@ -77,8 +77,8 @@ class Portal
             //\Template_Layers::getInstance()->add($context['TPortal']['hooks']['tp_layer']);
         }
 
-        \loadTemplate('TPsubs');
-        \loadTemplate('TPBlockLayout');
+        \theme()->getTemplates()->load('TPsubs');
+        \theme()->getTemplates()->load('TPBlockLayout');
 
         // is the permanent theme option set?
         if(isset($_GET['permanent']) && !empty($_GET['theme']) && $context['user']['is_logged']) {

@@ -640,7 +640,7 @@ class Integrate
 
         // are we on a article? check it for custom theme
         if(isset($_GET['page']) && !isset($_GET['action'])) {
-            if (($theme = cache_get_data('tpArticleTheme', 120)) == null) {
+            if (($theme = \ElkArte\Cache\Cache::instance()->get('tpArticleTheme', 120)) == null) {
                 // fetch the custom theme if any
                 $pag = Model\Util::filter('page', 'get', 'string');
                 if (is_numeric($pag)) {
@@ -663,13 +663,13 @@ class Integrate
                 $dB->db_free_result($request);
 
                 if (!empty($modSettings['cache_enable'])) {
-                    cache_put_data('tpArticleTheme', $theme, 120);
+                    \ElkArte\Cache\Cache::instance()->put('tpArticleTheme', $theme, 120);
                 }
             }
         }
         // are we on frontpage? and it shows fetured article?
         else if(!isset($_GET['page']) && !isset($_GET['action']) && !isset($_GET['board']) && !isset($_GET['topic'])) {
-            if (($theme = cache_get_data('tpFrontTheme', 120)) == null) {
+            if (($theme = \ElkArte\Cache\Cache::instance()->get('tpFrontTheme', 120)) == null) {
                 // fetch the custom theme if any
                 $request = $dB->db_query('', '
 					SELECT COUNT(*) FROM {db_prefix}tp_settings
@@ -690,13 +690,13 @@ class Integrate
                     $dB->db_free_result($request);
                 }
                 if (!empty($modSettings['cache_enable'])) {
-                    cache_put_data('tpFrontTheme', $theme, 120);
+                    \ElkArte\Cache\Cache::instance()->put('tpFrontTheme', $theme, 120);
                 }
             }
         }
         // how about dlmanager, any custom theme there?
         else if(isset($_GET['action']) && $_GET['action'] == 'tportal' && isset($_GET['dl'])) {
-            if (($theme = cache_get_data('tpDLTheme', 120)) == null) {
+            if (($theme = \ElkArte\Cache\Cache::instance()->get('tpDLTheme', 120)) == null) {
                 // fetch the custom theme if any
                 $request = $dB->db_query('', '
                     SELECT value FROM {db_prefix}tp_settings
@@ -708,7 +708,7 @@ class Integrate
                 }
                 $dB->db_free_result($request);
                 if (!empty($modSettings['cache_enable'])) {
-                    cache_put_data('tpDLTheme', $theme, 120);
+                    \ElkArte\Cache\Cache::instance()->put('tpDLTheme', $theme, 120);
                 }
             }
         }

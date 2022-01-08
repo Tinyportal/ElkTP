@@ -111,7 +111,7 @@ class Portal extends \ElkArte\AbstractController implements Frontpage_Interface
     function action_page() {{{
         global $context, $scripturl, $txt, $modSettings, $user_info;
 
-        \loadTemplate('TPortal');
+        \theme()->getTemplates()->load('TPortal');
 
         $db = TPDatabase::getInstance();
         $now = time();
@@ -436,7 +436,7 @@ class Portal extends \ElkArte\AbstractController implements Frontpage_Interface
 
         global $context, $scripturl, $txt, $modSettings;
 
-        \loadTemplate('TPortal');
+        \theme()->getTemplates()->load('TPortal');
 
         $db = TPDatabase::getInstance();
         $now = time();
@@ -688,7 +688,7 @@ class Portal extends \ElkArte\AbstractController implements Frontpage_Interface
     function action_frontpage() {{{
         global $context, $scripturl, $user_info, $modSettings, $txt;
 
-        \loadTemplate('TPortal');
+        \theme()->getTemplates()->load('TPortal');
 
         $db = TPDatabase::getInstance();
 
@@ -1366,7 +1366,7 @@ class Portal extends \ElkArte\AbstractController implements Frontpage_Interface
             TPSubs::getInstance()->loadLanguage('TPhelp', 'english');
         }
 
-        \loadTemplate('TPhelp');
+        \theme()->getTemplates()->load('TPhelp');
 
     }}}
 

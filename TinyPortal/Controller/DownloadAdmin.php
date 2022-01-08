@@ -31,7 +31,7 @@ class DownloadAdmin extends BaseAdmin
     public function __construct() {{{
         parent::__construct();
 
-        loadTemplate('TPDownload');
+        theme()->getTemplates()->load('TPDownload');
     }}}
 
     public function action_index() {{{

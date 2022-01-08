@@ -31,7 +31,7 @@ class GalleryAdmin extends BaseAdmin
     public function __construct() {{{
         parent::__construct();
 
-        loadTemplate('TPGallery');
+        theme()->getTemplates()->load('TPGallery');
     }}}
 
     public function action_index() {{{

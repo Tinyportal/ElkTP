@@ -93,10 +93,10 @@ class Subs
         $context['TPortal']['always_loaded'] = array();
 
         // Try to load it from the cache
-        if (($context['TPortal'] = cache_get_data('tpSettings', 90)) == null) {
+        if (($context['TPortal'] = \ElkArte\Cache\Cache::instance()->get('tpSettings', 90)) == null) {
             $context['TPortal']  = Admin::getInstance()->getSetting();
             if (!empty($modSettings['cache_enable'])) {
-                cache_put_data('tpSettings', $context['TPortal'], 90);
+                \ElkArte\Cache\Cache::instance()->put('tpSettings', $context['TPortal'], 90);
             }
         }
 
@@ -1991,7 +1991,7 @@ class Subs
             $context['TPortal'][$variable] = $value === true ? $context['TPortal'][$variable] + 1 : ($value === false ? $context['TPortal'][$variable] - 1 : $value);
         }
         // Clean out the cache and make sure the cobwebs are gone too.
-        cache_put_data('tpSettings', null, 90);
+        \ElkArte\Cache\Cache::instance()->put('tpSettings', null, 90);
 
         return;
     }}}

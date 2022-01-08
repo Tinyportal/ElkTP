@@ -33,7 +33,7 @@ class MenuAdmin extends BaseAdmin
 
         parent::__construct();
 
-        loadTemplate('TPMenu');
+        theme()->getTemplates()->load('TPMenu');
 
     }}}
 

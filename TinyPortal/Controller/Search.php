@@ -45,7 +45,7 @@ class Search extends \ElkArte\AbstractController
         global $scripturl, $txt, $context;
 
         TPSubs::getInstance()->addLinkTree($scripturl.'?action=tportal;sa=searcharticle' , $txt['tp-searcharticles2']);
-        \loadTemplate('TPSearch');
+        \theme()->getTemplates()->load('TPSearch');
         $context['sub_template'] = 'article_search_form';
 
     }}}
@@ -246,7 +246,7 @@ class Search extends \ElkArte\AbstractController
 
 
         $context['sub_template'] = 'article_search_results';
-        \loadTemplate('TPSearch');
+        \theme()->getTemplates()->load('TPSearch');
 
     }}}
 

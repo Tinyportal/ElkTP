@@ -178,7 +178,7 @@ class Article extends \ElkArte\AbstractController
 		$context['TPortal']['unreadcomments']   = true;
 		$context['TPortal']['showall']          = $showall;
 		TPSubs::getInstance()->addLinkTree($scripturl.'?action=tparticle;sa=showcomments' . ($showall ? ';showall' : '')  , $txt['tp-showcomments']);
-		loadTemplate('TParticle');
+		theme()->getTemplates()->load('TParticle');
 		$context['sub_template'] = 'showcomments';
 		if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
 			TPSubs::getInstance()->loadLanguage('TParticle', 'english');
@@ -236,7 +236,7 @@ class Article extends \ElkArte\AbstractController
 						'body' => $row['parent'],
 					);
 					$context['sub_template'] = 'editcomment';
-					loadTemplate('TParticle');
+					theme()->getTemplates()->load('TParticle');
 					if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
 						TPSubs::getInstance()->loadLanguage('TParticle', 'english');
 					};
@@ -351,7 +351,7 @@ class Article extends \ElkArte\AbstractController
             TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
 
-        loadTemplate('TParticle');
+        theme()->getTemplates()->load('TParticle');
         $context['sub_template'] = 'showarticle';
 
     }}}
