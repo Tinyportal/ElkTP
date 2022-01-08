@@ -74,7 +74,7 @@ class Portal
 
         // set up the layers, but not for certain actions
         if(!isset($_REQUEST['preview']) && !isset($_REQUEST['quote']) && !isset($_REQUEST['xml']) && !isset($aoptions['nolayer'])) {
-            \Template_Layers::getInstance()->add($context['TPortal']['hooks']['tp_layer']);
+            //\Template_Layers::getInstance()->add($context['TPortal']['hooks']['tp_layer']);
         }
 
         \loadTemplate('TPsubs');

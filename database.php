@@ -229,7 +229,7 @@ $db_table   = db_table();
 
 // Create the tables, if they don't already exist
 foreach ($tables as $tp_table => $data) {
-    $db_table->db_create_table('{db_prefix}' . $tp_table, $data['columns'], $data['indexes'], array(), 'ignore');
+    $db_table->create_table('{db_prefix}' . $tp_table, $data['columns'], $data['indexes'], array(), 'ignore');
 }
 
 $settingsArray = array(

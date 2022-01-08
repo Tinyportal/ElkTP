@@ -23,7 +23,12 @@ class Integrate
         if(!defined('ELK_BACKWARDS_COMPAT')) {
             define('ELK_BACKWARDS_COMPAT', true);
             self::setup_db_backwards_compat();
-            \Elk_Autoloader::instance()->register('TinyPortal', '\\TinyPortal');
+
+			require_once(EXTDIR . '/ClassLoader.php');
+
+			$loader = new \ElkArte\ext\Composer\Autoload\ClassLoader();
+			$loader->setPsr4('TinyPortal\\', BOARDDIR . '/TinyPortal');
+			$loader->register();
         }
 
         $hooks = array (
@@ -339,19 +344,19 @@ class Integrate
 
     }}}
 
-    public static function hookAdminAreas(&$adminAreas) {{{
+    public static function hookAdminAreas($adminAreas) {{{
         global $txt;
 
         Model\Subs::getInstance()->loadLanguage('TPortal');
         Model\Subs::getInstance()->loadLanguage('TPortalAdmin');
 
-        $adminAreas['tpadmin'] = array (
+        $menu['tpadmin'] = array (
 			'title' => $txt['tp-tphelp'],
 			'permission' => array ('admin_forum', 'tp_articles', 'tp_blocks', 'tp_settings', 'tp_menu', 'tp_download', 'tp_gallery'),
 			'areas' => array (
 				'tpsettings' => array (
 					'label'       => $txt['tp-adminheader1'],
-					'controller'  => '\TinyPortal\Controller\PortalAdmin',
+					'controller'  => '\\TinyPortal\Controller\PortalAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_settings' ),
@@ -362,7 +367,7 @@ class Integrate
 				),
 				'tparticles' => array (
 					'label'       => $txt['tp-articles'],
-					'controller'  => '\TinyPortal\Controller\ArticleAdmin',
+					'controller'  => '\\TinyPortal\Controller\ArticleAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_articles' ),
@@ -373,7 +378,7 @@ class Integrate
 				),
 				'tpblocks' => array (
 					'label'       => $txt['tp-adminpanels'],
-					'controller'  => '\TinyPortal\Controller\BlockAdmin',
+					'controller'  => '\\TinyPortal\Controller\BlockAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_blocks' ),
@@ -384,7 +389,7 @@ class Integrate
 				),
 				'tpmenu' => array (
 					'label'       => $txt['tp-adminmenus'],
-					'controller'  => '\TinyPortal\Controller\MenuAdmin',
+					'controller'  => '\\TinyPortal\Controller\MenuAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_menu' ),
@@ -395,7 +400,7 @@ class Integrate
 				),
                 'tpdownload' => array (
 					'label'       => $txt['tp-admindownload'],
-					'controller'  => '\TinyPortal\Controller\DownloadAdmin',
+					'controller'  => '\\TinyPortal\Controller\DownloadAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_download' ),
@@ -406,7 +411,7 @@ class Integrate
 				),
                 'tpgallery' => array (
 					'label'       => $txt['tp-admingallery'],
-					'controller'  => '\TinyPortal\Controller\GalleryAdmin',
+					'controller'  => '\\TinyPortal\Controller\GalleryAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_gallery' ),
@@ -417,6 +422,8 @@ class Integrate
 				),
             ),
         );
+
+		$adminAreas->addMenuData($menu);
 
     }}}
 
@@ -471,7 +478,7 @@ class Integrate
 
     }}}
 
-    public static function hookActions(&$actionArray, &$adminAction) {{{
+    public static function hookActions(&$actionArray) {{{
 
 		$actionArray = array_merge(
 			$actionArray,
@@ -584,8 +591,7 @@ class Integrate
     public static function hookInitTheme($id_theme, &$settings) {{{
 
         // Add our custom theme directory
-        require_once(SOURCEDIR . '/Templates.class.php');
-        \Templates::instance()->addDirectory(BOARDDIR . '/TinyPortal/Views/');
+        theme()->getTemplates()->getDirectory()->addDirectory(BOARDDIR . '/TinyPortal/Views/');
 
         Model\Portal::getInstance()->init();
 
