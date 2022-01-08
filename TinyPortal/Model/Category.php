@@ -70,6 +70,7 @@ class Category extends Base {
         if($this->dB->db_num_rows($request) > 0) {
             $shout = $this->dB->db_fetch_assoc($request);
         }
+        $this->dB->db_free_result($request);
 
         return $shout;
 

@@ -452,7 +452,7 @@ class Integrate
                 ),
                 'subsections'   => array(
                     'articles'  => array($txt['tp-articles'], array('profile_view_own', 'profile_view_any')),
-                    //'settings'  => array($txt['tp-settings'], array('profile_view_own', 'profile_view_any')),
+                    'settings'  => array($txt['tp-settings'], array('profile_view_own', 'profile_view_any')),
                 ),
             );
         }
@@ -514,12 +514,14 @@ class Integrate
                 );
             }
             $article = array();
+
             if($dB->db_num_rows($request) > 0) {
                 while($row = $dB->db_fetch_assoc($request)) {
                     $article = $row;
                 }
-                $dB->db_free_result($request);
             }
+            $dB->db_free_result($request);
+
             if(!empty($article)) {
                 return sprintf($txt['tp-who-article'], $article['subject'], $actions['page'], $scripturl );
             }
@@ -549,12 +551,14 @@ class Integrate
                 );
             }
             $category = array();
+
             if($dB->db_num_rows($request) > 0) {
                 while($row = $dB->db_fetch_assoc($request)) {
                     $category = $row;
                 }
-                $dB->db_free_result($request);
             }
+            $dB->db_free_result($request);
+
             if(!empty($category)) {
                 return sprintf($txt['tp-who-category'], $category['display_name'], $actions['cat'], $scripturl );
             }
@@ -648,8 +652,8 @@ class Integrate
                 }
                 if($dB->db_num_rows($request) > 0) {
                     $theme = $dB->db_fetch_row($request)[0];
-                    $dB->db_free_result($request);
                 }
+                $dB->db_free_result($request);
 
                 if (!empty($modSettings['cache_enable'])) {
                     cache_put_data('tpArticleTheme', $theme, 120);
@@ -661,11 +665,11 @@ class Integrate
             if (($theme = cache_get_data('tpFrontTheme', 120)) == null) {
                 // fetch the custom theme if any
                 $request = $dB->db_query('', '
-                        SELECT COUNT(*) FROM {db_prefix}tp_settings
-                        WHERE name = {string:name}
-                        AND value = {string:value}',
-                        array('name' => 'front_type', 'value' => 'single_page')
-                    );
+					SELECT COUNT(*) FROM {db_prefix}tp_settings
+					WHERE name = {string:name}
+					AND value = {string:value}',
+					array('name' => 'front_type', 'value' => 'single_page')
+				);
                 if($dB->db_num_rows($request) > 0) {
                     $dB->db_free_result($request);
                     $request = $dB->db_query('', '
@@ -675,8 +679,8 @@ class Integrate
                     );
                     if($dB->db_num_rows($request) > 0) {
                         $theme = $dB->db_fetch_row($request)[0];
-                        $dB->db_free_result($request);
                     }
+                    $dB->db_free_result($request);
                 }
                 if (!empty($modSettings['cache_enable'])) {
                     cache_put_data('tpFrontTheme', $theme, 120);
@@ -694,8 +698,8 @@ class Integrate
                 );
                 if($dB->db_num_rows($request) > 0) {
                     $theme = $dB->db_fetch_row($request)[0];
-                    $dB->db_free_result($request);
                 }
+                $dB->db_free_result($request);
                 if (!empty($modSettings['cache_enable'])) {
                     cache_put_data('tpDLTheme', $theme, 120);
                 }

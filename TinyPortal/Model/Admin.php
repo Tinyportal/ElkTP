@@ -90,6 +90,8 @@ class Admin extends Base {
             }
         }
 
+        $this->dB->db_free_result($request);
+
         return $settings;
 
     }}}
@@ -125,44 +127,44 @@ class Admin extends Base {
 					'text' => 'tp-articles',
 					'url' => $scripturl . '?action=admin;area=tparticles;sa=articles',
 					'active' => ($context['TPortal']['subaction'] == 'articles' || $context['TPortal']['subaction'] == 'editarticle') && $context['TPortal']['subaction'] != 'strays',
-				),
+					),
 				'articles_nocat' => array(
 					'lang' => true,
 					'text' => 'tp-uncategorised' ,
 					'url' => $scripturl . '?action=admin;area=tparticles;sa=strays',
 					'active' => $context['TPortal']['subaction'] == 'strays',
-				),
+					),
 				'submissions' => array(
 					'lang' => true,
 					'text' => 'tp-tabs4' ,
 					'url' => $scripturl . '?action=admin;area=tparticles;sa=submission',
 					'active' => $context['TPortal']['subaction'] == 'submission',
-				),
+					),
 				'addarticle' => array(
 					'lang' => true,
 					'text' => 'tp-tabs2',
 					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_html' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
 					'active' => $context['TPortal']['subaction'] == 'addarticle_html',
-				),
+					),
 				'addarticle_php' => array(
 					'lang' => true,
 					'text' => 'tp-tabs3',
 					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_php' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
 					'active' => $context['TPortal']['subaction'] == 'addarticle_php',
-				),
+					),
 				'addarticle_bbc' => array(
 					'lang' => true,
 					'text' => 'tp-addbbc',
 					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_bbc' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
 					'active' => $context['TPortal']['subaction'] == 'addarticle_bbc',
-				),
+					),
 				'article_import' => array(
 					'lang' => true,
 					'text' => 'tp-addimport',
 					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_import' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
 					'active' => $context['TPortal']['subaction'] == 'addarticle_import',
-				),
-		);
+					),
+				);
     }
     elseif(in_array($area, array('newcategory','categories','clist')) && allowedTo('tp_articles')) {
         $context['TPortal']['subtabs'] = array(
