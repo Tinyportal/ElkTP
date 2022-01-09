@@ -32,18 +32,27 @@ class Database
     private function __clone() { }
 
 	public function __call($call, $vars) {{{
+		global $modSettings;
 
-        $dB = \database();
+		$ret	= false;
+        $dB		= \database();
 
         // Compatability with smf db_ methods
         $call = str_replace('db_', '', $call);
+		if($call == 'query' && isset($vars[1]) && strpos($vars[1], '\'') !== false) {
+			$oldModSetting = isset($modSettings['disableQueryCheck']) ? $modSettings['disableQueryCheck'] : false;
+			$modSettings['disableQueryCheck'] = true;
+		}
+
         if(is_callable(array($dB, $call), false)) {
-            return call_user_func_array(array($dB, $call), $vars);
-        }
-        else {
-		    return false;
+            $ret = call_user_func_array(array($dB, $call), $vars);
         }
 
+		if(isset($vars[1]) && strpos($db_string, '\'') !== false) {
+			$modSettings['disableQueryCheck'] = $oldModSetting;
+		}
+
+		return $ret;
 	}}}
 
 }
