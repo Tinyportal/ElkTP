@@ -48,7 +48,7 @@ class Database
             $ret = call_user_func_array(array($dB, $call), $vars);
         }
 
-		if(isset($vars[1]) && strpos($db_string, '\'') !== false) {
+		if($call == 'query' && isset($vars[1]) && strpos($vars[1], '\'') !== false) {
 			$modSettings['disableQueryCheck'] = $oldModSetting;
 		}
 
