@@ -162,8 +162,8 @@ class BaseAdmin extends \ElkArte\AbstractController
 		$this->context['default_list'] 	= $name.'_list';
 
 		// Create the list.
-		require_once(SUBSDIR . '/GenericList.class.php');
 		createList($list);
+		//(new \Elkarte\GenericList($list))->buildList();
 
         $this->context['sub_template'] = 'list_'.$name;
     }}}
