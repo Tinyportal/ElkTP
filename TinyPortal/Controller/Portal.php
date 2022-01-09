@@ -753,6 +753,7 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
                 // make the pageindex!
                 $context['TPortal']['pageindex'] = TPSubs::getInstance()->pageIndex($scripturl .'?frontpage', $start, $articles_total, $max);
 
+				$modSettings['disableQueryCheck'] = true; // Disable due to find_in_set
                 $request =  $db->query('', '
                     SELECT art.id, ( CASE WHEN art.useintro = 1 THEN art.intro ELSE  art.body END ) AS body,
                         art.date, art.category, art.subject, art.author_id as author_id, var.display_name as category_name, var.short_name as category_shortname,
@@ -778,6 +779,7 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
                     LIMIT {int:start}, {int:max}',
                     array('start' => $start, 'max' => $max)
                 );
+				$modSettings['disableQueryCheck'] = false;
                 if($db->num_rows($request) > 0) {
                     $total = $db->num_rows($request);
                     $col1 = ceil($total / 2);
@@ -979,6 +981,7 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
             $year = 10000000;
             $year2 = 100000000;
 
+			$modSettings['disableQueryCheck'] = true; // Disable due to find_in_set
             $request =  $db->query('',
             'SELECT art.id, art.date, art.sticky, art.featured
                 FROM {db_prefix}tp_articles AS art
@@ -995,6 +998,7 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
                 AND (art.frontpage = 1 OR art. featured = 1)
                 ORDER BY art.featured DESC, art.sticky desc, art.date DESC'
             );
+			$modSettings['disableQueryCheck'] = false;
 
             $posts = array();
             if($db->num_rows($request) > 0) {
@@ -1180,6 +1184,7 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
         }
 
         // get the blocks
+		$modSettings['disableQueryCheck'] = true; // Disable due to find_in_set
         $request =  $db->query('', '
             SELECT * FROM {db_prefix}tp_blocks
             WHERE off = 0
@@ -1188,6 +1193,7 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
             '.$display. '
             ORDER BY pos,id ASC'
         );
+		$modSettings['disableQueryCheck'] = false;
 
         $count = array('front' => 0);
         $fetch_articles = array();

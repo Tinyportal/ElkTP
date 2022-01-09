@@ -1726,7 +1726,7 @@ function tp_template_button_strip($button_strip, $direction = 'top', $strip_opti
 
 	echo '
 		<div class="buttonlist', !empty($direction) ? ' align_' . $direction : '', '"', (empty($buttons) ? ' style="display: none;"' : ''), (!empty($strip_options['id']) ? ' id="' . $strip_options['id'] . '"': ''), '>
-			<ul style="margin:0px;padding:5px 0px;">',
+			<ul style="display:flex;margin:0px;padding:5px 0px;">',
 				implode('', $buttons), '
 			<p class="clearthefloat"></p></ul>
 		</div>';

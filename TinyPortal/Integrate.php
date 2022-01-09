@@ -25,8 +25,6 @@ class Integrate
             define('ELK_BACKWARDS_COMPAT', true);
             self::setup_db_backwards_compat();
 
-			require_once(EXTDIR . '/ClassLoader.php');
-
 			$loader = new \ElkArte\ext\Composer\Autoload\ClassLoader();
 			$loader->setPsr4('TinyPortal\\', BOARDDIR . '/TinyPortal');
 			$loader->register();
