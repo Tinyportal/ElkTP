@@ -38,10 +38,12 @@ class Search extends \ElkArte\AbstractController
         );
 
         $sa = TPUtil::filter('sa', 'get', 'string');
-
-        $action     = new \Elkarte\Action();
-        $subAction  = $action->initialize($subActions, $sa);
-        $action->dispatch($subAction);
+		if($sa == 'searchresults') {
+			$this->action_results();
+		}
+		else {
+			$this->action_search();
+		}
 
     }}}
 

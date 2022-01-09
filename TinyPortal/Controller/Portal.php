@@ -91,10 +91,20 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
 
             $context['TPortal']['subaction'] = $subAction;
 
-            $action     = new \Elkarte\Action();
-            $sa         = $action->initialize($subActions, $subAction);
-            $action->dispatch($sa);
-
+			switch($subAction) {
+				case 'credits':
+					$this->action_credits();
+					break;
+				case 'upshrink':
+					$this->action_upshrink();
+					break;
+				case 'publish'
+					(new ArticleAdmin)->action_publish();
+					break;
+				default:
+					break;
+			}
+			
             call_integration_hook('integrate_tp_post_subactions');
         }
         else {
