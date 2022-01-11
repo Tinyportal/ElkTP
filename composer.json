@@ -6,7 +6,7 @@
 	"license": "BSD-3-Clause",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/TinyPortal/ElkTinyPortal.git"
+		"url": "git+https://github.com/TinyPortal/ElkTP.git"
 	},
     "require": {
         "php": ">=7.0.0",
