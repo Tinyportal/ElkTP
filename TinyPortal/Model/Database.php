@@ -18,6 +18,25 @@ class Database
 {
     private static $_instance   = null;
 
+
+	/*
+	*	Provide a static method to all database calls
+	*/
+	public static function __callStatic($call, $vars) {{{
+
+		$ret = false;
+
+        if(is_callable(array(self::getInstance(), $call), false)) {
+			$ret = call_user_func_array(array(self::getInstance(), $call), $vars);
+		}
+
+		return $ret;
+
+	}}}
+
+	/*
+	*	Provide a static object instance (Singleton)
+	*/
     public static function getInstance() {{{
 
     	if(self::$_instance == null) {
@@ -31,6 +50,9 @@ class Database
     // Empty Clone method
     private function __clone() { }
 
+	/*
+	*	Call underlying database functions and disable query check if we are using a '
+	*/
 	public function __call($call, $vars) {{{
 		global $modSettings;
 
