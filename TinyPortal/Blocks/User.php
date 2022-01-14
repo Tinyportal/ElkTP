@@ -114,11 +114,11 @@ class User extends Base
 
             // tpadmin checks
             if (allowedTo('tp_this->settings')) {
-                echo '<li><hr><a href="' . $this->scripturl . '?action=admin;area=tparticles;sa=this->settings">' . $bullet4.$this->txt['permissionname_tp_settings'] . '</a></li>';
+                echo '<li><hr><a href="' . $this->scripturl . '?action=admin;area=tpsettings;sa=settings">' . $bullet4.$this->txt['permissionname_tp_settings'] . '</a></li>';
             }
             
             if (allowedTo('tp_blocks')) {
-                echo '<li><a href="' . $this->scripturl . '?action=admin;area=tparticles;sa=blocks">' . $bullet4.$this->txt['permissionname_tp_blocks'] . '</a></li>';
+                echo '<li><a href="' . $this->scripturl . '?action=admin;area=tpblocks;sa=blocks">' . $bullet4.$this->txt['permissionname_tp_blocks'] . '</a></li>';
             }
 
             if (allowedTo('tp_articles')) {
