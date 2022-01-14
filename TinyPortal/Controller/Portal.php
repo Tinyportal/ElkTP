@@ -231,9 +231,9 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
                             $context['TPortal']['article']['comment_posts'][] = array(
                                 'id'        => $row['id'],
                                 'subject'   => '<a href="'.$scripturl.'?page='.$context['TPortal']['article']['id'].'#comment'. $row['id'].'">'.$row['subject'].'</a>',
-                                'text'      => parse_bbc($row['comment']),
+                                'text'      => TPSubs::getInstance()->parse_bbc($row['comment']),
                                 'timestamp' => $row['datetime'],
-                                'date'      => standardTime($row['datetime']),
+                                'date'      => TPSubs::getInstance()->standardTime($row['datetime']),
                                 'poster_id' => $row['member_id'],
                                 'poster'    => $row['real_name'],
                                 'is_new'    => ( $row['datetime'] > $last ) ? true : false,
@@ -359,7 +359,7 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
                             $context['TPortal']['printbody'] = '';
                         }
                         elseif($article['type'] == 'bbc') {
-                            $context['TPortal']['printbody'] = parse_bbc($what);
+                            $context['TPortal']['printbody'] = TPSubs::getInstance()->parse_bbc($what);
                         }
                         else {
                             $context['TPortal']['printbody'] = $what;
@@ -424,7 +424,7 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
                     $now = time();
                     if((!empty($article['pub_start']) && $article['pub_start'] > $now) || (!empty($article['pub_end']) && $article['pub_end'] < $now)) {
                         $context['tportal']['article_expired'] = $article['id'];
-                        $context['TPortal']['tperror'] = '<span class="error largetext">'. $txt['tp-expired-start']. '</span><p>' .standardTime($article['pub_start']). '' .$txt['tp-expired-start2']. '' . standardTime($article['pub_end']).'</p>';
+                        $context['TPortal']['tperror'] = '<span class="error largetext">'. $txt['tp-expired-start']. '</span><p>' .TPSubs::getInstance()->standardTime($article['pub_start']). '' .$txt['tp-expired-start2']. '' . TPSubs::getInstance()->standardTime($article['pub_end']).'</p>';
                     }
                 }
                 return $article['id'];

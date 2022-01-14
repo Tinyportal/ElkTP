@@ -131,7 +131,7 @@ function TPblock($block, $theme, $side, $double=false)
             (new $blockClass)->display($block);
         }
         else {
-            echo parse_bbc($block['body']);
+            echo \TinyPortal\Model\Subs::getInstance()->parse_bbc($block['body']);
         }
 			
         echo '</div>';
@@ -169,7 +169,7 @@ function TPblock($block, $theme, $side, $double=false)
             (new $blockClass)->display($block);
         }
 		else {
-			echo parse_bbc($block['body']);
+			echo \TinyPortal\Model\Subs::getInstance()->parse_bbc($block['body']);
         }
 
 		echo $context['TPortal']['blocktheme'][$block['frame']]['body']['after'];

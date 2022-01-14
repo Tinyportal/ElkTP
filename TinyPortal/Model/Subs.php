@@ -1229,7 +1229,7 @@ class Subs
                     $data .= $context['TPortal']['article']['intro'];
                 }
                 else {
-                    $data .= parse_bbc($context['TPortal']['article']['intro']);
+                    $data .= $this->parse_bbc($context['TPortal']['article']['intro']);
                 }
             }
             else {
@@ -1248,7 +1248,7 @@ class Subs
                     $data .= $context['TPortal']['article']['body'];
                 }
                 else {
-                    $data .= parse_bbc($context['TPortal']['article']['body']);
+                    $data .= $this->parse_bbc($context['TPortal']['article']['body']);
                 }
 
                 if(!empty($context['TPortal']['article']['readmore'])) {
@@ -1312,7 +1312,7 @@ class Subs
             }
         }
         elseif($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['rendertype']=='bbc') {
-            echo \parse_bbc($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['body']);
+            echo \BBC\ParserWrapper::getInstance()->parseMessage($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['body']);
         }
         else {
             echo $context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['body'];
@@ -2495,6 +2495,17 @@ class Subs
         return $avy;
     }}}
 
+	public function parse_bbc($bbc) {{{
+
+		return \BBC\ParserWrapper::instance()->parseMessage($bbc, TRUE);
+
+	}}}
+
+	public function standardTime($time) {{{
+
+		return \standardTime($time);
+
+	}}}
 }
 
 ?>

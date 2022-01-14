@@ -57,7 +57,7 @@ class Article extends \ElkArte\AbstractController
 
         $sa = TPUtil::filter('sa', 'get', 'string');
 
-        $action     = new \Elkate\Action();
+        $action     = new \ElkArte\Action();
         $subAction  = $action->initialize($subActions, $sa);
         $action->dispatch($subAction);
 

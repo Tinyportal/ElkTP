@@ -31,7 +31,7 @@ class Bbc extends Base
     public function display( $block ) {{{
 
         if(!empty($block['body'])) {
-            echo \parse_bbc($block['body']);
+            echo \TinyPortal\Model\Subs::getInstance()->parse_bbc($block['body']);
         }
 
     }}}
