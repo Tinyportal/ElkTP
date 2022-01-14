@@ -108,7 +108,7 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
             call_integration_hook('integrate_tp_post_subactions');
         }
         else {
-            if(TPUtil::filter('page', 'get', 'string') && !isset($context['current_action'])) {
+            if(TPUtil::filter('page', 'get', 'string') && empty($context['current_action'])) {
                 $context['shortID'] = self::action_page();
             }
             else if(TPUtil::filter('cat', 'get', 'string')) {

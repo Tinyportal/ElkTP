@@ -2457,7 +2457,7 @@ class Subs
             }
         }
 
-        return \loadLanguage($template_name, $lang, $fatal, $force_reload);
+        return \ElkArte\Themes\ThemeLoader::loadLanguageFile($template_name, $lang, $fatal, $force_reload);
 
     }}}
 
