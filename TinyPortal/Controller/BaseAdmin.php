@@ -38,7 +38,7 @@ class BaseAdmin extends \ElkArte\AbstractController
         $this->scripturl    = &$scripturl;
         $this->txt          = &$txt;
 
-		parent::__construct(new \Elkarte\EventManager());
+		parent::__construct(new \ElkArte\EventManager());
     }}}
 
     public function action_index() {{{
@@ -163,7 +163,7 @@ class BaseAdmin extends \ElkArte\AbstractController
 
 		// Create the list.
 		createList($list);
-		//(new \Elkarte\GenericList($list))->buildList();
+		//(new \ElkArte\GenericList($list))->buildList();
 
         $this->context['sub_template'] = 'list_'.$name;
     }}}

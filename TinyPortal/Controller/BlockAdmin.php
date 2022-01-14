@@ -30,7 +30,7 @@ class BlockAdmin extends \ElkArte\AbstractController
 {
 
     public function __construct() {{{
- 		parent::__construct(new \Elkarte\EventManager());
+ 		parent::__construct(new \ElkArte\EventManager());
 	}}}
 
     // Admin Actions
@@ -84,7 +84,7 @@ class BlockAdmin extends \ElkArte\AbstractController
 
             $context['TPortal']['subaction'] = $sa;
 
-            $action     = new \Elkarte\Action();
+            $action     = new \ElkArte\Action();
             $subAction  = $action->initialize($subActions, $sa);
             $action->dispatch($subAction);
 

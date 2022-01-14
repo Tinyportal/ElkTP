@@ -29,7 +29,7 @@ class ArticleAdmin extends \ElkArte\AbstractController
 {
 
 	public function __construct() {{{
-		parent::__construct(new \Elkarte\EventManager());
+		parent::__construct(new \ElkArte\EventManager());
 	}}}
 
     public function action_index() {{{
@@ -91,7 +91,7 @@ class ArticleAdmin extends \ElkArte\AbstractController
         TPAdmin::getInstance()->topMenu($sa);
         TPAdmin::getInstance()->sideMenu($sa);
 
-        $action     = new \Elkarte\Action();
+        $action     = new \ElkArte\Action();
         $subAction  = $action->initialize($subActions, $sa);
         $action->dispatch($subAction);
 

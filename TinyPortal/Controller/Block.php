@@ -44,7 +44,7 @@ class Block
         // clear the linktree first
         TPSubs::getInstance()->strip_linktree();
 
-		parent::__construct(new \Elkarte\EventManager());
+		parent::__construct(new \ElkArte\EventManager());
 	}}}
 
     public static function loadBlocks() {{{

@@ -63,7 +63,7 @@ class MenuAdmin extends BaseAdmin
             TPAdmin::getInstance()->topMenu($subAction);
             TPAdmin::getInstance()->sideMenu($subAction);
 
-            $action     = new \Elkarte\Action();
+            $action     = new \ElkArte\Action();
             $subAction  = $action->initialize($subActions, $subAction);
             $action->dispatch($subAction);
        }

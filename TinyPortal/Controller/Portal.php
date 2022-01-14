@@ -28,7 +28,7 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
 {
 
 	public function __construct() {{{
-		parent::__construct(new \Elkarte\EventManager());
+		parent::__construct(new \ElkArte\EventManager());
 	}}}
 
     public static function canFrontPage() {{{

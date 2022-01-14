@@ -24,7 +24,7 @@ class PortalAdmin extends \ElkArte\AbstractController
 {
 
     public function __construct() {{{
- 		parent::__construct(new \Elkarte\EventManager());
+ 		parent::__construct(new \ElkArte\EventManager());
 	}}}
 
     public function action_index() {{{
@@ -65,7 +65,7 @@ class PortalAdmin extends \ElkArte\AbstractController
 
 			$context['TPortal']['subaction'] = $sa;
 
-			$action     = new \Elkarte\Action();
+			$action     = new \ElkArte\Action();
 			$subAction  = $action->initialize($subActions, $sa);
 			$action->dispatch($subAction);
 
