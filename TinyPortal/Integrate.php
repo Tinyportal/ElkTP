@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -23,7 +23,7 @@ class Integrate
         if(!defined('ELK_BACKWARDS_COMPAT')) {
             define('ELK_BACKWARDS_COMPAT', true);
             self::setup_db_backwards_compat();
-            spl_autoload_register('\TinyPortal\Integrate::TPortalAutoLoadClass');
+            \Elk_Autoloader::instance()->register('TinyPortal', '\\TinyPortal');
         }
 
         $hooks = array (
@@ -92,25 +92,7 @@ class Integrate
             $modSettings['front_page']  = '\TinyPortal\Controller\Portal';
         }
 
-        return;
-    }}}
-
-    public static function TPortalAutoLoadClass($className) {{{
-
-        $classPrefix    = mb_substr($className, 0, 10);
-
-        if( 'TinyPortal' !== $classPrefix ) {
-            return;
-        }
-
-        $className  = str_replace('\\', '/', $className);
-        $className  = str_replace('_', '.', $className);
-        $classFile  = BOARDDIR . '/' . $className . '.php';
-
-        if ( file_exists( $classFile ) ) {
-            require_once($classFile);
-        }
-
+	    return;
     }}}
 
     public static function setup_db_backwards_compat() {{{
@@ -123,8 +105,8 @@ class Integrate
             define('TP_PGSQL', false);
         }
 
-        define('TP_VERSION',        '1.0.0 RC2');
-        define('TP_SHORT_VERSION',  '100RC2');
+        define('TP_VERSION',        '1.0.0 RC3');
+        define('TP_SHORT_VERSION',  '100RC3');
 
         // Set this up for everything that TinyPortal needs
         $context['TPortal']                     = array();
@@ -141,14 +123,17 @@ class Integrate
 
         $permissionList['membergroup'] = array_merge(
             array(
-                'tp_settings' => array(false, 'tp', 'tp'),
-                'tp_blocks' => array(false, 'tp', 'tp'),
-                'tp_articles' => array(false, 'tp', 'tp'),
-                'tp_submithtml' => array(false, 'tp', 'tp'),
-                'tp_submitbbc' => array(false, 'tp', 'tp'),
+                'tp_settings'       => array(false, 'tp', 'tp'),
+                'tp_blocks'         => array(false, 'tp', 'tp'),
+                'tp_menu'           => array(false, 'tp', 'tp'),
+                'tp_download'       => array(false, 'tp', 'tp'),
+                'tp_gallery'        => array(false, 'tp', 'tp'),
+                'tp_articles'       => array(false, 'tp', 'tp'),
+                'tp_submithtml'     => array(false, 'tp', 'tp'),
+                'tp_submitbbc'      => array(false, 'tp', 'tp'),
                 'tp_editownarticle' => array(false, 'tp', 'tp'),
 				'tp_alwaysapproved' => array(false, 'tp', 'tp'),
-                'tp_artcomment' => array(false, 'tp', 'tp'),
+                'tp_artcomment'     => array(false, 'tp', 'tp'),
             ),
             $permissionList['membergroup']
         );
@@ -259,6 +244,9 @@ class Integrate
         $tp_illegal_perms = array(
             'tp_settings',
             'tp_blocks',
+            'tp_menu',
+            'tp_download',
+            'tp_gallery',
             'tp_articles',
             'tp_submithtml',
             'tp_submitbbc',
@@ -289,7 +277,7 @@ class Integrate
 
 		Model\Subs::getInstance()->loadLanguage('TPortal');
 
-        if($context['TPortal']['front_type'] != 'boardindex' ) {
+        if(Model\Admin::getInstance()->getSetting('front_type') != 'boardindex' ) {
             $buttons = \elk_array_insert($buttons, 'home', array (
                 'base' => array(
                     'title' 	    => $txt['tp-home'],
@@ -306,7 +294,7 @@ class Integrate
             $buttons['home']['href']      = $scripturl . '?action=forum';
         }
 
-        if($context['TPortal']['hideadminmenu'] != '1' ) {
+        if(Model\Admin::getInstance()->getSetting('hideadminmenu') != '1' ) {
             $subButtons = array();
             Model\Admin::getInstance()->sideMenu();
             foreach($context['admin_tabs'] as $k => $v) {
@@ -359,7 +347,7 @@ class Integrate
 
         $adminAreas['tpadmin'] = array (
 			'title' => $txt['tp-tphelp'],
-			'permission' => array ('admin_forum', 'tp_articles', 'tp_blocks', 'tp_settings'),
+			'permission' => array ('admin_forum', 'tp_articles', 'tp_blocks', 'tp_settings', 'tp_menu', 'tp_download', 'tp_gallery'),
 			'areas' => array (
 				'tpsettings' => array (
 					'label'       => $txt['tp-adminheader1'],
@@ -394,8 +382,53 @@ class Integrate
 						'panels'	    => array ( $txt['tp-panels'] ),
 					),
 				),
-            ),
-        );
+			),
+		);
+	
+		
+
+        if( Model\Admin::getInstance()->getSetting('menu_enabled') == true ) {
+			$adminAreas['tpadmin']['areas']['tpmenu'] = array (
+				'label'       => $txt['tp-adminmenus'],
+				'controller'  => '\TinyPortal\Controller\MenuAdmin',
+				'function'    => 'action_index',
+				'icon'        => 'transparent.png',
+				'permission'  => array ( 'admin_forum', 'tp_menu' ),
+				'subsections' => array (
+					'list'	    => array ( $txt['tp-menu-list'] ),
+					'add'	    => array ( $txt['tp-menu-add'] ),
+				),
+			);
+		}
+
+
+        if( Model\Admin::getInstance()->getSetting('download_enabled') == true ) {
+			$adminAreas['tpadmin']['areas']['tpdownload'] = array (
+				'label'       => $txt['tp-admindownload'],
+				'controller'  => '\TinyPortal\Controller\DownloadAdmin',
+				'function'    => 'action_index',
+				'icon'        => 'transparent.png',
+				'permission'  => array ( 'admin_forum', 'tp_download' ),
+				'subsections' => array (
+					'list'	    => array ( $txt['tp-download-list'] ),
+					'add'	    => array ( $txt['tp-download-add'] ),
+				),
+			);
+		}
+		
+        if( Model\Admin::getInstance()->getSetting('gallery_enabled') == true ) {
+			$adminAreas['tpadmin']['areas']['tpgallery'] = array (
+				'label'       => $txt['tp-admingallery'],
+				'controller'  => '\TinyPortal\Controller\GalleryAdmin',
+				'function'    => 'action_index',
+				'icon'        => 'transparent.png',
+				'permission'  => array ( 'admin_forum', 'tp_gallery' ),
+				'subsections' => array (
+					'list'	    => array ( $txt['tp-gallery-list'] ),
+					'add'	    => array ( $txt['tp-gallery-add'] ),
+				),
+			);
+		}
 
     }}}
 
@@ -452,15 +485,15 @@ class Integrate
 
     public static function hookActions(&$actionArray, &$adminAction) {{{
 
-        $actionArray = array_merge(
-            array (
-                'forum'     => array('BoardIndex.controller.php', 'BoardIndex_Controller', 'action_boardindex'),
-                'tparticle' => array('\TinyPortal\Controller\Article',  'action_index'),
-                'tportal'   => array('\TinyPortal\Controller\Portal',   'action_index'),
-                'tpsearch'  => array('\TinyPortal\Controller\Search',   'action_index'),
-            ),
-            $actionArray
-        );
+		$actionArray = array_merge(
+			$actionArray,
+			array (
+				'forum'     => array('\TinyPortal\Controller\BoardIndex', 'action_index'),
+				'tparticle' => array('\TinyPortal\Controller\Article',  'action_index'),
+				'tportal'   => array('\TinyPortal\Controller\Portal',   'action_index'),
+				'tpsearch'  => array('\TinyPortal\Controller\Search',   'action_index'),
+			)
+		);
 
     }}}
 
@@ -493,12 +526,14 @@ class Integrate
                 );
             }
             $article = array();
+
             if($dB->db_num_rows($request) > 0) {
                 while($row = $dB->db_fetch_assoc($request)) {
                     $article = $row;
                 }
-                $dB->db_free_result($request);
             }
+            $dB->db_free_result($request);
+
             if(!empty($article)) {
                 return sprintf($txt['tp-who-article'], $article['subject'], $actions['page'], $scripturl );
             }
@@ -528,12 +563,14 @@ class Integrate
                 );
             }
             $category = array();
+
             if($dB->db_num_rows($request) > 0) {
                 while($row = $dB->db_fetch_assoc($request)) {
                     $category = $row;
                 }
-                $dB->db_free_result($request);
             }
+            $dB->db_free_result($request);
+
             if(!empty($category)) {
                 return sprintf($txt['tp-who-category'], $category['display_name'], $actions['cat'], $scripturl );
             }
@@ -627,8 +664,8 @@ class Integrate
                 }
                 if($dB->db_num_rows($request) > 0) {
                     $theme = $dB->db_fetch_row($request)[0];
-                    $dB->db_free_result($request);
                 }
+                $dB->db_free_result($request);
 
                 if (!empty($modSettings['cache_enable'])) {
                     cache_put_data('tpArticleTheme', $theme, 120);
@@ -640,11 +677,11 @@ class Integrate
             if (($theme = cache_get_data('tpFrontTheme', 120)) == null) {
                 // fetch the custom theme if any
                 $request = $dB->db_query('', '
-                        SELECT COUNT(*) FROM {db_prefix}tp_settings
-                        WHERE name = {string:name}
-                        AND value = {string:value}',
-                        array('name' => 'front_type', 'value' => 'single_page')
-                    );
+					SELECT COUNT(*) FROM {db_prefix}tp_settings
+					WHERE name = {string:name}
+					AND value = {string:value}',
+					array('name' => 'front_type', 'value' => 'single_page')
+				);
                 if($dB->db_num_rows($request) > 0) {
                     $dB->db_free_result($request);
                     $request = $dB->db_query('', '
@@ -654,8 +691,8 @@ class Integrate
                     );
                     if($dB->db_num_rows($request) > 0) {
                         $theme = $dB->db_fetch_row($request)[0];
-                        $dB->db_free_result($request);
                     }
+                    $dB->db_free_result($request);
                 }
                 if (!empty($modSettings['cache_enable'])) {
                     cache_put_data('tpFrontTheme', $theme, 120);
@@ -673,8 +710,8 @@ class Integrate
                 );
                 if($dB->db_num_rows($request) > 0) {
                     $theme = $dB->db_fetch_row($request)[0];
-                    $dB->db_free_result($request);
                 }
+                $dB->db_free_result($request);
                 if (!empty($modSettings['cache_enable'])) {
                     cache_put_data('tpDLTheme', $theme, 120);
                 }

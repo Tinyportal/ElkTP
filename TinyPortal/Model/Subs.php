@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -356,112 +356,9 @@ class Subs
                 $block['title'] = $newtitle;
             }
 
-            $use = true;
-            // special title links and variables for special types
-            switch($block['type']){
-                case 'searchbox':
-                    $mp = '<a class="subject" href="'.$scripturl.'?action=search">'.$block['title'].'</a>';
-                    $block['title'] = $mp;
-                    break;
-                case 'onlinebox':
-                    $mp = '<a class="subject"  href="'.$scripturl.'?action=who">'.$block['title'].'</a>';
-                    $block['title'] = $mp;
-                    if($block['var1'] == 0) {
-                        $context['TPortal']['useavataronline'] = 0;
-                    }
-                    else {
-                        $context['TPortal']['useavataronline'] = 1;
-                    }
-                    break;
-                case 'userbox':
-                    if($context['user']['is_logged']) {
-                        $mp = ''.$block['title'].'';
-                    }
-                    else {
-                        $mp = '<a class="subject"  href="'.$scripturl.'?action=login">'.$block['title'].'</a>';
-                    }
-                    $block['title'] = $mp;
-                    break;
-                case 'statsbox':
-                    $mp='<a class="subject"  href="'.$scripturl.'?action=stats">'.$block['title'].'</a>';
-                    $block['title'] = $mp;
-                    break;
-                case 'recentbox':
-                    $mp = '<a class="subject"  href="'.$scripturl.'?action=recent">'.$block['title'].'</a>';
-                    $context['TPortal']['recentboxnum'] = $block['body'];
-                    $context['TPortal']['useavatar'] = $block['var1'];
-                    $context['TPortal']['boardmode'] = $block['var3'];
-                    if($block['var1'] == '') {
-                        $context['TPortal']['useavatar'] = 1;
-                    }
-                    if(!empty($block['var2'])) {
-                        $context['TPortal']['recentboards'] = explode(',', $block['var2']);
-                    }
-                    break;
-                case 'scriptbox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['scriptboxbody'] = $block['body'];
-                    break;
-                case 'phpbox':
-                    $block['title']='<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['phpboxbody'] = $block['body'];
-                    break;
-                case 'ssi':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['ssifunction'] = $block['body'];
-                    break;
-                case 'module':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['moduleblock'] = $block['body'];
-                    $context['TPortal']['modulevar2'] = $block['var2'];
-                    break;
-                case 'themebox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['themeboxbody'] = $block['body'];
-                    break;
-                case 'newsbox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    if($context['random_news_line'] == '') {
-                        $use = false;
-                    }
-                    break;
-                case 'articlebox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['blockarticle'] = $block['body'];
-                    break;
-                case 'rss':
-                    $block['title'] = '<span class="header rss">' . $block['title'] . '</span>';
-                    $context['TPortal']['rss'] = $block['body'];
-                    $context['TPortal']['rss_notitles'] = $block['var2'];
-                    $context['TPortal']['rss_utf8'] = $block['var1'];
-                    $context['TPortal']['rsswidth'] = isset($block['var3']) ? $block['var3'] : '';
-                    $context['TPortal']['rssmaxshown'] = !empty($block['var4']) ? $block['var4'] : '20';
-                    break;
-                case 'categorybox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['blocklisting'] = $block['body'];
-                    $context['TPortal']['blocklisting_height'] = $block['var1'];
-                    $context['TPortal']['blocklisting_author'] = $block['var2'];
-                    break;
-                case 'shoutbox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['shoutbox_stitle'] = $block['body'];
-                    $context['TPortal']['shoutbox_id'] = $block['var2'];
-                    $context['TPortal']['shoutbox_layout'] = $block['var3'];
-                    $context['TPortal']['shoutbox_height'] = $block['var4'];
-                case 'modulebox':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['moduleid'] = $block['var1'];
-                    $context['TPortal']['modulevar2'] = $block['var2'];
-                    $context['TPortal']['modulebody'] = $block['body'];
-                    break;
-                case 'catmenu':
-                    $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-                    $context['TPortal']['menuid'] = is_numeric($block['body']) ? $block['body'] : 0;
-                    $context['TPortal']['menuvar1'] = $block['var1'];
-                    $context['TPortal']['menuvar2'] = $block['var2'];
-                    $context['TPortal']['blockid'] = $block['id'];
-                    break;
+            $blockClass = '\TinyPortal\Blocks\\'.ucfirst($block['type']);
+            if(class_exists($blockClass)) {
+                (new $blockClass)->setup($block);
             }
 
             // render them horisontally
@@ -1166,104 +1063,6 @@ class Subs
 
     }}}
 
-    public function tp_fetchpermissions($perms) {{{
-        global $txt;
-
-        $db = Database::getInstance();
-
-        $perm = array();
-        if(is_array($perms))
-        {
-            $request = $db->query('', '
-                SELECT p.permission, m.group_name AS group_name, p.id_group AS id_group
-                FROM {db_prefix}permissions AS p
-                INNER JOIN {db_prefix}membergroups AS m
-                    ON p.id_group = m.id_group
-                WHERE p.add_deny = {int:deny}
-                AND p.permission IN ({array_string:tag})
-                AND m.min_posts = {int:minpost}
-                ORDER BY m.group_name ASC',
-                array('deny' => 1, 'tag' => $perms, 'minpost' => -1)
-            );
-            if($db->num_rows($request) > 0)
-            {
-                while ($row = $db->fetch_assoc($request))
-                {
-                    $perm[$row['permission']][$row['id_group']] = $row['id_group'];
-                }
-                $db->free_result($request);
-            }
-            // special for members
-            $request =  $db->query('', '
-                SELECT p.permission, p.id_group
-                FROM {db_prefix}permissions as p
-                WHERE p.add_deny = {int:deny}
-                AND p.id_group IN (0, -1)
-                AND p.permission IN ({array_string:tag})',
-                array('deny' => 1, 'tag' => $perms)
-            );
-            if($db->num_rows($request) > 0)
-            {
-                while ($row = $db->fetch_assoc($request))
-                {
-                    $perm[$row['permission']][$row['id_group']] = $row['id_group'];
-                }
-                $db->free_result($request);
-            }
-            return $perm;
-        }
-        else
-        {
-            $names = array();
-            $request = $db->query('', '
-                SELECT m.group_name as group_name, m.id_group as id_group
-                FROM {db_prefix}membergroups as m
-                WHERE m.min_posts = {int:minpost}
-                ORDER BY m.group_name ASC',
-                array('minpost' => -1)
-            );
-            if($db->num_rows($request) > 0)
-            {
-                // set regaular members
-                $names[0] = array(
-                    'id' => 0,
-                    'name' => $txt['members'],
-                );
-                while ($row = $db->fetch_assoc($request))
-                {
-                    $names[$row['id_group']] = array(
-                        'id' => $row['id_group'],
-                        'name' => $row['group_name'],
-                    );
-                }
-                $db->free_result($request);
-            }
-            return $names;
-        }
-    }}}
-
-    public function tp_fetchboards() {{{
-        $db = Database::getInstance();
-
-        // get all boards for board-spesific news
-        $request =  $db->query('', '
-            SELECT id_board, name, board_order
-            FROM {db_prefix}boards
-            WHERE  1=1
-            ORDER BY board_order ASC',
-            array()
-        );
-        $boards = array();
-        if ($db->num_rows($request) > 0) {
-            while($row = $db->fetch_assoc($request)) {
-                $boards[] = array('id' => $row['id_board'], 'name' => $row['name']);
-            }
-            $db->free_result($request);
-        }
-        return $boards;
-    }}}
-
-        
     public function hidePanel($id, $inline = false, $string = false, $margin='') {{{
         global $context, $settings;
 
@@ -1291,7 +1090,6 @@ class Subs
 
         return $what;
     }}}
-
 
     public function perm($perm, $moderate = '') {{{
         return Permissions::getInstance()->getPermissions($perm, $moderate);
@@ -1491,7 +1289,7 @@ class Subs
         return $data;
     }}}
 
-    public function tp_renderblockarticle() {{{
+    public function renderBlockArticle() {{{
 
         global $context, $txt;
 
@@ -1575,7 +1373,7 @@ class Subs
         }
     }}}
 
-    public function hidebars($what = 'all' ) {{{
+    public function hidebars($what = 'all') {{{
         global $context;
 
         if($what == 'all'){
@@ -1659,7 +1457,7 @@ class Subs
         return $this->category_col('col2', false, $render);
     }}}
 
-    public function TPparseRSS($override = '', $encoding = 0) {{{
+    public function parseRSS($override = '', $encoding = 0, $max = 10) {{{
         global $context;
 
         // Initialise the number of RSS Feeds to show
@@ -1668,41 +1466,36 @@ class Subs
         $backend = isset($context['TPortal']['rss']) ? $context['TPortal']['rss'] : '';
         if($override != '')
             $backend = $override;
-
-        $allow_url = ini_get('allow_url_fopen');
-        if ($allow_url){
-            $xml = simplexml_load_file($backend);
-        } else {
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_URL, $backend);
-            $ret = curl_exec($curl);
-            curl_close($curl);
-            $xml = simplexml_load_string($ret);
-        }
-
+        
+        require_once(SUBSDIR . '/Package.subs.php');
+		$data   = fetch_web_data($backend);
+        $xml    = simplexml_load_string($data);
         if($xml !== false) {
             switch (strtolower($xml->getName())) {
                 case 'rss':
                     foreach ($xml->channel->item as $v) {
-                        if($numShown++ >= $context['TPortal']['rssmaxshown'])
+                        if($numShown++ >= $max) {
                             break;
+                        }
 
                         printf("<div class=\"rss_title%s\"><a target='_blank' href='%s'>%s</a></div>", $context['TPortal']['rss_notitles'] ? '_normal' : '', trim($v->link), Util::htmlspecialchars(trim($v->title), ENT_QUOTES));
 
-                        if(!$context['TPortal']['rss_notitles'])
+                        if(!$context['TPortal']['rss_notitles']) {
                             printf("<div class=\"rss_date\">%s</div><div class=\"rss_body\">%s</div>", $v->pubDate, $v->description);
+                        }
                     }
                     break;
                 case 'feed':
                     foreach ($xml->entry as $v) {
-                        if($numShown++ >= $context['TPortal']['rssmaxshown'])
+                        if($numShown++ >= $max) {
                             break;
+                        }
 
                         printf("<div class=\"rss_title%s\"><a target='_blank' href='%s'>%s</a></div>", $context['TPortal']['rss_notitles'] ? '_normal' : '', trim($v->link['href']), Util::htmlspecialchars(trim($v->title), ENT_QUOTES));
 
-                        if(!$context['TPortal']['rss_notitles'])
+                        if(!$context['TPortal']['rss_notitles']) {
                             printf("<div class=\"rss_date\">%s</div><div class=\"rss_body\">%s</div>", isset($v->issued) ? $v->issued : $v->published, $v->summary);
+                        }
                     }
                     break;
             }
@@ -1765,13 +1558,8 @@ class Subs
         );
     }}}
 
-    // Recent topic list:   [board] Subject by Poster	Date
-    public function tp_recentTopics($num_recent = 8, $exclude_boards = null, $include_boards = null, $output_method = 'echo') {{{
-        return ssi_recentTopics($num_recent, $exclude_boards, $include_boards, $output_method);
-    }}}
-
     // Download an attachment.
-    public function tpattach() {{{
+    public function attach() {{{
         global $txt, $modSettings, $context;
 
         $db = Database::getInstance();
@@ -1781,13 +1569,13 @@ class Subs
         $context['no_last_modified'] = true;
 
         // Make sure some attachment was requested!
-        if (!isset($_REQUEST['attach']) && !isset($_REQUEST['id']))
+        if (!isset($_REQUEST['attach']) && !isset($_REQUEST['id'])) {
             fatal_lang_error('no_access', false);
+        }
 
         $_REQUEST['attach'] = isset($_REQUEST['attach']) ? (int) $_REQUEST['attach'] : (int) $_REQUEST['id'];
 
-        if (isset($_REQUEST['type']) && $_REQUEST['type'] == 'avatar')
-        {
+        if (isset($_REQUEST['type']) && $_REQUEST['type'] == 'avatar') {
             $request = $db->query('', '
                 SELECT id_folder, filename, file_hash, fileext, id_attach, attachment_type, mime_type, approved
                 FROM {db_prefix}attachments
@@ -1802,8 +1590,7 @@ class Subs
             $_REQUEST['image'] = true;
         }
         // This is just a regular attachment...
-        else
-        {
+        else {
             $request = $db->query('', '
                 SELECT a.id_folder, a.filename, a.file_hash, a.fileext, a.id_attach,
                     a.attachment_type, a.mime_type, a.approved
@@ -1815,8 +1602,9 @@ class Subs
                 )
             );
         }
-        if ($db->num_rows($request) == 0)
+        if ($db->num_rows($request) == 0) {
             fatal_lang_error('no_access', false);
+        }
         list ($id_folder, $real_filename, $file_hash, $file_ext, $id_attach, $attachment_type, $mime_type, $is_approved) = $db->fetch_row($request);
         $db->free_result($request);
 
@@ -1857,8 +1645,7 @@ class Subs
 
         // Check whether the ETag was sent back, and cache based on that...
         $eTag = '"' . substr($_REQUEST['attach'] . $real_filename . filemtime($filename), 0, 64) . '"';
-        if (!empty($_SERVER['HTTP_IF_NONE_MATCH']) && strpos($_SERVER['HTTP_IF_NONE_MATCH'], $eTag) !== false)
-        {
+        if (!empty($_SERVER['HTTP_IF_NONE_MATCH']) && strpos($_SERVER['HTTP_IF_NONE_MATCH'], $eTag) !== false) {
             ob_end_clean();
 
             header('HTTP/1.1 304 Not Modified');
@@ -1868,8 +1655,9 @@ class Subs
         // Send the attachment headers.
         header('Pragma: ');
 
-        if (!$context['browser']['is_gecko'])
+        if (!$context['browser']['is_gecko']) {
             header('Content-Transfer-Encoding: binary');
+        }
         header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 525600 * 60) . ' GMT');
         header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($filename)) . ' GMT');
         header('Accept-Ranges: bytes');
@@ -1878,14 +1666,12 @@ class Subs
         header('ETag: ' . $eTag);
 
         // IE 6 just doesn't play nice. As dirty as this seems, it works.
-        if ($context['browser']['is_ie6'] && isset($_REQUEST['image']))
+        if ($context['browser']['is_ie6'] && isset($_REQUEST['image'])) {
             unset($_REQUEST['image']);
-
-        elseif (filesize($filename) != 0)
-        {
+        }
+        elseif (filesize($filename) != 0) {
             $size = @getimagesize($filename);
-            if (!empty($size))
-            {
+            if (!empty($size)) {
                 // What headers are valid?
                 $validTypes = array(
                     1 => 'gif',
@@ -1900,65 +1686,71 @@ class Subs
                 );
 
                 // Do we have a mime type we can simpy use?
-                if (!empty($size['mime']) && !in_array($size[2], array(4, 13)))
+                if (!empty($size['mime']) && !in_array($size[2], array(4, 13))) {
                     header('Content-Type: ' . strtr($size['mime'], array('image/bmp' => 'image/x-ms-bmp')));
-                elseif (isset($validTypes[$size[2]]))
+                }
+                elseif (isset($validTypes[$size[2]])) {
                     header('Content-Type: image/' . $validTypes[$size[2]]);
+                }
                 // Otherwise - let's think safety first... it might not be an image...
-                elseif (isset($_REQUEST['image']))
+                elseif (isset($_REQUEST['image'])) {
                     unset($_REQUEST['image']);
+                }
             }
             // Once again - safe!
-            elseif (isset($_REQUEST['image']))
+            elseif (isset($_REQUEST['image'])) {
                 unset($_REQUEST['image']);
+            }
         }
 
         header('Content-Disposition: ' . (isset($_REQUEST['image']) ? 'inline' : 'attachment') . '; filename="' . $real_filename . '"');
-        if (!isset($_REQUEST['image']))
+        if (!isset($_REQUEST['image'])) {
             header('Content-Type: application/octet-stream');
+        }
 
         // If this has an "image extension" - but isn't actually an image - then ensure it isn't cached cause of silly IE.
-        if (!isset($_REQUEST['image']) && in_array($file_ext, array('gif', 'jpg', 'bmp', 'png', 'jpeg', 'tiff')))
+        if (!isset($_REQUEST['image']) && in_array($file_ext, array('gif', 'jpg', 'bmp', 'png', 'jpeg', 'tiff'))) {
             header('Cache-Control: no-cache');
-        else
+        }
+        else {
             header('Cache-Control: max-age=' . (525600 * 60) . ', private');
+        }
 
-        if (empty($modSettings['enableCompressedOutput']) || filesize($filename) > 4194304)
+        if (empty($modSettings['enableCompressedOutput']) || filesize($filename) > 4194304) {
             header('Content-Length: ' . filesize($filename));
-
+        }
         // Try to buy some time...
         @set_time_limit(0);
 
         // Since we don't do output compression for files this large...
-        if (filesize($filename) > 4194304)
-        {
+        if (filesize($filename) > 4194304) {
             // Forcibly end any output buffering going on.
-            if (function_exists('ob_get_level'))
-            {
+            if (function_exists('ob_get_level')) {
                 while (@ob_get_level() > 0)
                     @ob_end_clean();
             }
-            else
-            {
+            else {
                 @ob_end_clean();
                 @ob_end_clean();
                 @ob_end_clean();
             }
 
             $fp = fopen($filename, 'rb');
-            while (!feof($fp))
-            {
-                if (isset($callback))
+            while (!feof($fp)) {
+                if (isset($callback)) {
                     echo $callback(fread($fp, 8192));
-                else
+                }
+                else {
                     echo fread($fp, 8192);
+                }
                 flush();
             }
             fclose($fp);
         }
         // On some of the less-bright hosts, readfile() is disabled.  It's just a faster, more byte safe, version of what's in the if.
-        elseif (isset($callback) || @readfile($filename) == null)
+        elseif (isset($callback) || @readfile($filename) == null) {
             echo isset($callback) ? $callback(file_get_contents($filename)) : file_get_contents($filename);
+        }
 
         obExit(false);
     }}}
@@ -2052,82 +1844,7 @@ class Subs
         \create_control_richedit($editorOptions);
     }}}
 
-    public function tp_getblockstyles() {{{
-        return array(
-            '0' => array(
-                'class' => 'titlebg+content',
-                'code_title_left' => '<div class="title_bar"><h3 class="category_header">',
-                'code_title_right' => '</h3></div>',
-                'code_top' => '<div class="content"><span class="topslice"><span></span></span><div style="padding: 0 8px;">',
-                'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
-            ),
-            '1' => array(
-                'class' => 'catbg+content',
-                'code_title_left' => '<div class="cat_bar"><h3 class="category_header">',
-                'code_title_right' => '</h3></div>',
-                'code_top' => '<div class="content"><span class="topslice"><span></span></span><div style="padding: 0 8px;">',
-                'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
-            ),
-            '2' => array(
-                'class' => 'titlebg+content(old)',
-                'code_title_left' => '<div class="title_bar"><h3 class="category_header">',
-                'code_title_right' => '</h3></div>',
-                'code_top' => '<div class="content"><div style="padding: 8px;">',
-                'code_bottom' => '</div></div>',
-            ),
-            '3' => array(
-                'class' => 'catbg+content(old)',
-                'code_title_left' => '<div class="cat_bar"><h3 class="category_header">',
-                'code_title_right' => '</h3></div>',
-                'code_top' => '<div class="content"><div style="padding: 8px;">',
-                'code_bottom' => '</div></div>',
-            ),
-            '4' => array(
-                'class' => 'titlebg+content',
-                'code_title_left' => '<div class="tp_half"><h3 class="category_header"><span class="l"></span><span class="r"></span>',
-                'code_title_right' => '</h3></div>',
-                'code_top' => '<div class="content"><div style="padding: 8px 8px 0 8px;">',
-                'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
-            ),
-            '5' => array(
-                'class' => 'catbg+content',
-                'code_title_left' => '<div class="tp_half"><h3 class="category_header"><span class="l"></span><span class="r"></span>',
-                'code_title_right' => '</h3></div>',
-                'code_top' => '<div class="content"><div style="padding: 8px 8px 0 8px;">',
-                'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
-            ),
-            '6' => array(
-                'class' => 'titlebg+content',
-                'code_title_left' => '<div class="tp_half"><h3 class="category_header"><span class="l"></span><span class="r"></span>',
-                'code_title_right' => '</h3></div>',
-                'code_top' => '<div class="content"><div style="padding: 8px 8px 0 8px;">',
-                'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
-            ),
-            '7' => array(
-                'class' => 'catbg+content',
-                'code_title_left' => '<div class="tp_half"><h3 class="category_header"><span class="l"></span><span class="r"></span>',
-                'code_title_right' => '</h3></div>',
-                'code_top' => '<div class="content"><div style="padding: 8px 8px 0 8px;">',
-                'code_bottom' => '</div><span class="botslice"><span></span></span></div>',
-            ),
-            '8' => array(
-                'class' => 'titlebg+roundframe',
-                'code_title_left' => '<div class="tp_half"><h3 class="category_header"><span class="l"></span><span class="r"></span>',
-                'code_title_right' => '</h3></div>',
-                'code_top' => '<div class="roundframe"><div style="padding: 8px 0 0 0px;">',
-                'code_bottom' => '</div></div><span class="lowerframe"><span></span></span>',
-            ),
-            '9' => array(
-                'class' => 'catbg+roundframe',
-                'code_title_left' => '<div class="tp_half"><h3 class="category_header"><span class="l"></span><span class="r"></span>',
-                'code_title_right' => '</h3></div>',
-                'code_top' => '<div class="roundframe"><div style="padding: 8px 0px 0 0;">',
-                'code_bottom' => '</div></div><span class="lowerframe"><span></span></span>',
-            ),
-        );
-    }}}
-
-    public function getBlockStyles21() {{{
+    public function getBlockStyles() {{{
         return array(
             '0' => array(
                 'class' => 'titlebg+content',
@@ -2279,7 +1996,7 @@ class Subs
         return;
     }}}
 
-    public function TPGetMemberColour($member_ids) {{{
+    public function getMemberColour($member_ids) {{{
         if (empty($member_ids)) {
             return false;
         }
@@ -2428,10 +2145,13 @@ class Subs
         }
 
         // setup subaction
-        $context['TPortal']['profile_action'] = '';
+		$context['TPortal']['profile_action'] = '';
+        /*
         if(isset($_GET['sa']) && $_GET['sa'] == 'settings') {
             $context['TPortal']['profile_action'] = 'settings';
         }
+		*/
+
 
         // Create the tabs for the template.
         $context[$context['profile_menu_name']]['tab_data'] = array(
@@ -2439,9 +2159,9 @@ class Subs
             'description' => $txt['articlesprofile2'],
             'tabs' => array(
                 'articles' => array(),
-                'settings' => array(),
-                ),
+            ),
         );
+
 
         if(self::loadLanguage('TPortalAdmin') == false) {
             self::loadLanguage('TPortalAdmin', 'english');
@@ -2561,7 +2281,7 @@ class Subs
         if($upload->upload_file($_FILES[$widthhat]['tmp_name'], $dstPath) === FALSE) {
             unlink($_FILES[$widthhat]['tmp_name']);
             $error_string = sprintf($txt['tp-notuploaded'], $upload->get_error(TRUE));
-            throw new Elk_Exception($error_string, 'general');
+            throw new \Elk_Exception($error_string, 'general');
         }
 
         return basename($dstPath);
@@ -2649,7 +2369,7 @@ class Subs
 
         if (!\mktree($path, 0755)) {
             \deltree($path, true);
-            throw new Elk_Exception($txt['tp-failedcreatedir'], 'general');
+            throw new \Elk_Exception($txt['tp-failedcreatedir'], 'general');
         }
 
         return TRUE;
@@ -2723,7 +2443,13 @@ class Subs
 		    $lang = isset($user_info['language']) ? $user_info['language'] : $language;
         }
 
-        foreach( array ( $lang, 'english' ) as $l) {
+		// Always load english
+		$filePath = BOARDDIR . '/TinyPortal/Views/languages/english/'.$template_name.'.english.php';
+        if(file_exists($filePath)) {
+            require_once($filePath);
+		}
+
+        foreach( array ( $lang ) as $l) {
             $filePath = BOARDDIR . '/TinyPortal/Views/languages/'.$l.'/'.$template_name.'.'.$l.'.php';
             if(file_exists($filePath)) {
                 require_once($filePath);
@@ -2734,6 +2460,41 @@ class Subs
         return \loadLanguage($template_name, $lang, $fatal, $force_reload);
 
     }}}
+
+    public function getAvatars($ids) {{{
+        global $user_info, $modSettings, $scripturl;
+        global $image_proxy_enabled, $image_proxy_secret, $boardurl;
+
+        $db = \database();
+
+        $request = $db->query('', '
+            SELECT
+                mem.real_name, mem.member_name, mem.id_member, mem.show_online,mem.avatar, mem.email_address AS email_address,
+                COALESCE(a.id_attach, 0) AS id_attach, a.filename, a.attachment_type AS attachment_type
+            FROM {db_prefix}members AS mem
+            LEFT JOIN {db_prefix}attachments AS a ON (a.id_member = mem.id_member AND a.attachment_type != 3)
+            WHERE mem.id_member IN ({array_int:ids})',
+            array('ids' => $ids)
+        );
+
+        $avy = array();
+        if($db->num_rows($request) > 0) {
+            while ($row = $db->fetch_assoc($request)) {
+                $avy[$row['id_member']] = \determineAvatar( array(
+                        'avatar'            => $row['avatar'],
+                        'email_address'     => $row['email_address'],
+                        'filename'          => !empty($row['filename']) ? $row['filename'] : '',
+                        'id_attach'         => $row['id_attach'],
+                        'attachment_type'   => $row['attachment_type'],
+                    )
+                )['image'];
+            }
+            $db->free_result($request);
+        }
+
+        return $avy;
+    }}}
+
 }
 
 ?>

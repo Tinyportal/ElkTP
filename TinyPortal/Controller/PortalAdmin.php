@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -145,7 +145,7 @@ class PortalAdmin extends \Action_Controller
                     $themeschecked[] = $postname;
                     if(isset($themeschecked)) {
                         $id = TPAdmin::getInstance()->getSettingData('id', array( 'name' => 'resp' ));
-                        TPAdmin::getInstance()->updateSettingData($id[0]['id'], array ('value' => implode(',', $themeschecked)));
+                        TPAdmin::getInstance()->updateSetting($id[0]['id'], array ('value' => implode(',', $themeschecked)));
                     }
                 }
                 // END  non responsive themes form

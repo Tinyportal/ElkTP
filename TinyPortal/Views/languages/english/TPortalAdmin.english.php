@@ -1,14 +1,18 @@
 <?php
-// @version 1.0.0 RC2; TPortalAdmin
+// @version 1.0.0 RC3; TPortalAdmin
 global $context;
 
 // Menu
 $txt['tp-adminheader1'] = 'Settings & Frontpage';
-$txt['tp-settings'] = 'Settings';
-$txt['tp-frontpage'] = 'Frontpage';
-$txt['tp-articles'] = 'Articles';
-$txt['tp-tabs4'] = 'Submissions';
-$txt['tp-adminpanels'] = 'Panels and Blocks';
+$txt['tp-settings']     = 'Settings';
+$txt['tp-frontpage']    = 'Frontpage';
+$txt['tp-articles']     = 'Articles';
+$txt['tp-tabs4']        = 'Submissions';
+$txt['tp-adminpanels']  = 'Panels and Blocks';
+$txt['tp-admingallery'] = 'Gallery';
+$txt['tp-adminmenus']   = 'Menu';
+$txt['tp-admindownload']= 'Download';
+
 
 // Settings page
 $txt['tp-generalsettings'] = 'General settings';
@@ -30,6 +34,10 @@ $txt['tp-use_groupcolor'] = 'Use membergroup color for user names throughout the
 $txt['tp-use_groupcolordesc'] = 'This setting will activate the use of the member group colour for user names throughout the forum. Users names will be displayed in the forum in the color of the primary user group that a member is assigned to. Note that there is a similar settings in the shoutbox that will only activate this in the shoutbox: The general TP setting takes preference over the shoutbox setting.';
 $txt['tp-maxrating'] = 'Max rating';
 $txt['tp-stars'] = 'Display stars instead of numbers';
+$txt['tp-portaltype']	= 'Portal Type';
+$txt['tp-standalone']	= 'Standalone';
+$txt['tp-guestonly']	= 'Guest Only';
+$txt['tp-guestaccess']	= 'Guest Access';
 
 $txt['tp-useoldsidebar'] = 'Use old sidebar for admin';
 $txt['tp-admin_showblocks'] = 'Admin can see all blocks';
@@ -192,32 +200,32 @@ $txt['tp-illustration2'] = 'Choose another image';
 $txt['tp-uploadicon'] = 'Upload a new icon ';
 $txt['tp-articleoptions'] = 'Viewing options';
 $txt['tp-details'] = 'Details';
+$txt['tp-articleoptions4'] = 'Display breadcrumb navigation';
 $txt['tp-articleoptions2'] = 'Display title';
 $txt['tp-articleoptions13'] = 'Display posted in category';
 $txt['tp-articleoptions3'] = 'Display author';
 $txt['tp-articleoptions1'] = 'Display date';
-$txt['tp-articleoptions12'] = 'Display all articles in category';
-$txt['tp-articleoptions4'] = 'Display breadcrumb navigation';
-$txt['tp-articleoptions14'] = 'Display comments underneath article';
-$txt['tp-articleoptions15'] = 'Allow to comment';
-$txt['tp-articleoptions5'] = 'Display top';
-$txt['tp-articleoptions16'] = 'Do not collapse comments initially';
 $txt['tp-articleoptions17'] = 'Display number of views';
-$txt['tp-articleoptions18'] = 'Display ratings';
 $txt['tp-articleoptions19'] = 'Allow to rate';
-$txt['tp-articleoptions24'] = 'Use settings from category instead!';
+$txt['tp-articleoptions18'] = 'Display ratings';
+$txt['tp-articleoptions21'] = 'Display author avatar/info';
+$txt['tp-articleoptions23'] = 'Show Social Bookmarks buttons';
+$txt['tp-articleoptions12'] = 'Display all articles in category';
+$txt['tp-articleoptions15'] = 'Allow to comment';
+$txt['tp-articleoptions14'] = 'Display comments underneath article';
+
 $txt['tp-articleoptions8'] = 'Display left panel';
-$txt['tp-articleoptions23'] = 'Width left panel (leave empty for default)';
+$txt['tp-articleoptions_lblockwidth'] = 'Width left panel (leave empty for default)';
 $txt['tp-articleoptions7'] = 'Display right panel';
-$txt['tp-articleoptions22'] = 'Width right panel (leave empty for default)';
+$txt['tp-articleoptions_rblockwidth'] = 'Width right panel (leave empty for default)';
 $txt['tp-articleoptions10'] = 'Display top panel';
 $txt['tp-articleoptions6'] = 'Display upper panel';
 $txt['tp-articleoptions11'] = 'Display lower panel';
 $txt['tp-articleoptions9'] = 'Display bottom panel';
+$txt['tp-articleoptions24'] = 'Use settings from category instead!';
+
 $txt['tp-others'] = 'Others';
 $txt['tp-articleoptions20'] = 'Do not use ELK templates';
-$txt['tp-articleoptions21'] = 'Display author avatar/info';
-$txt['tp-showsociallinks'] = 'Show Social Bookmarks buttons';
 $txt['tp-chosentheme'] = 'Use only this theme ';
 $txt['tp-articleheaders'] = 'Header code to be used in articles without any template/theme code';
 
@@ -494,7 +502,9 @@ $txt['tp-nowindowmenu'] = 'Same window';
 $txt['tp-windowmenu'] = 'Open in a new window';
 $txt['tp-link'] = 'Link';
 $txt['tp-spacer'] = 'Spacer';
-$txt['tp-menu'] = 'Menu button';
+$txt['tp-menu'] = 'Menu';
+$txt['tp-gallery'] = 'Gallery';
+$txt['tp-download'] = 'Download';
 $txt['tp-item'] = 'Item';
 $txt['tp-sitemap_on'] = 'Sitemap?';
 $txt['tp-showmenustyle'] = 'Menu style';
@@ -594,5 +604,14 @@ $txt['tp-menus'] = 'Sections';
 $txt['tp-name'] = 'Name';
 $txt['tp-shortname'] = 'Short name';
 $txt['tp-shortnamedesc'] = 'Here you can create \'meaningful URLs\': specify a short text to be used in the page URL display. Without a value the url will be displayed as: .../index.php?cat=20. if a value is added (for example \'Categoryname\') the url will show as: .../index.php?page=Categoryname';
+
+$txt['tp-download-list']    = 'List Downloads';
+$txt['tp-download-add']     = 'Add Download';
+
+$txt['tp-menu-list']        = 'List Menu';
+$txt['tp-menu-add']         = 'Add Menu';
+
+$txt['tp-gallery-list']     = 'List Gallery';
+$txt['tp-gallery-add']      = 'Add Gallery';
 
 ?>

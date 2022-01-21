@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -54,7 +54,7 @@ class Util
                 $str = rtrim($str,' '.$arg.' ');
             }
             else {
-                $str = 'AND ( '. implode('\' = ANY (string_to_array( '.$field.', \',\' )) OR \'', $data) . ' = ANY (string_to_array('.$field.', \',\')))';
+                $str = 'AND ( '. implode(' = ANY (string_to_array( '.$field.', \',\' )) OR ', $data) . ' = ANY (string_to_array('.$field.', \',\')))';
             }
         }
 
@@ -340,7 +340,7 @@ class Util
     private static function filterType($type) {{{
         switch (strtolower($type)) {
             case 'string':
-                $filter = FILTER_SANITIZE_STRING;
+                $filter = FILTER_UNSAFE_RAW;
                 break;
             case 'int':
                 $filter = FILTER_SANITIZE_NUMBER_INT;
@@ -358,11 +358,15 @@ class Util
                 $filter = FILTER_SANITIZE_EMAIL;
                 break;
             default:
-                $filter = FILTER_SANITIZE_STRING;
+                $filter = FILTER_UNSAFE_RAW;
         }
         return $filter;
     }}}
 
+	private static function filter_string_polyfill(string $string): string {{{
+	   $str = preg_replace('/x00|<[^>]*>?/', '', $string);
+	   return str_replace(["'", '"'], ['&#39;', '&#34;'], $str);
+	}}}
 }
 
 ?>

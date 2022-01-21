@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -77,11 +77,11 @@ class Search extends \Action_Controller
                 $what       = $params['search'];
             }
             else {
-                throw new Elk_Exception($txt['tp-nosearchentered'], false);
+                throw new \Elk_Exception($txt['tp-nosearchentered'], false);
             }
         }
         else if(empty($_POST['tpsearch_what'])) {
-            throw new Elk_Exception($txt['tp-nosearchentered'], false);
+            throw new \Elk_Exception($txt['tp-nosearchentered'], false);
         }
         else {
             checkSession('post');

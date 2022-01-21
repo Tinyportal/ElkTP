@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -49,6 +49,7 @@ function template_editblock()
 						<dd>
 							<select size="1" onchange="document.getElementById(\'blocknotice\').style.display=\'\';" name="tp_block_type" id="tp_block_type">
 								<option value="0"' ,$context['TPortal']['blockedit']['type']=='0' ? ' selected' : '' , '>', $txt['tp-blocktype0'] , '</option>
+								<option value="8"' ,$context['TPortal']['blockedit']['type']=='8' ? ' selected' : '' , '>', $txt['tp-blocktype8'] , '</option>
 								<option value="18"' ,$context['TPortal']['blockedit']['type']=='18' ? ' selected' : '' , '>', $txt['tp-blocktype18'] , '</option>
 								<option value="19"' ,$context['TPortal']['blockedit']['type']=='19' ? ' selected' : '' , '>', $txt['tp-blocktype19'] , '</option>
 								<option value="5"' ,$context['TPortal']['blockedit']['type']=='5' ? ' selected' : '' , '>', $txt['tp-blocktype5'] , '</option>
@@ -77,68 +78,26 @@ function template_editblock()
 					</dl>
 					<div class="content padding-div">
 					 <div>';
+            
+            $blockClass = '\TinyPortal\Blocks\\'.ucfirst(str_replace('box', '', \TinyPortal\Model\Block::getInstance()->getBlockType($context['TPortal']['blockedit']['type'])));
+            if(class_exists($blockClass) && method_exists('admin_display', $blockClass)) {
+                (new $blockClass)->admin_display($context['TPortal']['blockedit']);
+            }
 // Block types: 5 (BBC code), 10 (PHP Code) and 11 (HTML & Javascript code)
-			if($context['TPortal']['blockedit']['type']=='5' || $context['TPortal']['blockedit']['type']=='10' || $context['TPortal']['blockedit']['type']=='11')
-			{
-				if($context['TPortal']['blockedit']['type']=='11')
-				{
+			elseif($context['TPortal']['blockedit']['type']=='5' || $context['TPortal']['blockedit']['type']=='11') {
+				if($context['TPortal']['blockedit']['type']=='11') {
 					echo '</div><hr><div><b>',$txt['tp-body'],'</b> <br><textarea style="width: 94%;" name="tp_block_body" id="tp_block_body" rows="15" cols="40" wrap="auto">' , $context['TPortal']['blockedit']['body'], '</textarea>';
 				}
-				elseif($context['TPortal']['blockedit']['type']=='5')
-				{
-						echo '
-						</div><hr><div>';
-					TP_bbcbox($context['TPortal']['editor_id']);
+				elseif($context['TPortal']['blockedit']['type']=='5') {
+					echo '</div><hr><div>';
+					TPSubs::getInstance()->bbcbox($context['TPortal']['editor_id']);
 				}
-				else
+				else {
 						echo '<hr><b>'.$txt['tp-body'].'</b>';
-				if($context['TPortal']['blockedit']['type']=='10')
-				{
-					echo '
-						</div><div>
-						<textarea style="width: 94%; margin: 0px 0px 10px;" name="tp_block_body" id="tp_block_body" rows="15" cols="40" wrap="auto">' ,  $context['TPortal']['blockedit']['body'] , '</textarea>
-						<p><div class="tborder" style=""><p style="padding: 0 0 5px 0; margin: 0;">' , $txt['tp-blockcodes'] , ':</p>
-							<select name="tp_blockcode" id="tp_blockcode" size="8" style="margin-bottom: 5px; width: 94%" onchange="changeSnippet(this.selectedIndex);">
-								<option value="0" selected="selected">' , $txt['tp-none-'] , '</option>';
-					if(!empty($context['TPortal']['blockcodes']))
-					{
-						foreach($context['TPortal']['blockcodes'] as $bc)
-							echo '
-								<option value="' , $bc['file'] , '">' , $bc['name'] , '</option>';
-					}
-					echo '
-							</select>
-							<p style="padding: 10px 0 10px 0; margin: 0;"><input type="button" value="' , $txt['tp-insert'] , '" name="blockcode_save" onclick="submit();" />
-							<input type="checkbox" name="blockcode_overwrite" value="' . $context['TPortal']['blockedit']['id'] . '" /> ' , $txt['tp-blockcodes_overwrite'] , '</p>
-						</div>
-					<div id="blockcodeinfo" class="description" >&nbsp;</div>
-					<script type="text/javascript"><!-- // --><![CDATA[
-						function changeSnippet(indx)
-						{
-							var snipp = new Array();
-							var snippAuthor = new Array();
-							var snippTitle = new Array();
-							snipp[0] = "";
-							snippAuthor[0] = "";
-							snippTitle[0] = "";';
-					$count=1;
-					foreach($context['TPortal']['blockcodes'] as $bc)
-					{
-						$what = str_replace(array(",",".","/","\n"),array("&#44;","&#46;","&#47;",""), $bc['text']);
-						echo '
-							snipp[' . $count . '] = "<div>' . $what . '</div>";
-							snippTitle[' . $count . '] = "<h3 style=\"margin: 0 0 5px 0; padding: 0;\">' . $bc['name'].' <span style=\"font-weight: normal;\">' . $txt['tp-by'] . '</span> ' . $bc['author'] . '</h3>";
-							';
-							$count++;
-					}
-					echo '
-							setInnerHTML(document.getElementById("blockcodeinfo"), snippTitle[indx] + snipp[indx]);
-						}
-					// ]]></script>';
-				}
+                }
 			}
 // Block types: Recent Topics
-			elseif($context['TPortal']['blockedit']['type']=='12'){
+			elseif($context['TPortal']['blockedit']['type']=='12') {
 				if(!is_numeric($context['TPortal']['blockedit']['body']))
 					$context['TPortal']['blockedit']['body']=10;
 				echo '
@@ -265,7 +224,7 @@ function template_editblock()
 							<label for="tp_block_var3">' . $txt['tp-rssblock-maxwidth'].'</label>
 						</dt>
 						<dd>
-							<input type="number" name="tp_block_var3 id="tp_block_var3" value="' , $context['TPortal']['blockedit']['var3'],'" style="width: 6em">
+							<input type="number" name="tp_block_var3" id="tp_block_var3" value="' , $context['TPortal']['blockedit']['var3'],'" style="width: 6em">
 						</dd>
 						<dt>
 							<label for="tp_block_var4">' . $txt['tp-rssblock-maxshown'].'</label>
@@ -395,7 +354,7 @@ function template_editblock()
 				<div>
 				<div class="panels-optionsbg">';
 
-			$types = TPSubs::getInstance()->getBlockStyles21();
+			$types = TPSubs::getInstance()->getBlockStyles();
 
 			foreach($types as $blo => $bl) {
 				echo '
@@ -719,7 +678,7 @@ function template_panels()
 	$allpanels = array('left','right','top','center','front','lower','bottom');
 	$alternate = true;
 
-	$types = TPSubs::getInstance()->getBlockStyles21();
+	$types = TPSubs::getInstance()->getBlockStyles();
 
 	foreach($allpanels as $pa => $panl) {
 		echo '
@@ -957,24 +916,24 @@ function template_blocks()
 							</div>
 							<select size="1" name="type' .$lblock['id']. '">
 								<option value="0"' ,$lblock['type']=='no' ? ' selected' : '' , '>', $txt['tp-blocktype0'] , '</option>
-								<option value="8"' ,$lblock['type']=='shoutbox' ? ' selected' : '' , '>', $txt['tp-blocktype8'] , '</option>
-								<option value="18"' ,$lblock['type']=='articlebox' ? ' selected' : '' , '>', $txt['tp-blocktype18'] , '</option>
-								<option value="19"' ,$lblock['type']=='categorybox' ? ' selected' : '' , '>', $txt['tp-blocktype19'] , '</option>
+								<option value="8"' ,$lblock['type']=='shout' ? ' selected' : '' , '>', $txt['tp-blocktype8'] , '</option>
+								<option value="18"' ,$lblock['type']=='article' ? ' selected' : '' , '>', $txt['tp-blocktype18'] , '</option>
+								<option value="19"' ,$lblock['type']=='category' ? ' selected' : '' , '>', $txt['tp-blocktype19'] , '</option>
 								<option value="14"' ,$lblock['type']=='module' ? ' selected' : '' , '>', $txt['tp-blocktype14'] , '</option>
 								<option value="5"' ,$lblock['type']=='html' ? ' selected' : '' , '>', $txt['tp-blocktype5'] , '</option>
-								<option value="11"' ,$lblock['type']=='scriptbox' ? ' selected' : '' , '>', $txt['tp-blocktype11'] , '</option>
-								<option value="10"' ,$lblock['type']=='phpbox' ? ' selected' : '' , '>', $txt['tp-blocktype10'] , '</option>
+								<option value="11"' ,$lblock['type']=='script' ? ' selected' : '' , '>', $txt['tp-blocktype11'] , '</option>
+								<option value="10"' ,$lblock['type']=='php' ? ' selected' : '' , '>', $txt['tp-blocktype10'] , '</option>
 								<option value="9"' ,$lblock['type']=='catmenu' ? ' selected' : '' , '>', $txt['tp-blocktype9'] , '</option>
-								<option value="2"' ,$lblock['type']=='newsbox' ? ' selected' : '' , '>', $txt['tp-blocktype2'] , '</option>
-								<option value="6"' ,$lblock['type']=='onlinebox' ? ' selected' : '' , '>', $txt['tp-blocktype6'] , '</option>
-								<option value="12"' ,$lblock['type']=='recentbox' ? ' selected' : '' , '>', $txt['tp-blocktype12'] , '</option>
+								<option value="2"' ,$lblock['type']=='news' ? ' selected' : '' , '>', $txt['tp-blocktype2'] , '</option>
+								<option value="6"' ,$lblock['type']=='online' ? ' selected' : '' , '>', $txt['tp-blocktype6'] , '</option>
+								<option value="12"' ,$lblock['type']=='recent' ? ' selected' : '' , '>', $txt['tp-blocktype12'] , '</option>
 								<option value="15"' ,$lblock['type']=='rss' ? ' selected' : '' , '>', $txt['tp-blocktype15'] , '</option>
-								<option value="4"' ,$lblock['type']=='searchbox' ? ' selected' : '' , '>', $txt['tp-blocktype4'] , '</option>
+								<option value="4"' ,$lblock['type']=='search' ? ' selected' : '' , '>', $txt['tp-blocktype4'] , '</option>
 								<option value="16"' ,$lblock['type']=='sitemap' ? ' selected' : '' , '>', $txt['tp-blocktype16'] , '</option>
 								<option value="13"' ,$lblock['type']=='ssi' ? ' selected' : '' , '>', $txt['tp-blocktype13'] , '</option>
-								<option value="3"' ,$lblock['type']=='statsbox' ? ' selected' : '' , '>', $txt['tp-blocktype3'] , '</option>
-								<option value="7"' ,$lblock['type']=='themebox' ? ' selected' : '' , '>', $txt['tp-blocktype7'] , '</option>
-								<option value="1"' ,$lblock['type']=='userbox' ? ' selected' : '' , '>', $txt['tp-blocktype1'] , '</option>';
+								<option value="3"' ,$lblock['type']=='stats' ? ' selected' : '' , '>', $txt['tp-blocktype3'] , '</option>
+								<option value="7"' ,$lblock['type']=='theme' ? ' selected' : '' , '>', $txt['tp-blocktype7'] , '</option>
+								<option value="1"' ,$lblock['type']=='user' ? ' selected' : '' , '>', $txt['tp-blocktype1'] , '</option>';
 				echo '	</select>
 						</div>
 						<div style="width:10%;" class="smalltext fullwidth-on-res-layout float-items tpcenter">

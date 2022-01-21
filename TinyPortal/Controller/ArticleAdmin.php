@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -92,10 +92,13 @@ class ArticleAdmin extends \Action_Controller
         $subAction  = $action->initialize($subActions, $sa);
         $action->dispatch($subAction);
 
+        if(!isset($context['sub_template'])) {
+            $context['sub_template'] = $sa;
+        }
     }}}
 
     public function action_attachment() {{{
-        tpattach();
+        TPSubs::getInstance()->attach();
     }}}
 
     public function action_edit() {{{
@@ -259,11 +262,11 @@ class ArticleAdmin extends \Action_Controller
         $tpArticle  = TPArticle::getInstance();
         if(empty($where)) {
             // We are inserting
-            $where = $tpArticle->insertArticle($article_data);
+            $where = $tpArticle->insert($article_data);
         }
         else {
             // We are updating
-            $tpArticle->updateArticle((int)$where, $article_data);
+            $tpArticle->update((int)$where, $article_data);
         }
 
         unset($tpArticle);
@@ -507,12 +510,12 @@ class ArticleAdmin extends \Action_Controller
                     )
                 );
                 if($db->num_rows($request) == 0) {
-                    throw new Elk_Exception($txt['tp-noadmin'], 'general');
+                    throw new \Elk_Exception($txt['tp-noadmin'], 'general');
                 }
                 $db->free_result($request);
             }
             else {
-                throw new Elk_Exception($txt['tp-noadmin'], 'general');
+                throw new \Elk_Exception($txt['tp-noadmin'], 'general');
             }
         }
 
@@ -851,7 +854,7 @@ class ArticleAdmin extends \Action_Controller
         $db = TPDatabase::getInstance();
 
         // Get the category names
-        $categories = TPCategory::getInstance()->getCategoryData(array('id', 'display_name'), array('item_type' => 'category'));
+        $categories = TPCategory::getInstance()->select(array('id', 'display_name'), array('item_type' => 'category'));
         if(is_array($categories)) {
             foreach($categories as $k => $v) {
                 $context['TPortal']['catnames'][$v['id']] = $v['display_name'];
@@ -1213,7 +1216,7 @@ class ArticleAdmin extends \Action_Controller
             checksession('get');
             if($id > 0) {
                 // first get info
-                $newcat = TPCategory::getInstance()->getCategoryData(array('id', 'parent'), array('id' => $id));
+                $newcat = TPCategory::getInstance()->select(array('id', 'parent'), array('id' => $id));
                 if(is_array($newcat)) {
                     $newcat = $newcat[0]['parent'];
                     $db->query('', '
@@ -1233,7 +1236,7 @@ class ArticleAdmin extends \Action_Controller
                     );
                 }
 
-                TPCategory::getInstance()->deleteCategory($id);
+                TPCategory::getInstance()->delete($id);
                 redirectexit('action=admin;area=tparticles;sa=categories');
             }
             else {

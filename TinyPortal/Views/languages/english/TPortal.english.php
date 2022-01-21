@@ -1,5 +1,5 @@
 <?php
-// @version 1.0.0 RC2; TPortal
+// @version 1.0.0 RC3; TPortal
 
 global $txt, $context, $scripturl;
 
@@ -37,6 +37,19 @@ $txt['cannot_tp_alwaysapproved'] = 'Article submission or update needs to be app
 
 $txt['permissionname_tp_artcomment'] = $txt['group_perms_name_tp_artcomment'] = 'Can comment on articles';
 $txt['permissionhelp_tp_artcomment'] = 'Allows users to add comments to articles.';
+
+$txt['permissionname_tp_menu'] = $txt['group_perms_name_tp_menu'] = 'Manage menu';
+$txt['permissionhelp_tp_menu'] = 'Allows users to manage menu for TP.';
+$txt['cannot_tp_settings'] = 'Sorry, you aren\'t allowed to manage TinyPortal settings.';
+
+$txt['permissionname_tp_download'] = $txt['group_perms_name_tp_download'] = 'Manage Download';
+$txt['permissionhelp_tp_download'] = 'Allows users to manage downlaod for TP.';
+$txt['cannot_tp_settings'] = 'Sorry, you aren\'t allowed to manage TinyPortal Download.';
+
+$txt['permissionname_tp_gallery'] = $txt['group_perms_name_tp_gallery'] = 'Manage Gallery';
+$txt['permissionhelp_tp_gallery'] = 'Allows users to manage Galleries for TP.';
+$txt['cannot_tp_settings'] = 'Sorry, you aren\'t allowed to manage TinyPortal Gallery.';
+
 
 // Panels
 $txt['bottom-tp-upshrink_description'] = 'Bottom Panel';

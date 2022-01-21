@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -51,7 +51,6 @@ class Base
 
         if($this->dB->db_num_rows($request) > 0) {
             $last   = $this->dB->db_fetch_assoc($request)['item'];
-            $this->dB->db_free_result($request);
             $this->dB->db_query('', '
                 UPDATE {db_prefix}tp_data
                 SET item = {int:item}
@@ -84,6 +83,7 @@ class Base
                 array ('id')
             );
         }
+        $this->dB->db_free_result($request);
 
         // fetch any comments
         $request =  $this->dB->db_query('', '
@@ -113,6 +113,7 @@ class Base
                 }
             }
         }
+        $this->dB->db_free_result($request);
 
         $comments['new_count']      = $new_count;
         $comments['comment_count']  = $comment_count;
@@ -141,6 +142,7 @@ class Base
         if($this->dB->db_num_rows($request) > 0) {
             $comment = $this->dB->db_fetch_assoc($request);
         }
+        $this->dB->db_free_result($request);
 
         return $comment;
     }}}
@@ -244,6 +246,7 @@ class Base
                 $values[] = $value;
             }
         }
+        $this->dB->db_free_result($request);
 
         return $values;
     }}}
@@ -268,11 +271,15 @@ class Base
 
      protected function updateSQL(int $id, array $data, array $dBStructure, string $table) {{{
 
+
         $update_data = $data;
         array_walk($update_data, function(&$update_data, $key) use ( $dBStructure ) {
-                $update_data = $key.' = {'.$dBStructure[$key].':'.$key.'}';
+                if(array_key_exists($key, $dBStructure)) {
+                    $update_data = $key.' = {'.$dBStructure[$key].':'.$key.'}';
+                }
             }
         );
+
         $update_query = implode(', ', array_values($update_data));
 
         $data['id'] = (int)$id;

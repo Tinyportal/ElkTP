@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -70,30 +70,31 @@ class Category extends Base {
         if($this->dB->db_num_rows($request) > 0) {
             $shout = $this->dB->db_fetch_assoc($request);
         }
+        $this->dB->db_free_result($request);
 
         return $shout;
 
     }}}
 
-    public function getCategoryData( $columns, $where ) {{{
+    public function select( $columns, $where ) {{{
 
         return self::getSQLData($columns, $where, $this->dBStructure, 'tp_categories');
 
     }}}
 
-   public function insertCategory($category_data) {{{
+   public function insert($category_data) {{{
 
         return self::insertSQL($category_data, $this->dBStructure, 'tp_categories');
 
     }}}
 
-     public function updateCategory($category_id, $category_data) {{{
+     public function update($category_id, $category_data) {{{
 
         return self::updateSQL($category_id, $category_data, $this->dBStructure, 'tp_categories');
 
     }}}
 
-    public function deleteCategory( $category_id ) {{{
+    public function delete( $category_id ) {{{
 
         return self::deleteSQL($category_id, 'tp_categories');
 

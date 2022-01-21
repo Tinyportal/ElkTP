@@ -1,7 +1,7 @@
 <?php
 /**
  * @package TinyPortal
- * @version 1.0.0 RC2
+ * @version 1.0.0 RC3
  * @author TinyPortal - http://www.tinyportal.net
  * @license BSD 3.0 http://opensource.org/licenses/BSD-3-Clause/
  *
@@ -29,7 +29,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 {
 
     public static function canFrontPage() {{{
-        return true;
+		return true;
     }}}
 
     public static function frontPageOptions() {{{
@@ -71,29 +71,26 @@ class Portal extends \Action_Controller implements Frontpage_Interface
         if($action == 'tportal') {
             $subAction  = TPUtil::filter('sa', 'get', 'string');
             if($subAction == false) {
-                throw new Elk_Exception($txt['tp-no-sa-url'], 'general');
+                throw new \Elk_Exception($txt['tp-no-sa-url'], 'general');
             }
 
             $subActions = array(
-                'credits'   => array('', 'self::action_credits', array()),
-                'upshrink'  => array('', 'self::action_upshrink', array()),
+                'credits'   => array($this, 'action_credits', array()),
+                'upshrink'  => array($this, 'action_upshrink', array()),
+                'publish'   => array(new ArticleAdmin, 'action_publish', array()),
             );
 
             call_integration_hook('integrate_tp_pre_subactions', array(&$subActions));
 
             if(!array_key_exists($subAction, $subActions)) {
-                throw new Elk_Exception($txt['tp-no-sa-list'], 'general');
+                throw new \Elk_Exception($txt['tp-no-sa-list'], 'general');
             }
 
             $context['TPortal']['subaction'] = $subAction;
-            // If it exists in our new subactions array load it
-            if(!empty($subAction) && array_key_exists($subAction, $subActions)) {
-                if (!empty($subActions[$subAction][0])) {
-                    require_once(SOURCEDIR . '/' . $subActions[$subAction][0]);
-                }
 
-                call_user_func_array($subActions[$subAction][1], $subActions[$subAction][2]);
-            }
+            $action     = new \Action();
+            $sa         = $action->initialize($subActions, $subAction);
+            $action->dispatch($sa);
 
             call_integration_hook('integrate_tp_post_subactions');
         }
@@ -186,7 +183,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                          )
                     )['image'];
 
-                    $tpArticle->updateArticleViews($page);
+                    $tpArticle->updateViews($page);
 
                     $comments = $tpArticle->getArticleComments($context['user']['id'] , $article['id']);
 
@@ -360,7 +357,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                         loadtemplate('TPprint');
                         $context['template_layers'] = array('tp_print');
                         $context['sub_template'] = 'tp_print_body';
-                        tp_hidebars();
+                        TPSubs::getInstance()->hidebars();
                     }
                     // linktree?
                     if(!in_array('linktree', $context['TPortal']['article']['visual_options'])) {
@@ -368,7 +365,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     }
                     else {
                         // we need the categories for the linktree
-                        $allcats    = \TinyPortal\Model\Category::getInstance()->getCategoryData(array('*') , array('item_type' => 'category'));
+                        $allcats    = \TinyPortal\Model\Category::getInstance()->select(array('*') , array('item_type' => 'category'));
 
                         // setup the linkree
                         TPSubs::getInstance()->strip_linktree();
@@ -449,10 +446,10 @@ class Portal extends \Action_Controller implements Frontpage_Interface
             $cat            = TPUtil::filter('cat', 'get', 'string');
             // get the category first
             if(is_numeric($cat)) {
-                $category   = \TinyPortal\Model\Category::getInstance()->getCategoryData(array('*') , array('id' => $cat));
+                $category   = \TinyPortal\Model\Category::getInstance()->select(array('*') , array('id' => $cat));
             }
             else {
-                $category   = \TinyPortal\Model\Category::getInstance()->getCategoryData(array('*') , array('short_name' => $cat));
+                $category   = \TinyPortal\Model\Category::getInstance()->select(array('*') , array('short_name' => $cat));
             }
             if(is_array($category) && (count($category) > 0)) {
                 $category = $category[0];
@@ -547,7 +544,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 
                             $row['avatar'] = determineAvatar( array(
                                         'avatar'            => $row['avatar'],
-                                        'emai_addressl'     => $row['email_address'],
+                                        'email_address'		=> $row['email_address'],
                                         'filename'          => !empty($row['filename']) ? $row['filename'] : '',
                                         'id_attach'         => $row['id_attach'],
                                         'attachment_type'   => $row['attachment_type'],
@@ -1362,7 +1359,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
     function action_credits() {{{
         global $context;
 
-        tp_hidebars();
+        TPSubs::getInstance()->hidebars();
         $context['TPortal']['not_forum'] = false;
 
         if(TPSubs::getInstance()->loadLanguage('TPhelp') == false) {
