@@ -382,41 +382,53 @@ class Integrate
 						'panels'	    => array ( $txt['tp-panels'] ),
 					),
 				),
-				'tpmenu' => array (
-					'label'       => $txt['tp-adminmenus'],
-					'controller'  => '\TinyPortal\Controller\MenuAdmin',
-					'function'    => 'action_index',
-					'icon'        => 'transparent.png',
-					'permission'  => array ( 'admin_forum', 'tp_menu' ),
-					'subsections' => array (
-						'list'	    => array ( $txt['tp-menu-list'] ),
-						'add'	    => array ( $txt['tp-menu-add'] ),
-					),
+			),
+		);
+	
+		
+
+        if( Model\Admin::getInstance()->getSetting('menu_enabled') == true ) {
+			$adminAreas['tpadmin']['areas']['tpmenu'] = array (
+				'label'       => $txt['tp-adminmenus'],
+				'controller'  => '\TinyPortal\Controller\MenuAdmin',
+				'function'    => 'action_index',
+				'icon'        => 'transparent.png',
+				'permission'  => array ( 'admin_forum', 'tp_menu' ),
+				'subsections' => array (
+					'list'	    => array ( $txt['tp-menu-list'] ),
+					'add'	    => array ( $txt['tp-menu-add'] ),
 				),
-                'tpdownload' => array (
-					'label'       => $txt['tp-admindownload'],
-					'controller'  => '\TinyPortal\Controller\DownloadAdmin',
-					'function'    => 'action_index',
-					'icon'        => 'transparent.png',
-					'permission'  => array ( 'admin_forum', 'tp_download' ),
-					'subsections' => array (
-						'list'	    => array ( $txt['tp-download-list'] ),
-						'add'	    => array ( $txt['tp-download-add'] ),
-					),
+			);
+		}
+
+
+        if( Model\Admin::getInstance()->getSetting('download_enabled') == true ) {
+			$adminAreas['tpadmin']['areas']['tpdownload'] = array (
+				'label'       => $txt['tp-admindownload'],
+				'controller'  => '\TinyPortal\Controller\DownloadAdmin',
+				'function'    => 'action_index',
+				'icon'        => 'transparent.png',
+				'permission'  => array ( 'admin_forum', 'tp_download' ),
+				'subsections' => array (
+					'list'	    => array ( $txt['tp-download-list'] ),
+					'add'	    => array ( $txt['tp-download-add'] ),
 				),
-                'tpgallery' => array (
-					'label'       => $txt['tp-admingallery'],
-					'controller'  => '\TinyPortal\Controller\GalleryAdmin',
-					'function'    => 'action_index',
-					'icon'        => 'transparent.png',
-					'permission'  => array ( 'admin_forum', 'tp_gallery' ),
-					'subsections' => array (
-						'list'	    => array ( $txt['tp-gallery-list'] ),
-						'add'	    => array ( $txt['tp-gallery-add'] ),
-					),
+			);
+		}
+		
+        if( Model\Admin::getInstance()->getSetting('gallery_enabled') == true ) {
+			$adminAreas['tpadmin']['areas']['tpgallery'] = array (
+				'label'       => $txt['tp-admingallery'],
+				'controller'  => '\TinyPortal\Controller\GalleryAdmin',
+				'function'    => 'action_index',
+				'icon'        => 'transparent.png',
+				'permission'  => array ( 'admin_forum', 'tp_gallery' ),
+				'subsections' => array (
+					'list'	    => array ( $txt['tp-gallery-list'] ),
+					'add'	    => array ( $txt['tp-gallery-add'] ),
 				),
-            ),
-        );
+			);
+		}
 
     }}}
 
