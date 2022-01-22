@@ -21,8 +21,9 @@ class BoardIndex extends \BoardIndex_Controller implements Frontpage_Interface
 {
 
 	public function action_index() {{{
+		global $context;
 
-		if( \TinyPortal\Model\Admin::getInstance()->getSetting('portal_type') == 'portal_guest' ) {
+		if( (\TinyPortal\Model\Admin::getInstance()->getSetting('portal_type') == 'portal_guest') && $context['user']['is_guest'] ) {
 			require_once CONTROLLERDIR . '/Auth.controller.php';
 			$controller = new \Auth_Controller();
 			$controller->action_kickguest();
