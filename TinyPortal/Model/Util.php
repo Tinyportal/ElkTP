@@ -345,7 +345,8 @@ class Util
             case 'int':
                 $filter = FILTER_SANITIZE_NUMBER_INT;
                 break;
-            case 'float' || 'decimal':
+            case 'float':
+			case 'decimal':
                 $filter = FILTER_SANITIZE_NUMBER_FLOAT;
                 break;
             case 'encoded':
