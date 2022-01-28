@@ -850,7 +850,7 @@ class ArticleAdmin extends \Action_Controller
 
     public function action_categories() {{{ 
         global $scripturl, $context, $txt, $boardurl;
-
+   
         $db = TPDatabase::getInstance();
 
         // Get the category names
