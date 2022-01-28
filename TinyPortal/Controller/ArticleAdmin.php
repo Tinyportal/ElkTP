@@ -850,7 +850,7 @@ class ArticleAdmin extends \Action_Controller
 
     public function action_categories() {{{ 
         global $scripturl, $context, $txt, $boardurl;
-    
+
         $db = TPDatabase::getInstance();
 
         // Get the category names
@@ -1004,6 +1004,7 @@ class ArticleAdmin extends \Action_Controller
                     }
                 }
                 TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=categories;cu='. $ccat, $txt['tp-editcategory']);
+				$context['sub_template'] = 'editcategory';
             }
         }
         else {
