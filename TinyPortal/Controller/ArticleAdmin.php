@@ -853,7 +853,7 @@ class ArticleAdmin extends \ElkArte\AbstractController
 
     public function action_categories() {{{ 
         global $scripturl, $context, $txt, $boardurl;
-    
+   
         $db = TPDatabase::getInstance();
 
         // Get the category names
@@ -1007,6 +1007,7 @@ class ArticleAdmin extends \ElkArte\AbstractController
                     }
                 }
                 TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=categories;cu='. $ccat, $txt['tp-editcategory']);
+				$context['sub_template'] = 'editcategory';
             }
         }
         else {
@@ -1287,10 +1288,10 @@ class ArticleAdmin extends \ElkArte\AbstractController
             $checkboxes = array('use_wysiwyg', 'use_dragdrop', 'hide_editarticle_link', 'print_articles', 'allow_links_article_comments', 'hide_article_facebook', 'hide_article_twitter', 'hide_article_reddit', 'hide_article_digg', 'hide_article_delicious', 'hide_article_stumbleupon');
             foreach($checkboxes as $v) {
                 if(TPUtil::checkboxChecked('tp_'.$v)) {
-                    $updateArray[$v] = "1";
+                    $updateArray[$v] = 1;
                 }
                 else {
-                    $updateArray[$v] = "";
+                    $updateArray[$v] = 0;
                 }
                 // remove the variable so we don't process it twice before the old logic is removed
                 unset($_POST['tp_'.$v]);

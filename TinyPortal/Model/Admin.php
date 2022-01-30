@@ -309,7 +309,7 @@ class Admin extends Base {
 			);
 		}
 
-		if (allowedTo('tp_menu')) {
+		if ( allowedTo('tp_menu') && ($this->getSetting('menu_enabled') == true) ) {
 			$context['admin_tabs']['tp_menu'] = array(
 				'list' => array(
 					'title' => $txt['tp-menu-list'],
@@ -324,7 +324,7 @@ class Admin extends Base {
 			);
 		}
 
-		if (allowedTo('tp_download')) {
+		if ( allowedTo('tp_download') && ($this->getSetting('download_enabled') == true) ) {
 			$context['admin_tabs']['tp_download'] = array(
 				'list' => array(
 					'title' => $txt['tp-download-list'],
@@ -339,7 +339,7 @@ class Admin extends Base {
 			);
 		}
 
-		if (allowedTo('tp_gallery')) {
+		if ( allowedTo('tp_gallery') && ($this->getSetting('gallery_enabled') == true) ) {
 			$context['admin_tabs']['tp_gallery'] = array(
 				'list' => array(
 					'title'         => $txt['tp-gallery-list'],
@@ -353,6 +353,7 @@ class Admin extends Base {
 				),
 			);
 		}
+
 	}}}
 
 }

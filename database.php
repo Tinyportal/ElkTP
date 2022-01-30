@@ -235,6 +235,7 @@ foreach ($tables as $tp_table => $data) {
 $settingsArray = array(
     // KEEP TRACK OF INTERNAL VERSION HERE
     'version' => '1.0.0',
+    'portal_type' => '',
     'frontpage_title' => '',
     'showforumfirst' => '0',
     'hideadminmenu' => '0',

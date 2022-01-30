@@ -20,6 +20,7 @@ class BoardIndex extends \ElkArte\Controller\BoardIndex implements \ElkArte\Fron
 {
 
 	public function action_index() {{{
+		global $context;
 
 		if( (\TinyPortal\Model\Admin::getInstance()->getSetting('portal_type') == 'portal_guest') && \ElkArte\User::$info->is_guest) {
 			$controller = new \ElkArte\Controller\Auth(new \ElkArte\EventManager());

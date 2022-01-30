@@ -119,10 +119,10 @@ class PortalAdmin extends \ElkArte\AbstractController
         $checkboxes = array('imageproxycheck', 'admin_showblocks', 'oldsidebar', 'disable_template_eval', 'fulltextsearch', 'hideadminmenu', 'useroundframepanels', 'showcollapse', 'blocks_edithide', 'uselangoption', 'use_groupcolor', 'showstars');
         foreach($checkboxes as $v) {
             if(TPUtil::checkboxChecked('tp_'.$v)) {
-                $updateArray[$v] = "1";
+                $updateArray[$v] = 1;
             }
             else {
-                $updateArray[$v] = "";
+                $updateArray[$v] = 0;
             }
             // remove the variable so we don't process it twice before the old logic is removed
             unset($_POST['tp_'.$v]);
@@ -221,10 +221,10 @@ class PortalAdmin extends \ElkArte\AbstractController
         $checkboxes     = array('allow_guestnews', 'forumposts_avatar', 'use_attachment');
         foreach($checkboxes as $v) {
             if(TPUtil::checkboxChecked('tp_'.$v)) {
-                $updateArray[$v] = "1";
+                $updateArray[$v] = 1;
             }
             else {
-                $updateArray[$v] = "";
+                $updateArray[$v] = 0;
             }
             // remove the variable so we don't process it twice before the old logic is removed
             unset($_POST['tp_'.$v]);

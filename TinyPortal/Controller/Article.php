@@ -36,9 +36,6 @@ class Article extends \ElkArte\AbstractController
             TPSubs::getInstance()->loadLanguage('TParticle', 'english');
         }
 
-        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
-            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
-        }
 
         // a switch to make it clear what is "forum" and not
         $context['TPortal']['not_forum'] = true;
@@ -73,6 +70,10 @@ class Article extends \ElkArte\AbstractController
 		if (!allowedTo('tp_artcomment')) {
 			throw new \Elk_Exception($txt['tp-nocomments'], 'general');
 		}
+
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
+        }
 
 		$commenter  = $context['user']['id'];
 		$article    = TPUtil::filter('tp_article_id', 'post', 'int');
@@ -194,6 +195,10 @@ class Article extends \ElkArte\AbstractController
 			throw new \Elk_Exception($txt['tp-nocomments'], 'general');
 		}
 
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
+        }
+
 		// edit or deleting a comment?
 		if($context['user']['is_logged']) {
 			// check that you indeed can edit or delete
@@ -218,6 +223,10 @@ class Article extends \ElkArte\AbstractController
 	   if (!allowedTo('tp_artcomment')) {
 			throw new \Elk_Exception($txt['tp-nocomments'], 'general');
 		}
+
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
+        }
 
 		if($context['user']['is_logged']) {
 			// check that you indeed can edit or delete
@@ -249,6 +258,10 @@ class Article extends \ElkArte\AbstractController
 
 	function action_rate() {{{
 		global $context;
+
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
+        }
 
 		$db = TPDatabase::getInstance();
 		// rating is underway

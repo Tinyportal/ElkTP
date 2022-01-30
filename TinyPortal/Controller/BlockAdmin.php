@@ -716,10 +716,10 @@ class BlockAdmin extends \ElkArte\AbstractController
         $checkboxes = array('hidebars_admin_only', 'hidebars_profile', 'hidebars_pm', 'hidebars_memberlist', 'hidebars_search', 'hidebars_calendar');
         foreach($checkboxes as $v) {
             if(TPUtil::checkboxChecked('tp_'.$v)) {
-                $updateArray[$v] = "1";
+                $updateArray[$v] = 1;
             }
             else {
-                $updateArray[$v] = "";
+                $updateArray[$v] = 0;
             }
             // remove the variable so we don't process it twice before the old logic is removed
             unset($_POST['tp_'.$v]);
