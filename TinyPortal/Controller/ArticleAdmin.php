@@ -1285,10 +1285,10 @@ class ArticleAdmin extends \Action_Controller
             $checkboxes = array('use_wysiwyg', 'use_dragdrop', 'hide_editarticle_link', 'print_articles', 'allow_links_article_comments', 'hide_article_facebook', 'hide_article_twitter', 'hide_article_reddit', 'hide_article_digg', 'hide_article_delicious', 'hide_article_stumbleupon');
             foreach($checkboxes as $v) {
                 if(TPUtil::checkboxChecked('tp_'.$v)) {
-                    $updateArray[$v] = "1";
+                    $updateArray[$v] = 1;
                 }
                 else {
-                    $updateArray[$v] = "";
+                    $updateArray[$v] = 0;
                 }
                 // remove the variable so we don't process it twice before the old logic is removed
                 unset($_POST['tp_'.$v]);
