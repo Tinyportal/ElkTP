@@ -923,8 +923,8 @@ function template_blocks()
 								<option value="18"' ,$lblock['type']=='article' ? ' selected' : '' , '>', $txt['tp-blocktype18'] , '</option>
 								<option value="19"' ,$lblock['type']=='category' ? ' selected' : '' , '>', $txt['tp-blocktype19'] , '</option>
 								<option value="14"' ,$lblock['type']=='module' ? ' selected' : '' , '>', $txt['tp-blocktype14'] , '</option>
-								<option value="5"' ,$lblock['type']=='html' ? ' selected' : '' , '>', $txt['tp-blocktype5'] , '</option>
-								<option value="11"' ,$lblock['type']=='script' ? ' selected' : '' , '>', $txt['tp-blocktype11'] , '</option>
+								<option value="5"' ,$lblock['type']=='bbc' ? ' selected' : '' , '>', $txt['tp-blocktype5'] , '</option>
+								<option value="11"' ,$lblock['type']=='html' ? ' selected' : '' , '>', $txt['tp-blocktype11'] , '</option>
 								<option value="10"' ,$lblock['type']=='php' ? ' selected' : '' , '>', $txt['tp-blocktype10'] , '</option>
 								<option value="9"' ,$lblock['type']=='catmenu' ? ' selected' : '' , '>', $txt['tp-blocktype9'] , '</option>
 								<option value="2"' ,$lblock['type']=='news' ? ' selected' : '' , '>', $txt['tp-blocktype2'] , '</option>
