@@ -53,7 +53,10 @@ class Base
 
     public function admin_display( $block ) {{{
 
+		return false;
+
     }}}
+
 }
 
 ?>
