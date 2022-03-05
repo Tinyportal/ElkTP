@@ -36,6 +36,19 @@ class Html extends Base
 
     }}}
 
+    public function admin_setup( &$block ) {{{
+
+    }}}
+
+    public function admin_display( $block ) {{{
+
+		echo '</div><hr><div><b>',$this->txt['tp-body'],'</b> <br><textarea style="width: 94%;" name="tp_block_body" id="tp_block_body" rows="15" cols="40" wrap="auto">' , $this->context['TPortal']['blockedit']['body'], '</textarea>';
+
+		return true;
+
+    }}}
+
+
 }
 
 ?>
