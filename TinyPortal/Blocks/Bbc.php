@@ -36,6 +36,20 @@ class Bbc extends Base
 
     }}}
 
+    public function admin_setup( &$block ) {{{
+
+    }}}
+
+	public function admin_display( $block ) {{{
+
+		echo '</div><hr><div>';
+		\TinyPortal\Model\Subs::getInstance()->bbcbox($this->context['TPortal']['editor_id']);	
+
+		return true;
+
+    }}}
+
+
 }
 
 ?>

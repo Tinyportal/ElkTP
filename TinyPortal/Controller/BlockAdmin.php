@@ -336,7 +336,6 @@ class BlockAdmin extends \ElkArte\AbstractController
 
         $context['sub_template'] = 'editblock';
 
-
         theme()->getTemplates()->load('TPBlockLayout');
 
     }}}
