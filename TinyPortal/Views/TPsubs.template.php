@@ -1346,7 +1346,7 @@ function render_rating($total, $votes, $id, $can_rate = false, $render = true)
 		}
 		else {
 			if (!$context['user']['is_guest']) {
-			    $data .= ' 	<em class="tp_article_rate smalltext">'. $txt['tp-dlhaverated'].'</em>';
+			    $data .= ' 	<em class="tp_article_rate smalltext">'. $txt['tp-haverated'].'</em>';
             }
 		}
 	}

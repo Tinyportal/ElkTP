@@ -251,4 +251,6 @@ $txt['tp-mb'] = ' Mb';
 $txt['tp-gb'] = ' Gb';
 
 $txt['tp-notuploaded'] = 'File was not uploaded. Error %s';
+
+$txt['tp-haverated'] = 'You have rated this item.';
 ?>
