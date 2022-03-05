@@ -333,8 +333,7 @@ class BlockAdmin extends \Action_Controller
 
         $context['sub_template'] = 'editblock';
 
-
-        loadTemplate('TPBlockLayout');
+        \loadTemplate('TPBlockLayout');
 
     }}}
 

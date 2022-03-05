@@ -1,0 +1,66 @@
+<info>
+TinyPortal BlockCode file.
+format: Boardmod
+</info>
+
+<name>
+International Calendar
+</name>
+
+<author>
+McFly
+</author>
+
+<version>
+0.1
+</version>
+
+<date>
+04.mar.2022
+</date>
+
+<code>
+global $txt, $context, $modSettings, $scripturl, $options;
+loadTemplate('Calendar');
+require_once(SUBSDIR . '/Calendar.subs.php');
+$today = getTodayInfo();
+$curPage = array(
+	'day' => isset($_REQUEST['day']) ? (int) $_REQUEST['day'] : $today['day'],
+	'month' => isset($_REQUEST['month']) ? (int) $_REQUEST['month'] : $today['month'],
+	'year' => isset($_REQUEST['year']) ? (int) $_REQUEST['year'] : $today['year']
+);
+$calendarOptions = array(
+	'start_day' => !empty($options['calendar_start_day']) ? $options['calendar_start_day'] : 0,
+	'show_birthdays' => in_array($modSettings['cal_showbdays'], array(1, 2)),
+	'show_events' => in_array($modSettings['cal_showevents'], array(1, 2)),
+	'show_holidays' => in_array($modSettings['cal_showholidays'], array(1, 2)),
+	'show_week_num' => true,
+	'short_day_titles' => false,
+	'show_next_prev' => true,
+	'show_week_links' => true,
+	'size' => 'large',
+);
+$calendarOptions['show_birthdays'] = $calendarOptions['show_events'] = $calendarOptions['show_holidays'] = false;
+$calendarOptions['short_day_titles'] = true;
+$calendarOptions['show_next_prev'] = false;
+$calendarOptions['show_week_links'] = false;
+$calendarOptions['size'] = 'small';
+$context['calendar_grid_current'] = getCalendarGrid($curPage['month'], $curPage['year'], $calendarOptions);
+echo '
+	<style type="text/css">
+		#month_grid {
+			float: none;
+			padding: 0;
+			width: 100%;
+		}
+	</style>
+	<div id="calendar">
+		<div id="month_grid">
+			', template_show_month_grid('current'), '
+		</div>
+	</div>';
+</code>
+
+<description>
+Calendar PHP block, internationalized and PHP8 ready, only works when calendar is enabled
+</description>

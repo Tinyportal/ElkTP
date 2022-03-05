@@ -40,6 +40,16 @@ class Search extends Base
 
     }}}
 
+    public function admin_setup( &$block ) {{{
+
+    }}}
+
+    public function admin_display( $block ) {{{
+
+		return false;
+
+    }}}
+
 }
 
 ?>
