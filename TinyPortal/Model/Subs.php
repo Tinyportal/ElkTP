@@ -2288,16 +2288,33 @@ class Subs
     }}}
 
     public function langfiles() {{{
-        global $context, $settings;
+        global $context, $settings, $boarddir;
 
         // get all languages for blocktitles
-        $language_dir = $settings['default_theme_dir'] . '/languages';
         $context['TPortal']['langfiles'] = array();
-        $dir = dir($language_dir);
-        while ($entry = $dir->read())
-            if (substr($entry, 0, 6) == 'index.' && substr($entry,(strlen($entry) - 4) ,4) == '.php' && strlen($entry) > 9)
-        $context['TPortal']['langfiles'][] = substr(substr($entry, 6), 0, -4);
-        $dir->close();
+		$dirs = array();
+        
+		$language_dirs = array ( $settings['default_theme_dir'] . '/languages' , $boarddir.'/TinyPortal/Views/languages');
+		foreach($language_dirs as $language_dir) {
+			$dir = dir($language_dir);
+			while ($entry = $dir->read()) {
+				if($entry != '.' && $entry != '..' && is_dir($language_dir.'/'.$entry)) {
+					$dirs[] = $language_dir.'/'.$entry;
+				}
+			}
+			$dir->close();
+		}
+
+		foreach($dirs as $language_dir) {
+			$dir = dir($language_dir);
+			while ($entry = $dir->read()) {
+				if ((substr($entry, 0, 8) == 'TPortal.') && (substr($entry,(strlen($entry) - 4) , 4) == '.php') && (strlen($entry) > 12)) {
+					$context['TPortal']['langfiles'][] = substr(substr($entry, 8), 0, -4);
+				}
+			}
+			$dir->close();
+		}
+
     }}}
 
     public function catLayouts() {{{

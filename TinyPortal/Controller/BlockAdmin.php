@@ -275,10 +275,9 @@ class BlockAdmin extends \Action_Controller
 
             if($context['TPortal']['blockedit']['lang'] != '') {
                 $context['TPortal']['blockedit']['langfiles'] = array();
-                $lang = explode('|', $context['TPortal']['blockedit']['lang']);
-                $num = count($lang);
-                for($i = 0; $i < $num; $i = $i + 2)
-                {
+                $lang	= explode('|', $context['TPortal']['blockedit']['lang']);
+                $num	= count($lang);
+                for($i = 0; $i < $num; $i = $i + 2) {
                     $context['TPortal']['blockedit']['langfiles'][$lang[$i]] = $lang[$i+1];
                 }
             }
