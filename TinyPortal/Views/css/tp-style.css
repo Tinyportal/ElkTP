@@ -492,24 +492,23 @@ ul.category_children li {
 	padding: 0;
 }
 /* blocktype 3: Stats */
-.tp_statsblock h5 {
-	padding: 5px 0 5px 0;
-}
 .tp_statsblock h5.mlist, .tp_statsblock h5.stats, .tp_statsblock h5.online {
+	display: block;
 	margin-bottom: 5px;
-	padding: 5px 0 5px 25px;
+	padding: 5px 0 5px 2em;
+	width: 100%;
 }
 .tp_statsblock h5.mlist {
-	background: url(../images/tinyportal/members.png) no-repeat 0 5px;
+	background: url(../images/members.png) no-repeat 0 5px;
 }
 .tp_statsblock h5.stats {
-	background: url(../images/tinyportal/stats.png) no-repeat 0 5px;
+	background: url(../images/stats.png) no-repeat 0 5px;
 }
 .tp_statsblock h5.online {
-	background: url(../images/tinyportal/online.png) no-repeat 0 5px;
+	background: url(../images/online.png) no-repeat 0 5px;
 }
 .tp_statsblock ul, .tp_stats_users {
-	padding-left: 2em;
+	padding: 0 0 .5em 2em;
 }
 /* blocktype 4: search */
 .block_search {
@@ -532,7 +531,7 @@ ul.tp_catmenu li.tp_catmenu_header {
 	padding-top: 6px;
 }
 /* blocktype 12: Recent Topics */
-ul.tp_recentblock, .tp_statsblock ul {
+ul.tp_recentblock {
 	line-height: 1.3em;
 	list-style: none;
 	margin: 0;
@@ -1043,19 +1042,19 @@ table.tp_grid tr.content:nth-of-type(even) {
 }
 /* Main icons for ELK 2.1 */
 .main_icons.menu_tp::before {
-	background: url(../images/tinyportal/menu_tp.png) no-repeat;
+	background: url(../images/menu_tp.png) no-repeat;
 }
 .main_icons.menu_tparticle::before {
-	background: url(../images/tinyportal/menu_tparticle.png) no-repeat;
+	background: url(../images/menu_tparticle.png) no-repeat;
 }
 .main_icons.menu_tpdownload::before {
-	background: url(../images/tinyportal/menu_tpdownload.png) no-repeat;
+	background: url(../images/menu_tpdownload.png) no-repeat;
 }
 .main_icons.menu_tpshout::before {
-	background: url(../images/tinyportal/menu_tpshout.png) no-repeat;
+	background: url(../images/menu_tpshout.png) no-repeat;
 }
 .main_icons.menu_tpforum::before {
-    background: url(../images/tinyportal/menu_tpforum.png) no-repeat;
+    background: url(../images/menu_tpforum.png) no-repeat;
 }
 /* Additional style for blocks replacing tp_half */
 div.tp_half21 {
@@ -1114,7 +1113,7 @@ code.bbc_code {
 	padding: 5px 0;
 }
 .rss_title_normal {
-	background: url(../images/tinyportal/bullet1.png) no-repeat 0 5px;
+	background: url(../images/bullet1.png) no-repeat 0 5px;
 	border: none;
 	font-size: 1em;
 	line-height: 1.5em;
@@ -1254,7 +1253,7 @@ div.dl_screenshot {
 	padding: 10px 0 0 0;
 }
 .dl_morefiles li {
-	background: url(../images/tinyportal/glyph_download.png) no-repeat;
+	background: url(../images/glyph_download.png) no-repeat;
 	list-style: none;
 	margin: 0;
 	padding: 2px 0 6px 20px;
