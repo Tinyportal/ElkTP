@@ -278,10 +278,9 @@ class BlockAdmin extends \ElkArte\AbstractController
 
             if($context['TPortal']['blockedit']['lang'] != '') {
                 $context['TPortal']['blockedit']['langfiles'] = array();
-                $lang = explode('|', $context['TPortal']['blockedit']['lang']);
-                $num = count($lang);
-                for($i = 0; $i < $num; $i = $i + 2)
-                {
+                $lang	= explode('|', $context['TPortal']['blockedit']['lang']);
+                $num	= count($lang);
+                for($i = 0; $i < $num; $i = $i + 2) {
                     $context['TPortal']['blockedit']['langfiles'][$lang[$i]] = $lang[$i+1];
                 }
             }
@@ -456,7 +455,7 @@ class BlockAdmin extends \ElkArte\AbstractController
 				$access[] = 'tpcat=' . $v;
 			}
 			elseif(substr($k, 0, 8) == 'langtype') {
-				$access[] = 'tlang=' . $k;
+				$access[] = 'tlang=' . $v;
 			}
 			elseif(substr($k, 0, 9) == 'custotype' && !empty($v)) {
 				$items = explode(',', $v);
@@ -471,7 +470,7 @@ class BlockAdmin extends \ElkArte\AbstractController
 				if(!isset($userbox)) {
 					$userbox = array();
 				}
-				$userbox[] = $value;
+				$userbox[] = $v;
 			}
 			elseif(substr($k, 0, 8) == 'tp_theme') {
 				$theme = substr($k, 8);
@@ -499,7 +498,7 @@ class BlockAdmin extends \ElkArte\AbstractController
         }
 
 		if(isset($userbox)) {
-			//$updateArray['userbox_options'] = implode(',', $userbox);
+			$updateArray['userbox_options'] = implode(',', $userbox);
 		}
 
 		if(isset($themebox)) {
