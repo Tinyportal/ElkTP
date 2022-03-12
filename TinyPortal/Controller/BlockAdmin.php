@@ -452,7 +452,7 @@ class BlockAdmin extends \Action_Controller
 				$access[] = 'tpcat=' . $v;
 			}
 			elseif(substr($k, 0, 8) == 'langtype') {
-				$access[] = 'tlang=' . $k;
+				$access[] = 'tlang=' . $v;
 			}
 			elseif(substr($k, 0, 9) == 'custotype' && !empty($v)) {
 				$items = explode(',', $v);
@@ -467,7 +467,7 @@ class BlockAdmin extends \Action_Controller
 				if(!isset($userbox)) {
 					$userbox = array();
 				}
-				$userbox[] = $value;
+				$userbox[] = $v;
 			}
 			elseif(substr($k, 0, 8) == 'tp_theme') {
 				$theme = substr($k, 8);
@@ -495,7 +495,7 @@ class BlockAdmin extends \Action_Controller
         }
 
 		if(isset($userbox)) {
-			//$updateArray['userbox_options'] = implode(',', $userbox);
+			$updateArray['userbox_options'] = implode(',', $userbox);
 		}
 
 		if(isset($themebox)) {
