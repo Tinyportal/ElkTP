@@ -495,7 +495,9 @@ class BlockAdmin extends \Action_Controller
         }
 
 		if(isset($userbox)) {
-			$updateArray['userbox_options'] = implode(',', $userbox);
+			$updateSettings = array();
+			$updateSettings['userbox_options'] = implode(',', $userbox);
+			TPSubs::getInstance()->updateSettings($updateSettings);
 		}
 
 		if(isset($themebox)) {
