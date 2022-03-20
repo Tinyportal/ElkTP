@@ -5,7 +5,7 @@
 	<id>tinyportal:tinyportal</id>
 	<type>modification</type>
 	<version>1.0.0 RC3</version>
-		<install for="2.0.* - 2.0.99">
+	<install for="2.0.* - 2.0.99">
 		<redirect url="">Installed!</redirect>
 		<require-dir name="TinyPortal" destination="BOARDDIR" />
 		<require-dir name="tp-files" destination="BOARDDIR" />
