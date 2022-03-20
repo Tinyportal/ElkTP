@@ -187,7 +187,7 @@ function template_editblock()
 				}
 			}
 
-			echo '
+			echo '		</div>
 					</div>
 				</div>
 				<div><hr>
