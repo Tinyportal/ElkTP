@@ -40,12 +40,11 @@ class Shout extends Base
                         <div class="shoutbody_layout" style="background:#f0f4f7;">
                         <div class="showhover">
                             <div class="shoutbox_time">
-                                <span class="smalltext" style="color:#787878;">2021 Mar 06 20:27:03</span>
                             </div>
                             <div class="shoutbox_edit">
                             </div>
-                            <b><a style="color:#FF0000;" href="http://192.168.0.70/SMF2.1/index.php?action=profile;u=1">admin</a></b>: <span style="color:#000">Another one</span>
-                            <p class="clearthefloat"></p>
+                            <div class="shoutbox_comment">
+                            </div>
                         </div>
                     </div>
                 </div>
