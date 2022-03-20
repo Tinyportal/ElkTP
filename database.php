@@ -229,12 +229,13 @@ $db_table   = db_table();
 
 // Create the tables, if they don't already exist
 foreach ($tables as $tp_table => $data) {
-    $db_table->db_create_table('{db_prefix}' . $tp_table, $data['columns'], $data['indexes'], array(), 'ignore');
+    $db_table->create_table('{db_prefix}' . $tp_table, $data['columns'], $data['indexes'], array(), 'ignore');
 }
 
 $settingsArray = array(
     // KEEP TRACK OF INTERNAL VERSION HERE
     'version' => '1.0.0',
+    'portal_type' => '',
     'frontpage_title' => '',
     'showforumfirst' => '0',
     'hideadminmenu' => '0',

@@ -83,6 +83,39 @@ class Stats extends Base
 
     }}}
 
+    public function admin_setup( &$block ) {{{
+
+    }}}
+
+    public function admin_display( $block ) {{{
+
+		echo '
+			</div><div>
+			<hr><dl class="tptitle settings">
+				<dt>
+					<label for="field_name">'.$this->txt['tp-showuserbox'].'</label>
+				</dt>';
+
+		if(isset($this->context['TPortal']['userbox']['avatar']) && $this->context['TPortal']['userbox']['avatar'])
+			echo '<input type="hidden" name="tp_userbox_options0" value="avatar">';
+		if(isset($this->context['TPortal']['userbox']['logged']) && $this->context['TPortal']['userbox']['logged'])
+			echo '<input type="hidden" name="tp_userbox_options1" value="logged">';
+		if(isset($this->context['TPortal']['userbox']['time']) && $this->context['TPortal']['userbox']['time'])
+			echo '<input type="hidden" name="tp_userbox_options2" value="time">';
+		if(isset($this->context['TPortal']['userbox']['unread']) && $this->context['TPortal']['userbox']['unread'])
+			echo '<input type="hidden" name="tp_userbox_options3" value="unread">';
+		echo '	<dd>
+					<input type="checkbox" id="tp_userbox_options4" name="tp_userbox_options4" value="stats" ', (isset($this->context['TPortal']['userbox']['stats']) && $this->context['TPortal']['userbox']['stats']) ? 'checked' : '' , '><label for="tp_userbox_options4"> '.$this->txt['tp-userbox5'].'</label><br>
+					<input type="checkbox" id="tp_userbox_options5" name="tp_userbox_options5" value="online" ', (isset($this->context['TPortal']['userbox']['online']) && $this->context['TPortal']['userbox']['online']) ? 'checked' : '' , '><label for="tp_userbox_options5"> '.$this->txt['tp-userbox6'].'</label><br>
+					<input type="checkbox" id="tp_userbox_options6" name="tp_userbox_options6" value="stats_all" ', (isset($this->context['TPortal']['userbox']['stats_all']) && $this->context['TPortal']['userbox']['stats_all']) ? 'checked' : '' , '><label for="tp_userbox_options6"> '.$this->txt['tp-userbox7'].'</label>
+				</dd>
+			</dl>';
+
+
+		return true;
+
+    }}}
+
 }
 
 ?>

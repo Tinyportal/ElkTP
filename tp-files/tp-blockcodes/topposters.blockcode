@@ -28,7 +28,7 @@ $height = '100%';
 // Number of top posters displayed
 $topPoster = 8;
 
-    $db = TinyPortal\Database::getInstance();
+    $db = TinyPortal\Model\Database::getInstance();
  
 	// Find the latest poster.
 	$request = $db->query('', '

@@ -31,10 +31,24 @@ class Bbc extends Base
     public function display( $block ) {{{
 
         if(!empty($block['body'])) {
-            echo \parse_bbc($block['body']);
+            echo \TinyPortal\Model\Subs::getInstance()->parse_bbc($block['body']);
         }
 
     }}}
+
+    public function admin_setup( &$block ) {{{
+
+    }}}
+
+	public function admin_display( $block ) {{{
+
+		echo '</div><hr><div>';
+		\TinyPortal\Model\Subs::getInstance()->bbcbox($this->context['TPortal']['editor_id']);	
+
+		return true;
+
+    }}}
+
 
 }
 

@@ -25,8 +25,12 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class ArticleAdmin extends \Action_Controller
+class ArticleAdmin extends \ElkArte\AbstractController
 {
+
+	public function __construct() {{{
+		parent::__construct(new \ElkArte\EventManager());
+	}}}
 
     public function action_index() {{{
 
@@ -48,7 +52,6 @@ class ArticleAdmin extends \Action_Controller
         // clear the linktree first
         TPSubs::getInstance()->strip_linktree();
 
-        require_once(SUBSDIR . '/Action.class.php');
         $subActions = array (
             'editarticle'       => array($this, 'action_edit', array()),
             'tpattach'          => array($this, 'action_attachment', array()),
@@ -88,7 +91,7 @@ class ArticleAdmin extends \Action_Controller
         TPAdmin::getInstance()->topMenu($sa);
         TPAdmin::getInstance()->sideMenu($sa);
 
-        $action     = new \Action();
+        $action     = new \ElkArte\Action();
         $subAction  = $action->initialize($subActions, $sa);
         $action->dispatch($subAction);
 
@@ -107,7 +110,7 @@ class ArticleAdmin extends \Action_Controller
         // FIXME this shouldn't be here
         if(TPUtil::filter('article', 'get', 'int') && $context['TPortal']['subaction'] != 'savearticle') {
             $context['sub_template'] = 'submitarticle';
-            \loadTemplate('TParticle');
+            \theme()->getTemplates()->load('TParticle');
             return $this->do_articles();
         }
 
@@ -315,7 +318,7 @@ class ArticleAdmin extends \Action_Controller
         }
 
         $context['TPortal']['subaction'] = 'submitarticle';
-        loadTemplate('TParticle');
+        theme()->getTemplates()->load('TParticle');
         $context['sub_template'] = 'submitarticle';
 
     }}}
@@ -324,7 +327,7 @@ class ArticleAdmin extends \Action_Controller
         global $context;
 
         $context['TPortal']['subaction'] = 'submitsuccess';
-        loadTemplate('TParticle');
+        theme()->getTemplates()->load('TParticle');
         if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
             TPSubs::getInstance()->loadLanguage('TParticle', 'english');
         }
@@ -471,12 +474,12 @@ class ArticleAdmin extends \Action_Controller
         if(isset($_GET['sa'])) {
             $context['TPortal']['subaction'] = $tpsub = $_GET['sa'];
             if(substr($_GET['sa'], 0, 11) == 'editarticle') {
-                \loadTemplate('TParticle');
+                \theme()->getTemplates()->load('TParticle');
                 $context['sub_template'] = 'submitarticle';
                 $context['TPortal']['subaction'] = 'editarticle';
             }
             elseif(substr($_GET['sa'], 0, 11) == 'addarticle_') {
-                \loadTemplate('TParticle');
+                \theme()->getTemplates()->load('TParticle');
                 $context['sub_template'] = 'submitarticle';
                 $context['TPortal']['subaction'] = $_GET['sa'];
                 if($_GET['sa'] == 'addarticle_html') {
@@ -489,7 +492,7 @@ class ArticleAdmin extends \Action_Controller
 
         TPSubs::getInstance()->boards();
         $context['TPortal']['SSI_boards'] = explode(',', $context['TPortal']['SSI_board']);
-        \loadTemplate('TPortalAdmin');
+        \theme()->getTemplates()->load('TPortalAdmin');
     }}}
 
     public function do_articles() {{{
@@ -850,7 +853,7 @@ class ArticleAdmin extends \Action_Controller
 
     public function action_categories() {{{ 
         global $scripturl, $context, $txt, $boardurl;
-    
+   
         $db = TPDatabase::getInstance();
 
         // Get the category names
@@ -1004,6 +1007,7 @@ class ArticleAdmin extends \Action_Controller
                     }
                 }
                 TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=categories;cu='. $ccat, $txt['tp-editcategory']);
+				$context['sub_template'] = 'editcategory';
             }
         }
         else {
@@ -1062,8 +1066,8 @@ class ArticleAdmin extends \Action_Controller
 
         }
 
-        \loadTemplate('TPortalAdmin');
-        \loadTemplate('TPsubs');
+        \theme()->getTemplates()->load('TPortalAdmin');
+        \theme()->getTemplates()->load('TPsubs');
     }}}
 
     public function action_edit_category() {{{
@@ -1267,7 +1271,7 @@ class ArticleAdmin extends \Action_Controller
 
         TPArticle::getInstance()->getArticleIcons();
       
-        \loadTemplate('TPortalAdmin');
+        \theme()->getTemplates()->load('TPortalAdmin');
         $context['sub_template'] = 'articons';
         TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=articons', $txt['tp-adminicons']);
 
@@ -1284,10 +1288,10 @@ class ArticleAdmin extends \Action_Controller
             $checkboxes = array('use_wysiwyg', 'use_dragdrop', 'hide_editarticle_link', 'print_articles', 'allow_links_article_comments', 'hide_article_facebook', 'hide_article_twitter', 'hide_article_reddit', 'hide_article_digg', 'hide_article_delicious', 'hide_article_stumbleupon');
             foreach($checkboxes as $v) {
                 if(TPUtil::checkboxChecked('tp_'.$v)) {
-                    $updateArray[$v] = "1";
+                    $updateArray[$v] = 1;
                 }
                 else {
-                    $updateArray[$v] = "";
+                    $updateArray[$v] = 0;
                 }
                 // remove the variable so we don't process it twice before the old logic is removed
                 unset($_POST['tp_'.$v]);
@@ -1302,7 +1306,7 @@ class ArticleAdmin extends \Action_Controller
             TPSubs::getInstance()->updateSettings($updateArray);
         }
 
-        \loadTemplate('TPortalAdmin');
+        \theme()->getTemplates()->load('TPortalAdmin');
         $context['sub_template'] = 'artsettings';
         TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=artsettings', $txt['tp-settings']);
 
@@ -1399,7 +1403,7 @@ class ArticleAdmin extends \Action_Controller
         }
 
         self::action_javascript();
-        \loadTemplate('TPortalAdmin');
+        \theme()->getTemplates()->load('TPortalAdmin');
         $context['sub_template'] = 'strays';
         TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=strays', $txt['tp-strays']);
     }}}
@@ -1503,7 +1507,7 @@ class ArticleAdmin extends \Action_Controller
 
         self::action_javascript();
 
-        \loadTemplate('TPortalAdmin');
+        \theme()->getTemplates()->load('TPortalAdmin');
         $context['sub_template'] = 'submission';
         TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=articles', $txt['tp-articles']);
         TPSubs::getInstance()->addLinkTree($scripturl.'?action=admin;area=tparticles;sa=submission', $txt['tp-submissions']);

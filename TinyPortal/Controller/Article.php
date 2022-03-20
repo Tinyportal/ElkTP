@@ -21,8 +21,12 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class Article extends \Action_Controller
+class Article extends \ElkArte\AbstractController
 {
+
+	public function __construct() {{{
+		parent::__construct(new \ElkArte\EventManager());
+	}}}
 
     public function action_index() {{{
 
@@ -32,9 +36,6 @@ class Article extends \Action_Controller
             TPSubs::getInstance()->loadLanguage('TParticle', 'english');
         }
 
-        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
-            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
-        }
 
         // a switch to make it clear what is "forum" and not
         $context['TPortal']['not_forum'] = true;
@@ -42,7 +43,6 @@ class Article extends \Action_Controller
         // clear the linktree first
         TPSubs::getInstance()->strip_linktree();
 
-        require_once(SUBSDIR . '/Action.class.php');
         $subActions = array (
             'showcomments'      => array($this, 'action_show_comments', array()),
             'comment'           => array($this, 'action_insert_comment', array()),
@@ -54,7 +54,7 @@ class Article extends \Action_Controller
 
         $sa = TPUtil::filter('sa', 'get', 'string');
 
-        $action     = new \Action();
+        $action     = new \ElkArte\Action();
         $subAction  = $action->initialize($subActions, $sa);
         $action->dispatch($subAction);
 
@@ -70,6 +70,10 @@ class Article extends \Action_Controller
 		if (!allowedTo('tp_artcomment')) {
 			throw new \Elk_Exception($txt['tp-nocomments'], 'general');
 		}
+
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
+        }
 
 		$commenter  = $context['user']['id'];
 		$article    = TPUtil::filter('tp_article_id', 'post', 'int');
@@ -175,7 +179,7 @@ class Article extends \Action_Controller
 		$context['TPortal']['unreadcomments']   = true;
 		$context['TPortal']['showall']          = $showall;
 		TPSubs::getInstance()->addLinkTree($scripturl.'?action=tparticle;sa=showcomments' . ($showall ? ';showall' : '')  , $txt['tp-showcomments']);
-		loadTemplate('TParticle');
+		theme()->getTemplates()->load('TParticle');
 		$context['sub_template'] = 'showcomments';
 		if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
 			TPSubs::getInstance()->loadLanguage('TParticle', 'english');
@@ -190,6 +194,10 @@ class Article extends \Action_Controller
 		if (!allowedTo('tp_artcomment')) {
 			throw new \Elk_Exception($txt['tp-nocomments'], 'general');
 		}
+
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
+        }
 
 		// edit or deleting a comment?
 		if($context['user']['is_logged']) {
@@ -216,6 +224,10 @@ class Article extends \Action_Controller
 			throw new \Elk_Exception($txt['tp-nocomments'], 'general');
 		}
 
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
+        }
+
 		if($context['user']['is_logged']) {
 			// check that you indeed can edit or delete
 			$comment = substr($_GET['sa'], 11);
@@ -233,7 +245,7 @@ class Article extends \Action_Controller
 						'body' => $row['parent'],
 					);
 					$context['sub_template'] = 'editcomment';
-					loadTemplate('TParticle');
+					theme()->getTemplates()->load('TParticle');
 					if(TPSubs::getInstance()->loadLanguage('TParticle') == false) {
 						TPSubs::getInstance()->loadLanguage('TParticle', 'english');
 					};
@@ -246,6 +258,10 @@ class Article extends \Action_Controller
 
 	function action_rate() {{{
 		global $context;
+
+        if(TPSubs::getInstance()->loadLanguage('TPortalAdmin') == false) {
+            TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
+        }
 
 		$db = TPDatabase::getInstance();
 		// rating is underway
@@ -348,7 +364,7 @@ class Article extends \Action_Controller
             TPSubs::getInstance()->loadLanguage('TPortalAdmin', 'english');
         }
 
-        loadTemplate('TParticle');
+        theme()->getTemplates()->load('TParticle');
         $context['sub_template'] = 'showarticle';
 
     }}}
