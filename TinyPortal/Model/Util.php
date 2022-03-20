@@ -20,7 +20,7 @@ class Util
 
 	public static function __callStatic($call, $vars) {{{
 
-        return call_user_func_array("\Util::$call", $vars);
+        return call_user_func_array("\ElkArte\Util::$call", $vars);
 
 	}}}
 
@@ -32,31 +32,31 @@ class Util
             return;
         }
 
-        array_walk($data, function (&$value, $key) use ($dB) {
-                $value = $dB->db_quote('{string:value}', array( 'value' => $value));
-            }
-        );
+		array_walk($data, function (&$value, $key) use ($dB) {
+				$value = $dB->db_quote('{string:value}', array( 'value' => $value));
+			}
+		);
 
-        $str = '';
-        if(TP_PGSQL == false) {
-            if($arg == 'OR') {
-                $str = '(FIND_IN_SET(' . implode(', '.$field.') '.$arg.' FIND_IN_SET(', $data) . ', '.$field.'))';
-            }
-            else {
-                $str = 'AND (FIND_IN_SET(' . implode(', '.$field.') OR FIND_IN_SET(', $data) . ', '.$field.'))';
-            }
-        }
-        else {
-            if($arg == 'OR') {
-                foreach($data as $k => $v) {
-                    $str .= ' '.$v.' = ANY (string_to_array('.$field.', \',\' ) ) '.$arg.' ';
-                }
-                $str = rtrim($str,' '.$arg.' ');
-            }
-            else {
-                $str = 'AND ( '. implode(' = ANY (string_to_array( '.$field.', \',\' )) OR ', $data) . ' = ANY (string_to_array('.$field.', \',\')))';
-            }
-        }
+		$str = '';
+		if(TP_PGSQL == false) {
+			if($arg == 'OR') {
+				$str = '(FIND_IN_SET(' . implode(', '.$field.') '.$arg.' FIND_IN_SET(', $data) . ', '.$field.'))';
+			}
+			else {
+				$str = 'AND (FIND_IN_SET(' . implode(', '.$field.') OR FIND_IN_SET(', $data) . ', '.$field.'))';
+			}
+		}
+		else {
+			if($arg == 'OR') {
+				foreach($data as $k => $v) {
+					$str .= ' '.$v.' = ANY (string_to_array('.$field.', \',\' ) ) '.$arg.' ';
+				}
+				$str = rtrim($str,' '.$arg.' ');
+			}
+			else {
+				$str = 'AND ( '. implode(' = ANY (string_to_array( '.$field.', \',\' )) OR ', $data) . ' = ANY (string_to_array('.$field.', \',\')))';
+			}
+		}
 
         return $str;
 

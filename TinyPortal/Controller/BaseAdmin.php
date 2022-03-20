@@ -25,19 +25,20 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class BaseAdmin extends \Action_Controller
+class BaseAdmin extends \ElkArte\AbstractController
 {
     protected $context;
     protected $scripturl;
     protected $txt;
 
-    public function __construct() {{{
+	public function __construct() {{{
         global $context, $scripturl, $txt;
 
         $this->context      = &$context;
         $this->scripturl    = &$scripturl;
         $this->txt          = &$txt;
 
+		parent::__construct(new \ElkArte\EventManager());
     }}}
 
     public function action_index() {{{
@@ -161,8 +162,8 @@ class BaseAdmin extends \Action_Controller
 		$this->context['default_list'] 	= $name.'_list';
 
 		// Create the list.
-		require_once(SUBSDIR . '/GenericList.class.php');
 		createList($list);
+		//(new \ElkArte\GenericList($list))->buildList();
 
         $this->context['sub_template'] = 'list_'.$name;
     }}}

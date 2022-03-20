@@ -18,6 +18,25 @@ class Database
 {
     private static $_instance   = null;
 
+
+	/*
+	*	Provide a static method to all database calls
+	*/
+	public static function __callStatic($call, $vars) {{{
+
+		$ret = false;
+
+        if(is_callable(array(self::getInstance(), $call), false)) {
+			$ret = call_user_func_array(array(self::getInstance(), $call), $vars);
+		}
+
+		return $ret;
+
+	}}}
+
+	/*
+	*	Provide a static object instance (Singleton)
+	*/
     public static function getInstance() {{{
 
     	if(self::$_instance == null) {
@@ -31,21 +50,31 @@ class Database
     // Empty Clone method
     private function __clone() { }
 
+	/*
+	*	Call underlying database functions and disable query check if we are using a '
+	*/
 	public function __call($call, $vars) {{{
+		global $modSettings;
 
-        //debug_print_backtrace();
-
-        $dB = \database();
+		$ret	= false;
+        $dB		= \database();
 
         // Compatability with smf db_ methods
         $call = str_replace('db_', '', $call);
+		if($call == 'query' && isset($vars[1]) && strpos($vars[1], '\'') !== false) {
+			$oldModSetting = isset($modSettings['disableQueryCheck']) ? $modSettings['disableQueryCheck'] : false;
+			$modSettings['disableQueryCheck'] = true;
+		}
+
         if(is_callable(array($dB, $call), false)) {
-            return call_user_func_array(array($dB, $call), $vars);
-        }
-        else {
-		    return false;
+            $ret = call_user_func_array(array($dB, $call), $vars);
         }
 
+		if($call == 'query' && isset($vars[1]) && strpos($vars[1], '\'') !== false) {
+			$modSettings['disableQueryCheck'] = $oldModSetting;
+		}
+
+		return $ret;
 	}}}
 
 }

@@ -26,8 +26,12 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class BlockAdmin extends \Action_Controller
+class BlockAdmin extends \ElkArte\AbstractController
 {
+
+    public function __construct() {{{
+ 		parent::__construct(new \ElkArte\EventManager());
+	}}}
 
     // Admin Actions
     public function action_index() {{{
@@ -36,7 +40,6 @@ class BlockAdmin extends \Action_Controller
         $area = TPUtil::filter('area', 'get', 'string');
 
         if($area == 'tpblocks') {
-            require_once(SUBSDIR . '/Action.class.php');
 
             $sa = TPUtil::filter('sa', 'get', 'string');
             if($sa == false) {
@@ -81,7 +84,7 @@ class BlockAdmin extends \Action_Controller
 
             $context['TPortal']['subaction'] = $sa;
 
-            $action     = new \Action();
+            $action     = new \ElkArte\Action();
             $subAction  = $action->initialize($subActions, $sa);
             $action->dispatch($subAction);
 
@@ -90,8 +93,8 @@ class BlockAdmin extends \Action_Controller
 
             $context['sub_template']         = $context['TPortal']['subaction'];
 
-            \loadTemplate('TPBlockAdmin');
-            \loadTemplate('TPsubs');
+            \theme()->getTemplates()->load('TPBlockAdmin');
+            \theme()->getTemplates()->load('TPsubs');
 
         }
 
@@ -275,10 +278,9 @@ class BlockAdmin extends \Action_Controller
 
             if($context['TPortal']['blockedit']['lang'] != '') {
                 $context['TPortal']['blockedit']['langfiles'] = array();
-                $lang = explode('|', $context['TPortal']['blockedit']['lang']);
-                $num = count($lang);
-                for($i = 0; $i < $num; $i = $i + 2)
-                {
+                $lang	= explode('|', $context['TPortal']['blockedit']['lang']);
+                $num	= count($lang);
+                for($i = 0; $i < $num; $i = $i + 2) {
                     $context['TPortal']['blockedit']['langfiles'][$lang[$i]] = $lang[$i+1];
                 }
             }
@@ -333,8 +335,7 @@ class BlockAdmin extends \Action_Controller
 
         $context['sub_template'] = 'editblock';
 
-
-        loadTemplate('TPBlockLayout');
+        theme()->getTemplates()->load('TPBlockLayout');
 
     }}}
 
@@ -454,7 +455,7 @@ class BlockAdmin extends \Action_Controller
 				$access[] = 'tpcat=' . $v;
 			}
 			elseif(substr($k, 0, 8) == 'langtype') {
-				$access[] = 'tlang=' . $k;
+				$access[] = 'tlang=' . $v;
 			}
 			elseif(substr($k, 0, 9) == 'custotype' && !empty($v)) {
 				$items = explode(',', $v);
@@ -469,7 +470,7 @@ class BlockAdmin extends \Action_Controller
 				if(!isset($userbox)) {
 					$userbox = array();
 				}
-				$userbox[] = $value;
+				$userbox[] = $v;
 			}
 			elseif(substr($k, 0, 8) == 'tp_theme') {
 				$theme = substr($k, 8);
@@ -497,7 +498,9 @@ class BlockAdmin extends \Action_Controller
         }
 
 		if(isset($userbox)) {
-			//$updateArray['userbox_options'] = implode(',', $userbox);
+			$updateSettings = array();
+			$updateSettings['userbox_options'] = implode(',', $userbox);
+			TPSubs::getInstance()->updateSettings($updateSettings);
 		}
 
 		if(isset($themebox)) {

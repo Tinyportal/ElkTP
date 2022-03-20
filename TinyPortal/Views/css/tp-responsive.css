@@ -60,7 +60,7 @@
 /** screen smaller then 900px **/
 @media all and (max-width: 900px) {
 	.tp_responsive .clickme {
-		background-image:url(../images/tinyportal/TPsort_down.png);
+		background-image:url(../images/TPsort_down.png);
 		background-position:center right;
 		background-repeat:no-repeat;
 		clear:both;

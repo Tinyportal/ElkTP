@@ -89,7 +89,7 @@ function TPblock($block, $theme, $side, $double=false)
 
             // can you edit the block?
             if($block['can_manage'] && !$context['TPortal']['blocks_edithide']) {
-                echo '<a href="',$scripturl,'?action=admin;area=tpblocks&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
+                echo '<a href="',$scripturl,'?action=admin;area=tpblocks&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin: 8px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
             }
 
 			echo $block['title'];
@@ -131,7 +131,7 @@ function TPblock($block, $theme, $side, $double=false)
             (new $blockClass)->display($block);
         }
         else {
-            echo parse_bbc($block['body']);
+            echo \TinyPortal\Model\Subs::getInstance()->parse_bbc($block['body']);
         }
 			
         echo '</div>';
@@ -169,7 +169,7 @@ function TPblock($block, $theme, $side, $double=false)
             (new $blockClass)->display($block);
         }
 		else {
-			echo parse_bbc($block['body']);
+			echo \TinyPortal\Model\Subs::getInstance()->parse_bbc($block['body']);
         }
 
 		echo $context['TPortal']['blocktheme'][$block['frame']]['body']['after'];
@@ -1726,7 +1726,7 @@ function tp_template_button_strip($button_strip, $direction = 'top', $strip_opti
 
 	echo '
 		<div class="buttonlist', !empty($direction) ? ' align_' . $direction : '', '"', (empty($buttons) ? ' style="display: none;"' : ''), (!empty($strip_options['id']) ? ' id="' . $strip_options['id'] . '"': ''), '>
-			<ul style="margin:0px;padding:5px 0px;">',
+			<ul style="display:flex;margin:0px;padding:5px 0px;">',
 				implode('', $buttons), '
 			<p class="clearthefloat"></p></ul>
 		</div>';

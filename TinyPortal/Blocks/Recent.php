@@ -123,6 +123,51 @@ class Recent extends Base
 
     }}}
 
-}
+    public function admin_setup( &$block ) {{{
 
+    }}}
+
+	public function admin_display( $block ) {{{
+
+		if(!is_numeric($this->context['TPortal']['blockedit']['body'])) {
+			$this->context['TPortal']['blockedit']['body'] = 10;
+		}
+
+		echo '
+			<hr>
+			<dl class="tptitle settings">
+				<dt>
+					<label for="tp_block_body">'.$this->txt['tp-numberofrecenttopics'].'</label></dt>
+				<dd>
+					<input type="number" id="tp_block_body" name="tp_block_body" value="' .$this->context['TPortal']['blockedit']['body']. '" style="width: 6em" min="1">
+				</dd>
+				<dt>
+					<label for="tp_block_var2">'.$this->txt['tp-recentboards'].'</label></dt>
+				<dd>
+					<input type="text" id="tp_block_var2" name="tp_block_var2" value="' , $this->context['TPortal']['blockedit']['var2'] ,'" size="20" pattern="[0-9,]+">
+				</dd>';
+
+		echo '
+				<dt>
+					<label for="field_name">'.$this->txt['tp-recentincexc'].'</label>
+				</dt>
+				<dd>
+					<input type="radio" id="tp_block_var3in" name="tp_block_var3" value="1" ' , ($this->context['TPortal']['blockedit']['var3']=='1' || $this->context['TPortal']['blockedit']['var3']=='') ? ' checked' : '' ,'> <label for="tp_block_var3in">'.$this->txt['tp-recentinboard'].'</label><br>
+					<input type="radio" id="tp_block_var3ex" name="tp_block_var3" value="0" ' , $this->context['TPortal']['blockedit']['var3']=='0' ? 'checked' : '' ,'> <label for="tp_block_var3ex">'.$this->txt['tp-recentexboard'].'</label>
+				</dd>
+				<dt>
+					<label for="field_name">' . $this->txt['tp-rssblock-showavatar'].'</label>
+				</dt>
+				<dd>
+					<input type="radio" name="tp_block_var1" value="1" ' , ($this->context['TPortal']['blockedit']['var1']=='1' || $this->context['TPortal']['blockedit']['var1']=='') ? ' checked' : '' ,'>'.$this->txt['tp-yes'].'
+					<input type="radio" name="tp_block_var1" value="0" ' , $this->context['TPortal']['blockedit']['var1']=='0' ? ' checked' : '' ,'>'.$this->txt['tp-no'].'
+				</dd>
+			</dl>';
+
+
+		return true;
+
+    }}}
+
+}
 ?>

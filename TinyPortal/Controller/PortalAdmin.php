@@ -20,8 +20,12 @@ if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class PortalAdmin extends \Action_Controller
+class PortalAdmin extends \ElkArte\AbstractController
 {
+
+    public function __construct() {{{
+ 		parent::__construct(new \ElkArte\EventManager());
+	}}}
 
     public function action_index() {{{
         global $context, $txt;
@@ -36,8 +40,6 @@ class PortalAdmin extends \Action_Controller
 		$area           = TPUtil::filter('area', 'get', 'string');
 		if($area == 'tpsettings') {
 		    \isAllowedTo('tp_settings');
-
-			require_once(SUBSDIR . '/Action.class.php');
 
 			$sa = TPUtil::filter('sa', 'get', 'string');
 			if($sa == false) {
@@ -63,7 +65,7 @@ class PortalAdmin extends \Action_Controller
 
 			$context['TPortal']['subaction'] = $sa;
 
-			$action     = new \Action();
+			$action     = new \ElkArte\Action();
 			$subAction  = $action->initialize($subActions, $sa);
 			$action->dispatch($subAction);
 
@@ -72,8 +74,8 @@ class PortalAdmin extends \Action_Controller
 
 			$context['sub_template']         = $context['TPortal']['subaction'];
 
-			\loadTemplate('TPortalAdmin');
-			\loadTemplate('TPsubs');
+			\theme()->getTemplates()->load('TPortalAdmin');
+			\theme()->getTemplates()->load('TPsubs');
 		}
 
     }}}

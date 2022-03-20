@@ -158,6 +158,36 @@ class User extends Base
 
     }}}
 
+    public function admin_setup( &$block ) {{{
+
+    }}}
+
+    public function admin_display( $block ) {{{
+
+		echo '
+			</div><div>
+			<hr><dl class="tptitle settings">
+				<dt>
+					<label for="field_name">'. $this->txt['tp-showuserbox2'].'</label>
+				</dt>
+				<dd>
+					<input type="checkbox" id="tp_userbox_options0" name="tp_userbox_options0" value="avatar" ', (isset($this->context['TPortal']['userbox']['avatar']) && $this->context['TPortal']['userbox']['avatar']) ? 'checked' : '' , '><label for="tp_userbox_options0"> '.$this->txt['tp-userbox1'].'</label><br>
+					<input type="checkbox" id="tp_userbox_options1" name="tp_userbox_options1" value="logged" ', (isset($this->context['TPortal']['userbox']['logged']) && $this->context['TPortal']['userbox']['logged']) ? 'checked' : '' , '><label for="tp_userbox_options1"> '.$this->txt['tp-userbox2'].'</label><br>
+					<input type="checkbox" id="tp_userbox_options2" name="tp_userbox_options2" value="time" ', (isset($this->context['TPortal']['userbox']['time']) && $this->context['TPortal']['userbox']['time']) ? 'checked' : '' , '><label for="tp_userbox_options2"> '.$this->txt['tp-userbox3'].'</label><br>
+					<input type="checkbox" id="tp_userbox_options3" name="tp_userbox_options3" value="unread" ', (isset($this->context['TPortal']['userbox']['unread']) && $this->context['TPortal']['userbox']['unread']) ? 'checked' : '' , '><label for="tp_userbox_options3"> '.$this->txt['tp-userbox4'].'</label><br>
+				</dd>
+			</dl>';
+		if(isset($this->context['TPortal']['userbox']['stats']) && $this->context['TPortal']['userbox']['stats'])
+			echo '<input type="hidden" name="tp_userbox_options4" value="stats">';
+		if(isset($this->context['TPortal']['userbox']['online']) && $this->context['TPortal']['userbox']['online'])
+			echo '<input type="hidden" name="tp_userbox_options5" value="online">';
+		if(isset($this->context['TPortal']['userbox']['stats_all']) && $this->context['TPortal']['userbox']['stats_all'])
+			echo '<input type="hidden" name="tp_userbox_options6" value="stats_all">';
+
+		return true;
+
+    }}}
+
 }
 
 ?>
