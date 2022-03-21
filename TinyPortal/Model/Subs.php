@@ -2296,13 +2296,15 @@ class Subs
         
 		$language_dirs = array ( $settings['default_theme_dir'] . '/languages' , $boarddir.'/TinyPortal/Views/languages');
 		foreach($language_dirs as $language_dir) {
-			$dir = dir($language_dir);
-			while ($entry = $dir->read()) {
-				if($entry != '.' && $entry != '..' && is_dir($language_dir.'/'.$entry)) {
-					$dirs[] = $language_dir.'/'.$entry;
+			if(is_dir($language_dir)) {
+				$dir = dir($language_dir);
+				while ($entry = $dir->read()) {
+					if($entry != '.' && $entry != '..' && is_dir($language_dir.'/'.$entry)) {
+						$dirs[] = $language_dir.'/'.$entry;
+					}
 				}
+				$dir->close();
 			}
-			$dir->close();
 		}
 
 		foreach($dirs as $language_dir) {
