@@ -2456,6 +2456,8 @@ class Subs
     public function loadLanguage($template_name, $lang = '', $fatal = true, $force_reload = false) {{{
         global $user_info, $language, $txt;
 
+		$loaded = false;
+
         if ($lang == '') {
 		    $lang = isset($user_info['language']) ? $user_info['language'] : $language;
         }
@@ -2464,6 +2466,7 @@ class Subs
 		$filePath = BOARDDIR . '/TinyPortal/Views/languages/english/'.$template_name.'.english.php';
         if(file_exists($filePath)) {
             require_once($filePath);
+			$loaded = true;
 		}
 
         foreach( array ( $lang ) as $l) {
@@ -2473,6 +2476,10 @@ class Subs
                 return $lang;
             }
         }
+
+		if($loaded) {
+			return 'english';
+		}
 
         return \ElkArte\Themes\ThemeLoader::loadLanguageFile($template_name, $lang, $fatal, $force_reload);
 
