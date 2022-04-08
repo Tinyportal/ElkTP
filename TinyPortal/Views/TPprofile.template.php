@@ -21,21 +21,18 @@ function template_tp_summary()
 
 	echo '
 	<div></div>
-	<div class="cat_bar"><h3 class="category_header">'.$txt['tpsummary'].'</h3></div>
+	<div class="cat_bar"><header class="category_header">'.$txt['tpsummary'].'</header></div>
 	<div id="tp_summary" class="roundframe">
 		<div>
 			<div class="float-items" style="width:38%;">'.$txt['tp-prof_allarticles'].'</div>
 			<div class="float-items" style="width:58%;font-weight: bold;">'.$context['TPortal']['tpsummary']['articles'].'</div>
-		    <p class="clearthefloat"></p>
 		</div>';
 	if(isset($context['TPortal']['tpsummary']['uploads'])) {
 		echo '
 		<div>
 			<div class="float-items" style="width:38%;">'.$txt['tp-prof_alldownloads'].'</div>
 			<div class="float-items" style="width:58%;font-weight: bold;">'.$context['TPortal']['tpsummary']['uploads'].'</div>
-		    <p class="clearthefloat"></p>
 		</div>
-		<div class="padding-div"></div>
 	</div>';
 	}
 }
@@ -65,7 +62,7 @@ function template_tp_articles()
 		}
 
 		echo '
-				</div><br>
+				</div>
 
 	<table class="table_grid tp_grid" style="width:100%">
 		<thead>
@@ -78,7 +75,6 @@ function template_tp_articles()
 				<div class="float-items title-admin-area tpleft" style="width:15%;">'.$txt['tp-ratings'].'</div>
 				<div class="float-items title-admin-area tpcenter" style="width:10%;">', $context['TPortal']['tpsort']=='comments' ? '<img src="' .$settings['tp_images_url']. '/TPsort_down.png" alt="" /> ' : '' ,'<a href="'.$scripturl.'?action=profile;u='.$context['TPortal']['member_id'].';area=tparticles;tpsort=comments">'.$txt['tp-comments'].'</a></div>
 				<div class="float-items title-admin-area tpleft" style="width:15%;">', $context['TPortal']['tpsort']=='category' ? '<img src="' .$settings['tp_images_url']. '/TPsort_down.png" alt="" /> ' : '' ,'<a href="'.$scripturl.'?action=profile;u='.$context['TPortal']['member_id'].';area=tparticles;tpsort=category">'.$txt['tp-category'].'</a></div>
-			    <p class="clearthefloat"></p>
 			</div>
 			</th>
 			</tr>
@@ -100,7 +96,7 @@ function template_tp_articles()
 		}
 			echo '
 				<a href="" class="clickme">'.$txt['tp-more'].'</a>
-				<div class="box" style="width:75%;float:left;">
+				<div class="box floatleft" style="width:75%;">
 					<div class="smalltext float-items fullwidth-on-res-layout" style="width:32%;">
 						<div class="show-on-responsive">', ($context['TPortal']['tpsort']=='date'  || $context['TPortal']['tpsort']=='') ? '<img src="' .$settings['tp_images_url']. '/TPsort_down.png" alt="" /> ' : '' ,'<a href="'.$scripturl.'?action=profile;u='.$context['TPortal']['member_id'].';area=tparticles;tpsort=date">'.$txt['date'].'</a></div>
 						<div class="size-on-responsive">',$art['date'],'</div>
@@ -173,7 +169,7 @@ function template_tp_articles()
 		    if((!empty($context['TPortal']['allow_wysiwyg']) && ($user_info['id'] == $context['TPortal']['selected_member'])) || allowedTo('profile_view_any')) {
 			    echo '<div>
 					<dl class="settings">
-						<dt><strong>'.$txt['tp-wysiwygchoice'].':</strong>
+						<dt class="bbc_strong">'.$txt['tp-wysiwygchoice'].':
 						</dt>
 						<dd><fieldset>
 							<input type="radio" name="tpwysiwyg" value="2" ' , $context['TPortal']['selected_member_choice'] =='2' ? 'checked' : '' , '> '.$txt['tp-yes'].'<br>
@@ -183,7 +179,7 @@ function template_tp_articles()
 					</dl>';
 			if(($user_info['id'] == $context['TPortal']['selected_member']) || allowedTo('admin_forum')) {
 				echo '
-						<div class="padding-div"><input type="submit" class="button button_submit" value="'.$txt['tp-send'].'" name="send"></div>';
+						<div class="submitbutton"><input type="submit" value="'.$txt['tp-send'].'" name="'.$txt['tp-send'].'"></div>';
 			}
 			echo '
 				</div>';

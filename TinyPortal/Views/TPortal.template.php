@@ -54,13 +54,13 @@ function template_frontpage()
 	global $context;
 
 	if($context['TPortal']['frontblock_type'] == 'first' || $context['TPortal']['front_type'] == 'frontblock')
-		echo '<div id="tpfrontpanel_top">', TPSubs::getInstance()->panel('front'), '<p class="clearthefloat"></p></div>';
+		echo '<div id="tpfrontpanel_top">', TPSubs::getInstance()->panel('front'), '</div>';
 
 	if(!isset($context['TPortal']['category']))
 	{
 		// check the frontblocks first
 		if($context['TPortal']['frontblock_type'] == 'last' && $context['TPortal']['front_type'] != 'frontblock')
-			echo '<div id="tpfrontpanel_bottom">', TPSubs::getInstance()->panel('front'), '<p class="clearthefloat"></p></div>';
+			echo '<div id="tpfrontpanel_bottom">', TPSubs::getInstance()->panel('front'), '</div>';
 
 		return;
 	}
@@ -84,7 +84,7 @@ function template_frontpage()
 	<div class="tp_pageindex_lower">' , $context['TPortal']['pageindex'] , '</div>';
 
 	if($context['TPortal']['frontblock_type'] == 'last' && $context['TPortal']['front_type'] != 'frontblock')
-		echo '<div id="tpfrontpanel_bottom">', TPSubs::getInstance()->panel('front'), '<p class="clearthefloat"></p></div>';
+		echo '<div id="tpfrontpanel_bottom">', TPSubs::getInstance()->panel('front'), '</div>';
 }
 
 // Single article template
@@ -116,7 +116,7 @@ function template_category()
 				$buts[$cats['id']]['active'] = true;
             }
 		}
-		echo '<div style="overflow: hidden;">' , tp_template_button_strip($buts, 'top'), '</div>';
+		echo '<div class="flow_hidden">' , tp_template_button_strip($buts, 'top'), '</div>';
 	}
     elseif(isset($context['TPortal']['category']['no_articles']) && $context['TPortal']['category']['no_articles'] == true) {
 		throw new \Elk_Exception($txt['tp-categorynoarticles'], 'general');

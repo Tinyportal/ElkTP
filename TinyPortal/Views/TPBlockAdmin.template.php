@@ -22,12 +22,12 @@ function template_editblock()
 
 	echo '
 	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=admin;area=tpblocks;sa=updateblock;id='.$context['TPortal']['blockedit']['id'].'" method="post" onsubmit="submitonce(this);">
-		<input type="hidden" name="sc" value="', $context['session_id'], '" />
+		<input type="hidden" name="sc" value="', $context['session_id'], '">
 		<input type="hidden" name="tpadmin_form" value="blockedit">
 		<input type="hidden" name="tpadmin_form_id" value="' . $context['TPortal']['blockedit']['id'] . '">
-		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-editblock'] . '</h3></div>
-		<div id="editblock" class="admintable admin-area">
-			<div class="content padding-div">
+		<div class="cat_bar"><header class="category_header">' . $txt['tp-editblock'] . '</header></div>
+		<div id="editblock" class="generic_list_wrapper">
+			<div class="content">
 				<div class="formtable">
 					<dl class="tptitle settings">
 						<dt>
@@ -66,22 +66,15 @@ function template_editblock()
 								<option value="1"' ,$context['TPortal']['blockedit']['type']=='1' ? ' selected' : '' , '>', $txt['tp-blocktype1'] , '</option>
 							</select>
 						</dd>
-						<dt>
-							<br><div class="padding-div"><input type="submit" class="button button_submit" value="' . $txt['tp-send'] . '" /></div>
-						</dt>
-						<dd>
-							<div>
-								<div id="blocknotice" class="smallpadding error middletext" style="display: none;">' , $txt['tp-blocknotice'] , '</div>
-							</div>
-						</dd>
 					</dl>
-					<div class="content padding-div">
-					 <div>';
-            
-            $blockClass = '\TinyPortal\Blocks\\'.ucfirst(str_replace('box', '', \TinyPortal\Model\Block::getInstance()->getBlockType($context['TPortal']['blockedit']['type'])));
-            if(class_exists($blockClass) && method_exists($blockClass, 'admin_display')) {
-                $found = (new $blockClass)->admin_display($context['TPortal']['blockedit']);
-            }
+					<div class="submitbutton"><input type="submit" value="'.$txt['tp-send'].'" name="'.$txt['tp-send'].'"></div>
+					<div class="content">
+					<div>';
+
+			$blockClass = '\TinyPortal\Blocks\\'.ucfirst(str_replace('box', '', \TinyPortal\Model\Block::getInstance()->getBlockType($context['TPortal']['blockedit']['type'])));
+			if(class_exists($blockClass) && method_exists($blockClass, 'admin_display')) {
+				$found = (new $blockClass)->admin_display($context['TPortal']['blockedit']);
+			}
 
 			if($found == false) {
 	// Block type: Single Article
@@ -131,7 +124,6 @@ function template_editblock()
 					}
 					echo '
 						</div>
-						<br>
 						<input type="checkbox" onclick="invertAll(this, this.form, \'tp_theme\');" /> '.$txt['tp-checkall'],'
 					';
 				}
@@ -216,7 +208,6 @@ function template_editblock()
 						</div>
 					</div>
 				</div>
-				<br>
 					<dl class="settings">
 						<dt>
 							<label for="field_name">'.$txt['tp-blockframehelp'].'</label>
@@ -228,7 +219,6 @@ function template_editblock()
 							<input type="radio" id="noframe" name="tp_block_frame" value="none" ' , $context['TPortal']['blockedit']['frame']=='none' ? 'checked' : '' , '><label for="noframe"> '.$txt['tp-noframe'].'</label>
 						</dd>
 					</dl>
-					<br>
 					<dl class="settings">
 						<dt>
 							<label for="field_name">'.$txt['tp-allowupshrink'].'</label>
@@ -238,7 +228,6 @@ function template_editblock()
 							<input type="radio" id="notallowupshrink" name="tp_block_visible" value="0" ' , ($context['TPortal']['blockedit']['visible']=='0') ? 'checked' : '' , '><label for="notallowupshrink"> '.$txt['tp-notallowupshrink'].'</label>
 						</dd>
 					</dl>
-					<br>
 					<dl class="settings">
 						<dt>
 							<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-membergrouphelpdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
@@ -303,7 +292,7 @@ function template_editblock()
 					echo '<input type="text" name="tp_lang_'.$lang.'" value="' , !empty($context['TPortal']['blockedit']['langfiles'][$lang]) ? html_entity_decode($context['TPortal']['blockedit']['langfiles'][$lang], ENT_QUOTES) : html_entity_decode($context['TPortal']['blockedit']['title'],ENT_QUOTES) , '" size="50"> '. $lang.'<br>';
 			}
 			echo '			</div>
-						<br></dd>
+						</dd>
 						<dt>
 							<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-langdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
 							<label for="field_name">' . $txt['tp-lang'] . '</label>';
@@ -429,7 +418,7 @@ function template_editblock()
 				// if none is chosen, have a control value
 				echo '</div><input type="checkbox" id="togglecat" onclick="invertAll(this, this.form, \'categorytype\');" /><label for="togglecat">'.$txt['tp-checkall'];
 
-				echo '</label<br>
+				echo '</label>
 						</dd>
 					</dl>
 				</fieldset>
@@ -437,7 +426,7 @@ function template_editblock()
 			</div>';
 		}
 			echo '
-				<div class="padding-div"><input type="submit" class="button button_submit" value="'.$txt['tp-send'].'" name="'.$txt['tp-send'].'"></div>
+				<div class="submitbutton"><input type="submit" value="'.$txt['tp-send'].'" name="'.$txt['tp-send'].'"></div>
 			</div>
 		</div>
 	</form>';
@@ -450,16 +439,16 @@ function template_panels()
 
 	echo '
 	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tpblocks;sa=updatepanels" method="post">
-		<input type="hidden" name="sc" value="', $context['session_id'] ,'" />
+		<input type="hidden" name="sc" value="', $context['session_id'] ,'">
 		<input type="hidden" name="tpadmin_form" value="panels">
-		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-panelsettings'] . '</h3></div>
-			<div id="panels-admin" class="admintable admin-area">
-			<div class="information smalltext">', $txt['tp-helppanels'] ,'</div><div></div>
+		<div class="cat_bar"><header class="category_header">' . $txt['tp-panelsettings'] . '</header></div>
+		<p class="description">', $txt['tp-helppanels'] ,'</p>
+		<div id="panels-admin" class="generic_list_wrapper">
 			<div class="content">
 				<div class="formtable padding-div">
 					<dl class="settings">
-						<dt>
-							<strong>', $txt['tp-hidebarsall'] ,'</strong>
+						<dt class="bbc_strong">
+							', $txt['tp-hidebarsall'] ,'
 						</dt>
 						<dd></dd>
 						<dt>
@@ -517,7 +506,7 @@ function template_panels()
 							<span class="smalltext">'.$txt['tp-inpixels'].'</span>
 						</dd>
 					</dl>
-					<div class="padding-div"><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
+					<div class="submitbutton"><input type="submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
 				</div>';
 
 	$allpanels = array('left','right','top','center','front','lower','bottom');
@@ -542,7 +531,6 @@ function template_panels()
 					<a name="'.$panl.'"></a><img src="' .$settings['tp_images_url']. '/TPpanel_'.$panl.'.png" alt="" /></dd>';
         }
 		echo '
-					<br>
 				</dl>
 				<dl class="settings">';
 		if( $panl != 'front' ) {
@@ -568,7 +556,7 @@ function template_panels()
 					<dd>
 						<input type="radio" id="tp_hide_'.$panl.'bar_forum" name="tp_hide_'.$panl.'bar_forum" value="1" ' , $context['TPortal']['hide_'.$panl.'bar_forum']==1 ? 'checked' : '' , '> '.$txt['tp-yes'].'
 						<input type="radio" name="tp_hide_'.$panl.'bar_forum" value="0" ' , $context['TPortal']['hide_'.$panl.'bar_forum']==0 ? 'checked' : '' , '> '.$txt['tp-no'].'
-						<br><br>
+						<br>
 					</dd>';
 		}
 		echo '
@@ -650,7 +638,7 @@ function template_panels()
 	}
 
 		echo '
-				<div class="padding-div"><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
+				<div class="submitbutton"><input type="submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
 			</div>
 		</div>
 	</form>';
@@ -669,21 +657,21 @@ function template_blocks()
 
 	echo '
 	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tpblocks;sa=updateblocks" method="post">
-		<input type="hidden" name="sc" value="', $context['session_id'], '" />
+		<input type="hidden" name="sc" value="', $context['session_id'], '">
 		<input type="hidden" name="tpadmin_form" value="blocks">
-		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-blocksettings'] . '</h3></div>
-		<div id="all-the-blocks" class="admintable admin-area">
-			<div class="content padding-div">';
+		<div class="cat_bar"><header class="category_header">' . $txt['tp-blocksettings'] . '</header></div>
+		<div id="all-the-blocks" class="generic_list_wrapper">
+			<div class="content">';
 
 		$side   = array('left','right','top','center','front','lower','bottom');
 		$sd     = array('lb','rb','tb','cb','fb','lob','bb');
 
 		for($i=0 ; $i<7 ; $i++) {
 			echo '
-				<div class="font_strong">
-					<b>'.$txt['tp-'.$side[$i].'sideblocks'].'</b>
+				<div class="font-strong">
+					'.$txt['tp-'.$side[$i].'sideblocks'].'
 					<a href="'.$scripturl.'?action=admin;area=tpblocks;sa=addblock;side=' . $side[$i] . ';' . $context['session_var'] . '=' . $context['session_id'].'">
-					<span style="float: right;"><strong>[' , $txt['tp-addblock'] , ']</strong></span></a>
+					<span class="floatright bbc_strong">[' , $txt['tp-addblock'] , ']</span></a>
 				</div>';
 			if(isset($context['TPortal']['admin' . $side[$i].'panel']) && $context['TPortal']['admin' . $side[$i].'panel']==0 && $side[$i]!='front')
 				echo '
@@ -705,14 +693,13 @@ function template_blocks()
 						<tr class="title_bar category_header">
 						<th scope="col" class="blocks">
 							<div>
-								<div style="width:10%;" class="smalltext pos float-items"><strong>'.$txt['tp-pos'].'</strong></div>
-								<div style="width:20%;" class="smalltext name float-items"><strong>'.$txt['tp-title'].'</strong></div>
-								<div style="width:20%;" class="smalltext title-admin-area float-items" ><strong>'.$txt['tp-type'].'</strong></div>
-								<div style="width:10%;" class="smalltext title-admin-area float-items tpcenter"><strong>'.$txt['tp-activate'].'</strong></div>
-								<div style="width:20%;" class="smalltext title-admin-area float-items tpcenter"><strong>'.$txt['tp-move'].'</strong></div>
-								<div style="width:10%;" class="smalltext title-admin-area float-items tpcenter"><strong>'.$txt['tp-actions'].'</strong></div>
-								<div style="width:10%;" class="smalltext title-admin-area float-items tpcenter"><strong>'.$txt['tp-delete'].'</strong></div>
-								<p class="clearthefloat"></p>
+								<div style="width:10%;" class="smalltext pos float-items bbc_strong">'.$txt['tp-pos'].'</div>
+								<div style="width:20%;" class="smalltext name float-items bbc_strong">'.$txt['tp-title'].'</div>
+								<div style="width:20%;" class="smalltext title-admin-area float-items bbc_strong" >'.$txt['tp-type'].'</div>
+								<div style="width:10%;" class="smalltext title-admin-area float-items tpcenter bbc_strong">'.$txt['tp-activate'].'</div>
+								<div style="width:20%;" class="smalltext title-admin-area float-items tpcenter bbc_strong">'.$txt['tp-move'].'</div>
+								<div style="width:10%;" class="smalltext title-admin-area float-items tpcenter bbc_strong">'.$txt['tp-actions'].'</div>
+								<div style="width:10%;" class="smalltext title-admin-area float-items tpcenter bbc_strong">'.$txt['tp-delete'].'</div>
 							</div>
 						</th>
 						</tr>
@@ -720,7 +707,7 @@ function template_blocks()
 					<tbody>';
 			}
 			else {
-				echo '<div class="tp_pad">' .$txt['tp-noblocks']. '</div><br>';
+				echo '<div class="tp_pad">' .$txt['tp-noblocks']. '</div>';
 			}
 			$n=0;
 			if($tn>0) {
@@ -757,7 +744,7 @@ function template_blocks()
 						</div>
 						<div style="width:20%;" class="fullwidth-on-res-layout block-opt float-items">
 						    <div class="show-on-responsive">
-								<div class="smalltext"><strong>'.$txt['tp-type'].'</strong></div>
+								<div class="smalltext bbc_strong">'.$txt['tp-type'].'</div>
 							</div>
 							<select size="1" name="type' .$lblock['id']. '">
 								<option value="0"' ,$lblock['type']=='no' ? ' selected' : '' , '>', $txt['tp-blocktype0'] , '</option>
@@ -782,13 +769,13 @@ function template_blocks()
 				echo '	</select>
 						</div>
 						<div style="width:10%;" class="smalltext fullwidth-on-res-layout float-items tpcenter">
-						    <div class="show-on-responsive"><strong>'.$txt['tp-activate'].'</strong></div>
+						    <div class="show-on-responsive bbc_strong">'.$txt['tp-activate'].'</div>
 							&nbsp;<a name="'.$lblock['id'].'"></a>
 						    <img class="toggleButton" id="blockonbutton' .$lblock['id']. '" title="'.$txt['tp-activate'].'" src="' .$settings['tp_images_url']. '/TP' , $lblock['off']=='0' ? 'active2' : 'active1' , '.png" alt="'.$txt['tp-activate'].'"  />';
 				echo '
 						</div>
 						<div style="width:20%;" class="smalltext fullwidth-on-res-layout float-items tpcenter">
-							<div class="show-on-responsive"><strong>'.$txt['tp-move'].'</strong></div>';
+							<div class="show-on-responsive bbc_strong">'.$txt['tp-move'].'</div>';
 
                     foreach( array ( 'blockright', 'blockleft', 'blockcenter', 'blockfront', 'blockbottom', 'blocktop', 'blocklower') as $block_location ) {
                         if($side[$i] != str_replace('block', '', $block_location)) {
@@ -799,15 +786,14 @@ function template_blocks()
 					echo '
 						</div>
 						<div  style="width:10%;" class="smalltext fullwidth-on-res-layout float-items tpcenter">
-						    <div class="show-on-responsive"><strong>'.$txt['tp-editsave'].'</strong></div>
+						    <div class="show-on-responsive bbc_strong">'.$txt['tp-editsave'].'</div>
 							<a href="' . $scripturl . '?action=admin;area=tpblocks&sa=editblock&id=' .$lblock['id']. ';' . $context['session_var'] . '=' . $context['session_id'].'"><img title="'.$txt['tp-edit'].'" src="' .$settings['tp_images_url']. '/TPconfig_sm.png" alt="'.$txt['tp-edit'].'"  /></a>&nbsp;
 							<input type="image" class="tpbut" style="height:16px; vertical-align:top;" src="' .$settings['tp_images_url']. '/TPsave.png" title="'.$txt['tp-send'].'" value="�" onClick="javascript: submit();">
 						</div>
 	                    <div style="width:10%;" class="smalltext fullwidth-on-res-layout float-items tpcenter">
-						    <div class="show-on-responsive"><strong>'.$txt['tp-delete'].'</strong></div>
+						    <div class="show-on-responsive bbc_strong">'.$txt['tp-delete'].'</div>
 							<a href="' . $scripturl . '?action=admin;area=tpblocks;' . $context['session_var'] . '=' . $context['session_id'].';sa=blockdelete;id=' .$lblock['id']. '" onclick="javascript:return confirm(\''.$txt['tp-blockconfirmdelete'].'\')"><img title="'.$txt['tp-delete'].'"  src="' .$settings['tp_images_url']. '/TPdelete2.png" alt="'.$txt['tp-delete'].'"  /></a>
 						</div>
-						<p class="clearthefloat"></p>
 					</div>
 					</td>
 					</tr>';
@@ -944,11 +930,11 @@ function template_blocks()
 				}
 			echo '
 					</tbody>
-				</table><br>';
+				</table>';
 			}
 		}
 		echo '
-				<div class="padding-div"><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
+				<div class="submitbutton"><input type="submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
 			</div>
 		</div>
 	</form>';
@@ -964,10 +950,10 @@ function template_addblock()
 
 	echo '
 	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" enctype="multipart/form-data" action="' . $scripturl . '?action=admin;area=tpblocks;sa=saveblock" method="post">
-		<input type="hidden" name="sc" value="', $context['session_id'], '" />
+		<input type="hidden" name="sc" value="', $context['session_id'], '">
 		<input type="hidden" name="tpadmin_form" value="addblock">
-		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-addblock'] . '</h3></div>
-		<div id="add-block" class="admintable admin-area">
+		<div class="cat_bar"><header class="category_header">' . $txt['tp-addblock'] . '</header></div>
+		<div id="add-block" class="generic_list_wrapper">
 			<div class="content">
 				<div class="formtable padding-div">
 					<dl class="tptitle settings">
@@ -1044,7 +1030,7 @@ function template_addblock()
 						</dd>
 					</dl>
 				</div>
-				<div class="padding-div"><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
+				<div class="submitbutton"><input type="submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
 			</div>
 		</div>
 	</form>';
@@ -1057,10 +1043,10 @@ function template_blockoverview()
 
 	echo '
 	<form accept-charset="', 'UTF-8', '" name="tpadmin_news" action="' . $scripturl . '?action=admin;area=tpblocks;sa=updateoverview" method="post">
-		<input type="hidden" name="sc" value="', $context['session_id'], '" />
+		<input type="hidden" name="sc" value="', $context['session_id'], '">
 		<input type="hidden" name="tpadmin_form" value="blockoverview">
-		<div class="cat_bar"><h3 class="category_header">' . $txt['tp-blockoverview'] . '</h3></div><div></div>
-		<div id="blocks-overview" class="admintable admin-area content">
+		<div class="cat_bar"><header class="category_header">' . $txt['tp-blockoverview'] . '</header></div>
+		<div id="blocks-overview" class="generic_list_wrapper">
 			<div class="content">';
 
 		$side=array('','left','right','top','center','front','lower','bottom');
@@ -1076,7 +1062,7 @@ function template_blockoverview()
 				<div class="tp_twocolumn">
 					<p><a href="' . $scripturl . '?action=admin;area=tpblocks&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'" title="'.$txt['tp-edit'].'"><b>' . $block['title'] . '</b></a> ( ' . $txt['tp-blocktype' . $block['type']] . ' | ' . $txt['tp-' .$side[$block['bar']]] . ')</p>
 					<hr>
-					<div id="tp'.$block['id'].'" style="overflow: hidden;">
+					<div id="tp'.$block['id'].'" class="flow_hidden">
 						<input type="hidden" name="' . rand(10000,19999) .'tpblock'.$block['id'].'" value="control" />';
 
 					foreach($context['TPmembergroups'] as $grp)
@@ -1085,14 +1071,14 @@ function template_blockoverview()
 
 					echo '
 					</div>
-					<br><input type="checkbox" id="toggletpb'.$block['id'].'" onclick="invertAll(this, this.form, \'tpb'.$block['id'].'\');" /><label for="toggletpb'.$block['id'].'">'.$txt['tp-checkall'],'</label><br><br>
+					<br><input type="checkbox" id="toggletpb'.$block['id'].'" onclick="invertAll(this, this.form, \'tpb'.$block['id'].'\');" /><label for="toggletpb'.$block['id'].'">'.$txt['tp-checkall'],'</label><br>
 				</div>';
 				}
 			}
 		}
 		echo '
 			</div>
-			<div class="padding-div"><input type="submit" class="button button_submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
+			<div class="submitbutton"><input type="submit" name="'.$txt['tp-send'].'" value="'.$txt['tp-send'].'"></div>
 		</div>
 	</form>';
 }
