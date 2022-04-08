@@ -367,7 +367,7 @@ class Subs
                 if($i == ($flowcount-1)) {
                     $pad=0;
                 }
-                echo '<div class="panelsColumnsHorizontally" style="float: left; width: ' . $context['TPortal']['blockwidth_'.$side].';"><div style="padding-right: ' . $pad . 'px;">';
+                echo '<div class="panelsColumnsHorizontally floatleft" style="width: ' . $context['TPortal']['blockwidth_'.$side].';"><div style="padding-right: ' . $pad . 'px;">';
                 call_user_func($context['TPortal']['hooks']['tp_block'], $block, $theme, $side);
                 echo '</div></div>';
             }
@@ -397,7 +397,7 @@ class Subs
                     elseif($flow == 'horiz4' && $flowmain == 3) {
                         $pad = 0;
                     }
-                    echo '</div><div class="panelsColumns" style="' . (isset($wh) ? 'width: '. $wh.'%;' : '') .  'padding-right: '.$pad.'px;float:left;">';
+                    echo '</div><div class="panelsColumns floatleft" style="' . (isset($wh) ? 'width: '. $wh.'%;' : '') .  'padding-right: '.$pad.'px;">';
                 }
                 call_user_func($context['TPortal']['hooks']['tp_block'], $block, $theme, $side);
             }
@@ -426,7 +426,7 @@ class Subs
             $flowsub++;
         }
         if(in_array($flow, array('horiz2', 'horiz3', 'horiz4'))) {
-            echo '</div><p class="clearthefloat"></p></div>';
+            echo '</div></div>';
         }
 
     }}}
@@ -594,7 +594,7 @@ class Subs
 
         // last..if its the last block,close the table
         if($last) {
-            echo '<p class="clearthefloat"></p></div>';
+            echo '</div>';
         }
 
     }}}
@@ -606,13 +606,13 @@ class Subs
         $context['TPortal']['grid']['colspan3'][0] = array('before' => '<div class="gridColumns">', 'after' => '</div>');
         $context['TPortal']['grid']['colspan3'][1] = array('before' => '<div><div class="gridColumns" style="width:32.3%;padding-right:0.7%;float:left;">', 'after' => '</div>');
         $context['TPortal']['grid']['colspan3'][2] = array('before' => '<div class="gridColumns" style="width:32.3%;padding-right:0.7%;float:left;">', 'after' => '</div>');
-        $context['TPortal']['grid']['colspan3'][3] = array('before' => '<div class="gridColumns" style="width:34%;float:left;">', 'after' => '</div><p class="clearthefloat"></p></div>');
+        $context['TPortal']['grid']['colspan3'][3] = array('before' => '<div class="gridColumns" style="width:34%;float:left;">', 'after' => '</div></div>');
 
         $context['TPortal']['grid']['rowspan1'][0] = array('before' => '<div class="gridC" style="width:32.3%;padding-right: 0.7%;float:left;">', 'after' => '</div>', 'doubleheight' => true);
         $context['TPortal']['grid']['rowspan1'][1] = array('before' => '<div class="gridC" style="width:67%;float:left;"><div class="gridColumns" style="width:49%;padding-right: 1%;padding-bottom: 5px;float:left;">', 'after' => '</div>');
         $context['TPortal']['grid']['rowspan1'][2] = array('before' => '<div class="gridColumns" style="width:50%;float:left;">', 'after' => '</div>');
         $context['TPortal']['grid']['rowspan1'][3] = array('before' => '<div class="gridColumns" style="width:49%;padding-right: 1%;float:left;">', 'after' => '</div>');
-        $context['TPortal']['grid']['rowspan1'][4] = array('before' => '<div class="gridColumns" style="width:50%;float:left;">', 'after' => '</div><p class="clearthefloat"></p></div>');
+        $context['TPortal']['grid']['rowspan1'][4] = array('before' => '<div class="gridColumns" style="width:50%;float:left;">', 'after' => '</div></div>');
 
     }}}
 
@@ -923,17 +923,17 @@ class Subs
                 sceditor.command.set(\'floatleft\', {
                     exec: function() {
                         // this is set to the editor instance
-                        this.wysiwygEditorInsertHtml(\'<div style="float:left;">\', \'</div>\');
+                        this.wysiwygEditorInsertHtml(\'<div class="floatleft">\', \'</div>\');
                     },
-                    txtExec: [\'<div style="float:left;">\', \'</div>\'],
+                    txtExec: [\'<div class="floatleft">\', \'</div>\'],
                     tooltip: \''.$txt['editor_tp_floatleft'].'\'
                 });
                 sceditor.command.set(\'floatright\', {
                     exec: function() {
                         // this is set to the editor instance
-                        this.wysiwygEditorInsertHtml(\'<div style="float:right;">\', \'</div>\');
+                        this.wysiwygEditorInsertHtml(\'<div class="floatright">\', \'</div>\');
                     },
-                    txtExec: [\'<div style="float:right;">\', \'</div>\'],
+                    txtExec: [\'<div class="floatright">\', \'</div>\'],
                     tooltip: \''.$txt['editor_tp_floatright'].'\'
                 });
 
@@ -1044,7 +1044,7 @@ class Subs
                 $imgs = $imgfiles;
             }
             echo '
-            <br><div class="title_bar"><h3 class="category_header">' , $txt['tp-quicklist'] , '</h3></div>
+            <br><div class="title_bar"><header class="category_header">' , $txt['tp-quicklist'] , '</header></div>
             <div class="content smalltext tp_pad">' , $txt['tp-quicklist2'] , '</div>
             <div class="content tpquicklist">
             <div class="tpthumb">';

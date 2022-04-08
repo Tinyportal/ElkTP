@@ -30,40 +30,38 @@ function template_list_menu()
 
 function template_tp_menu( $type )
 {
-    global $context, $scripturl, $txt;
+	global $context, $scripturl, $txt;
 
-    echo '
-        <form action="', $scripturl, '?action=admin;area=tpmenu;sa=save" method="post" accept-charset="UTF-8" name="menu" id="menu" class="flow_hidden">
-            <input type="hidden" name="sc" value="', $context['session_id'], '" />
-            <input type="hidden" name="tpadmin_form" value="'.$type.'">';
-            if(isset($context['TPortal']['menu']['id'])) {
-                echo '<input type="hidden" name="id" value="'.$context['TPortal']['menu']['id'].'">';
-            }
-    echo '
-            <div class="category_header">
-                <h3>
-                    ', $context['page_title'], '
-                </h3>
-            </div>
-            <div class="roundframe">
-                <dl class="settings tptitle">
-				<dt>
-					<label for="tp_menu_type">'.$txt['tp-type'].'</label>
-				</dt>
-				<dd>
-					<select size="1" name="tp_menu_type" id="tp_menu_type">';
-                        foreach($context['TPortal']['menu']['types'] as $type) {
-						    echo '<option value="'.$type.'" ',  $context['TPortal']['menu']['type'] == $type ? 'selected' : '', '>'.$txt['tp-'.$type].'</option>';
-                        }
-					echo '
-                    </select>
-				</dd>
-			</dl>
-            </div>
-            <div class="submitbutton">
-                <input name="submit" value="', $txt['tp-submit'], '" class="button_submit" type="submit" />
-            </div>
-        </form>';
+	echo '
+		<form action="', $scripturl, '?action=admin;area=tpmenu;sa=save" method="post" accept-charset="UTF-8" name="menu" id="menu" class="flow_hidden">
+			<input type="hidden" name="sc" value="', $context['session_id'], '" />
+			<input type="hidden" name="tpadmin_form" value="'.$type.'">';
+			if(isset($context['TPortal']['menu']['id'])) {
+				echo '<input type="hidden" name="id" value="'.$context['TPortal']['menu']['id'].'">';
+			}
+	echo '
+			<div class="category_header">
+				<h3>
+					', $context['page_title'], '
+				</h3>
+			</div>
+			<div class="roundframe">
+				<dl class="settings tptitle">
+					<dt>
+						<label for="tp_menu_type">'.$txt['tp-type'].'</label>
+					</dt>
+					<dd>
+						<select size="1" name="tp_menu_type" id="tp_menu_type">';
+							foreach($context['TPortal']['menu']['types'] as $type) {
+								echo '<option value="'.$type.'" ',  $context['TPortal']['menu']['type'] == $type ? 'selected' : '', '>'.$txt['tp-'.$type].'</option>';
+							}
+	echo '
+						</select>
+					</dd>
+				</dl>
+			</div>
+		<div class="submitbutton"><input type="submit" name="', $txt['tp-submit'], '" value="', $txt['tp-submit'], '"></div>
+		</form>';
 
 }
 ?>

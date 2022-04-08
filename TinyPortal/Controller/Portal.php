@@ -365,7 +365,7 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
                             $context['TPortal']['printbody'] = $what;
                         }
 
-                        $context['TPortal']['print'] = '<a href="' .$scripturl . '?page='. $article['id'] . '"><strong>' . $txt['tp-printgoback'] . '</strong></a>';
+                        $context['TPortal']['print'] = '<a class="bbc_strong" href="' .$scripturl . '?page='. $article['id'] . '">' . $txt['tp-printgoback'] . '</a>';
 
                         loadtemplate('TPprint');
                         $context['template_layers'] = array('tp_print');

@@ -516,7 +516,7 @@ class Article extends Base
                 }
 
 				if(Util::shortenString($row['body'], $context['TPortal']['frontpage_limit_len'])) {
-					$row['readmore'] = '... <p class="tp_readmore"><strong><a href="'. $scripturl. '?topic='. $row['id']. '">'. $txt['tp-readmore']. '</a></strong></p>';
+					$row['readmore'] = '... <p class="tp_readmore"><a class="bbc_strong" href="'. $scripturl. '?topic='. $row['id']. '">'. $txt['tp-readmore']. '</a></p>';
 				}
 
 				// some needed addons
