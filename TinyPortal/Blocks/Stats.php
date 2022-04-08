@@ -30,8 +30,8 @@ class Stats extends Base
 
     public function display( $block ) {{{
 
-        $bullet = '<img src="'.$this->settings['tp_images_url'].'/TPdivider.png" alt=""  style="margin:0 4px 0 0;" />';
-        $bullet2 = '<img src="'.$this->settings['tp_images_url'].'/TPdivider2.png" alt="" style="margin:0 4px 0 0;" />';
+        $bullet = '<img src="'.$this->settings['tp_images_url'].'/TPdivider.png" alt="" class="tpbullet">';
+        $bullet2 = '<img src="'.$this->settings['tp_images_url'].'/TPdivider2.png" alt="" class="tpbullet">';
 
         echo'
             <div class="tp_statsblock">';
@@ -42,7 +42,7 @@ class Stats extends Base
                 <h5 class="mlist"><a href="'.$this->scripturl.'?action=memberlist">'.$this->txt['members'].'</a></h5>
                 <ul>
                 <li>' . $bullet. $this->txt['total_members'].': ' , isset($this->modSettings['memberCount']) ? $this->modSettings['memberCount'] : $this->modSettings['totalMembers'] , '</li>
-                <li>' . $bullet. $this->txt['tp-latest']. ': <a href="', $this->scripturl, '?action=profile;u=', $this->modSettings['latestMember'], '"><strong>', $this->modSettings['latestRealName'], '</strong></a></li>
+                <li>' . $bullet. $this->txt['tp-latest']. ': <a class="bbc_strong" href="', $this->scripturl, '?action=profile;u=', $this->modSettings['latestMember'], '">', $this->modSettings['latestRealName'], '</a></li>
                 </ul>';
         }
 

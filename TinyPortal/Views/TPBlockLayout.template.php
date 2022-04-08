@@ -57,13 +57,12 @@ function template_tp_above()
 
 	if($context['TPortal']['toppanel']==1)
 		echo '
-		<div id="tptopbarHeader" style="' , in_array('tptopbarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , 'clear: both;">
+		<div id="tptopbarHeader clear" style="' , in_array('tptopbarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , '">
 			'	, TPSubs::getInstance()->panel('top') , '
-			<p class="clearthefloat"></p>
 		</div>';
 
 	echo '
-		<div id="mainContainer" style="clear: both;">';
+		<div id="mainContainer clear">';
 
 	// TinyPortal integrated bars
 	if($context['TPortal']['leftpanel']==1) {
@@ -72,12 +71,11 @@ function template_tp_above()
 				<div id="tpleftbarHeader" style="' , in_array('tpleftbarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , '">
 					' , $context['TPortal']['useroundframepanels']==1 ?
 					'<span class="upperframe"><span></span></span>
-					<div class="roundframe" style="overflow: auto;">' : ''
+					<div class="roundframe flow_auto">' : ''
 					, TPSubs::getInstance()->panel('left') ,
 					$context['TPortal']['useroundframepanels']==1 ?
 					'</div>
 					<span class="lowerframe"><span></span></span>' : '' , '
-					<p class="clearthefloat"></p>
 				</div>
 			</div>';
 	}
@@ -94,7 +92,6 @@ function template_tp_above()
 						$context['TPortal']['useroundframepanels']==1 ?
 					'</div>
 					<span class="lowerframe"><span></span></span>' : '' , '
-					<p class="clearthefloat"></p>
 				</div>
 			</div>';
 	}
@@ -106,7 +103,6 @@ function template_tp_above()
 		echo '
 					<div id="tpcenterbarHeader" style="' , in_array('tpcenterbarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , '">
 						' , TPSubs::getInstance()->panel('center') , '
-						<p class="clearthefloat"></p>
 					</div>';
     }
 	echo '
@@ -121,21 +117,18 @@ function template_tp_below()
 		echo '
 				<div id="tplowerbarHeader" style="' , in_array('tplowerbarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , '">
 					' , TPSubs::getInstance()->panel('lower') , '
-					<p class="clearthefloat"></p>
 				</div>';
 // end centerContainer
 	echo '
 			</div>';
 // end mainContainer
 	echo '
-			<p class="clearthefloat" style="padding:0px;margin:0px;"></p>
 		</div>';
 
 	if($context['TPortal']['bottompanel']==1)
 		echo '
-		<div id="tpbottombarHeader" style="clear: both;' , in_array('tpbottombarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , '">
+		<div id="tpbottombarHeader clear"' , in_array('tpbottombarHeader',$context['tp_panels']) && $context['TPortal']['showcollapse']==1 ? 'display: none;' : '' , '">
 			' , TPSubs::getInstance()->panel('bottom') , '
-			<p class="clearthefloat"></p>
 		</div>';
 	echo '
 	</div>';

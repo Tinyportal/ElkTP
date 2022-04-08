@@ -32,11 +32,11 @@ class User extends Base
 
     public function display( $block ) {{{
 
-        $bullet = '<img src="'.$this->settings['tp_images_url'].'/TPdivider.png" alt="" style="margin:0 4px 0 0;" />';
-        $bullet2 = '<img src="'.$this->settings['tp_images_url'].'/TPdivider2.png" alt="" style="margin:0 4px 0 0;" />';
-        $bullet3 = '<img src="'.$this->settings['tp_images_url'].'/TPdivider3.png" alt="" style="margin:0 4px 0 0;" />';
-        $bullet4 = '<img src="'.$this->settings['tp_images_url'].'/TPmodule2.png" alt="" style="margin:0 4px 0 0;" />';
-        $bullet5 = '<img src="'.$this->settings['tp_images_url'].'/TPmodule2.png" alt=""  style="margin:0 4px 0 0;" />';
+        $bullet = '<img src="'.$this->settings['tp_images_url'].'/TPdivider.png" alt="" class="tpbullet">';
+        $bullet2 = '<img src="'.$this->settings['tp_images_url'].'/TPdivider2.png" alt="" class="tpbullet">';
+        $bullet3 = '<img src="'.$this->settings['tp_images_url'].'/TPdivider3.png" alt="" class="tpbullet">';
+        $bullet4 = '<img src="'.$this->settings['tp_images_url'].'/TPmodule2.png" alt="" class="tpbullet">';
+        $bullet5 = '<img src="'.$this->settings['tp_images_url'].'/TPmodule2.png" alt="" class="tpbullet">';
 
         echo'
         <div class="tp_userblocknew">';
@@ -52,7 +52,7 @@ class User extends Base
             }
 
             echo '
-            <strong><a class="subject"  href="'.$this->scripturl.'?action=profile;u='.$this->context['user']['id'].'">', $this->context['user']['name'], '</a></strong>
+            <a class="subject bbc_strong" href="'.$this->scripturl.'?action=profile;u='.$this->context['user']['id'].'">', $this->context['user']['name'], '</a>
             <ul class="reset">';
 
             // Only tell them about their messages if they can read their messages!

@@ -25,16 +25,14 @@ function template_tpcredits()
 
 	echo '
 	<div class="tborder">
-		<div class="cat_bar">
-			<h3 class="category_header">' . $txt['tp-credits'] . '</h3>
-		</div><div></div>
-		<p class="information">' , $txt['tp-creditack2']  , '</p>
+		<div class="cat_bar"><header class="category_header">' . $txt['tp-credits'] . '</header></div>
+		<p class="description">' , $txt['tp-creditack2']  , '</p>
 		<div class="content">
-			<span class="topslice"><span></span></span>
+			<span class="topslice"></span>
 			<div class="content" style="line-height: 1.6em; padding: 0 1em;">
 				'.$txt['tp-credit1'].'
 			</div>
-			<span class="botslice"><span></span></span>
+			<span class="botslice"></span>
 		</div>
 	</div>';
 }
