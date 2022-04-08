@@ -124,7 +124,7 @@ function TPblock($block, $theme, $side, $double=false)
                 $nh = (substr($context['TPortal']['blockheight_'.$side],0,strlen($context['TPortal']['blockheight_'.$side])-1)*2).'%';
             }
         }
-		echo '<div class="blockbody" style="overflow: auto;' , !empty($context['TPortal']['blockheight_'.$side]) ? 'height: '. ($double ? $nh : $context['TPortal']['blockheight_'.$side]) .';' : '' , '">';
+		echo '<div class="blockbody"' , !empty($context['TPortal']['blockheight_'.$side]) ? ' style="height: '. ($double ? $nh : $context['TPortal']['blockheight_'.$side]) .';"' : '' , '>';
 
         $blockClass = '\TinyPortal\Blocks\\'.ucfirst(str_replace('box', '', $block['type']));
         if(class_exists($blockClass)) {
@@ -158,7 +158,7 @@ function TPblock($block, $theme, $side, $double=false)
 
 		// can you edit the block?
 		if($block['can_manage'] && !$context['TPortal']['blocks_edithide'])
-			echo '<a href="',$scripturl,'?action=admin;area=tpblocks&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img style="margin-right: 4px;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
+			echo '<a href="',$scripturl,'?action=admin;area=tpblocks&sa=editblock&id='.$block['id'].';' . $context['session_var'] . '=' . $context['session_id'].'"><img class="floatright" style="margin-right: 4px;" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['edit_description'].'" /></a>';
 
 		echo $block['title'];
 		echo $context['TPortal']['blocktheme'][$block['frame']]['title']['after'];
@@ -209,11 +209,9 @@ function template_TPsearch_above()
 
     echo '
 	<div style="padding: 0 5px;">
-		<div class="cat_bar">
-			<h3 class="category_header">' , $txt['tp-searcharticles'] , '</h3>
-		</div>
+		<div class="cat_bar"><header class="category_header">' , $txt['tp-searcharticles'] , '</header></div>
 		<div class="content">
-			<span class="topslice"><span></span></span>
+			<span class="topslice"></span>
 			<p style="margin: 0; padding: 0 1em;">
 				<a href="' . $scripturl. '?action=tpsearch;sa=searcharticle">' . $txt['tp-searcharticles2'] . '</a>';
 
@@ -224,7 +222,7 @@ function template_TPsearch_above()
 
 	echo '
 			</p>
-			<span class="botslice"><span></span></span>
+			<span class="botslice"></span>
 		</div>
 	</div>';
 
@@ -241,9 +239,7 @@ function template_tperror_above()
 	global $context;
 
 	echo '
-	<div class="title_bar">
-		<h3 class="category_header">'.$context['TPortal']['tperror'].'</h3>
-	</div>';
+	<div class="title_bar"><header class="category_header">'.$context['TPortal']['tperror'].'</header></div>';
 
 }
 
@@ -323,7 +319,7 @@ function article_renders($type = 1, $single = false, $first = false)
 	// Layout type: normal articles
 	{
 		$code = '
-	<div class="tparticle render1" style="overflow: hidden;">
+	<div class="tparticle render1 flow_hidden">
 		<div></div>
 		' . ($usetitlestyle ? '<div class="'. $divheader .'">' : '<div style="padding: 0 1em;">') . '
 			' . ($usetitlestyle ? '<h3 class="' . $headerstyle . '">' .($showtitle ? '{article_title}' : '&nbsp;'). '</h3>' :  '<h3>' .($showtitle ? '{article_title}' : '' ). '</h3>') . '
@@ -342,9 +338,8 @@ function article_renders($type = 1, $single = false, $first = false)
 			</div>
 			<div class="tp_underline"></div>
 			<div class="article_padding">
-				<div style="clear: both;"></div>
+				<div class="clear"></div>
 				{article_text}
-				<p class="clearthefloat"></p>
 				' . (!isset($context['TPortal']['article']['boardnews']) ? '{article_bookmark}' : '') . '
 				' . (!$single ? '{article_comments_total}' : '') . '
 				' . (isset($context['TPortal']['article']['boardnews']) ? '{article_boardnews}' : '') . '
@@ -364,7 +359,7 @@ function article_renders($type = 1, $single = false, $first = false)
 	{
 		if($first)
 		$code = '
-	<div class="tparticle render1" style="overflow: hidden;">
+	<div class="tparticle render1 flow_hidden">
 		<div></div>
 		' . ($usetitlestyle ? '<div class="'. $divheader .'">' : '<div style="padding: 0 1em;">') . '
 			' . ($usetitlestyle ? '<h3 class="' . $headerstyle . '">' .($showtitle ? '{article_title}' : '&nbsp;'). '</h3>' :  '<h3>' .($showtitle ? '{article_title}' : '' ). '</h3>') . '
@@ -383,9 +378,8 @@ function article_renders($type = 1, $single = false, $first = false)
 			</div>
 			<div class="tp_underline"></div>
 			<div class="article_padding">
-				<div style="clear: both;"></div>
+				<div class="clear"></div>
 				{article_text}
-				<p class="clearthefloat"></p>
 				' . (!isset($context['TPortal']['article']['boardnews']) ? '{article_bookmark}' : '') . '
 				' . (!$single ? '{article_comments_total}' : '') . '
 				' . (isset($context['TPortal']['article']['boardnews']) ? '{article_boardnews}' : '') . '
@@ -420,7 +414,6 @@ function article_renders($type = 1, $single = false, $first = false)
 			<div class="tp_underline"></div>
 			<div class="article_padding">
 				{article_text}
-				<p class="clearthefloat"></p>
 				' . (!isset($context['TPortal']['article']['boardnews']) && !$single ? '{article_bookmark}' : '') . '
 				' . (!$single ? '{article_comments_total}' : '') . '
 				' . (isset($context['TPortal']['article']['boardnews']) ? '{article_boardnews}' : '') . '
@@ -463,11 +456,9 @@ function article_renders($type = 1, $single = false, $first = false)
 				{article_rating}
 				' . ($single ? '{article_print}' : '') . '
 			</div>
-			<p class="clearthefloat"></p>
 			<div class="tp_underline"></div>
 			<div class="article_padding">
 				{article_text}
-				<p class="clearthefloat"></p>
 				' . (!isset($context['TPortal']['article']['boardnews']) && !$single ? '{article_bookmark}' : '') . '
 				' . (!$single ? '{article_comments_total}' : '') . '
 				' . (isset($context['TPortal']['article']['boardnews']) ? '{article_boardnews}' : '') . '
@@ -508,7 +499,6 @@ function article_renders($type = 1, $single = false, $first = false)
 				<div class="tp_underline"></div>
 				<div class="article_padding">
 					{article_text}
-					<p class="clearthefloat"></p>
 					' . (!isset($context['TPortal']['article']['boardnews']) && !$single ? '{article_bookmark}' : '') . '
 					' . (!$single ? '{article_comments_total}' : '') . '
 					' . (isset($context['TPortal']['article']['boardnews']) ? '{article_boardnews}' : '') . '
@@ -546,7 +536,6 @@ function article_renders($type = 1, $single = false, $first = false)
 			<div class="tp_underline"></div>
 			<div class="article_padding">
 				{article_text}
-				<p class="clearthefloat"></p>
 				{article_bookmark}
 				' . (!$single ? '{article_comments_total}' : '') . '
 				{article_moreauthor}
@@ -568,7 +557,6 @@ function article_renders($type = 1, $single = false, $first = false)
 			<div class="tp_underline"></div>
 			<div class="article_padding">
 				{article_text}
-				<p class="clearthefloat"></p>
 				{article_comments_total}
 				' . (isset($context['TPortal']['article']['boardnews']) ? '{article_boardnews}' : '') . '
 			</div>
@@ -581,7 +569,7 @@ function article_renders($type = 1, $single = false, $first = false)
 	{
 		if($first)
 		$code = '
-	<div class="tparticle render1" style="overflow: hidden;">
+	<div class="tparticle render1 flow_hidden">
 		<div></div>
 		' . ($usetitlestyle ? '<div class="'. $divheader .'">' : '<div style="padding: 0 1em;">') . '
 			' . ($usetitlestyle ? '<h3 class="' . $headerstyle . '">' .($showtitle ? '{article_title}' : '&nbsp;'). '</h3>' :  '<h3>' .($showtitle ? '{article_title}' : '' ). '</h3>') . '
@@ -600,9 +588,8 @@ function article_renders($type = 1, $single = false, $first = false)
 			</div>
 			<div class="tp_underline"></div>
 			<div class="article_padding">
-				<div style="clear: both;"></div>
+				<div class="clear"></div>
 				{article_text}
-				<p class="clearthefloat"></p>
 				' . (!isset($context['TPortal']['article']['boardnews']) ? '{article_bookmark}' : '') . '
 				' . (!$single ? '{article_comments_total}' : '') . '
 				' . (isset($context['TPortal']['article']['boardnews']) ? '{article_boardnews}' : '') . '
@@ -649,7 +636,6 @@ function article_renders($type = 1, $single = false, $first = false)
 			<div class="tp_underline"></div>
 			<div class="article_padding">
 				{article_text}
-				<p class="clearthefloat"></p>
 				' . (!isset($context['TPortal']['article']['boardnews']) && !$single ? '{article_bookmark}' : '') . '
 				' . (!$single ? '{article_comments_total}' : '') . '
 				' . (isset($context['TPortal']['article']['boardnews']) ? '{article_boardnews}' : '') . '
@@ -671,8 +657,8 @@ function article_renders($type = 1, $single = false, $first = false)
 		else
 			$code = '
 	' . ($showtitle ? '<div style="padding: 2px 1em;">
-		<div class="align_right">
-			<strong>{article_title}</strong>
+		<div class="align_right bbc_strong">
+			{article_title}
 		</div>
 		{article_date}
 		<hr />
@@ -683,7 +669,7 @@ function article_renders($type = 1, $single = false, $first = false)
 	{
 		if($single)
 		$code = '
-	<div class="tparticle render1" style="overflow: hidden;">
+	<div class="tparticle render1 flow_hidden">
 		<div></div>
 		' . ($usetitlestyle ? '<div class="'. $divheader .'">' : '<div style="padding: 0 1em;">') . '
 			' . ($usetitlestyle ? '<h3 class="' . $headerstyle . '">' .($showtitle ? '{article_title}' : '&nbsp;'). '</h3>' :  '<h3>' .($showtitle ? '{article_title}' : '' ). '</h3>') . '
@@ -702,9 +688,8 @@ function article_renders($type = 1, $single = false, $first = false)
 			</div>
 			<div class="tp_underline"></div>
 			<div class="article_padding">
-				<div style="clear: both;"></div>
+				<div class="clear"></div>
 				{article_text}
-				<p class="clearthefloat"></p>
 				' . (!isset($context['TPortal']['article']['boardnews']) ? '{article_bookmark}' : '') . '
 				' . (!$single ? '{article_comments_total}' : '') . '
 				' . (isset($context['TPortal']['article']['boardnews']) ? '{article_boardnews}' : '') . '
@@ -723,8 +708,8 @@ function article_renders($type = 1, $single = false, $first = false)
 	<div class="render9">
 		<div class="content" style="padding: 0;">
 			<span class="topslice"><span></span></span>
-			<div class="article_padding align_right">
-				<strong>{article_title}</strong>
+			<div class="article_padding align_right bbc_strong">
+				{article_title}
 				{article_date}
 			</div>
 			<span class="botslice"><span></span></span>
@@ -765,13 +750,13 @@ function article_iconcolumn($render = true)
 
 	if(!empty($context['TPortal']['article']['avatar'])) {
 		$data = '
-        <div style="overflow: hidden;">
+        <div class="flow_hidden">
             ' . $context['TPortal']['article']['avatar'] . '
         </div>';
     }
 	else {
         $data = '
-        <div style="overflow: hidden;">
+        <div class="flow_hidden">
             <img src="' . $settings['tp_images_url'] . '/TPnoimage' . (isset($context['TPortal']['article']['boardnews']) ? '_forum' : '') . '.png" alt="" />
         </div>';
     }
@@ -1008,12 +993,12 @@ function article_options($render = true)
 		// give 'em a edit link? :)
 		if(allowedTo('tp_articles') && ($context['TPortal']['hide_editarticle_link']==1)) {
 			$data .= '
-					<a href="' . $scripturl . '?action=admin;area=tparticles;sa=editarticle;article=' . $context['TPortal']['article']['id'] . '"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['tp-edit'].'" /></a>';
+					<a href="' . $scripturl . '?action=admin;area=tparticles;sa=editarticle;article=' . $context['TPortal']['article']['id'] . '"><img class="floatright" style="margin: 2px 4px 0 0;" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['tp-edit'].'" /></a>';
         }
 		// their own article?
 		elseif(allowedTo('tp_editownarticle') && !allowedTo('tp_articles') && ($context['TPortal']['article']['author_id'] == $context['user']['id']) && $context['TPortal']['hide_editarticle_link']==1 && $context['TPortal']['article']['locked']!=1) {
 			$data .= '
-					<a href="' . $scripturl . '?action=admin;area=tparticles;sa=editarticle;article=' . $context['TPortal']['article']['id'] . '"><img style="margin: 2px 4px 0 0;float:right" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['tp-edit'].'" /></a>';
+					<a href="' . $scripturl . '?action=admin;area=tparticles;sa=editarticle;article=' . $context['TPortal']['article']['id'] . '"><img class="floatright" style="margin: 2px 4px 0 0;" src="' .$settings['tp_images_url']. '/TPedit2.png" alt="" title="'.$txt['tp-edit'].'" /></a>';
         }
 	}
 
@@ -1227,7 +1212,6 @@ function article_comments($render = true)
 						<div class="middletext" style="padding-top: 0.5em;"> '.$txt['tp-bycom'].' '.$txt['guest_title'].'&nbsp;'. $txt['on'] . ' ' . $comment['date'] . '</div>';
                 }
 				$data .= '
-					<p class="clearthefloat"></p>
 					<div class="textcomment"><div class="body">' . $comment['text'] . '</div></div>';
 				$data .= '
 				</div>';
@@ -1249,7 +1233,7 @@ function article_comments($render = true)
 		}
 
 		$data .= '
-						<div class="tp_pad"><input type="submit" id="tp_article_comment_submit" class="button button_submit" value="' . $txt['tp-submit'] . '"></div>
+						<div class="tp_pad"><input type="submit" id="tp_article_comment_submit" value="' . $txt['tp-submit'] . '"></div>
 						<input type="hidden" name="tp_article_type" value="article_comment">
 						<input type="hidden" name="tp_article_id" value="' . $context['TPortal']['article']['id'] . '">
 						<input type="hidden" name="sc" value="' . $context['session_id'] . '" />
@@ -1281,7 +1265,7 @@ function article_morelinks($render = true)
 			$data .= '
 	<h2 class="category_header article_extra"><a href="' . $scripturl . '?cat='. (!empty($context['TPortal']['article']['category_shortname']) ? $context['TPortal']['article']['category_shortname'] : $context['TPortal']['article']['category']) .'">' . $txt['tp-articles'] . ' ' . $txt['in'] . ' &#171; ' . $context['TPortal']['article']['category_name'] . ' &#187;</span></a></h2>
 
-	<div style="overflow: hidden;">
+	<div class="flow_hidden">
 		<ul class="disc">';
 			foreach($context['TPortal']['article']['others'] as $art) {
 				$data .= '<li' . (isset($art['selected']) ? ' class="selected"' : '') . '><a href="' . $scripturl . '?page=' . (!empty($art['shortname']) ? $art['shortname'] : $art['id']) . '">' . html_entity_decode($art['subject']) . '</a></li>';
@@ -1563,15 +1547,11 @@ function template_subtab_above()
 	{
 		echo '
 		<div class="tborder" style="margin-bottom: 0.5em;">
-			<div class="cat_bar">
-				<h3 class="category_header">' . $txt['tp-menus'] .'</h3>
-			</div>
-			<div style="padding: 2px; overflow: hidden;">';
+			<div class="cat_bar"><header class="category_header">' . $txt['tp-menus'] .'</header></div>';
 
 		tp_template_button_strip($context['TPortal']['subtabs']);
 
 		echo '
-			</div>
 		</div>';
 	}
 }
@@ -1587,10 +1567,8 @@ function template_tpadm_above()
 
 	echo '
 	<div  class="tpadmin_menu">
-		<div class="cat_bar">
-			<h3 class="category_header">' . $txt['tp-adminmenu'] .'</h3>
-		</div>
-		<span class="upperframe"><span></span></span>
+		<div class="cat_bar"><header class="category_header">' . $txt['tp-adminmenu'] .'</header></div>
+		<span class="upperframe"></span>
 		<div class="roundframe">';
 
 	if(is_array($context['admin_tabs']) && count($context['admin_tabs']) > 0) {
@@ -1617,7 +1595,7 @@ function template_tpadm_above()
 
 		}
 		echo '
-			<div style="clear:both;"></div></ul>';
+			<div class="clear"></div></ul>';
 	}
 
 	echo '
@@ -1702,7 +1680,7 @@ function tpstandardTime($log_time, $show_today = true, $format)
 }
 
 // Generate a strip of buttons.
-function tp_template_button_strip($button_strip, $direction = 'top', $strip_options = array())
+function tp_template_button_strip($button_strip, $strip_options = array())
 {
 	global $context, $txt;
 
@@ -1713,7 +1691,7 @@ function tp_template_button_strip($button_strip, $direction = 'top', $strip_opti
 	$buttons = array();
 	foreach ($button_strip as $key => $value) {
 		if (!isset($value['test']) || !empty($context[$value['test']])) {
-				$buttons[] = '<a' . (isset($value['id']) ? ' id="button_strip_' . $value['id'] . '"' : '') . ' class="listlevel1 linklevel1 button_strip_' . $key . '' . ($value['active'] ? ' active' : '') . '" href="' . $value['url'] . '"' . (isset($value['custom']) ? ' ' . $value['custom'] : '') . ' ><span>' . $txt[$value['text']] . '</span></a>';
+				$buttons[] = '<li id="button_strip_' . $key . '" class="listlevel1"><a class="linklevel1' . ($value['active'] ? ' active' : '') . '" href="' . $value['url'] . '"' . (isset($value['custom']) ? ' ' . $value['custom'] : '') . ' >' . $txt[$value['text']] . '</a></li>';
 		}
 	}
 
@@ -1721,15 +1699,10 @@ function tp_template_button_strip($button_strip, $direction = 'top', $strip_opti
 	if (empty($buttons))
 		return;
 
-	// Make the last one, as easy as possible.
-	$buttons[count($buttons) - 1] = str_replace('<span>', '<span class="last">', $buttons[count($buttons) - 1]);
-
 	echo '
-		<div class="buttonlist', !empty($direction) ? ' align_' . $direction : '', '"', (empty($buttons) ? ' style="display: none;"' : ''), (!empty($strip_options['id']) ? ' id="' . $strip_options['id'] . '"': ''), '>
-			<ul style="margin:0px;padding:5px 0px;">',
-				implode('', $buttons), '
-			<p class="clearthefloat"></p></ul>
-		</div>';
+		<ul class="tpmenu admin_menu"', (empty($buttons) ? ' style="display: none;"' : ''), (!empty($strip_options['id']) ? ' id="' . $strip_options['id'] . '"': ''), '>',
+			implode('', $buttons), '
+		</ul>';
 }
 
 ?>

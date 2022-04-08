@@ -45,7 +45,7 @@ class Php extends Base
 		echo '
 			</div><div>
 			<textarea style="width: 94%; margin: 0px 0px 10px;" name="tp_block_body" id="tp_block_body" rows="15" cols="40" wrap="auto">' ,  $this->context['TPortal']['blockedit']['body'] , '</textarea>
-			<p><div class="tborder" style=""><p style="padding: 0 0 5px 0; margin: 0;">' , $this->txt['tp-blockcodes'] , ':</p>
+			<p><div class="tborder"><p style="padding: 0 0 5px 0; margin: 0;">' , $this->txt['tp-blockcodes'] , ':</p>
 				<select name="tp_blockcode" id="tp_blockcode" size="8" style="margin-bottom: 5px; width: 94%" onchange="changeSnippet(this.selectedIndex);">
 					<option value="0" selected="selected">' , $this->txt['tp-none-'] , '</option>';
 		if(!empty($this->context['TPortal']['blockcodes'])) {
