@@ -1411,8 +1411,9 @@ class Subs
         $setlang = '';
 
         for($i=0; $i < $num ; $i = $i + 2){
-            if($lang[$i] == $set)
-                $setlang = $lang[$i+1];
+            if(isset($lang[$i]) && ($lang[$i] == $set)) {
+                $setlang = $lang[$i+1] ?? ''; 
+            }
         }
 
         return $setlang;

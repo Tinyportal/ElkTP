@@ -1615,7 +1615,7 @@ function template_tpadm_below()
 }
 
 // Format a time to make it look purdy.
-function tpstandardTime($log_time, $show_today = true, $format)
+function tpstandardTime($log_time, $show_today, $format)
 {
 	global $context, $user_info, $txt, $modSettings;
 
