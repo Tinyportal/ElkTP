@@ -10,10 +10,10 @@
 		<require-dir name="TinyPortal" destination="BOARDDIR" />
 		<require-dir name="tp-files" destination="BOARDDIR" />
 		<database>database.php</database>
-        <hook hook="integrate_pre_load" function="\TinyPortal\Integrate::hookPreLoad" file="BOARDDIR/TinyPortal/Integrate.php" />
+        <hook hook="integrate_pre_load" function="\TinyPortal\Integrate::preLoad" file="BOARDDIR/TinyPortal/Integrate.php" />
 	</install>
 	<uninstall for="2.0.* - 2.0.99">
 		<remove-dir name="BOARDDIR/TinyPortal" />
-        <hook reverse="true" hook="integrate_pre_load" function="\TinyPortal\Integrate::hookPreLoad" file="BOARDDIR/TinyPortal/Integrate.php" />
+        <hook reverse="true" hook="integrate_pre_load" function="\TinyPortal\Integrate::preLoad" file="BOARDDIR/TinyPortal/Integrate.php" />
 	</uninstall>
 </package-info>

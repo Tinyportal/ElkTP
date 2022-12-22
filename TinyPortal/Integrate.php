@@ -17,7 +17,7 @@ if (!defined('ELK')) {
 class Integrate
 {
 
-    public static function hookPreLoad() {{{
+    public static function preLoad() {{{
 	    global $modSettings; // Needed for frontPageHook
 
         // We need to load our autoloader outside of the main function
@@ -36,21 +36,21 @@ class Integrate
         }
 
         $hooks = array (
-            'current_action'                    => '\TinyPortal\Integrate::hookCurrentAction',
-            'load_permissions'                  => '\TinyPortal\Integrate::hookPermissions',
-            'load_illegal_guest_permissions'    => '\TinyPortal\Integrate::hookIllegalPermissions',
-            'buffer'                            => '\TinyPortal\Integrate::hookBuffer',
-            'menu_buttons'                      => '\TinyPortal\Integrate::hookMenuButtons',
-            'display_buttons'                   => '\TinyPortal\Integrate::hookDisplayButtons',
-            'admin_areas'                       => '\TinyPortal\Integrate::hookAdminAreas',
-            'actions'                           => '\TinyPortal\Integrate::hookActions',
-            'whos_online'                       => '\TinyPortal\Integrate::hookWhosOnline',
-            'profile_areas'                     => '\TinyPortal\Integrate::hookProfileArea',
-            'pre_load_theme'                    => '\TinyPortal\Integrate::hookLoadTheme',
-            'redirect'                          => '\TinyPortal\Integrate::hookRedirect',
-            'action_frontpage'                  => '\TinyPortal\Integrate::hookFrontPage',
-            'init_theme'                        => '\TinyPortal\Integrate::hookInitTheme',
-            'search'                            => '\TinyPortal\Integrate::hookSearchLayers',
+            'current_action'                    => '\TinyPortal\Integrate::currentAction',
+            'load_permissions'                  => '\TinyPortal\Integrate::permissions',
+            'load_illegal_guest_permissions'    => '\TinyPortal\Integrate::illegalPermissions',
+            'buffer'                            => '\TinyPortal\Integrate::buffer',
+            'menu_buttons'                      => '\TinyPortal\Integrate::menuButtons',
+            'display_buttons'                   => '\TinyPortal\Integrate::displayButtons',
+            'admin_areas'                       => '\TinyPortal\Integrate::adminAreas',
+            'actions'                           => '\TinyPortal\Integrate::actions',
+            'whos_online'                       => '\TinyPortal\Integrate::whosOnline',
+            'profile_areas'                     => '\TinyPortal\Integrate::profileArea',
+            'pre_load_theme'                    => '\TinyPortal\Integrate::loadTheme',
+            'redirect'                          => '\TinyPortal\Integrate::redirect',
+            'action_frontpage'                  => '\TinyPortal\Integrate::frontPage',
+            'init_theme'                        => '\TinyPortal\Integrate::initTheme',
+            'search'                            => '\TinyPortal\Integrate::searchLayers',
             'tp_pre_subactions'                 => array (
             ),
             'tp_post_subactions'                => array (
@@ -93,7 +93,7 @@ class Integrate
 
     }}}
 
-    public static function hookFrontPage(&$defaultAction) {{{
+    public static function frontPage(&$defaultAction) {{{
         global $modSettings;
 
         // Should check TinyPortal is enabled..
@@ -128,7 +128,7 @@ class Integrate
 
     }}}
 
-    public static function hookPermissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions) {{{
+    public static function permissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions) {{{
 
         $permissionList['membergroup'] = array_merge(
             array(
@@ -150,7 +150,7 @@ class Integrate
     }}}
 
     // Adds TP copyright in the buffer so we don't have to edit an ELK file
-    public static function hookBuffer($buffer) {{{
+    public static function buffer($buffer) {{{
         global $context, $scripturl, $txt, $boardurl;
 
         // add upshrink buttons
@@ -244,7 +244,7 @@ class Integrate
         return $buffer;
     }}}
 
-    public static function hookIllegalPermissions() {{{
+    public static function illegalPermissions() {{{
         global $context;
 
         if (empty($context['non_guest_permissions']))
@@ -267,7 +267,7 @@ class Integrate
         $context['non_guest_permissions'] = array_merge($context['non_guest_permissions'], $tp_illegal_perms);
     }}}
 
-    public static function hookCurrentAction(&$currentAction) {{{
+    public static function currentAction(&$currentAction) {{{
 
         // Rewrite the current action for the home page
         if( ($currentAction == 'home') && (empty($_REQUEST['action'])) ) {
@@ -276,7 +276,7 @@ class Integrate
 
     }}}
 
-    public static function hookMenuButtons(&$buttons) {{{
+    public static function menuButtons(&$buttons) {{{
         global $context, $scripturl, $txt, $boardurl;
 
         // If ELK throws a fatal_error TP is not loaded. So don't even worry about menu items.
@@ -333,7 +333,7 @@ class Integrate
 
     }}}
 
-    public static function hookDisplayButtons() {{{
+    public static function displayButtons() {{{
 
         global $context, $scripturl, $txt;
 
@@ -348,7 +348,7 @@ class Integrate
 
     }}}
 
-    public static function hookAdminAreas($adminAreas) {{{
+    public static function adminAreas($adminAreas) {{{
         global $txt;
 
         Model\Subs::getInstance()->loadLanguage('TPortal');
@@ -443,7 +443,7 @@ class Integrate
 
     }}}
 
-    public static function hookProfileArea(&$profile_areas) {{{
+    public static function profileArea(&$profile_areas) {{{
         global $txt, $context;
 
         $profile_areas['tp'] = array(
@@ -494,7 +494,7 @@ class Integrate
 
     }}}
 
-    public static function hookActions(&$actionArray) {{{
+    public static function actions(&$actionArray) {{{
 
 		$actionArray = array_merge(
 			$actionArray,
@@ -508,7 +508,7 @@ class Integrate
 
     }}}
 
-    public static function hookWhosOnline($actions) {{{
+    public static function whosOnline($actions) {{{
         global $txt, $scripturl;
 
         Model\Subs::getInstance()->loadLanguage('TPortal');
@@ -604,7 +604,7 @@ class Integrate
 
     }}}
 
-    public static function hookInitTheme($id_theme, &$settings) {{{
+    public static function initTheme($id_theme, &$settings) {{{
 
         // Add our custom theme directory
         theme()->getTemplates()->getDirectory()->addDirectory(BOARDDIR . '/TinyPortal/Views/');
@@ -613,7 +613,7 @@ class Integrate
 
     }}}
 
-    public static function hookRedirect(&$setLocation) {{{
+    public static function redirect(&$setLocation) {{{
         global $scripturl, $context;
 
         if ($setLocation == $scripturl && !empty($context['TPortal']['redirectforum'])) {
@@ -622,7 +622,7 @@ class Integrate
 
     }}}
 
-    public static function hookSearchLayers() {{{
+    public static function searchLayers() {{{
         global $context;
 
         // are we on search page? then add TP search options as well!
@@ -634,7 +634,7 @@ class Integrate
 
     }}}
 
-    public static function hookDisplayButton(&$normal_buttons) {{{
+    public static function displayButton(&$normal_buttons) {{{
         global $context, $scripturl;
 
         if(allowedTo(array('tp_settings')) && (($context['TPortal']['front_type']=='forum_selected' || $context['TPortal']['front_type']=='forum_selected_articles'))) {
@@ -647,7 +647,7 @@ class Integrate
         }
     }}}
 
-    public static function hookLoadTheme(&$id_theme) {{{
+    public static function loadTheme(&$id_theme) {{{
         global $modSettings;
 
         $theme  = 0;
