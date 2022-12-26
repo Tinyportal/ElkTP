@@ -22,6 +22,7 @@ class Base
     protected $settings;
     protected $user_info;
     protected $maintenance;
+    protected $blockOptions = array();
 
     public function __construct() {{{
        global $context, $scripturl, $txt, $settings, $user_info, $maintenance, $modSettings;
@@ -32,6 +33,7 @@ class Base
         $this->settings     = $settings;
         $this->modSettings  = $modSettings;
         $this->user_info    = $user_info;
+        $this->blockOptions = array ( 'panel' => '99' );
 
     }}}
 
@@ -56,6 +58,18 @@ class Base
 		return false;
 
     }}}
+
+	public function getDefaultBlockOptions() {{{
+
+		return $this->blockOptions;
+
+	}}}
+
+	protected function setDefaultBlockOptions($options) {{{
+
+		array_merge($this->blockOptions, $options);
+
+	}}}
 
 }
 

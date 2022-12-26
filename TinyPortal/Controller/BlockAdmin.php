@@ -133,8 +133,8 @@ class BlockAdmin extends \ElkArte\AbstractController
             if(array_multisort($bar, SORT_ASC, $pos, SORT_ASC, $blocks)) {
                 foreach($blocks as $row) {
                     // decode the block settings
-                    $set = json_decode($row['settings'], true);
-                    $context['TPortal']['admin_'.$bars[$row['bar']].'block']['blocks'][] = array(
+                    $set = json_decode($row['settings'], true) ?? [];
+                    $context['TPortal']['admin_'.$bars[$row['bar']].'block']['blocks'][] = $set + array(
                         'frame' => $row['frame'],
                         'title' => $row['title'],
                         'type' => $tpBlock->getBlockType($row['type']),
@@ -144,8 +144,6 @@ class BlockAdmin extends \ElkArte\AbstractController
                         'pos' => $row['pos'],
                         'off' => $row['off'],
                         'visible' => $row['visible'],
-                        'var1' => $set['var1'],
-                        'var2' => $set['var2'],
                         'lang' => $row['lang'],
                         'display' => $row['display'],
                         'loose' => $row['display'] != '' ? true : false,
@@ -231,13 +229,9 @@ class BlockAdmin extends \ElkArte\AbstractController
 
         $row = $tpBlock->getBlock($block_id);
         if(is_array($row)) {
-            $acc2 = explode(',', $row['display']);
-            $context['TPortal']['blockedit'] = $row;
-            $context['TPortal']['blockedit']['var1']    = json_decode($row['settings'],true)['var1'];
-            $context['TPortal']['blockedit']['var2']    = json_decode($row['settings'],true)['var2'];
-            $context['TPortal']['blockedit']['var3']    = json_decode($row['settings'],true)['var3'];
-            $context['TPortal']['blockedit']['var4']    = json_decode($row['settings'],true)['var4'];
-            $context['TPortal']['blockedit']['var5']    = json_decode($row['settings'],true)['var5'];
+            $acc2	= explode(',', $row['display']);
+            $set	= json_decode($row['settings'], true) ?? [];
+            $context['TPortal']['blockedit'] = $set + $row;
             $context['TPortal']['blockedit']['display2'] = $context['TPortal']['blockedit']['display'];
             $context['TPortal']['blockedit']['body'] = $row['body'];
             unset($context['TPortal']['blockedit']['display']);

@@ -73,7 +73,9 @@ function template_editblock()
 
 			$blockClass = '\TinyPortal\Blocks\\'.ucfirst(str_replace('box', '', \TinyPortal\Model\Block::getInstance()->getBlockType($context['TPortal']['blockedit']['type'])));
 			if(class_exists($blockClass) && method_exists($blockClass, 'admin_display')) {
-				$found = (new $blockClass)->admin_display($context['TPortal']['blockedit']);
+                $block = new $blockClass;
+                $block->admin_setup($context['TPortal']['blockedit']);
+				$found = $block->admin_display($context['TPortal']['blockedit']);
 			}
 
 			if($found == false) {
@@ -187,7 +189,7 @@ function template_editblock()
 					<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-blockstylehelpdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
 					<label for="field_name">'.$txt['tp-blockstylehelp'].'</label>
 					</div>
-					<br><input type="radio" id="tp_block_var5" name="tp_block_var5" value="99" ' , $context['TPortal']['blockedit']['var5']=='99' ? 'checked' : '' , '><span' , $context['TPortal']['blockedit']['var5']=='99' ? ' style="color: red;">' : '><label for="tp_block_var5">' , $txt['tp-blocksusepaneltyle'] , '</label></span>
+					<br><input type="radio" id="tp_block_set_panel" name="tp_block_set_panel" value="99" ' , $context['TPortal']['blockedit']['panel']=='99' ? 'checked' : '' , '><span' , $context['TPortal']['blockedit']['panel']=='99' ? ' style="color: red;">' : '><label for="tp_block_set_panel">' , $txt['tp-blocksusepaneltyle'] , '</label></span>
 				<div>
 				<div class="panels-optionsbg">';
 
@@ -197,7 +199,7 @@ function template_editblock()
 				echo '
 					<div class="panels-options">
 						<div>
-							<input type="radio" id="tp_block_var5'.$blo.'" name="tp_block_var5" value="'.$blo.'" ' , $context['TPortal']['blockedit']['var5']==$blo ? 'checked' : '' , '><label for="tp_block_var5'.$blo.'"><span' , $context['TPortal']['blockedit']['var5']==$blo ? ' style="color: red;">' : '>' , $bl['class'] , '</span></label>
+							<input type="radio" id="tp_block_set_panel'.$blo.'" name="tp_block_set_panel" value="'.$blo.'" ' , $context['TPortal']['blockedit']['panel']==$blo ? 'checked' : '' , '><label for="tp_block_set_panel'.$blo.'"><span' , $context['TPortal']['blockedit']['panel']==$blo ? ' style="color: red;">' : '>' , $bl['class'] , '</span></label>
 						</div>
 						' . $bl['code_title_left'] . 'title'. $bl['code_title_right'].'
 						' . $bl['code_top'] . 'body' . $bl['code_bottom'] . '

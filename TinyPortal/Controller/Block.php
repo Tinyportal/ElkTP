@@ -80,24 +80,19 @@ class Block
                 }
 
                 // decode the block settings
-                $set        = json_decode($row['settings'], true);
+                $set        = json_decode($row['settings'], true) ?? array();
                 $can_edit   = !empty($row['editgroups']) ? TPSubs::getInstance()->perm($row['editgroups'], '') : false;
                 $can_manage = allowedTo('tp_blocks');
                 if($can_manage) {
                     $can_edit = false;
                 }
-                $blocks[$panels[$row['bar']]][$count[$panels[$row['bar']]]] = array(
+                $blocks[$panels[$row['bar']]][$count[$panels[$row['bar']]]] = $set + array(
                     'frame'     => $row['frame'],
                     'title'     => strip_tags($row['title'], '<center>'),
                     'type'      => $tpBlock->getBlockType($row['type']),
                     'body'      => $row['body'],
                     'visible'   => $row['visible'],
                     'settings'  => $row['settings'],
-                    'var1'      => $set['var1'],
-                    'var2'      => $set['var2'],
-                    'var3'      => $set['var3'],
-                    'var4'      => $set['var4'],
-                    'var5'      => $set['var5'],
                     'id'        => $row['id'],
                     'lang'      => $row['lang'],
                     'display'   => $row['display'],
