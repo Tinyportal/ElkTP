@@ -69,8 +69,8 @@ function TPblock($block, $theme, $side, $double=false)
 	$types = TPSubs::getInstance()->getBlockStyles();
 
 	// check
-	if ( ($block['var5'] == '') || ($block['var5'] == 99) )
-		$block['var5'] = $context['TPortal']['panelstyle_'.$side];
+	if ( ($block['panel'] == '') || ($block['panel'] == 99) )
+		$block['panel'] = $context['TPortal']['panelstyle_'.$side];
 
 	// its a normal block..
 	if(in_array($block['frame'],array('theme', 'frame', 'title', 'none'))) {
@@ -79,7 +79,7 @@ function TPblock($block, $theme, $side, $double=false)
 
 		// show the frame and title
 		if ($theme || $block['frame'] == 'title') {
-			echo $types[$block['var5']]['code_title_left'];
+			echo $types[$block['panel']]['code_title_left'];
 
             if($block['visible'] == '' || $block['visible'] == '1') {
                 $collapsed  = in_array($block['id'],$context['TPortal']['upshrinkblocks']);
@@ -93,7 +93,7 @@ function TPblock($block, $theme, $side, $double=false)
             }
 
 			echo $block['title'];
-			echo $types[$block['var5']]['code_title_right'];
+			echo $types[$block['panel']]['code_title_right'];
 		}
 		else {
 			if(($block['visible'] == '' || $block['visible'] == '1') && $block['frame'] != 'frame') {
@@ -111,7 +111,7 @@ function TPblock($block, $theme, $side, $double=false)
 		echo '
 		<div class="', (($theme || $block['frame'] == 'frame') ? 'tp_'.$side.'block_body' : ''), '"', in_array($block['id'],$context['TPortal']['upshrinkblocks']) ? ' style="display: none;"' : ''  , ' id="block'.$block['id'].'">';
 		if($theme || $block['frame'] == 'frame') {
-			echo $types[$block['var5']]['code_top'];
+			echo $types[$block['panel']]['code_top'];
         }
 
         if($double) {
@@ -137,7 +137,7 @@ function TPblock($block, $theme, $side, $double=false)
         echo '</div>';
 
 		if($theme || $block['frame'] == 'frame') {
-			echo $types[$block['var5']]['code_bottom'];
+			echo $types[$block['panel']]['code_bottom'];
         }
 		echo '
 		</div>
@@ -1615,7 +1615,7 @@ function template_tpadm_below()
 }
 
 // Format a time to make it look purdy.
-function tpstandardTime($log_time, $show_today = true, $format)
+function tpstandardTime($log_time, $show_today, $format)
 {
 	global $context, $user_info, $txt, $modSettings;
 
