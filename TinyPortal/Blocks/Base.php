@@ -51,9 +51,9 @@ class Base
 
     public function admin_setup( &$block ) {{{
 
-		$default = $this->getDefaultBlockOptions();
-		$block['settings'] = isset($block['settings']) ? $block['settings'] : json_encode($default);
-		$block	+= $default;
+		if(empty($block['settings'])) {
+			$block += $this->getDefaultBlockOptions();
+		}
 
 	}}}
 

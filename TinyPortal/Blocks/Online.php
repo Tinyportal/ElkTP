@@ -25,19 +25,12 @@ class Online extends Base
     public function setup( &$block ) {{{
 
         $block['title']     = '<a class="subject"  href="'.$this->scripturl.'?action=who">'.$block['title'].'</a>';
-        if($block['var1'] == 0) {
-            $this->context['TPortal']['useavataronline'] = 0;
-        }
-        else {
-            $this->context['TPortal']['useavataronline'] = 1;
-        }
 
     }}}
 
     public function display( $block ) {{{
 
-        if($this->context['TPortal']['useavataronline'] == 1) {
-
+        if($block['avatar'] == 0) {
             require_once(SUBSDIR . '/MembersOnline.subs.php');
             $membersOnlineOptions = array(
                 'show_hidden'   => \allowedTo('moderate_forum'),
@@ -81,11 +74,28 @@ class Online extends Base
 
 		parent::admin_setup($block);
 
+		$default = array(
+			'avatar'	=> 0,
+		);
+
+		if(empty($block['settings'])) {
+			$block += $default;
+		}
+
     }}}
 
     public function admin_display( $block ) {{{
 
-		return false;
+		echo '
+			<hr>
+			<dl class="tptitle settings">
+				<dt>
+					<label for="field_name">'.$this->txt['tp-rssblock-showavatar'].'</label>
+				</dt>
+				<dd>
+					<input type="radio" name="tp_block_set_avatar" value="1" ' , ($block['avatar'] == '1' || $block['avatar'] == '') ? ' checked' : '' ,'>'.$this->txt['tp-yes'].' <input type="radio" name="tp_block_set_avatar" value="0" ' , ($block['avatar'] == '0') ? ' checked' : '' ,'>'.$this->txt['tp-no'].'
+				</dd>
+			</dl>';
 
     }}}
 

@@ -45,7 +45,7 @@ class Theme extends Base
         }
 
         if(isset($this->context['TPortal']['querystring'])) {
-            $tp_where = \Util::htmlspecialchars(strip_tags($this->context['TPortal']['querystring']));
+            $tp_where = \TinyPortal\Model\Util::htmlspecialchars(strip_tags($this->context['TPortal']['querystring']));
         }
         else {
             $tp_where = 'action=forum';
@@ -56,14 +56,13 @@ class Theme extends Base
         }
 
         // remove multiple theme=x in the string.
-        $tp_where=preg_replace("'theme=[^>]*?;'si", "", $tp_where);
+        $tp_where = preg_replace("'theme=[^>]*?;'si", "", $tp_where);
 
         if(is_countable($temaid) && count($temaid) > 0) {
             echo '
                 <form name="jumpurl1" onsubmit="return jumpit()" class="middletext" action="" style="padding: 0; margin: 0; text-align: center;">
                 <select style="width: 100%; margin: 5px 0px 5px 0px;" size="1" name="jumpurl2" onchange="check(this.value)">';
-            for($a=0 ; $a<(count($temaid)); $a++)
-            {
+            for($a = 0; $a < (count($temaid)); $a++) {
                 echo '
                     <option value="'.$temaid[$a].'" ', $this->settings['theme_id'] == $temaid[$a] ? 'selected="selected"' : '' ,'>'.substr($temanavn[$a],0,20).'</option>';
             }
@@ -71,7 +70,7 @@ class Theme extends Base
                 </select><br>' , $this->context['user']['is_logged'] ?
                 '<input type="checkbox" value=";permanent" onclick="realtheme()" /> '. $this->txt['tp-permanent']. '<br>' : '' , '<br>
                 <input type="button" class="button_submit" value="'.$this->txt['tp-changetheme'].'" onclick="jumpit()" /><br><br>
-                <input type="hidden" value="'.\Util::htmlspecialchars($this->scripturl . '?'.$tp_where.'theme='.$this->settings['theme_id']).'" name="jumpurl3" />
+                <input type="hidden" value="'.\TinyPortal\Model\Util::htmlspecialchars($this->scripturl . '?'.$tp_where.'theme='.$this->settings['theme_id']).'" name="jumpurl3" />
                 <div style="text-align: center; width: 95%; overflow: hidden;">';
 
             echo ' <img src="'.$this->settings['images_url'].'/thumbnail.png" alt="" id="chosen" name="chosen" style="max-width: 100%;" />';
@@ -82,7 +81,7 @@ class Theme extends Base
                 <script type="text/javascript"><!-- // --><![CDATA[
                 var extra = \'\';
             var themepath = new Array();';
-            for($a=0 ; $a<(count($temaid)); $a++){
+            for($a = 0; $a < (count($temaid)); $a++){
                 echo '
                     themepath['.$temaid[$a].'] = "'.$temapaths[$a].'/thumbnail.gif";
                 ';
@@ -122,8 +121,34 @@ class Theme extends Base
     }}}
 
     public function admin_display( $block ) {{{
+		// get the ids
+		$myt = array();
+		$thems	= explode(",", $block['body']);
+		foreach($thems as $g => $gh) {
+			$wh = explode("|",$gh);
+			$myt[] = $wh[0];
+		}
 
-		return false;
+		echo '
+			<hr><input type="hidden" name="blockbody' .$block['id']. '" value="' .$block['body'] . '" />
+			<div style="padding: 5px;">
+				<div style="max-height: 25em; overflow: auto;">
+					<input type="hidden" name="tp_theme-1" value="-1">
+					<input type="hidden" name="tp_tpath-1" value="1">';
+					foreach($this->context['TPthemes'] as $tema) {
+					echo '
+						<img class="theme_icon" alt="*" src="'.$tema['path'].'/thumbnail.png" /> <input type="checkbox" name="tp_theme'.$tema['id'].'" value="'.$tema['name'].'"';
+						if(in_array($tema['id'], $myt)) {
+							echo ' checked';
+						}
+						echo '>'.$tema['name'].'<input type="hidden" value="'.$tema['path'].'" name="tp_path'.$tema['id'].'"><br>';
+		}
+
+		echo '
+				</div>
+			</div>
+			<input type="checkbox" onclick="invertAll(this, this.form, \'tp_theme\');" /> '.$this->txt['tp-checkall'],'
+		';
 
     }}}
 

@@ -25,14 +25,8 @@ class Recent extends Base
     public function setup( &$block ) {{{
 
         $mp = '<a class="subject"  href="'.$this->scripturl.'?action=recent">'.$block['title'].'</a>';
-        $this->context['TPortal']['recentboxnum'] = $block['body'];
-        $this->context['TPortal']['useavatar'] = $block['var1'];
-        $this->context['TPortal']['boardmode'] = $block['var3'];
-        if($block['var1'] == '') {
-            $this->context['TPortal']['useavatar'] = 1;
-        }
-        if(!empty($block['var2'])) {
-            $this->context['TPortal']['recentboards'] = explode(',', $block['var2']);
+        if(!empty($block['boards'])) {
+            $block['boards'] = explode(',', $block['boards']);
         }
 
     }}}
@@ -40,28 +34,32 @@ class Recent extends Base
     public function display( $block ) {{{
 
         // is it a number?
-        if(!is_numeric($this->context['TPortal']['recentboxnum']))
-            $this->context['TPortal']['recentboxnum']='10';
+        if(!is_numeric($block['total']))
+            $block['total']='10';
 
         // exclude boards
-        if (isset($this->context['TPortal']['recentboards']) && $this->context['TPortal']['boardmode'] == 0)
-            $exclude_boards = $this->context['TPortal']['recentboards'];
+        if (isset($block['boards']) && $block['include'] == 0) {
+            $exclude_boards = $block['boards'];
+        }
         else {
             // leave out the recycle board, if any
-            if(isset($this->modSettings['recycle_board']) && $this->modSettings['recycle_enable'] = 1 )
+            if(isset($this->modSettings['recycle_board']) && $this->modSettings['recycle_enable'] = 1 ) {
                 $bb = array($this->modSettings['recycle_board']);
+            }
             $exclude_boards = $bb;
         }
 
         // include boards
-        if (isset($this->context['TPortal']['recentboards']) && !$this->context['TPortal']['boardmode'] == 0)
-            $include_boards = $this->context['TPortal']['recentboards'];
-        else
+        if (isset($block['boards']) && !$block['include'] == 0) {
+            $include_boards = $block['boards'];
+        }
+        else {
             $include_boards = null;
+        }
 
-        $what = \ssi_recentTopics($num_recent = $this->context['TPortal']['recentboxnum'] , $exclude_boards,  $include_boards, $output_method = 'array');
+        $what = \ssi_recentTopics($num_recent = $block['total'] , $exclude_boards,  $include_boards, $output_method = 'array');
 
-        if($this->context['TPortal']['useavatar'] == 0) {
+        if($block['avatar'] == 0) {
             // Output the topics
             echo '
                 <ul class="recent_topics" style="' , isset($this->context['TPortal']['recentboxscroll']) && $this->context['TPortal']['recentboxscroll'] == 1 ? 'overflow: auto; height: 20ex;' : '' , 'margin: 0; padding: 0;">';
@@ -91,10 +89,12 @@ class Recent extends Base
                 $member_ids[] = $w['poster']['id'];
             }
 
-            if(!empty($member_ids))
+            if(!empty($member_ids)) {
                 $avatars = \TinyPortal\Model\Subs::getInstance()->getAvatars($member_ids);
-            else
+            }
+            else {
                 $avatars = array();
+            }
 
             // Output the topics
             $coun = 1;
@@ -127,26 +127,38 @@ class Recent extends Base
 
 		parent::admin_setup($block);
 
+		$default = array(
+			'avatar'	=> 0,
+			'boards'	=> '',
+			'include'	=> 0,
+			'total'		=> 10,
+		);
+
+		if(empty($block['settings'])) {
+			$block += $default;
+		}
+
+		// We also need to check that boards isn't empty
+		if(empty($block['boards'])) {
+			$block['boards'] = '';
+		}
+
     }}}
 
 	public function admin_display( $block ) {{{
-
-		if(!is_numeric($this->context['TPortal']['blockedit']['body'])) {
-			$this->context['TPortal']['blockedit']['body'] = 10;
-		}
 
 		echo '
 			<hr>
 			<dl class="tptitle settings">
 				<dt>
-					<label for="tp_block_body">'.$this->txt['tp-numberofrecenttopics'].'</label></dt>
+					<label for="tp_block_set_total">'.$this->txt['tp-numberofrecenttopics'].'</label></dt>
 				<dd>
-					<input type="number" id="tp_block_body" name="tp_block_body" value="' .$this->context['TPortal']['blockedit']['body']. '" style="width: 6em" min="1">
+					<input type="number" id="tp_block_set_total" name="tp_block_set_total" value="' .$block['total']. '" style="width: 6em" min="1">
 				</dd>
 				<dt>
-					<label for="tp_block_var2">'.$this->txt['tp-recentboards'].'</label></dt>
+					<label for="tp_block_set_boards">'.$this->txt['tp-recentboards'].'</label></dt>
 				<dd>
-					<input type="text" id="tp_block_var2" name="tp_block_var2" value="' , $this->context['TPortal']['blockedit']['var2'] ,'" size="20" pattern="[0-9,]+">
+					<input type="text" id="tp_block_set_boards" name="tp_block_set_boards" value="' , $block['boards'] ,'" size="20" pattern="[0-9,]+">
 				</dd>';
 
 		echo '
@@ -154,15 +166,15 @@ class Recent extends Base
 					<label for="field_name">'.$this->txt['tp-recentincexc'].'</label>
 				</dt>
 				<dd>
-					<input type="radio" id="tp_block_var3in" name="tp_block_var3" value="1" ' , ($this->context['TPortal']['blockedit']['var3']=='1' || $this->context['TPortal']['blockedit']['var3']=='') ? ' checked' : '' ,'> <label for="tp_block_var3in">'.$this->txt['tp-recentinboard'].'</label><br>
-					<input type="radio" id="tp_block_var3ex" name="tp_block_var3" value="0" ' , $this->context['TPortal']['blockedit']['var3']=='0' ? 'checked' : '' ,'> <label for="tp_block_var3ex">'.$this->txt['tp-recentexboard'].'</label>
+					<input type="radio" id="tp_block_includein" name="tp_block_set_include" value="1" ' , ($block['include']=='1' || $block['include']=='') ? ' checked' : '' ,'> <label for="tp_block_includein">'.$this->txt['tp-recentinboard'].'</label><br>
+					<input type="radio" id="tp_block_includeex" name="tp_block_set_include" value="0" ' , $block['include']=='0' ? 'checked' : '' ,'> <label for="tp_block_includeex">'.$this->txt['tp-recentexboard'].'</label>
 				</dd>
 				<dt>
 					<label for="field_name">' . $this->txt['tp-rssblock-showavatar'].'</label>
 				</dt>
 				<dd>
-					<input type="radio" name="tp_block_var1" value="1" ' , ($this->context['TPortal']['blockedit']['var1']=='1' || $this->context['TPortal']['blockedit']['var1']=='') ? ' checked' : '' ,'>'.$this->txt['tp-yes'].'
-					<input type="radio" name="tp_block_var1" value="0" ' , $this->context['TPortal']['blockedit']['var1']=='0' ? ' checked' : '' ,'>'.$this->txt['tp-no'].'
+					<input type="radio" name="tp_block_set_avatar" value="1" ' , ($block['avatar']=='1' || $block['avatar']=='') ? ' checked' : '' ,'>'.$this->txt['tp-yes'].'
+					<input type="radio" name="tp_block_set_avatar" value="0" ' , $block['avatar']=='0' ? ' checked' : '' ,'>'.$this->txt['tp-no'].'
 				</dd>
 			</dl>';
 

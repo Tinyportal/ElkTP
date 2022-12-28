@@ -79,73 +79,7 @@ function template_editblock()
 			}
 
 			if($found == false) {
-	// Block type: Single Article
-				if($context['TPortal']['blockedit']['type']=='18'){
-					// check to see if it is numeric
-					if(!is_numeric($context['TPortal']['blockedit']['body']))
-						$lblock['body']='';
-					echo '
-						</div><div>
-						<hr><dl class="tptitle settings">
-							<dt>
-								<label for="field_name">',$txt['tp-showarticle'],'</label>
-							</dt>
-							<dd>
-								<select name="tp_block_body">
-								<option value="0">'.$txt['tp-none2'].'</option>';
-					foreach($context['TPortal']['edit_articles'] as $art => $article ){
-						echo '<option value="'.$article['id'].'" ' , $context['TPortal']['blockedit']['body']==$article['id'] ? ' selected="selected"' : '' ,' >'.html_entity_decode($article['subject']).'</option>';
-					}
-					echo '</select>
-							</dd>
-						</dl>';
-				}
-	// Block type: Themes
-				elseif($context['TPortal']['blockedit']['type']=='7') {
-					// get the ids
-					$myt=array();
-					$thems=explode(",",$context['TPortal']['blockedit']['body']);
-					foreach($thems as $g => $gh)
-					{
-						$wh=explode("|",$gh);
-						$myt[]=$wh[0];
-					}
-						echo '
-							<hr><input type="hidden" name="blockbody' .$context['TPortal']['blockedit']['id']. '" value="' .$context['TPortal']['blockedit']['body'] . '" />
-							<div style="padding: 5px;">
-								<div style="max-height: 25em; overflow: auto;">
-								<input type="hidden" name="tp_theme-1" value="-1">
-								<input type="hidden" name="tp_tpath-1" value="1">';
-					foreach($context['TPthemes'] as $tema)
-					{
-							echo '
-								<img class="theme_icon" alt="*" src="'.$tema['path'].'/thumbnail.png" /> <input type="checkbox" name="tp_theme'.$tema['id'].'" value="'.$tema['name'].'"';
-						if(in_array($tema['id'],$myt))
-							echo ' checked';
-						echo '>'.$tema['name'].'<input type="hidden" value="'.$tema['path'].'" name="tp_path'.$tema['id'].'"><br>';
-					}
-					echo '
-						</div>
-						<input type="checkbox" onclick="invertAll(this, this.form, \'tp_theme\');" /> '.$txt['tp-checkall'],'
-					';
-				}
-
-	// Block type: Online
-				elseif($context['TPortal']['blockedit']['type']=='6') {
-					echo '
-						<hr><dl class="tptitle settings">
-							<dt>
-								<label for="field_name">'.$txt['tp-rssblock-showavatar'].'</label>
-							</dt>
-							<dd>
-								<input type="radio" name="tp_block_var1" value="1" ' , ($context['TPortal']['blockedit']['var1']=='1' || $context['TPortal']['blockedit']['var1']=='') ? ' checked' : '' ,'>'.$txt['tp-yes'].' <input type="radio" name="tp_block_var1" value="0" ' , $context['TPortal']['blockedit']['var1']=='0' ? ' checked' : '' ,'>'.$txt['tp-no'].'
-							</dd>
-						</dl>';
-				}
-				else {
-					echo '
-				</div><div>';
-				}
+				echo '</div><div>';
 			}
 
 			echo '		</div>
