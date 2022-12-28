@@ -129,40 +129,7 @@ function template_editblock()
 						<input type="checkbox" onclick="invertAll(this, this.form, \'tp_theme\');" /> '.$txt['tp-checkall'],'
 					';
 				}
-	// Block type: Articles in a Category
-				elseif($context['TPortal']['blockedit']['type']=='19') {
-					if(!is_numeric($context['TPortal']['blockedit']['body']))
-						$lblock['body']='';
-					echo '
-						<hr><dl class="tptitle settings">
-							<dt>
-								<label for="tp_block_body">'.$txt['tp-showcategory'].'</label>
-							</dt>
-							<dd>
-								<select name="tp_block_body" id="tp_block_body">
-								<option value="0">'.$txt['tp-none2'].'</option>';
-					foreach($context['TPortal']['catnames'] as $cat => $catname){
-						echo '
-									<option value="'.$cat.'" ' , $context['TPortal']['blockedit']['body']==$cat ? ' selected' : '' ,' >'.html_entity_decode($catname).'</option>';
-					}
-					echo '
-								</select>
-							</dd>
-							<dt>
-								<label for="tp_block_var1">'.$txt['tp-catboxheight'].'</label>
-							</dt>
-							<dd>
-								<input type="number" id="tp_block_var1" name="tp_block_var1" value="' , ((!is_numeric($context['TPortal']['blockedit']['var1'])) || (($context['TPortal']['blockedit']['var1']) == 0) ? '15' : $context['TPortal']['blockedit']['var1']) ,'" style="width: 6em" min="1" required> em
-							</dd>
-							<dt>
-								<label for="field_name">'.$txt['tp-catboxauthor'].'</label>
-							</dt>
-							<dd>
-								<input type="radio" name="tp_block_var2" value="1" ' , $context['TPortal']['blockedit']['var2']=='1' ? 'checked' : '' ,'> ', $txt['tp-yes'], '<br>
-								<input type="radio" name="tp_block_var2" value="0" ' , $context['TPortal']['blockedit']['var2']=='0' ? 'checked' : '' ,'> ', $txt['tp-no'], '
-							</dd>
-						</dl>';
-				}
+
 	// Block type: Online
 				elseif($context['TPortal']['blockedit']['type']=='6') {
 					echo '
