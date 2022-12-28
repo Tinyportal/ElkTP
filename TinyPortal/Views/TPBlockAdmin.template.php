@@ -68,8 +68,7 @@ function template_editblock()
 						</dd>
 					</dl>
 					<div class="submitbutton"><input type="submit" value="'.$txt['tp-send'].'" name="'.$txt['tp-send'].'"></div>
-					<div class="content">
-					<div>';
+					<div class="content"><div>';
 
 			$blockClass = '\TinyPortal\Blocks\\'.ucfirst(str_replace('box', '', \TinyPortal\Model\Block::getInstance()->getBlockType($context['TPortal']['blockedit']['type'])));
 			if(class_exists($blockClass) && method_exists($blockClass, 'admin_display')) {

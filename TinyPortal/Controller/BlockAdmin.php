@@ -21,6 +21,7 @@ use \TinyPortal\Model\Permissions as TPPermissions;
 use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 use \ElkArte\Errors\Errors;
+use \ElkArte\HttpReq;
 
 if (!defined('ELK')) {
 	die('Hacking attempt...');
@@ -337,9 +338,10 @@ class BlockAdmin extends \ElkArte\AbstractController
         global $context;
 
         $blocks = array();
+		$post	= HttpReq::instance()->post;
 
-        if(is_array($_POST) && count($_POST)) {
-            foreach($_POST as $k => $v) {
+        if(is_countable($post) && count($post)) {
+            foreach($post as $k => $v) {
                 foreach(array('pos', 'title', 'type', 'blockbody') as $type) {
                     if(strstr($k, $type)) {
                         $id = str_replace($type, '', $k);
@@ -384,7 +386,9 @@ class BlockAdmin extends \ElkArte\AbstractController
 		$lang 		= array();
 		$data		= array();
 
-        foreach($_POST as $k => $v) {
+		$post = HttpReq::instance()->post;
+
+        foreach($post as $k => $v) {
             // We have a empty post value just skip it
             if(empty($v) && $v == '') {
                 continue;
@@ -660,7 +664,8 @@ class BlockAdmin extends \ElkArte\AbstractController
 		$tpBlock	= TPBlock::getInstance();
 		$block 		= array();
 
-		foreach($_POST as $what => $value) {
+		$post = HttpReq::instance()->post;
+		foreach($post as $what => $value) {
 			if(substr($what, 5, 7) == 'tpblock') {
 				// get the id
 				$bid = substr($what, 12);
@@ -692,7 +697,8 @@ class BlockAdmin extends \ElkArte\AbstractController
             return;
         }
 
-        $updateArray = array();
+		$req			= HttpReq::instance();
+        $updateArray	= array();
 
         $checkboxes = array('hidebars_admin_only', 'hidebars_profile', 'hidebars_pm', 'hidebars_memberlist', 'hidebars_search', 'hidebars_calendar');
         foreach($checkboxes as $v) {
@@ -703,10 +709,10 @@ class BlockAdmin extends \ElkArte\AbstractController
                 $updateArray[$v] = 0;
             }
             // remove the variable so we don't process it twice before the old logic is removed
-            unset($_POST['tp_'.$v]);
+            $req->clearValue('tp_'.$v, 'post');
         }
 
-        foreach($_POST as $what => $value) {
+        foreach($req->post as $what => $value) {
             if(substr($what, 0, 3) == 'tp_') {
                 $where                  = substr($what, 3);
                 $updateArray[$where]    = $value;
