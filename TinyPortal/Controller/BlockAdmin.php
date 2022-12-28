@@ -382,14 +382,18 @@ class BlockAdmin extends \ElkArte\AbstractController
 		$tpgroups 	= array();
 		$editgroups = array();
 		$lang 		= array();
+		$data		= array();
 
         foreach($_POST as $k => $v) {
             // We have a empty post value just skip it
             if(empty($v) && $v == '') {
                 continue;
             }
-
-            if(substr($k, 0, 9) == 'tp_block_') {
+            if(substr($k, 0, 13) == 'tp_block_set_') {
+                $data[substr($k, 13)]		= $v;
+				$updateArray['settings']	= json_encode($data);
+            }
+            elseif(substr($k, 0, 9) == 'tp_block_') {
                 $setting = substr($k, 9);
                 switch($setting) {
                     case 'body':
@@ -413,18 +417,7 @@ class BlockAdmin extends \ElkArte\AbstractController
                     case 'body_choice':
                         // Do nothing
                         break;
-                    case 'var1':
-                    case 'var2':
-                    case 'var3':
-                    case 'var4':
-                    case 'var5':
-                        $existing = $tpBlock->select(array('settings'), array('id' => $block_id));
-                        if(is_array($existing)) {
-                            $data   = json_decode($existing[0]['settings'], true);
-                        }
-                        $data[$setting] = $v;
-                        $updateArray['settings'] = json_encode($data);
-                        break;
+
                     default:
                         $updateArray[$setting] = $v;
                         break;
@@ -554,16 +547,10 @@ class BlockAdmin extends \ElkArte\AbstractController
         }
 
         if(isset($cp)) {
-            $block = array ( 'type' => $cp['type'], 'frame' => $cp['frame'], 'title' => $title, 'body' => $cp['body'], 'access' => $cp['access'], 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => $cp['lang'], 'display' => $cp['display'], 'editgroups' => $cp['editgroups'], 'settings' => json_encode(array(
-                'var1' => json_decode($cp['settings'], true)['var1'],
-                'var2' => json_decode($cp['settings'], true)['var2'],
-                'var3' => 0,
-                'var4' => 0,
-                'var5' => 0)
-            ));
+            $block = array ( 'type' => $cp['type'], 'frame' => $cp['frame'], 'title' => $title, 'body' => $cp['body'], 'access' => $cp['access'], 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => $cp['lang'], 'display' => $cp['display'], 'editgroups' => $cp['editgroups'], 'settings' => $cp['settings']);
         }
         else {
-            $block = array ( 'type' => $type, 'frame' => 'frame', 'title' => $title, 'body' => $body, 'access' => '-1,0,1', 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => '', 'display' => 'allpages', 'editgroups' => '', 'settings' => json_encode(array('var1' => 0, 'var2' => 0, 'var3' => 0, 'var4' => 0, 'var5' => 0 )));
+            $block = array ( 'type' => $type, 'frame' => 'frame', 'title' => $title, 'body' => $body, 'access' => '-1,0,1', 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => '', 'display' => 'allpages', 'editgroups' => '', 'settings' => null );
         }
 
         $id = TPBlock::getInstance()->insert($block);

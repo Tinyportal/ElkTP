@@ -1210,7 +1210,7 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
             while($row = $db->fetch_assoc($request)) {
 
                 // decode the block settings
-                $set = json_decode($row['settings'], true);
+                $set = json_decode($row['settings'], true) ?? [];
 
                 // some tests to minimize sql calls
                 if($row['type'] == 7) {
@@ -1237,17 +1237,12 @@ class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageIn
                     $can_edit = false;
                 }
 
-                $blocks[$panels[$row['bar']]][$count[$panels[$row['bar']]]] = array(
+                $blocks[$panels[$row['bar']]][$count[$panels[$row['bar']]]] = $set + array(
                     'frame' => $row['frame'],
                     'title' => strip_tags($row['title'], '<center>'),
                     'type' => $tpBlock->getBlockType($row['type']),
                     'body' => $row['body'],
                     'visible' => $row['visible'],
-                    'var1' => $set['var1'],
-                    'var2' => $set['var2'],
-                    'var3' => $set['var3'],
-                    'var4' => $set['var4'],
-                    'var5' => $set['var5'],
                     'id' => $row['id'],
                     'lang' => $row['lang'],
                     'display' => $row['display'],

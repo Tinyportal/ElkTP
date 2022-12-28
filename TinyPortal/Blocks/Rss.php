@@ -67,27 +67,27 @@ class Rss extends Base
 					<label for="field_name">' , $this->txt['tp-rssblock-useutf8'].'</label>
 				</dt>
 				<dd>
-					<input type="radio" name="tp_block_utf" value="1" ' , $block['utf']=='1' ? ' checked' : '' ,'>'.$this->txt['tp-utf8'].'<br>
-					<input type="radio" name="tp_block_utf" value="0" ' , ($block['utf']=='0' || $block['utf']=='') ? ' checked' : '' ,'>'.$this->txt['tp-iso'].'
+					<input type="radio" name="tp_block_set_utf" value="1" ' , $block['utf']=='1' ? ' checked' : '' ,'>'.$this->txt['tp-utf8'].'<br>
+					<input type="radio" name="tp_block_set_utf" value="0" ' , ($block['utf']=='0' || $block['utf']=='') ? ' checked' : '' ,'>'.$this->txt['tp-iso'].'
 				</dd>
 				<dt>
 					<label for="field_name">' . $this->txt['tp-rssblock-showonlytitle'].'</label>
 				</dt>
 				<dd>
-					<input type="radio" name="tp_block_title" value=1' , ($block['display_title'] == '1') ? ' checked' : '' ,'>'.$this->txt['tp-yes'].'
-					<input type="radio" name="tp_block_title" value=0' , ($block['display_title'] != '1') ? ' checked' : '' ,'>'.$this->txt['tp-no'].'
+					<input type="radio" name="tp_block_set_display_title" value=1' , ($block['display_title'] == '1') ? ' checked' : '' ,'>'.$this->txt['tp-yes'].'
+					<input type="radio" name="tp_block_set_display_title" value=0' , ($block['display_title'] != '1') ? ' checked' : '' ,'>'.$this->txt['tp-no'].'
 				</dd>
 				<dt>
-					<label for="tp_block_width">' . $this->txt['tp-rssblock-maxwidth'].'</label>
+					<label for="tp_block_set_display_width">' . $this->txt['tp-rssblock-maxwidth'].'</label>
 				</dt>
 				<dd>
-					<input type="number" name="tp_block_width" id="tp_block_width" value="' , $block['display_width'],'" style="width: 6em">
+					<input type="number" name="tp_block_set_display_width" id="tp_block_set_display_width" value="' , $block['display_width'],'" style="width: 6em">
 				</dd>
 				<dt>
-					<label for="tp_block_max">' . $this->txt['tp-rssblock-maxshown'].'</label>
+					<label for="tp_block_set_display_max">' . $this->txt['tp-rssblock-maxshown'].'</label>
 				</dt>
 				<dd>
-					<input type="number" name="tp_block_max" id="tp_block_max" value="' , $block['display_max'],'" style="width: 6em">
+					<input type="number" name="tp_block_set_display_max" id="tp_block_set_display_max" value="' , $block['display_max'],'" style="width: 6em">
 				</dd>
 			</dl>
 		</div>';
