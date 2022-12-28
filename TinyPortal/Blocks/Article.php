@@ -85,6 +85,8 @@ class Article extends Base
 
     public function admin_setup( &$block ) {{{
 
+		parent::admin_setup($block);
+
     }}}
 
     public function admin_display( $block ) {{{
