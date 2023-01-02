@@ -13,6 +13,7 @@ namespace TinyPortal\Controller;
 use \TinyPortal\Model\Admin as TPAdmin;
 use \TinyPortal\Model\Article as TPArticle;
 use \TinyPortal\Model\Block as TPBlock;
+use \TinyPortal\Model\Category as TPCategory;
 use \TinyPortal\Model\Database as TPDatabase;
 use \TinyPortal\Model\Download as TPDownload;
 use \TinyPortal\Model\Integrate as TPIntegrate;
@@ -29,9 +30,8 @@ if (!defined('ELK')) {
 class DownloadAdmin extends BaseAdmin
 {
     public function __construct() {{{
-        parent::__construct();
-
-        theme()->getTemplates()->load('TPDownload');
+		parent::__construct(new \ElkArte\EventManager());
+        theme()->getTemplates()->load('TPDownloadAdmin');
     }}}
 
     public function action_index() {{{
@@ -47,7 +47,7 @@ class DownloadAdmin extends BaseAdmin
                 'delete'    => array($this, 'action_delete', array()),
                 'edit'      => array($this, 'action_edit', array()),
                 'list'      => array($this, 'action_list', array()),
-                'new'       => array($this, 'action_new', array()),
+                'add'       => array($this, 'action_add', array()),
             );
 
             $context['TPortal']['subaction'] = $subAction;
@@ -69,8 +69,10 @@ class DownloadAdmin extends BaseAdmin
     }}}
 
     public function action_edit() {{{
+		global $context;
 
 
+        $context['sub_template'] 	    = 'edit_download';
     }}}
 
     public function action_list() {{{
@@ -79,9 +81,18 @@ class DownloadAdmin extends BaseAdmin
         $this->context['sub_template'] = 'list_download';
     }}}    
 
-    public function action_new() {{{
+    public function action_add() {{{
+		global $context;
 
+		// Set the defaults
+		$context['download_category']	= 1;
+		$context['download_subject'] 	= '';
+		$context['download_body'] 	    = '';
+        $context['download_link']       = '';
+        $context['download_status']		= 0;
+        $context['download_categories']	= TPCategory::getInstance()->select(array('id', 'display_name'), array('item_type' => 'download'));
 
+        $context['sub_template'] 	    = 'add_download';
     }}}
 
     public function list_download($start, $items_per_page, $sort) {{{

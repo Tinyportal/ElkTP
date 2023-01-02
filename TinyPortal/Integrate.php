@@ -397,7 +397,7 @@ class Integrate
 		
 
         if( Model\Admin::getInstance()->getSetting('menu_enabled') == true ) {
-			$adminAreas['tpadmin']['areas']['tpmenu'] = array (
+			$menu['tpadmin']['areas']['tpmenu'] = array (
 				'label'       => $txt['tp-adminmenus'],
 				'controller'  => '\\TinyPortal\Controller\MenuAdmin',
 				'function'    => 'action_index',
@@ -412,7 +412,7 @@ class Integrate
 
 
         if( Model\Admin::getInstance()->getSetting('download_enabled') == true ) {
-			$adminAreas['tpadmin']['areas']['tpdownload'] = array (
+			$menu['tpadmin']['areas']['tpdownload'] = array (
 				'label'       => $txt['tp-admindownload'],
 				'controller'  => '\\TinyPortal\Controller\DownloadAdmin',
 				'function'    => 'action_index',
@@ -426,7 +426,7 @@ class Integrate
 		}
 		
         if( Model\Admin::getInstance()->getSetting('gallery_enabled') == true ) {
-			$adminAreas['tpadmin']['areas']['tpgallery'] = array (
+			$menu['tpadmin']['areas']['tpgallery'] = array (
 				'label'       => $txt['tp-admingallery'],
 				'controller'  => '\\TinyPortal\Controller\GalleryAdmin',
 				'function'    => 'action_index',
