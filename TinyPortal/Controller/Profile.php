@@ -42,7 +42,7 @@ class Profile
             $member_id = TPUtil::filter('u', 'get', 'int');
         }
 
-        \loadTemplate('TPprofile');
+        \theme()->getTemplates()->load('TPprofile');
         $context['page_title']      = $txt['tpsummary'];
         $context['sub_template']    = 'tp_summary';
         TPSubs::getInstance()->profile_summary($member_id);
@@ -56,7 +56,7 @@ class Profile
             $member_id = TPUtil::filter('u', 'get', 'int');
         }
 
-        \loadTemplate('TPprofile');
+        \theme()->getTemplates()->load('TPprofile');
         $context['sub_template']    = 'tp_articles';
         TPSubs::getInstance()->profile_articles($member_id);
 

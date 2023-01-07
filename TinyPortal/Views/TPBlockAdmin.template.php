@@ -68,115 +68,17 @@ function template_editblock()
 						</dd>
 					</dl>
 					<div class="submitbutton"><input type="submit" value="'.$txt['tp-send'].'" name="'.$txt['tp-send'].'"></div>
-					<div class="content">
-					<div>';
+					<div class="content"><div>';
 
 			$blockClass = '\TinyPortal\Blocks\\'.ucfirst(str_replace('box', '', \TinyPortal\Model\Block::getInstance()->getBlockType($context['TPortal']['blockedit']['type'])));
 			if(class_exists($blockClass) && method_exists($blockClass, 'admin_display')) {
-				$found = (new $blockClass)->admin_display($context['TPortal']['blockedit']);
+                $block = new $blockClass;
+                $block->admin_setup($context['TPortal']['blockedit']);
+				$found = $block->admin_display($context['TPortal']['blockedit']);
 			}
 
 			if($found == false) {
-	// Block type: Single Article
-				if($context['TPortal']['blockedit']['type']=='18'){
-					// check to see if it is numeric
-					if(!is_numeric($context['TPortal']['blockedit']['body']))
-						$lblock['body']='';
-					echo '
-						</div><div>
-						<hr><dl class="tptitle settings">
-							<dt>
-								<label for="field_name">',$txt['tp-showarticle'],'</label>
-							</dt>
-							<dd>
-								<select name="tp_block_body">
-								<option value="0">'.$txt['tp-none2'].'</option>';
-					foreach($context['TPortal']['edit_articles'] as $art => $article ){
-						echo '<option value="'.$article['id'].'" ' , $context['TPortal']['blockedit']['body']==$article['id'] ? ' selected="selected"' : '' ,' >'.html_entity_decode($article['subject']).'</option>';
-					}
-					echo '</select>
-							</dd>
-						</dl>';
-				}
-	// Block type: Themes
-				elseif($context['TPortal']['blockedit']['type']=='7') {
-					// get the ids
-					$myt=array();
-					$thems=explode(",",$context['TPortal']['blockedit']['body']);
-					foreach($thems as $g => $gh)
-					{
-						$wh=explode("|",$gh);
-						$myt[]=$wh[0];
-					}
-						echo '
-							<hr><input type="hidden" name="blockbody' .$context['TPortal']['blockedit']['id']. '" value="' .$context['TPortal']['blockedit']['body'] . '" />
-							<div style="padding: 5px;">
-								<div style="max-height: 25em; overflow: auto;">
-								<input type="hidden" name="tp_theme-1" value="-1">
-								<input type="hidden" name="tp_tpath-1" value="1">';
-					foreach($context['TPthemes'] as $tema)
-					{
-							echo '
-								<img class="theme_icon" alt="*" src="'.$tema['path'].'/thumbnail.png" /> <input type="checkbox" name="tp_theme'.$tema['id'].'" value="'.$tema['name'].'"';
-						if(in_array($tema['id'],$myt))
-							echo ' checked';
-						echo '>'.$tema['name'].'<input type="hidden" value="'.$tema['path'].'" name="tp_path'.$tema['id'].'"><br>';
-					}
-					echo '
-						</div>
-						<input type="checkbox" onclick="invertAll(this, this.form, \'tp_theme\');" /> '.$txt['tp-checkall'],'
-					';
-				}
-	// Block type: Articles in a Category
-				elseif($context['TPortal']['blockedit']['type']=='19') {
-					if(!is_numeric($context['TPortal']['blockedit']['body']))
-						$lblock['body']='';
-					echo '
-						<hr><dl class="tptitle settings">
-							<dt>
-								<label for="tp_block_body">'.$txt['tp-showcategory'].'</label>
-							</dt>
-							<dd>
-								<select name="tp_block_body" id="tp_block_body">
-								<option value="0">'.$txt['tp-none2'].'</option>';
-					foreach($context['TPortal']['catnames'] as $cat => $catname){
-						echo '
-									<option value="'.$cat.'" ' , $context['TPortal']['blockedit']['body']==$cat ? ' selected' : '' ,' >'.html_entity_decode($catname).'</option>';
-					}
-					echo '
-								</select>
-							</dd>
-							<dt>
-								<label for="tp_block_var1">'.$txt['tp-catboxheight'].'</label>
-							</dt>
-							<dd>
-								<input type="number" id="tp_block_var1" name="tp_block_var1" value="' , ((!is_numeric($context['TPortal']['blockedit']['var1'])) || (($context['TPortal']['blockedit']['var1']) == 0) ? '15' : $context['TPortal']['blockedit']['var1']) ,'" style="width: 6em" min="1" required> em
-							</dd>
-							<dt>
-								<label for="field_name">'.$txt['tp-catboxauthor'].'</label>
-							</dt>
-							<dd>
-								<input type="radio" name="tp_block_var2" value="1" ' , $context['TPortal']['blockedit']['var2']=='1' ? 'checked' : '' ,'> ', $txt['tp-yes'], '<br>
-								<input type="radio" name="tp_block_var2" value="0" ' , $context['TPortal']['blockedit']['var2']=='0' ? 'checked' : '' ,'> ', $txt['tp-no'], '
-							</dd>
-						</dl>';
-				}
-	// Block type: Online
-				elseif($context['TPortal']['blockedit']['type']=='6') {
-					echo '
-						<hr><dl class="tptitle settings">
-							<dt>
-								<label for="field_name">'.$txt['tp-rssblock-showavatar'].'</label>
-							</dt>
-							<dd>
-								<input type="radio" name="tp_block_var1" value="1" ' , ($context['TPortal']['blockedit']['var1']=='1' || $context['TPortal']['blockedit']['var1']=='') ? ' checked' : '' ,'>'.$txt['tp-yes'].' <input type="radio" name="tp_block_var1" value="0" ' , $context['TPortal']['blockedit']['var1']=='0' ? ' checked' : '' ,'>'.$txt['tp-no'].'
-							</dd>
-						</dl>';
-				}
-				else {
-					echo '
-				</div><div>';
-				}
+				echo '</div><div>';
 			}
 
 			echo '		</div>
@@ -187,7 +89,7 @@ function template_editblock()
 					<a class="helpicon i-help" href="' . $scripturl . '?action=quickhelp;help=',$txt['tp-blockstylehelpdesc'],'" onclick="return reqOverlayDiv(this.href);"></a>
 					<label for="field_name">'.$txt['tp-blockstylehelp'].'</label>
 					</div>
-					<br><input type="radio" id="tp_block_var5" name="tp_block_var5" value="99" ' , $context['TPortal']['blockedit']['var5']=='99' ? 'checked' : '' , '><span' , $context['TPortal']['blockedit']['var5']=='99' ? ' style="color: red;">' : '><label for="tp_block_var5">' , $txt['tp-blocksusepaneltyle'] , '</label></span>
+					<br><input type="radio" id="tp_block_set_panel" name="tp_block_set_panel" value="99" ' , $context['TPortal']['blockedit']['panel']=='99' ? 'checked' : '' , '><span' , $context['TPortal']['blockedit']['panel']=='99' ? ' style="color: red;">' : '><label for="tp_block_set_panel">' , $txt['tp-blocksusepaneltyle'] , '</label></span>
 				<div>
 				<div class="panels-optionsbg">';
 
@@ -197,7 +99,7 @@ function template_editblock()
 				echo '
 					<div class="panels-options">
 						<div>
-							<input type="radio" id="tp_block_var5'.$blo.'" name="tp_block_var5" value="'.$blo.'" ' , $context['TPortal']['blockedit']['var5']==$blo ? 'checked' : '' , '><label for="tp_block_var5'.$blo.'"><span' , $context['TPortal']['blockedit']['var5']==$blo ? ' style="color: red;">' : '>' , $bl['class'] , '</span></label>
+							<input type="radio" id="tp_block_set_panel'.$blo.'" name="tp_block_set_panel" value="'.$blo.'" ' , $context['TPortal']['blockedit']['panel']==$blo ? 'checked' : '' , '><label for="tp_block_set_panel'.$blo.'"><span' , $context['TPortal']['blockedit']['panel']==$blo ? ' style="color: red;">' : '>' , $bl['class'] , '</span></label>
 						</div>
 						' . $bl['code_title_left'] . 'title'. $bl['code_title_right'].'
 						' . $bl['code_top'] . 'body' . $bl['code_bottom'] . '

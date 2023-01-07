@@ -11,21 +11,19 @@
 namespace TinyPortal\Controller;
 
 use \ElkArte\Errors\Errors;
-use \ElkArte\sources\Frontpage_Interface;
 
 if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class BoardIndex extends \BoardIndex_Controller implements Frontpage_Interface
+class BoardIndex extends \ElkArte\Controller\BoardIndex implements \ElkArte\FrontpageInterface
 {
 
 	public function action_index() {{{
 		global $context;
 
-		if( (\TinyPortal\Model\Admin::getInstance()->getSetting('portal_type') == 'portal_guest') && $context['user']['is_guest'] ) {
-			require_once CONTROLLERDIR . '/Auth.controller.php';
-			$controller = new \Auth_Controller();
+		if( (\TinyPortal\Model\Admin::getInstance()->getSetting('portal_type') == 'portal_guest') && \ElkArte\User::$info->is_guest) {
+			$controller = new \ElkArte\Controller\Auth(new \ElkArte\EventManager());
 			$controller->action_kickguest();
 			obExit(null, true);
 		}

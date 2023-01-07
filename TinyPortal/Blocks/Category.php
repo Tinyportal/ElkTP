@@ -24,9 +24,13 @@ class Category extends Base
 
     public function prepare( &$block ) {{{
 
-        $categories = \TinyPortal\Model\Article::getInstance()->getArticlesInCategory($block['body'], false, true);
-        if (!isset($this->context['TPortal']['blockarticle_titles'])) {
-            $this->context['TPortal']['blockarticle_titles'] = array();
+	}}}
+	
+    public function setup( &$block ) {{{
+
+        $categories = \TinyPortal\Model\Article::getInstance()->getArticlesInCategory($block['category'], false, true);
+        if (!isset($block['data'])) {
+            $block['data'] = array();
         }
 
         if(is_array($categories)) {
@@ -42,18 +46,18 @@ class Category extends Base
                         $adminFeatures                      = false;
                     }
 
-                    \loadMemberData($row['author_id'], false, 'normal');
-                    \loadMemberContext($row['author_id']);
+					\ElkArte\MembersList::load($row['author_id'], false, 'normal');
+					(\ElkArte\MembersList::get($row['author_id']))->loadContext(true);
 
                     if($adminFeatures == true) {
                         unset($this->context['admin_features']);
                     }
-                    $row['real_name'] = $memberContext[$row['author_id']]['username'];
+                    $row['real_name'] = (!is_null($memberContext)) ? $memberContext[$row['author_id']]['username'] : '';
                 }
                 else {
                     $row['real_name'] = $row['author'];
                 }
-                $this->context['TPortal']['blockarticle_titles'][$row['category']][$row['date'].'_'.$row['id']] = array(
+                $block['data'][$row['category']][$row['date'].'_'.$row['id']] = array(
                     'id'        => $row['id'],
                     'subject'   => $row['subject'],
                     'shortname' => $row['shortname']!='' ?$row['shortname'] : $row['id'] ,
@@ -63,24 +67,18 @@ class Category extends Base
             }
         }
 
-    }}}
-
-    public function setup( &$block ) {{{
-
         $block['title'] = '<span class="header">' . $block['title'] . '</span>';
-        $this->context['TPortal']['blocklisting']           = $block['body'];
-        $this->context['TPortal']['blocklisting_height']    = $block['var1'];
-        $this->context['TPortal']['blocklisting_author']    = $block['var2'];
 
     }}}
 
     public function display( $block ) {{{
 
-        if(isset($this->context['TPortal']['blockarticle_titles'][$this->context['TPortal']['blocklisting']])){
-            echo '<div class="middletext" ', (count($this->context['TPortal']['blockarticle_titles'][$this->context['TPortal']['blocklisting']])>$this->context['TPortal']['blocklisting_height'] && $this->context['TPortal']['blocklisting_height']!='0') ? ' style="overflow: auto; width: 100%; height: '.$this->context['TPortal']['blocklisting_height'].'em;"' : '' ,'>';
-            foreach($this->context['TPortal']['blockarticle_titles'][$this->context['TPortal']['blocklisting']] as $listing){
-                if($listing['category'] == $this->context['TPortal']['blocklisting'])
-                    echo '<b><a href="'.$this->scripturl.'?page='.$listing['shortname'].'">'.$listing['subject'].'</a></b> ' , $this->context['TPortal']['blocklisting_author']=='1' ? $this->txt['by'].' '.$listing['poster'] : '' , '<br>';
+        if(isset($block['data'][$block['category']])){
+            echo '<div class="middletext" ', (count($block['data'][$block['category']]) > $block['height'] && $block['height'] != '0' ) ? ' style="overflow: auto; width: 100%; height: '.$block['height'].'em;"' : '' ,'>';
+            foreach($block['data'][$block['category']] as $listing){
+                if($listing['category'] == $block['category']) {
+                    echo '<b><a href="'.$this->scripturl.'?page='.$listing['shortname'].'">'.$listing['subject'].'</a></b> ' , $block['author'] == '1' ? $this->txt['by'].' '.$listing['poster'] : '' , '<br>';
+                }
             }
             echo '</div>';
         }
@@ -89,11 +87,51 @@ class Category extends Base
 
     public function admin_setup( &$block ) {{{
 
+		parent::admin_setup($block);
+
+		$default = array(
+			'category'	=> 0,
+			'height'	=> 0,
+			'author'	=> 1,
+		);
+
+		if(empty($block['settings'])) {
+			$block += $default;
+		}
+
     }}}
 
     public function admin_display( $block ) {{{
 
-		return false;
+		echo '
+		<hr>
+		<dl class="tptitle settings">
+			<dt>
+				<label for="tp_block_set_category">'.$this->txt['tp-showcategory'].'</label>
+			</dt>
+			<dd>
+				<select name="tp_block_set_category" id="tp_block_set_category">
+					<option value="0">'.$this->txt['tp-none2'].'</option>';
+					foreach($this->context['TPortal']['catnames'] as $cat => $catname) {
+						echo '<option value="'.$cat.'" ' , ($block['category'] == $cat) ? ' selected' : '' ,' >'.html_entity_decode($catname).'</option>';
+					}
+		echo '
+				</select>
+			</dd>
+			<dt>
+				<label for="tp_block_set_height">'.$this->txt['tp-catboxheight'].'</label>
+			</dt>
+			<dd>
+				<input type="number" id="tp_block_set_height" name="tp_block_set_height" value="' , ((!is_numeric($block['height'])) || (($block['height']) == 0) ? '15' : $block['height']) ,'" style="width: 6em" min="1" required> em
+			</dd>
+			<dt>
+				<label for="field_name">'.$this->txt['tp-catboxauthor'].'</label>
+			</dt>
+			<dd>
+				<input type="radio" name="tp_block_set_author" value="1" ' , $block['author']=='1' ? 'checked' : '' ,'> ', $this->txt['tp-yes'], '<br>
+				<input type="radio" name="tp_block_set_author" value="0" ' , $block['author']=='0' ? 'checked' : '' ,'> ', $this->txt['tp-no'], '
+			</dd>
+		</dl>';
 
     }}}
 

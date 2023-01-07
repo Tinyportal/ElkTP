@@ -499,8 +499,8 @@ class Article extends Base
                     $adminFeatures              = false;
                 }
 
-                \loadMemberData($row['author_id'], false, 'normal');
-				\loadMemberContext($row['author_id']);
+                \ElkArte\MembersList::load($row['author_id'], false, 'normal');
+				(\ElkArte\MembersList::get($row['author_id']))->loadContext(true);
 
                 if($adminFeatures == true) {
                     unset($context['admin_features']);

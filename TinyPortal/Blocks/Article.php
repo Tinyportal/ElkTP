@@ -85,11 +85,27 @@ class Article extends Base
 
     public function admin_setup( &$block ) {{{
 
+		parent::admin_setup($block);
+
     }}}
 
     public function admin_display( $block ) {{{
 
-		return false;
+			echo '</div><div>
+					<hr>
+					<dl class="tptitle settings">
+						<dt>
+							<label for="field_name">',$this->txt['tp-showarticle'],'</label>
+						</dt>
+						<dd>
+							<select name="tp_block_body">
+								<option value="0">'.$this->txt['tp-none2'].'</option>';
+							foreach($this->context['TPortal']['edit_articles'] as $art => $article ){
+								echo '<option value="'.$article['id'].'" ' , $block['body']==$article['id'] ? ' selected="selected"' : '' ,' >'.html_entity_decode($article['subject']).'</option>';
+							}
+						echo '</select>
+						</dd>
+					</dl>';
 
     }}}
 

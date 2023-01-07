@@ -31,7 +31,7 @@ class GalleryAdmin extends BaseAdmin
     public function __construct() {{{
         parent::__construct();
 
-        loadTemplate('TPGallery');
+        theme()->getTemplates()->load('TPGallery');
     }}}
 
     public function action_index() {{{
@@ -41,7 +41,6 @@ class GalleryAdmin extends BaseAdmin
 
         $action = TPUtil::filter('area', 'get', 'string');
         if($action == 'tpgallery') {
-            require_once(SUBSDIR . '/Action.class.php');
             $subAction  = TPUtil::filter('sa', 'get', 'string');
 
             $subActions = array(
@@ -56,7 +55,7 @@ class GalleryAdmin extends BaseAdmin
             TPAdmin::getInstance()->topMenu($subAction);
             TPAdmin::getInstance()->sideMenu($subAction);
 
-            $action     = new \Action();
+            $action     = new \ElkArte\Action();
             $subAction  = $action->initialize($subActions, $subAction);
             $action->dispatch($subAction);
        }

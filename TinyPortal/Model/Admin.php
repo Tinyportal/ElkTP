@@ -122,104 +122,104 @@ class Admin extends Base {
 	$context['TPortal']['subtabs'] = '';
     if(in_array($area, array('articles', 'addarticle_php', 'addarticle_html', 'addarticle_bbc', 'addarticle_import', 'strays', 'submission')) && allowedTo('tp_articles')) {
         $context['TPortal']['subtabs'] = array(
-				'articles' => array(
-					'lang' => true,
-					'text' => 'tp-articles',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=articles',
-					'active' => ($context['TPortal']['subaction'] == 'articles' || $context['TPortal']['subaction'] == 'editarticle') && $context['TPortal']['subaction'] != 'strays',
-					),
-				'articles_nocat' => array(
-					'lang' => true,
-					'text' => 'tp-uncategorised' ,
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=strays',
-					'active' => $context['TPortal']['subaction'] == 'strays',
-					),
-				'submissions' => array(
-					'lang' => true,
-					'text' => 'tp-tabs4' ,
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=submission',
-					'active' => $context['TPortal']['subaction'] == 'submission',
-					),
-				'addarticle' => array(
-					'lang' => true,
-					'text' => 'tp-tabs2',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_html' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
-					'active' => $context['TPortal']['subaction'] == 'addarticle_html',
-					),
-				'addarticle_php' => array(
-					'lang' => true,
-					'text' => 'tp-tabs3',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_php' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
-					'active' => $context['TPortal']['subaction'] == 'addarticle_php',
-					),
-				'addarticle_bbc' => array(
-					'lang' => true,
-					'text' => 'tp-addbbc',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_bbc' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
-					'active' => $context['TPortal']['subaction'] == 'addarticle_bbc',
-					),
-				'article_import' => array(
-					'lang' => true,
-					'text' => 'tp-addimport',
-					'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_import' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
-					'active' => $context['TPortal']['subaction'] == 'addarticle_import',
-					),
-				);
+			'articles' => array(
+				'lang' => true,
+				'text' => 'tp-articles',
+				'url' => $scripturl . '?action=admin;area=tparticles;sa=articles',
+				'active' => ($context['TPortal']['subaction'] == 'articles' || $context['TPortal']['subaction'] == 'editarticle') && $context['TPortal']['subaction'] != 'strays',
+			),
+			'articles_nocat' => array(
+				'lang' => true,
+				'text' => 'tp-uncategorised' ,
+				'url' => $scripturl . '?action=admin;area=tparticles;sa=strays',
+				'active' => $context['TPortal']['subaction'] == 'strays',
+			),
+			'submissions' => array(
+				'lang' => true,
+				'text' => 'tp-tabs4' ,
+				'url' => $scripturl . '?action=admin;area=tparticles;sa=submission',
+				'active' => $context['TPortal']['subaction'] == 'submission',
+			),
+			'addarticle' => array(
+				'lang' => true,
+				'text' => 'tp-tabs2',
+				'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_html' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
+				'active' => $context['TPortal']['subaction'] == 'addarticle_html',
+			),
+			'addarticle_php' => array(
+				'lang' => true,
+				'text' => 'tp-tabs3',
+				'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_php' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
+				'active' => $context['TPortal']['subaction'] == 'addarticle_php',
+			),
+			'addarticle_bbc' => array(
+				'lang' => true,
+				'text' => 'tp-addbbc',
+				'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_bbc' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
+				'active' => $context['TPortal']['subaction'] == 'addarticle_bbc',
+			),
+			'article_import' => array(
+				'lang' => true,
+				'text' => 'tp-addimport',
+				'url' => $scripturl . '?action=admin;area=tparticles;sa=addarticle_import' . (isset($_GET['cu']) ? ';cu='.$_GET['cu'] : ''),
+				'active' => $context['TPortal']['subaction'] == 'addarticle_import',
+			),
+		);
     }
     elseif(in_array($area, array('newcategory','categories','clist')) && allowedTo('tp_articles')) {
         $context['TPortal']['subtabs'] = array(
-                'categories' => array(
-                    'lang' => true,
-                    'text' => 'tp-tabs5',
-                    'url' => $scripturl . '?action=admin;area=tparticles;sa=categories',
-                    'active' => $area == 'categories',
-                    ),
-                'newcategory' => array(
-                    'lang' => true,
-                    'text' => 'tp-tabs6',
-                    'url' => $scripturl . '?action=admin;area=tparticles;sa=newcategory',
-                    'active' => $area == 'newcategory',
-                    ),
-                'clist' => array(
-                    'lang' => true,
-                    'text' => 'tp-tabs11',
-                    'url' => $scripturl . '?action=admin;area=tparticles;sa=clist',
-                    'active' => $area == 'clist',
-                    ),
-                );
+			'categories' => array(
+				'lang' => true,
+				'text' => 'tp-tabs5',
+				'url' => $scripturl . '?action=admin;area=tparticles;sa=categories',
+				'active' => $area == 'categories',
+			),
+			'newcategory' => array(
+				'lang' => true,
+				'text' => 'tp-tabs6',
+				'url' => $scripturl . '?action=admin;area=tparticles;sa=newcategory',
+				'active' => $area == 'newcategory',
+			),
+			'clist' => array(
+				'lang' => true,
+				'text' => 'tp-tabs11',
+				'url' => $scripturl . '?action=admin;area=tparticles;sa=clist',
+				'active' => $area == 'clist',
+			),
+		);
     }
     elseif(in_array($area, array('blocks','panels')) && allowedTo('tp_blocks')) {
         $context['TPortal']['subtabs'] = array(
-                'panels' => array(
-                    'lang' => true,
-                    'text' => 'tp-panels',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=panels',
-                    'active' => $area == 'panels',
-                ),
-				'blocks' => array(
-                    'lang' => true,
-                    'text' => 'tp-blocks',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=blocks',
-                    'active' => $area == 'blocks',
-                ),
-				'addblock' => array(
-                    'lang' => true,
-                    'text' => 'tp-addblock',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=addblock;' . $context['session_var'] . '=' . $context['session_id'].'',
-                    'active' => $area == 'addblock',
-                ),
-                'blockoverview' => array(
-                    'lang' => true,
-                    'text' => 'tp-blockoverview',
-                    'url' => $scripturl . '?action=admin;area=tpblocks;sa=blockoverview',
-                    'active' => $area == 'blockoverview',
-                ),
-            );
+			'panels' => array(
+				'lang' => true,
+				'text' => 'tp-panels',
+				'url' => $scripturl . '?action=admin;area=tpblocks;sa=panels',
+				'active' => $area == 'panels',
+			),
+			'blocks' => array(
+				'lang' => true,
+				'text' => 'tp-blocks',
+				'url' => $scripturl . '?action=admin;area=tpblocks;sa=blocks',
+				'active' => $area == 'blocks',
+			),
+			'addblock' => array(
+				'lang' => true,
+				'text' => 'tp-addblock',
+				'url' => $scripturl . '?action=admin;area=tpblocks;sa=addblock;' . $context['session_var'] . '=' . $context['session_id'].'',
+				'active' => $area == 'addblock',
+			),
+			'blockoverview' => array(
+				'lang' => true,
+				'text' => 'tp-blockoverview',
+				'url' => $scripturl . '?action=admin;area=tpblocks;sa=blockoverview',
+				'active' => $area == 'blockoverview',
+			),
+		);
     }
 
-    if(!in_array('tpadm', \Template_Layers::getInstance()->getLayers())) {
-        \Template_Layers::getInstance()->add('tpadm');
-        \Template_Layers::getInstance()->add('subtab');
+    if(!in_array('tpadm', theme()->getLayers()->getLayers())) {
+        theme()->getLayers()->add('tpadm');
+        theme()->getLayers()->add('subtab');
     }
 
 }}}

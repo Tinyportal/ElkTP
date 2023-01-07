@@ -74,11 +74,11 @@ class Portal
 
         // set up the layers, but not for certain actions
         if(!isset($_REQUEST['preview']) && !isset($_REQUEST['quote']) && !isset($_REQUEST['xml']) && !isset($aoptions['nolayer'])) {
-            \Template_Layers::getInstance()->add($context['TPortal']['hooks']['tp_layer']);
+            \theme()->getLayers()->add($context['TPortal']['hooks']['tp_layer']);
         }
 
-        \loadTemplate('TPsubs');
-        \loadTemplate('TPBlockLayout');
+        \theme()->getTemplates()->load('TPsubs');
+        \theme()->getTemplates()->load('TPBlockLayout');
 
         // is the permanent theme option set?
         if(isset($_GET['permanent']) && !empty($_GET['theme']) && $context['user']['is_logged']) {

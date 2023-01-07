@@ -17,31 +17,40 @@ if (!defined('ELK')) {
 class Integrate
 {
 
-    public static function hookPreLoad() {{{
+    public static function preLoad() {{{
+	    global $modSettings; // Needed for frontPageHook
 
         // We need to load our autoloader outside of the main function
         if(!defined('ELK_BACKWARDS_COMPAT')) {
             define('ELK_BACKWARDS_COMPAT', true);
             self::setup_db_backwards_compat();
-            \Elk_Autoloader::instance()->register('TinyPortal', '\\TinyPortal');
+
+			$loader = new \ElkArte\ext\Composer\Autoload\ClassLoader();
+			$loader->setPsr4('TinyPortal\\', BOARDDIR . '/TinyPortal');
+			$loader->register();
+        }
+
+        // Should check TinyPortal is enabled..
+        if( Model\Admin::getInstance()->getSetting('front_type') != 'boardindex' ) {
+            $modSettings['front_page']  = '\TinyPortal\Controller\Portal';
         }
 
         $hooks = array (
-            'current_action'                    => '\TinyPortal\Integrate::hookCurrentAction',
-            'load_permissions'                  => '\TinyPortal\Integrate::hookPermissions',
-            'load_illegal_guest_permissions'    => '\TinyPortal\Integrate::hookIllegalPermissions',
-            'buffer'                            => '\TinyPortal\Integrate::hookBuffer',
-            'menu_buttons'                      => '\TinyPortal\Integrate::hookMenuButtons',
-            'display_buttons'                   => '\TinyPortal\Integrate::hookDisplayButtons',
-            'admin_areas'                       => '\TinyPortal\Integrate::hookAdminAreas',
-            'actions'                           => '\TinyPortal\Integrate::hookActions',
-            'whos_online'                       => '\TinyPortal\Integrate::hookWhosOnline',
-            'profile_areas'                     => '\TinyPortal\Integrate::hookProfileArea',
-            'pre_load_theme'                    => '\TinyPortal\Integrate::hookLoadTheme',
-            'redirect'                          => '\TinyPortal\Integrate::hookRedirect',
-            'action_frontpage'                  => '\TinyPortal\Integrate::hookFrontPage',
-            'init_theme'                        => '\TinyPortal\Integrate::hookInitTheme',
-            'search'                            => '\TinyPortal\Integrate::hookSearchLayers',
+            'current_action'                    => '\TinyPortal\Integrate::currentAction',
+            'load_permissions'                  => '\TinyPortal\Integrate::permissions',
+            'load_illegal_guest_permissions'    => '\TinyPortal\Integrate::illegalPermissions',
+            'buffer'                            => '\TinyPortal\Integrate::buffer',
+            'menu_buttons'                      => '\TinyPortal\Integrate::menuButtons',
+            'display_buttons'                   => '\TinyPortal\Integrate::displayButtons',
+            'admin_areas'                       => '\TinyPortal\Integrate::adminAreas',
+            'actions'                           => '\TinyPortal\Integrate::actions',
+            'whos_online'                       => '\TinyPortal\Integrate::whosOnline',
+            'profile_areas'                     => '\TinyPortal\Integrate::profileArea',
+            'pre_load_theme'                    => '\TinyPortal\Integrate::loadTheme',
+            'redirect'                          => '\TinyPortal\Integrate::redirect',
+            'action_frontpage'                  => '\TinyPortal\Integrate::frontPage',
+            'init_theme'                        => '\TinyPortal\Integrate::initTheme',
+            'search'                            => '\TinyPortal\Integrate::searchLayers',
             'tp_pre_subactions'                 => array (
             ),
             'tp_post_subactions'                => array (
@@ -84,7 +93,7 @@ class Integrate
 
     }}}
 
-    public static function hookFrontPage(&$defaultAction) {{{
+    public static function frontPage(&$defaultAction) {{{
         global $modSettings;
 
         // Should check TinyPortal is enabled..
@@ -119,7 +128,7 @@ class Integrate
 
     }}}
 
-    public static function hookPermissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions) {{{
+    public static function permissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions) {{{
 
         $permissionList['membergroup'] = array_merge(
             array(
@@ -141,7 +150,7 @@ class Integrate
     }}}
 
     // Adds TP copyright in the buffer so we don't have to edit an ELK file
-    public static function hookBuffer($buffer) {{{
+    public static function buffer($buffer) {{{
         global $context, $scripturl, $txt, $boardurl;
 
         // add upshrink buttons
@@ -235,7 +244,7 @@ class Integrate
         return $buffer;
     }}}
 
-    public static function hookIllegalPermissions() {{{
+    public static function illegalPermissions() {{{
         global $context;
 
         if (empty($context['non_guest_permissions']))
@@ -258,7 +267,7 @@ class Integrate
         $context['non_guest_permissions'] = array_merge($context['non_guest_permissions'], $tp_illegal_perms);
     }}}
 
-    public static function hookCurrentAction(&$currentAction) {{{
+    public static function currentAction(&$currentAction) {{{
 
         // Rewrite the current action for the home page
         if( ($currentAction == 'home') && (empty($_REQUEST['action'])) ) {
@@ -267,7 +276,7 @@ class Integrate
 
     }}}
 
-    public static function hookMenuButtons(&$buttons) {{{
+    public static function menuButtons(&$buttons) {{{
         global $context, $scripturl, $txt, $boardurl;
 
         // If ELK throws a fatal_error TP is not loaded. So don't even worry about menu items.
@@ -324,7 +333,7 @@ class Integrate
 
     }}}
 
-    public static function hookDisplayButtons() {{{
+    public static function displayButtons() {{{
 
         global $context, $scripturl, $txt;
 
@@ -339,19 +348,19 @@ class Integrate
 
     }}}
 
-    public static function hookAdminAreas(&$adminAreas) {{{
+    public static function adminAreas($adminAreas) {{{
         global $txt;
 
         Model\Subs::getInstance()->loadLanguage('TPortal');
         Model\Subs::getInstance()->loadLanguage('TPortalAdmin');
 
-        $adminAreas['tpadmin'] = array (
+        $menu['tpadmin'] = array (
 			'title' => $txt['tp-tphelp'],
 			'permission' => array ('admin_forum', 'tp_articles', 'tp_blocks', 'tp_settings', 'tp_menu', 'tp_download', 'tp_gallery'),
 			'areas' => array (
 				'tpsettings' => array (
 					'label'       => $txt['tp-adminheader1'],
-					'controller'  => '\TinyPortal\Controller\PortalAdmin',
+					'controller'  => '\\TinyPortal\Controller\PortalAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_settings' ),
@@ -362,7 +371,7 @@ class Integrate
 				),
 				'tparticles' => array (
 					'label'       => $txt['tp-articles'],
-					'controller'  => '\TinyPortal\Controller\ArticleAdmin',
+					'controller'  => '\\TinyPortal\Controller\ArticleAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_articles' ),
@@ -373,7 +382,7 @@ class Integrate
 				),
 				'tpblocks' => array (
 					'label'       => $txt['tp-adminpanels'],
-					'controller'  => '\TinyPortal\Controller\BlockAdmin',
+					'controller'  => '\\TinyPortal\Controller\BlockAdmin',
 					'function'    => 'action_index',
 					'icon'        => 'transparent.png',
 					'permission'  => array ( 'admin_forum', 'tp_blocks' ),
@@ -390,7 +399,7 @@ class Integrate
         if( Model\Admin::getInstance()->getSetting('menu_enabled') == true ) {
 			$adminAreas['tpadmin']['areas']['tpmenu'] = array (
 				'label'       => $txt['tp-adminmenus'],
-				'controller'  => '\TinyPortal\Controller\MenuAdmin',
+				'controller'  => '\\TinyPortal\Controller\MenuAdmin',
 				'function'    => 'action_index',
 				'icon'        => 'transparent.png',
 				'permission'  => array ( 'admin_forum', 'tp_menu' ),
@@ -405,7 +414,7 @@ class Integrate
         if( Model\Admin::getInstance()->getSetting('download_enabled') == true ) {
 			$adminAreas['tpadmin']['areas']['tpdownload'] = array (
 				'label'       => $txt['tp-admindownload'],
-				'controller'  => '\TinyPortal\Controller\DownloadAdmin',
+				'controller'  => '\\TinyPortal\Controller\DownloadAdmin',
 				'function'    => 'action_index',
 				'icon'        => 'transparent.png',
 				'permission'  => array ( 'admin_forum', 'tp_download' ),
@@ -419,7 +428,7 @@ class Integrate
         if( Model\Admin::getInstance()->getSetting('gallery_enabled') == true ) {
 			$adminAreas['tpadmin']['areas']['tpgallery'] = array (
 				'label'       => $txt['tp-admingallery'],
-				'controller'  => '\TinyPortal\Controller\GalleryAdmin',
+				'controller'  => '\\TinyPortal\Controller\GalleryAdmin',
 				'function'    => 'action_index',
 				'icon'        => 'transparent.png',
 				'permission'  => array ( 'admin_forum', 'tp_gallery' ),
@@ -430,9 +439,11 @@ class Integrate
 			);
 		}
 
+		$adminAreas->addMenuData($menu);
+
     }}}
 
-    public static function hookProfileArea(&$profile_areas) {{{
+    public static function profileArea(&$profile_areas) {{{
         global $txt, $context;
 
         $profile_areas['tp'] = array(
@@ -483,7 +494,7 @@ class Integrate
 
     }}}
 
-    public static function hookActions(&$actionArray, &$adminAction) {{{
+    public static function actions(&$actionArray) {{{
 
 		$actionArray = array_merge(
 			$actionArray,
@@ -497,7 +508,7 @@ class Integrate
 
     }}}
 
-    public static function hookWhosOnline($actions) {{{
+    public static function whosOnline($actions) {{{
         global $txt, $scripturl;
 
         Model\Subs::getInstance()->loadLanguage('TPortal');
@@ -593,17 +604,16 @@ class Integrate
 
     }}}
 
-    public static function hookInitTheme($id_theme, &$settings) {{{
+    public static function initTheme($id_theme, &$settings) {{{
 
         // Add our custom theme directory
-        require_once(SOURCEDIR . '/Templates.class.php');
-        \Templates::instance()->addDirectory(BOARDDIR . '/TinyPortal/Views/');
+        theme()->getTemplates()->getDirectory()->addDirectory(BOARDDIR . '/TinyPortal/Views/');
 
         Model\Portal::getInstance()->init();
 
     }}}
 
-    public static function hookRedirect(&$setLocation, &$refresh) {{{
+    public static function redirect(&$setLocation) {{{
         global $scripturl, $context;
 
         if ($setLocation == $scripturl && !empty($context['TPortal']['redirectforum'])) {
@@ -612,19 +622,19 @@ class Integrate
 
     }}}
 
-    public static function hookSearchLayers() {{{
+    public static function searchLayers() {{{
         global $context;
 
         // are we on search page? then add TP search options as well!
         if($context['TPortal']['action'] == 'search') {
-            if(!in_array('TPsearch', \Template_Layers::getInstance()->getLayers())) {
-                \Template_Layers::getInstance()->add('TPSearch');
+            if(!in_array('TPsearch', \theme()->getLayers()->getLayers())) {
+                \theme()->getLayers()->add('TPSearch');
             }
         }
 
     }}}
 
-    public static function hookDisplayButton(&$normal_buttons) {{{
+    public static function displayButton(&$normal_buttons) {{{
         global $context, $scripturl;
 
         if(allowedTo(array('tp_settings')) && (($context['TPortal']['front_type']=='forum_selected' || $context['TPortal']['front_type']=='forum_selected_articles'))) {
@@ -637,7 +647,7 @@ class Integrate
         }
     }}}
 
-    public static function hookLoadTheme(&$id_theme) {{{
+    public static function loadTheme(&$id_theme) {{{
         global $modSettings;
 
         $theme  = 0;
@@ -645,7 +655,7 @@ class Integrate
 
         // are we on a article? check it for custom theme
         if(isset($_GET['page']) && !isset($_GET['action'])) {
-            if (($theme = cache_get_data('tpArticleTheme', 120)) == null) {
+            if (($theme = \ElkArte\Cache\Cache::instance()->get('tpArticleTheme', 120)) == null) {
                 // fetch the custom theme if any
                 $pag = Model\Util::filter('page', 'get', 'string');
                 if (is_numeric($pag)) {
@@ -668,13 +678,13 @@ class Integrate
                 $dB->db_free_result($request);
 
                 if (!empty($modSettings['cache_enable'])) {
-                    cache_put_data('tpArticleTheme', $theme, 120);
+                    \ElkArte\Cache\Cache::instance()->put('tpArticleTheme', $theme, 120);
                 }
             }
         }
         // are we on frontpage? and it shows fetured article?
         else if(!isset($_GET['page']) && !isset($_GET['action']) && !isset($_GET['board']) && !isset($_GET['topic'])) {
-            if (($theme = cache_get_data('tpFrontTheme', 120)) == null) {
+            if (($theme = \ElkArte\Cache\Cache::instance()->get('tpFrontTheme', 120)) == null) {
                 // fetch the custom theme if any
                 $request = $dB->db_query('', '
 					SELECT COUNT(*) FROM {db_prefix}tp_settings
@@ -695,13 +705,13 @@ class Integrate
                     $dB->db_free_result($request);
                 }
                 if (!empty($modSettings['cache_enable'])) {
-                    cache_put_data('tpFrontTheme', $theme, 120);
+                    \ElkArte\Cache\Cache::instance()->put('tpFrontTheme', $theme, 120);
                 }
             }
         }
         // how about dlmanager, any custom theme there?
         else if(isset($_GET['action']) && $_GET['action'] == 'tportal' && isset($_GET['dl'])) {
-            if (($theme = cache_get_data('tpDLTheme', 120)) == null) {
+            if (($theme = \ElkArte\Cache\Cache::instance()->get('tpDLTheme', 120)) == null) {
                 // fetch the custom theme if any
                 $request = $dB->db_query('', '
                     SELECT value FROM {db_prefix}tp_settings
@@ -713,7 +723,7 @@ class Integrate
                 }
                 $dB->db_free_result($request);
                 if (!empty($modSettings['cache_enable'])) {
-                    cache_put_data('tpDLTheme', $theme, 120);
+                    \ElkArte\Cache\Cache::instance()->put('tpDLTheme', $theme, 120);
                 }
             }
         }

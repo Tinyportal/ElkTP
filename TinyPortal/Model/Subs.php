@@ -93,10 +93,10 @@ class Subs
         $context['TPortal']['always_loaded'] = array();
 
         // Try to load it from the cache
-        if (($context['TPortal'] = cache_get_data('tpSettings', 90)) == null) {
+        if (($context['TPortal'] = \ElkArte\Cache\Cache::instance()->get('tpSettings', 90)) == null) {
             $context['TPortal']  = Admin::getInstance()->getSetting();
             if (!empty($modSettings['cache_enable'])) {
-                cache_put_data('tpSettings', $context['TPortal'], 90);
+                \ElkArte\Cache\Cache::instance()->put('tpSettings', $context['TPortal'], 90);
             }
         }
 
@@ -1229,7 +1229,7 @@ class Subs
                     $data .= $context['TPortal']['article']['intro'];
                 }
                 else {
-                    $data .= parse_bbc($context['TPortal']['article']['intro']);
+                    $data .= $this->parse_bbc($context['TPortal']['article']['intro']);
                 }
             }
             else {
@@ -1248,7 +1248,7 @@ class Subs
                     $data .= $context['TPortal']['article']['body'];
                 }
                 else {
-                    $data .= parse_bbc($context['TPortal']['article']['body']);
+                    $data .= $this->parse_bbc($context['TPortal']['article']['body']);
                 }
 
                 if(!empty($context['TPortal']['article']['readmore'])) {
@@ -1312,7 +1312,7 @@ class Subs
             }
         }
         elseif($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['rendertype']=='bbc') {
-            echo \parse_bbc($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['body']);
+            echo \BBC\ParserWrapper::getInstance()->parseMessage($context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['body']);
         }
         else {
             echo $context['TPortal']['blockarticles'][$context['TPortal']['blockarticle']]['body'];
@@ -1411,8 +1411,9 @@ class Subs
         $setlang = '';
 
         for($i=0; $i < $num ; $i = $i + 2){
-            if($lang[$i] == $set)
-                $setlang = $lang[$i+1];
+            if(isset($lang[$i]) && ($lang[$i] == $set)) {
+                $setlang = $lang[$i+1] ?? ''; 
+            }
         }
 
         return $setlang;
@@ -1991,7 +1992,7 @@ class Subs
             $context['TPortal'][$variable] = $value === true ? $context['TPortal'][$variable] + 1 : ($value === false ? $context['TPortal'][$variable] - 1 : $value);
         }
         // Clean out the cache and make sure the cobwebs are gone too.
-        cache_put_data('tpSettings', null, 90);
+        \ElkArte\Cache\Cache::instance()->put('tpSettings', null, 90);
 
         return;
     }}}
@@ -2296,13 +2297,15 @@ class Subs
         
 		$language_dirs = array ( $settings['default_theme_dir'] . '/languages' , $boarddir.'/TinyPortal/Views/languages');
 		foreach($language_dirs as $language_dir) {
-			$dir = dir($language_dir);
-			while ($entry = $dir->read()) {
-				if($entry != '.' && $entry != '..' && is_dir($language_dir.'/'.$entry)) {
-					$dirs[] = $language_dir.'/'.$entry;
+			if(is_dir($language_dir)) {
+				$dir = dir($language_dir);
+				while ($entry = $dir->read()) {
+					if($entry != '.' && $entry != '..' && is_dir($language_dir.'/'.$entry)) {
+						$dirs[] = $language_dir.'/'.$entry;
+					}
 				}
+				$dir->close();
 			}
-			$dir->close();
 		}
 
 		foreach($dirs as $language_dir) {
@@ -2456,6 +2459,8 @@ class Subs
     public function loadLanguage($template_name, $lang = '', $fatal = true, $force_reload = false) {{{
         global $user_info, $language, $txt;
 
+		$loaded = false;
+
         if ($lang == '') {
 		    $lang = isset($user_info['language']) ? $user_info['language'] : $language;
         }
@@ -2464,6 +2469,7 @@ class Subs
 		$filePath = BOARDDIR . '/TinyPortal/Views/languages/english/'.$template_name.'.english.php';
         if(file_exists($filePath)) {
             require_once($filePath);
+			$loaded = true;
 		}
 
         foreach( array ( $lang ) as $l) {
@@ -2474,7 +2480,11 @@ class Subs
             }
         }
 
-        return \loadLanguage($template_name, $lang, $fatal, $force_reload);
+		if($loaded) {
+			return 'english';
+		}
+
+        return \ElkArte\Themes\ThemeLoader::loadLanguageFile($template_name, $lang, $fatal, $force_reload);
 
     }}}
 
@@ -2512,6 +2522,17 @@ class Subs
         return $avy;
     }}}
 
+	public function parse_bbc($bbc) {{{
+
+		return \BBC\ParserWrapper::instance()->parseMessage($bbc, TRUE);
+
+	}}}
+
+	public function standardTime($time) {{{
+
+		return \standardTime($time);
+
+	}}}
 }
 
 ?>

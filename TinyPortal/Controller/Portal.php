@@ -19,14 +19,17 @@ use \TinyPortal\Model\Permissions as TPPermissions;
 use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 use \ElkArte\Errors\Errors;
-use \ElkArte\sources\Frontpage_Interface;
 
 if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class Portal extends \Action_Controller implements Frontpage_Interface
+class Portal extends \ElkArte\AbstractController implements \ElkArte\FrontpageInterface
 {
+
+	public function __construct() {{{
+		parent::__construct(new \ElkArte\EventManager());
+	}}}
 
     public static function canFrontPage() {{{
 		return true;
@@ -88,14 +91,24 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 
             $context['TPortal']['subaction'] = $subAction;
 
-            $action     = new \Action();
-            $sa         = $action->initialize($subActions, $subAction);
-            $action->dispatch($sa);
-
+			switch($subAction) {
+				case 'credits':
+					$this->action_credits();
+					break;
+				case 'upshrink':
+					$this->action_upshrink();
+					break;
+				case 'publish'
+					(new ArticleAdmin)->action_publish();
+					break;
+				default:
+					break;
+			}
+			
             call_integration_hook('integrate_tp_post_subactions');
         }
         else {
-            if(TPUtil::filter('page', 'get', 'string') && !isset($context['current_action'])) {
+            if(TPUtil::filter('page', 'get', 'string') && empty($context['current_action'])) {
                 $context['shortID'] = self::action_page();
             }
             else if(TPUtil::filter('cat', 'get', 'string')) {
@@ -111,7 +124,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
     function action_page() {{{
         global $context, $scripturl, $txt, $modSettings, $user_info;
 
-        \loadTemplate('TPortal');
+        \theme()->getTemplates()->load('TPortal');
 
         $db = TPDatabase::getInstance();
         $now = time();
@@ -218,9 +231,9 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                             $context['TPortal']['article']['comment_posts'][] = array(
                                 'id'        => $row['id'],
                                 'subject'   => '<a href="'.$scripturl.'?page='.$context['TPortal']['article']['id'].'#comment'. $row['id'].'">'.$row['subject'].'</a>',
-                                'text'      => parse_bbc($row['comment']),
+                                'text'      => TPSubs::getInstance()->parse_bbc($row['comment']),
                                 'timestamp' => $row['datetime'],
-                                'date'      => standardTime($row['datetime']),
+                                'date'      => TPSubs::getInstance()->standardTime($row['datetime']),
                                 'poster_id' => $row['member_id'],
                                 'poster'    => $row['real_name'],
                                 'is_new'    => ( $row['datetime'] > $last ) ? true : false,
@@ -346,7 +359,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                             $context['TPortal']['printbody'] = '';
                         }
                         elseif($article['type'] == 'bbc') {
-                            $context['TPortal']['printbody'] = parse_bbc($what);
+                            $context['TPortal']['printbody'] = TPSubs::getInstance()->parse_bbc($what);
                         }
                         else {
                             $context['TPortal']['printbody'] = $what;
@@ -411,7 +424,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     $now = time();
                     if((!empty($article['pub_start']) && $article['pub_start'] > $now) || (!empty($article['pub_end']) && $article['pub_end'] < $now)) {
                         $context['tportal']['article_expired'] = $article['id'];
-                        $context['TPortal']['tperror'] = '<span class="error largetext">'. $txt['tp-expired-start']. '</span><p>' .standardTime($article['pub_start']). '' .$txt['tp-expired-start2']. '' . standardTime($article['pub_end']).'</p>';
+                        $context['TPortal']['tperror'] = '<span class="error largetext">'. $txt['tp-expired-start']. '</span><p>' .TPSubs::getInstance()->standardTime($article['pub_start']). '' .$txt['tp-expired-start2']. '' . TPSubs::getInstance()->standardTime($article['pub_end']).'</p>';
                     }
                 }
                 return $article['id'];
@@ -436,7 +449,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
 
         global $context, $scripturl, $txt, $modSettings;
 
-        \loadTemplate('TPortal');
+        \theme()->getTemplates()->load('TPortal');
 
         $db = TPDatabase::getInstance();
         $now = time();
@@ -688,7 +701,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
     function action_frontpage() {{{
         global $context, $scripturl, $user_info, $modSettings, $txt;
 
-        \loadTemplate('TPortal');
+        \theme()->getTemplates()->load('TPortal');
 
         $db = TPDatabase::getInstance();
 
@@ -1197,7 +1210,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
             while($row = $db->fetch_assoc($request)) {
 
                 // decode the block settings
-                $set = json_decode($row['settings'], true);
+                $set = json_decode($row['settings'], true) ?? [];
 
                 // some tests to minimize sql calls
                 if($row['type'] == 7) {
@@ -1224,17 +1237,12 @@ class Portal extends \Action_Controller implements Frontpage_Interface
                     $can_edit = false;
                 }
 
-                $blocks[$panels[$row['bar']]][$count[$panels[$row['bar']]]] = array(
+                $blocks[$panels[$row['bar']]][$count[$panels[$row['bar']]]] = $set + array(
                     'frame' => $row['frame'],
                     'title' => strip_tags($row['title'], '<center>'),
                     'type' => $tpBlock->getBlockType($row['type']),
                     'body' => $row['body'],
                     'visible' => $row['visible'],
-                    'var1' => $set['var1'],
-                    'var2' => $set['var2'],
-                    'var3' => $set['var3'],
-                    'var4' => $set['var4'],
-                    'var5' => $set['var5'],
                     'id' => $row['id'],
                     'lang' => $row['lang'],
                     'display' => $row['display'],
@@ -1366,7 +1374,7 @@ class Portal extends \Action_Controller implements Frontpage_Interface
             TPSubs::getInstance()->loadLanguage('TPhelp', 'english');
         }
 
-        \loadTemplate('TPhelp');
+        \theme()->getTemplates()->load('TPhelp');
 
     }}}
 

@@ -21,13 +21,18 @@ use \TinyPortal\Model\Permissions as TPPermissions;
 use \TinyPortal\Model\Subs as TPSubs;
 use \TinyPortal\Model\Util as TPUtil;
 use \ElkArte\Errors\Errors;
+use \ElkArte\HttpReq;
 
 if (!defined('ELK')) {
 	die('Hacking attempt...');
 }
 
-class BlockAdmin extends \Action_Controller
+class BlockAdmin extends \ElkArte\AbstractController
 {
+
+    public function __construct() {{{
+ 		parent::__construct(new \ElkArte\EventManager());
+	}}}
 
     // Admin Actions
     public function action_index() {{{
@@ -36,7 +41,6 @@ class BlockAdmin extends \Action_Controller
         $area = TPUtil::filter('area', 'get', 'string');
 
         if($area == 'tpblocks') {
-            require_once(SUBSDIR . '/Action.class.php');
 
             $sa = TPUtil::filter('sa', 'get', 'string');
             if($sa == false) {
@@ -81,7 +85,7 @@ class BlockAdmin extends \Action_Controller
 
             $context['TPortal']['subaction'] = $sa;
 
-            $action     = new \Action();
+            $action     = new \ElkArte\Action();
             $subAction  = $action->initialize($subActions, $sa);
             $action->dispatch($subAction);
 
@@ -90,8 +94,8 @@ class BlockAdmin extends \Action_Controller
 
             $context['sub_template']         = $context['TPortal']['subaction'];
 
-            \loadTemplate('TPBlockAdmin');
-            \loadTemplate('TPsubs');
+            \theme()->getTemplates()->load('TPBlockAdmin');
+            \theme()->getTemplates()->load('TPsubs');
 
         }
 
@@ -130,8 +134,8 @@ class BlockAdmin extends \Action_Controller
             if(array_multisort($bar, SORT_ASC, $pos, SORT_ASC, $blocks)) {
                 foreach($blocks as $row) {
                     // decode the block settings
-                    $set = json_decode($row['settings'], true);
-                    $context['TPortal']['admin_'.$bars[$row['bar']].'block']['blocks'][] = array(
+                    $set = json_decode($row['settings'], true) ?? [];
+                    $context['TPortal']['admin_'.$bars[$row['bar']].'block']['blocks'][] = $set + array(
                         'frame' => $row['frame'],
                         'title' => $row['title'],
                         'type' => $tpBlock->getBlockType($row['type']),
@@ -141,8 +145,6 @@ class BlockAdmin extends \Action_Controller
                         'pos' => $row['pos'],
                         'off' => $row['off'],
                         'visible' => $row['visible'],
-                        'var1' => $set['var1'],
-                        'var2' => $set['var2'],
                         'lang' => $row['lang'],
                         'display' => $row['display'],
                         'loose' => $row['display'] != '' ? true : false,
@@ -228,13 +230,9 @@ class BlockAdmin extends \Action_Controller
 
         $row = $tpBlock->getBlock($block_id);
         if(is_array($row)) {
-            $acc2 = explode(',', $row['display']);
-            $context['TPortal']['blockedit'] = $row;
-            $context['TPortal']['blockedit']['var1']    = json_decode($row['settings'],true)['var1'];
-            $context['TPortal']['blockedit']['var2']    = json_decode($row['settings'],true)['var2'];
-            $context['TPortal']['blockedit']['var3']    = json_decode($row['settings'],true)['var3'];
-            $context['TPortal']['blockedit']['var4']    = json_decode($row['settings'],true)['var4'];
-            $context['TPortal']['blockedit']['var5']    = json_decode($row['settings'],true)['var5'];
+            $acc2	= explode(',', $row['display']);
+            $set	= json_decode($row['settings'], true) ?? [];
+            $context['TPortal']['blockedit'] = $set + $row;
             $context['TPortal']['blockedit']['display2'] = $context['TPortal']['blockedit']['display'];
             $context['TPortal']['blockedit']['body'] = $row['body'];
             unset($context['TPortal']['blockedit']['display']);
@@ -332,7 +330,7 @@ class BlockAdmin extends \Action_Controller
 
         $context['sub_template'] = 'editblock';
 
-        \loadTemplate('TPBlockLayout');
+        theme()->getTemplates()->load('TPBlockLayout');
 
     }}}
 
@@ -340,9 +338,10 @@ class BlockAdmin extends \Action_Controller
         global $context;
 
         $blocks = array();
+		$post	= HttpReq::instance()->post;
 
-        if(is_array($_POST) && count($_POST)) {
-            foreach($_POST as $k => $v) {
+        if(is_countable($post) && count($post)) {
+            foreach($post as $k => $v) {
                 foreach(array('pos', 'title', 'type', 'blockbody') as $type) {
                     if(strstr($k, $type)) {
                         $id = str_replace($type, '', $k);
@@ -385,14 +384,20 @@ class BlockAdmin extends \Action_Controller
 		$tpgroups 	= array();
 		$editgroups = array();
 		$lang 		= array();
+		$data		= array();
 
-        foreach($_POST as $k => $v) {
+		$post = HttpReq::instance()->post;
+
+        foreach($post as $k => $v) {
             // We have a empty post value just skip it
             if(empty($v) && $v == '') {
                 continue;
             }
-
-            if(substr($k, 0, 9) == 'tp_block_') {
+            if(substr($k, 0, 13) == 'tp_block_set_') {
+                $data[substr($k, 13)]		= $v;
+				$updateArray['settings']	= json_encode($data);
+            }
+            elseif(substr($k, 0, 9) == 'tp_block_') {
                 $setting = substr($k, 9);
                 switch($setting) {
                     case 'body':
@@ -416,18 +421,7 @@ class BlockAdmin extends \Action_Controller
                     case 'body_choice':
                         // Do nothing
                         break;
-                    case 'var1':
-                    case 'var2':
-                    case 'var3':
-                    case 'var4':
-                    case 'var5':
-                        $existing = $tpBlock->select(array('settings'), array('id' => $block_id));
-                        if(is_array($existing)) {
-                            $data   = json_decode($existing[0]['settings'], true);
-                        }
-                        $data[$setting] = $v;
-                        $updateArray['settings'] = json_encode($data);
-                        break;
+
                     default:
                         $updateArray[$setting] = $v;
                         break;
@@ -557,16 +551,10 @@ class BlockAdmin extends \Action_Controller
         }
 
         if(isset($cp)) {
-            $block = array ( 'type' => $cp['type'], 'frame' => $cp['frame'], 'title' => $title, 'body' => $cp['body'], 'access' => $cp['access'], 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => $cp['lang'], 'display' => $cp['display'], 'editgroups' => $cp['editgroups'], 'settings' => json_encode(array(
-                'var1' => json_decode($cp['settings'], true)['var1'],
-                'var2' => json_decode($cp['settings'], true)['var2'],
-                'var3' => 0,
-                'var4' => 0,
-                'var5' => 0)
-            ));
+            $block = array ( 'type' => $cp['type'], 'frame' => $cp['frame'], 'title' => $title, 'body' => $cp['body'], 'access' => $cp['access'], 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => $cp['lang'], 'display' => $cp['display'], 'editgroups' => $cp['editgroups'], 'settings' => $cp['settings']);
         }
         else {
-            $block = array ( 'type' => $type, 'frame' => 'frame', 'title' => $title, 'body' => $body, 'access' => '-1,0,1', 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => '', 'display' => 'allpages', 'editgroups' => '', 'settings' => json_encode(array('var1' => 0, 'var2' => 0, 'var3' => 0, 'var4' => 0, 'var5' => 0 )));
+            $block = array ( 'type' => $type, 'frame' => 'frame', 'title' => $title, 'body' => $body, 'access' => '-1,0,1', 'bar' => $panel, 'pos' => $position, 'off' => 1, 'visible' => 1, 'lang' => '', 'display' => 'allpages', 'editgroups' => '' );
         }
 
         $id = TPBlock::getInstance()->insert($block);
@@ -676,7 +664,8 @@ class BlockAdmin extends \Action_Controller
 		$tpBlock	= TPBlock::getInstance();
 		$block 		= array();
 
-		foreach($_POST as $what => $value) {
+		$post = HttpReq::instance()->post;
+		foreach($post as $what => $value) {
 			if(substr($what, 5, 7) == 'tpblock') {
 				// get the id
 				$bid = substr($what, 12);
@@ -708,7 +697,8 @@ class BlockAdmin extends \Action_Controller
             return;
         }
 
-        $updateArray = array();
+		$req			= HttpReq::instance();
+        $updateArray	= array();
 
         $checkboxes = array('hidebars_admin_only', 'hidebars_profile', 'hidebars_pm', 'hidebars_memberlist', 'hidebars_search', 'hidebars_calendar');
         foreach($checkboxes as $v) {
@@ -719,10 +709,10 @@ class BlockAdmin extends \Action_Controller
                 $updateArray[$v] = 0;
             }
             // remove the variable so we don't process it twice before the old logic is removed
-            unset($_POST['tp_'.$v]);
+            $req->clearValue('tp_'.$v, 'post');
         }
 
-        foreach($_POST as $what => $value) {
+        foreach($req->post as $what => $value) {
             if(substr($what, 0, 3) == 'tp_') {
                 $where                  = substr($what, 3);
                 $updateArray[$where]    = $value;
