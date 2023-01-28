@@ -91,6 +91,10 @@ class Download extends Base
 
     }}}
 
+	public function categories() {{{
+
+
+	}}}
 }
 
 ?>

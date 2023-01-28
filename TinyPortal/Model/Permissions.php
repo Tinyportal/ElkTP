@@ -128,8 +128,8 @@ class Permissions
             }
         }
 
-        // admin sees all
-        if($context['user']['is_admin']) {
+        // admin sees all unless we have disabled it in our settings
+        if($context['user']['is_admin'] && !empty($context['TPortal']['admin_showblocks'])) {
             $show = true;
         }
 
